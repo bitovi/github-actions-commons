@@ -2,13 +2,6 @@
 
 set -e
 
-
-# TODO: use templating
-#    provide '.tf.tmpl' files in the 'operations/deployment' repo
-#    and iterate over all of them to provide context with something like jinja
-#    Example: https://github.com/mattrobenolt/jinja2-cli
-#    jinja2 some_file.tmpl data.json --format=json
-
 echo "In generate_tf_vars.sh"
 
 
