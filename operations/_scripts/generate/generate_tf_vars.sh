@@ -2,6 +2,13 @@
 
 set -e
 
+
+# TODO: use templating
+#    provide '.tf.tmpl' files in the 'operations/deployment' repo
+#    and iterate over all of them to provide context with something like jinja
+#    Example: https://github.com/mattrobenolt/jinja2-cli
+#    jinja2 some_file.tmpl data.json --format=json
+
 echo "In generate_tf_vars.sh"
 
 
@@ -49,35 +56,38 @@ app_branch_name = \"${GITHUB_BRANCH_NAME}\"
 # Path on the instance where the app will be cloned (do not include app_repo_name)
 app_install_root = \"/home/ubuntu\"
 
-# Logs
+# logs
 lb_access_bucket_name = \"${LB_LOGS_BUCKET}\"
 
-# Security Group names
+
 security_group_name = \"${GITHUB_IDENTIFIER}\"
 
-# EC2
 ec2_iam_instance_profile = \"${EC2_INSTANCE_PROFILE}\"
-ec2_instance_public_ip = \"${EC2_INSTANCE_PUBLIC_IP}\"
+
 ec2_instance_type = \"${EC2_INSTANCE_TYPE}\"
 
-# AWS Specific
 aws_resource_identifier = \"${GITHUB_IDENTIFIER}\"
+
 aws_resource_identifier_supershort = \"${GITHUB_IDENTIFIER_SS}\"
 
-# Domain+Sub Names
+aws_secret_env = \"${AWS_SECRET_ENV}\"
+
+aws_ami_id = \"${AWS_AMI_ID}\"
+
 sub_domain_name = \"${SUB_DOMAIN}\"
+
 domain_name = \"${DOMAIN_NAME}\"
 
-# VPC
-create_vpc = \"${CREATE_VPC}\"
+root_domain = \"${ROOT_DOMAIN}\"
 
-# Region
-region = \"${AWS_DEFAULT_REGION}\"
+cert_arn = \"${CERT_ARN}\"
 
-# Route53
-route53_zone_id = \"${ROUTE53_ZONE_ID}\"
+create_root_cert = \"${CREATE_ROOT_CERT}\"
 
+create_sub_cert = \"${CREATE_SUB_CERT}\"
 
-" > "${GITHUB_ACTION_PATH}/operations/deployment/terraform/terraform.tfvars"
+no_cert = \"${NO_CERT}\"
 
-cat "${GITHUB_ACTION_PATH}/operations/deployment/terraform/terraform.tfvars"
+additional_tags = ${ADDITIONAL_TAGS}
+#
+" >> "${GITHUB_ACTION_PATH}/operations/deployment/terraform/terraform.tfvars"
