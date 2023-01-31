@@ -79,3 +79,5 @@ route53_zone_id = \"${ROUTE53_ZONE_ID}\"
 
 
 " > "${GITHUB_ACTION_PATH}/operations/deployment/terraform/terraform.tfvars"
+
+cat "${GITHUB_ACTION_PATH}/operations/deployment/terraform/terraform.tfvars"
