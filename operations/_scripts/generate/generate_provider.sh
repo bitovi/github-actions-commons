@@ -15,10 +15,14 @@ terraform {
   required_providers {
     aws = {
       source  = \"hashicorp/aws\"
-      version = \"~> 3.0\"
+      version = \"~> 4.30\"
     }
-
+    random = {
+      source  = \"hashicorp/random\"
+      version = \">= 2.2\"
+    }
   }
+
   backend \"s3\" {
     region  = \"${AWS_DEFAULT_REGION}\"
     bucket  = \"${TF_STATE_BUCKET}\"
@@ -26,12 +30,9 @@ terraform {
     encrypt = true #AES-256encryption
   }
 }
- 
-data \"aws_region\" \"current\" {}
 
 provider \"aws\" {
   region = \"${AWS_DEFAULT_REGION}\"
-  profile = \"default\"
   default_tags {
     tags = merge(
       local.aws_tags,
@@ -39,5 +40,4 @@ provider \"aws\" {
     )
   }
 }
-
-" >> "${GITHUB_ACTION_PATH}/operations/deployment/terraform/provider.tf"
+" > "${GITHUB_ACTION_PATH}/operations/deployment/terraform/provider.tf"

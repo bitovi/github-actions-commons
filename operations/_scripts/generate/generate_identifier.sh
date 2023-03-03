@@ -17,4 +17,7 @@ if [ -z "$AWS_RESOURCE_IDENTIFIER" ]; then
 else
   GITHUB_IDENTIFIER="$AWS_RESOURCE_IDENTIFIER"
 fi
+
+GITHUB_IDENTIFIER=$(echo $GITHUB_IDENTIFIER | tr '[:upper:]' '[:lower:]' | tr '_' '-' | tr '/' '-')
+
 echo "$GITHUB_IDENTIFIER" | xargs

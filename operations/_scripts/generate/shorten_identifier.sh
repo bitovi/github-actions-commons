@@ -25,10 +25,25 @@ if [[ $IDENTIFIER =~ $re ]]; then
       break;
     fi
 
+    # echo "BASE_REMATCH[0]"
+    # echo "${BASH_REMATCH[0]}"
+    # echo "BASE_REMATCH[1]"
+    # echo "${BASH_REMATCH[1]}"
+    # echo "BASE_REMATCH[2]"
+    # echo "${BASH_REMATCH[2]}"
+
+    # echo "==="
+    # echo "IDENTIFIER"
+    # echo "$IDENTIFIER"
+
     for current_match in "${BASH_REMATCH[@]}"; do
       if [ "$current_match" == "$IDENTIFIER" ]; then
         continue;
       fi
+
+
+      # echo "current_match"
+      # echo $current_match
 
       # get first letter
       current_match_first_character=${current_match:0:1}

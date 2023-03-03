@@ -1,18 +1,15 @@
 #!/bin/bash
-set -x
 
-echo "In deploy.sh"
+#set -x
+
+echo "::group::In Deploy"
 GITHUB_REPO_NAME=$(echo $GITHUB_REPOSITORY | sed 's/^.*\///')
 
-# Generate buckets identifiers and check them agains AWS Rules
+# Generate buckets identifiers and check them agains AWS Rules 
 export TF_STATE_BUCKET="$(/bin/bash $GITHUB_ACTION_PATH/operations/_scripts/generate/generate_buckets_identifiers.sh tf | xargs)"
 /bin/bash $GITHUB_ACTION_PATH/operations/_scripts/deploy/check_bucket_name.sh $TF_STATE_BUCKET
 export LB_LOGS_BUCKET="$(/bin/bash $GITHUB_ACTION_PATH/operations/_scripts/generate/generate_buckets_identifiers.sh lb | xargs)"
 /bin/bash $GITHUB_ACTION_PATH/operations/_scripts/deploy/check_bucket_name.sh $LB_LOGS_BUCKET
-
-# Generate buckets identifiers
-export TF_STATE_BUCKET="$(/bin/bash $GITHUB_ACTION_PATH/operations/_scripts/generate/generate_buckets_identifiers.sh tf | xargs)"
-export LB_LOGS_BUCKET="$(/bin/bash $GITHUB_ACTION_PATH/operations/_scripts/generate/generate_buckets_identifiers.sh lb | xargs)"
 
 # Generate subdomain
 /bin/bash $GITHUB_ACTION_PATH/operations/_scripts/generate/generate_subdomain.sh
@@ -32,13 +29,18 @@ export LB_LOGS_BUCKET="$(/bin/bash $GITHUB_ACTION_PATH/operations/_scripts/gener
 # Generate bitops config
 /bin/bash $GITHUB_ACTION_PATH/operations/_scripts/generate/generate_bitops_config.sh
 
-# Generate `00_acm_create`
-if [[ "$CREATE_DOMAIN" == "true" ]]; then
-  /bin/bash $GITHUB_ACTION_PATH/operations/_scripts/generate/generate_acm_tf.sh
-fi
+# List terraform folder
+echo "ls -al $GITHUB_ACTION_PATH/operations/deployment/terraform/"
+ls -al $GITHUB_ACTION_PATH/operations/deployment/terraform/
+# Prints out bitops.config.yaml
+echo "cat $GITHUB_ACTION_PATH/operations/deployment/terraform/bitops.config.yaml"
+cat $GITHUB_ACTION_PATH/operations/deployment/terraform/bitops.config.yaml
 
-# deploy-unique.sh 
-/bin/bash $GITHUB_ACTION_PATH/operations/_scripts/deploy/deploy-unique.sh
+
+echo "cat GITHUB_ACTION_PATH/operations/deployment/terraform/provider.tf"
+cat $GITHUB_ACTION_PATH/operations/deployment/terraform/provider.tf
+echo "ls GITHUB_ACTION_PATH/operations/deployment/ansible/app/${GITHUB_REPO_NAME}"
+ls "$GITHUB_ACTION_PATH/operations/deployment/ansible/app/${GITHUB_REPO_NAME}"
 
 TERRAFORM_COMMAND=""
 TERRAFORM_DESTROY=""
@@ -47,12 +49,13 @@ if [ "$STACK_DESTROY" == "true" ]; then
   TERRAFORM_DESTROY="true"
   ANSIBLE_SKIP_DEPLOY="true"
 fi
+echo "::endgroup::"
 
-if [[ "$GHA_TESTING" == "true" ]]; then
-  echo "Quitting before BitOps invoke"
+if [[ $SKIP_BITOPS_RUN == "true" ]]; then
   exit 1
 fi
 
+echo "::group::BitOps Excecution"  
 echo "Running BitOps for env: $BITOPS_ENVIRONMENT"
 docker run --rm --name bitops \
 -e AWS_ACCESS_KEY_ID="${AWS_ACCESS_KEY_ID}" \
@@ -68,10 +71,10 @@ docker run --rm --name bitops \
 -e TF_STATE_BUCKET="${TF_STATE_BUCKET}" \
 -e TF_STATE_BUCKET_DESTROY="${TF_STATE_BUCKET_DESTROY}" \
 -e DEFAULT_FOLDER_NAME="_default" \
--e CREATE_VPC="${CREATE_VPC}" \
 -e BITOPS_FAST_FAIL="${BITOPS_FAST_FAIL}" \
--e ST2_AUTH_USERNAME="${ST2_AUTH_USERNAME}" \
--e ST2_AUTH_PASSWORD="${ST2_AUTH_PASSWORD}" \
--e ST2_PACKS="${ST2_PACKS}" \
 -v $(echo $GITHUB_ACTION_PATH)/operations:/opt/bitops_deployment \
-bitovi/bitops:2.3.0
+bitovi/bitops:2.4.0
+BITOPS_RESULT=$?
+echo "::endgroup::"
+
+exit $BITOPS_RESULT
