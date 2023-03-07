@@ -4,3 +4,4 @@ ansible:
       extra-vars: "@extra-vars.json"
     options:
       dryrun: false
+      skip-deploy: true
