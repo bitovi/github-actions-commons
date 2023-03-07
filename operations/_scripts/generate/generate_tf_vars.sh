@@ -116,7 +116,7 @@ root_domain=$(generate_var root_domain $ROOT_DOMAIN)
 cert_arn=$(generate_var cert_arn $CERT_ARN)
 create_root_cert=$(generate_var create_root_cert $CREATE_ROOT_CERT)
 create_sub_cert=$(generate_var create_sub_cert $CREATE_SUB_CERT)
-no_cert=$(generate_var no_cert $NO_CERT)
+aws_enable_cert=$(generate_var aws_enable_cert $AWS_ENABLE_CERT)
 #-- EFS --#
 if [[ $AWS_CREATE_EFS = true ]]; then
   aws_create_efs=$(generate_var aws_create_efs $AWS_CREATE_EFS)
@@ -189,7 +189,7 @@ $root_domain
 $cert_arn
 $create_root_cert
 $create_sub_cert
-$no_cert
+$aws_enable_cert
 
 #-- EFS --#
 $aws_create_efs

@@ -58,11 +58,11 @@ data "aws_ami" "ubuntu" {
 resource "aws_instance" "server" {
   # ubuntu
   ami                         = var.aws_ami_id != "" ? var.aws_ami_id : data.aws_ami.ubuntu.id
-  #availability_zone           = local.preferred_az
-  #subnet_id                   = data.aws_subnet.selected[0].id
+  availability_zone           = local.preferred_az
+  subnet_id                   = data.aws_subnet.selected[0].id
   instance_type               = var.ec2_instance_type
   associate_public_ip_address = var.ec2_instance_public_ip
-  #vpc_security_group_ids      = [aws_security_group.ec2_security_group.id]
+  vpc_security_group_ids      = [aws_security_group.ec2_security_group.id]
   key_name                    = aws_key_pair.aws_key.key_name
   monitoring                  = true
   iam_instance_profile        = aws_iam_instance_profile.ec2_profile.name
@@ -82,4 +82,21 @@ data "aws_instance" "server" {
 output "instance_public_dns" {
   description = "Public DNS address of the EC2 instance"
   value       = var.ec2_instance_public_ip ? aws_instance.server.public_dns : "EC2 Instance doesn't have public DNS"
+}
+
+
+
+locals {
+  protocol    = local.selected_arn != "" ? "https://" : "http://"
+  public_port = var.lb_port != "" ? ":${var.lb_port}" : ""
+  url = (local.fqdn_provided ?
+    (var.root_domain == "true" ?
+      "${local.protocol}${var.domain_name}${local.public_port}" :
+      "${local.protocol}${var.sub_domain_name}.${var.domain_name}${local.public_port}"
+    ) :
+  "http://${aws_elb.vm[0].dns_name}${local.public_port}")
+}
+
+output "vm_url" {
+  value = local.url
 }

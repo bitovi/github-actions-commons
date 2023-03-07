@@ -203,7 +203,7 @@ The following inputs can be used as `step.with` keys
 | `cert_arn` | String | Define the certificate ARN to use for the application. **See note**. |
 | `create_root_cert` | Boolean | Generates and manage the root cert for the application. **See note**. Default is `false`. |
 | `create_sub_cert` | Boolean | Generates and manage the sub-domain certificate for the application. **See note**. Default is `false`. |
-| `no_cert` | Boolean | Set this to true if no certificate is present for the domain. **See note**. Default is `false`. |
+| `aws_enable_cert` | Boolean | Set this to true if you wish to manage certificates through AWS Certificate Manager. **See note**. Default is `false`. |
 <hr/>
 <br/>
 
@@ -252,15 +252,13 @@ As a default, the application will be deployed and the ELB public URL will be di
 
 If `domain_name` is defined, we will look up for a certificate with the name of that domain (eg. `example.com`). We expect that certificate to contain both `example.com` and `*.example.com`. 
 
-If you wish to set up `domain_name` and disable the certificate lookup, set up `no_cert` to true.
-
 Setting `create_root_cert` to `true` will create this certificate with both `example.com` and `*.example.com` for you, and validate them. (DNS validation).
 
 Setting `create_sub_cert` to `true` will create a certificate **just for the subdomain**, and validate it.
 
 > :warning: Be very careful here! **Created certificates are fully managed by Terraform**. Therefor **they will be destroyed upon stack destruction**.
 
-To change a certificate (root_cert, sub_cert, ARN or pre-existing root cert), you must first set the `no_cert` flag to true, run the action, then set the `no_cert` flag to false, add the desired settings and excecute the action again. (**This will destroy the first certificate.**)
+To change a certificate (root_cert, sub_cert, ARN or pre-existing root cert), you must first set the `aws_enable_cert` flag to false, run the action, then set the `aws_enable_cert` flag to true, add the desired settings and excecute the action again. (**This will destroy the first certificate.**)
 
 This is necessary due to a limitation that prevents certificates from being changed while in use by certain resources.
 

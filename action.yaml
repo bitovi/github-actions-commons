@@ -115,7 +115,7 @@ inputs:
   create_sub_cert: 
     description: 'Generates and manage the sub-domain certificate for the application'
     required: false
-  no_cert:
+  aws_enable_cert:
     description: 'Makes the application not to use a certificate by disabling certificate lookup.'
     required: false
     
@@ -208,7 +208,7 @@ runs:
         CERT_ARN: ${{ inputs.cert_arn }}
         CREATE_ROOT_CERT: ${{ inputs.create_root_cert }}
         CREATE_SUB_CERT: ${{ inputs.create_sub_cert }}
-        NO_CERT: ${{ inputs.no_cert }}
+        AWS_ENABLE_CERT: ${{ inputs.aws_enable_cert }}
         BITOPS_FAST_FAIL: true
         APP_DIRECTORY: ${{ inputs.app_directory }}
         CREATE_KEYPAIR_SM_ENTRY: ${{ inputs.create_keypair_sm_entry }}

@@ -131,9 +131,9 @@ variable "create_sub_cert" {
   default     = ""
 }
 
-variable "no_cert" {
+variable "aws_enable_cert" {
   type        = string
-  description = "disable cert lookup"
+  description = "Enable AWS Certificate management."
   default     = ""
 }
 
