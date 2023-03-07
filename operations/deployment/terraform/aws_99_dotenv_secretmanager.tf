@@ -20,4 +20,3 @@ resource "local_file" "tf-secretdotenv" {
   filename = format("%s/%s", abspath(path.root), "aws.env")
   content  = local.secret_provided ? "${local.s3_secret_string}\n" : ""
 }
-

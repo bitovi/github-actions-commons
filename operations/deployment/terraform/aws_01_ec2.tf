@@ -83,20 +83,3 @@ output "instance_public_dns" {
   description = "Public DNS address of the EC2 instance"
   value       = var.ec2_instance_public_ip ? aws_instance.server.public_dns : "EC2 Instance doesn't have public DNS"
 }
-
-
-
-locals {
-  protocol    = local.selected_arn != "" ? "https://" : "http://"
-  public_port = var.lb_port != "" ? ":${var.lb_port}" : ""
-  url = (local.fqdn_provided ?
-    (var.root_domain == "true" ?
-      "${local.protocol}${var.domain_name}${local.public_port}" :
-      "${local.protocol}${var.sub_domain_name}.${var.domain_name}${local.public_port}"
-    ) :
-  "http://${aws_elb.vm[0].dns_name}${local.public_port}")
-}
-
-output "vm_url" {
-  value = local.url
-}
