@@ -55,6 +55,8 @@ if [[ $SKIP_BITOPS_RUN == "true" ]]; then
   exit 1
 fi
 
+export ANSIBLE_SKIP_DEPLOY="true"
+
 echo "::group::BitOps Excecution"  
 echo "Running BitOps for env: $BITOPS_ENVIRONMENT"
 docker run --rm --name bitops \
@@ -67,7 +69,7 @@ docker run --rm --name bitops \
 -e SKIP_DEPLOY_HELM="${SKIP_DEPLOY_HELM}" \
 -e BITOPS_TERRAFORM_COMMAND="${TERRAFORM_COMMAND}" \
 -e TERRAFORM_DESTROY="${TERRAFORM_DESTROY}" \
--e ANSIBLE_SKIP_DEPLOY="${ANSIBLE_SKIP_DEPLOY}" \
+-e BITOPS_ANSIBLE_SKIP_DEPLOY="${ANSIBLE_SKIP_DEPLOY}" \
 -e TF_STATE_BUCKET="${TF_STATE_BUCKET}" \
 -e TF_STATE_BUCKET_DESTROY="${TF_STATE_BUCKET_DESTROY}" \
 -e DEFAULT_FOLDER_NAME="_default" \
