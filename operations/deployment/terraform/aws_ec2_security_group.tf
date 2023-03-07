@@ -1,3 +1,11 @@
+data "aws_security_group" "ec2_security_group" {
+  id = aws_security_group.ec2_security_group.id
+}
+
+data "aws_vpc" "default" {
+  default = true
+}
+
 resource "aws_security_group" "ec2_security_group" {
   name        = var.security_group_name
   description = "SG for ${var.aws_resource_identifier}"
@@ -11,10 +19,6 @@ resource "aws_security_group" "ec2_security_group" {
   tags = {
     Name = "${var.aws_resource_identifier}-instance-sg"
   }
-}
-
-data "aws_security_group" "ec2_security_group" {
-  id = aws_security_group.ec2_security_group.id
 }
 
 

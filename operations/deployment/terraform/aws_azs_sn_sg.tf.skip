@@ -19,10 +19,6 @@ output "aws_default_subnet_ids" {
 
 data "aws_region" "current" {}
 
-data "aws_vpc" "default" {
-  default = true
-}
-
 data "aws_availability_zones" "all" {}
 
 data "aws_security_group" "default" {
