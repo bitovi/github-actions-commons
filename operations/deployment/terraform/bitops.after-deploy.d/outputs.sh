@@ -14,6 +14,7 @@
 #set -x
 
 echo "In afterhook - output.sh"
+env
 
 if [ "$TERRAFORM_DESTROY" != "true" ]; then
     # The sed command will make each variable be in it's line, and in case a list is present, will transform it into a line
