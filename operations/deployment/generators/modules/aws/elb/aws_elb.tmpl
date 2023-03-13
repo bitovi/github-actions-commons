@@ -51,7 +51,7 @@ resource "aws_elb" "vm_ssl" {
   listener {
     instance_port      = var.aws_elb_app_port
     instance_protocol  = "tcp"
-    aws_elb_listen_port            = var.aws_elb_listen_port != "" ? var.aws_elb_listen_port : 443
+    lb_port            = var.aws_elb_listen_port != "" ? var.aws_elb_listen_port : 443
     lb_protocol        = "ssl"
     ssl_certificate_id = local.selected_arn
   }
@@ -89,7 +89,7 @@ resource "aws_elb" "vm" {
   listener {
     instance_port     = var.aws_elb_app_port
     instance_protocol = "tcp"
-    aws_elb_listen_port           = var.aws_elb_listen_port != "" ? var.aws_elb_listen_port : 80
+    lb_port           = var.aws_elb_listen_port != "" ? var.aws_elb_listen_port : 80
     lb_protocol       = "tcp"
   }
 

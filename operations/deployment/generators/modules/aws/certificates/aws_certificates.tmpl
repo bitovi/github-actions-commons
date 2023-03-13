@@ -8,7 +8,7 @@ data "aws_acm_certificate" "issued" {
 # This block will create and validate the root domain and www cert
 resource "aws_acm_certificate" "root_domain" {
   count                     = var.aws_r53_enable_cert == "true" ? (var.aws_r53_create_root_cert == "true" ? (var.aws_r53_domain_name != "" ? 1 : 0) : 0) : 0
-  aws_r53_domain_name       = var.aws_r53_domain_name
+  domain_name               = var.aws_r53_domain_name
   subject_alternative_names = ["*.${var.aws_r53_domain_name}", "${var.aws_r53_domain_name}"]
   validation_method         = "DNS"
 }
@@ -32,8 +32,8 @@ resource "aws_acm_certificate_validation" "root_domain" {
 
 # This block will create and validate the sub domain cert ONLY
 resource "aws_acm_certificate" "sub_domain" {
-  count               = var.aws_r53_enable_cert == "true" ? (var.aws_r53_create_sub_cert == "true" ? (var.aws_r53_domain_name != "" ? (var.aws_r53_sub_domain_name != "" ? 1 : 0) : 0) : 0) :0
-  aws_r53_domain_name = "${var.aws_r53_sub_domain_name}.${var.aws_r53_domain_name}"
+  count             = var.aws_r53_enable_cert == "true" ? (var.aws_r53_create_sub_cert == "true" ? (var.aws_r53_domain_name != "" ? (var.aws_r53_sub_domain_name != "" ? 1 : 0) : 0) : 0) :0
+  domain_name       = "${var.aws_r53_sub_domain_name}.${var.aws_r53_domain_name}"
   validation_method = "DNS"
 }
 
