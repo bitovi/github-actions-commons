@@ -1,17 +1,17 @@
-variable "app_port" {
+variable "aws_elb_app_port" {
   type        = string
   default     = "3000"
   description = "app port"
 }
-variable "lb_port" {
+variable "aws_elb_listen_port" {
   type        = string
   default     = ""
   description = "Load balancer listening port. Defaults to 80 if NO FQDN provided, 443 if FQDN provided"
 }
-variable "lb_healthcheck" {
+variable "aws_elb_healthcheck" {
   type        = string
   default     = ""
-  description = "Load balancer health check string. Defaults to HTTP:app_port"
+  description = "Load balancer health check string. Defaults to HTTP:aws_elb_app_port"
 }
 variable "app_repo_name" {
   type        = string
@@ -43,7 +43,7 @@ variable "ops_repo_environment" {
   description = "Ops Repo Environment (i.e. directory name)"
 }
 
-variable "ec2_instance_type" {
+variable "aws_ec2_instance_type" {
   type        = string
   default     = "t2.small"
   description = "Instance type for the EC2 instance"
@@ -64,7 +64,7 @@ variable "aws_security_group_name_pg" {
   default     = "SG for postgres deployment"
   description = "Name of the security group to use for postgres"
 }
-variable "ec2_iam_instance_profile" {
+variable "aws_ec2_iam_instance_profile" {
   type        = string
   description = "IAM role for the ec2 instance"
   default     = ""
@@ -85,59 +85,59 @@ variable "aws_resource_identifier_supershort" {
   description = "Identifier to use for AWS resources (defaults to GITHUB_ORG-GITHUB_REPO-GITHUB_BRANCH) shortened to 30 chars"
 }
 
-variable "aws_secret_env" {
+variable "env_aws_secret" {
   type        = string
   description = "Secret name to pull env variables from AWS Secret Manager"
   default     = null
 }
 
-variable "aws_ami_id" {
+variable "aws_ec2_ami_id" {
   type        = string
   description = "AWS AMI ID image to use for deployment"
   default     = ""
 }
 
-variable "sub_domain_name" {
+variable "aws_r53_sub_domain_name" {
   type        = string
   description = "Subdomain name for DNS record"
   default     = ""
 }
-variable "domain_name" {
+variable "aws_r53_domain_name" {
   type        = string
   description = "root domain name without any subdomains"
   default     = ""
 }
-variable "root_domain" {
+variable "aws_r53_root_domain_deploy" {
   type        = string
   description = "deploy to root domain"
   default     = ""
 }
 
-variable "cert_arn" {
+variable "aws_r53_cert_arn" {
   type        = string
   description = "Certificate ARN to use"
   default     = ""
 }
 
-variable "create_root_cert" {
+variable "aws_r53_create_root_cert" {
   type        = string
   description = "deploy to root domain"
   default     = ""
 }
 
-variable "create_sub_cert" {
+variable "aws_r53_create_sub_cert" {
   type        = string
   description = "deploy to root domain"
   default     = ""
 }
 
-variable "aws_enable_cert" {
+variable "aws_r53_enable_cert" {
   type        = string
   description = "Enable AWS Certificate management."
   default     = ""
 }
 
-variable "aws_enable_postgres" {
+variable "aws_postgres_enable" {
   type        = string
   description = "deploy a postgres database"
   default     = ""
@@ -176,37 +176,37 @@ variable "aws_postgres_database_port" {
 
 
 ## -- EFS -- ##
-variable "aws_create_efs" {
+variable "aws_efs_create" {
   type        = bool
   description = "Toggle to indicate whether to create and EFS and mount it to the ec2 as a part of the provisioning. Note: The EFS will be managed by the stack and will be destroyed along with the stack."
   default     = false
 }
 
-variable "aws_create_ha_efs" {
+variable "aws_efs_create_ha" {
   type        = bool
   description = "Toggle to indicate whether the EFS resource should be highly available (target mounts in all available zones within region)."
   default     = false
 }
 
-variable "aws_create_efs_replica" {
+variable "aws_efs_create_replica" {
   type        = bool
   description = "Toggle to indiciate whether a read-only replica should be created for the EFS primary file system"
   default     = false
 }
 
-variable "aws_enable_efs_backup_policy" {
+variable "aws_efs_enable_backup_policy" {
   type        = bool
   default     = false
   description = "Toggle to indiciate whether the EFS should have a backup policy, default is `false`"
 }
 
-variable "aws_mount_efs_id" {
+variable "aws_efs_mount_id" {
   type        = string
   description = "ID of existing EFS"
   default     = null
 }
 
-variable "aws_mount_efs_security_group_id" {
+variable "aws_efs_mount_security_group_id" {
   type        = string
   description = "ID of the primary security group used by the existing EFS"
   default     = null
@@ -228,7 +228,7 @@ variable "aws_efs_transition_to_inactive" {
   description = "https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/efs_file_system#transition_to_ia"
 }
 
-variable "aws_replication_configuration_destination" {
+variable "aws_efs_replication_destination" {
   type        = string
   default     = null
   description = "AWS Region to target for replication"
@@ -241,13 +241,13 @@ variable "availability_zone" {
   description = "The AZ zone to deploy resources to"
 }
 
-variable "create_keypair_sm_entry" {
+variable "aws_ec2_create_keypair_sm" {
   type = bool
   description = "y/n create sm entry for ec2 keypair"
   default = false
 }
 
-variable "additional_tags" {
+variable "aws_additional_tags" {
   type        = map(string)
   description = "A list of strings that will be added to created resources"
   default     = {}
@@ -256,19 +256,19 @@ variable "additional_tags" {
 
 
 ## -- --- -- ##
-variable "application_mount_target" {
+variable "aws_efs_ec2_mount_point" {
   type        = string
   description = "Directory path in application env to mount directory"
   default = "data"
 }
 
-variable "data_mount_target" {
+variable "docker_efs_mount_target" {
   type        = string
   description = "Directory path in efs to mount to"
   default     = "/data"
 }
 
-variable "efs_mount_target" {
+variable "aws_efs_mount_target" {
   type        = string
   description = "Directory path in efs to mount to"
   default     = null

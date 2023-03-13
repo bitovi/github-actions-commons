@@ -9,39 +9,39 @@ echo "BitOps Ansible before script: Merge Terraform Enviornment Variables..."
 order=tf,postgres,repo,ghv,ghs,aws
 
 # Ansible dotenv file -> The final destination of all
-DOTENV_FILE="${BITOPS_ENVROOT}/ansible/app.env"
+ENV_OUT_FILE="${BITOPS_ENVROOT}/ansible/app.env"
 
 # TF dotenv file
-TF_DOTENV_FILE="${BITOPS_ENVROOT}/terraform/tf.env"
+ENV_TF_FILE="${BITOPS_ENVROOT}/terraform/tf.env"
 
 # TF dotenv file
-POSTGRES_DOTENV_FILE="${BITOPS_ENVROOT}/terraform/postgres.env"
+ENV_POSTGRES_FILE="${BITOPS_ENVROOT}/terraform/postgres.env"
 
 # Repo env file
-REPO_ENV_FILE="${BITOPS_ENVROOT}/ansible/repo.env"
+ENV_REPO_FILE="${BITOPS_ENVROOT}/ansible/repo.env"
 
 # GH Variables env file
-GHV_ENV_FILE="${BITOPS_ENVROOT}/ansible/ghv.env"
+ENV_GHV_FILE="${BITOPS_ENVROOT}/ansible/ghv.env"
 
 # GH Secrets  env file
-GHS_ENV_FILE="${BITOPS_ENVROOT}/ansible/ghs.env"
+ENV_GHS_FILE="${BITOPS_ENVROOT}/ansible/ghs.env"
 
 # TF AWS dotenv file
-AWS_SECRET_FILE="${BITOPS_ENVROOT}/terraform/aws.env"
+ENV_AWS_SECRET_FILE="${BITOPS_ENVROOT}/terraform/aws.env"
 
 # Make sure app.env is empty, if not, delete it and create one.
 
-if [ -f $DOTENV_FILE ]; then 
-  rm -rf $DOTENV_FILE
+if [ -f $ENV_OUT_FILE ]; then 
+  rm -rf $ENV_OUT_FILE
 fi 
-touch $DOTENV_FILE
+touch $ENV_OUT_FILE
 
 # Function to merge to destination
 
 function merge {
   if [ -s $1 ]; then
     echo "Merging $2 envs"
-    cat $1 >> $DOTENV_FILE
+    cat $1 >> $ENV_OUT_FILE
   else
     echo "Nothing to merge from $2"
   fi
@@ -52,27 +52,27 @@ function process {
   case $1 in
     aws)
       # Code to be executed for option1
-      merge $AWS_SECRET_FILE "AWS Secret"
+      merge $ENV_AWS_SECRET_FILE "AWS Secret"
       ;;
     repo)
       # Code to be executed for option2
-      merge $REPO_ENV_FILE "checked-in"
+      merge $ENV_REPO_FILE "checked-in"
       ;;
     ghv)
       # Code to be executed for option3
-      merge $GHV_ENV_FILE "GH-Vars"
+      merge $ENV_GHV_FILE "GH-Vars"
       ;;
     ghs)
       # Code to be executed for option4
-      merge $GHS_ENV_FILE "GH-Secret"
+      merge $ENV_GHS_FILE "GH-Secret"
       ;;
     tf)
       # Code to be executed for option5
-      merge $TF_DOTENV_FILE "Terraform"
+      merge $ENV_TF_FILE "Terraform"
       ;;
     postgres)
       # Code to be executed for option6
-      merge $POSTGRES_DOTENV_FILE "Postgres"
+      merge $ENV_POSTGRES_FILE "Postgres"
       ;;
     *)
       # Code to be executed if no matching option is found

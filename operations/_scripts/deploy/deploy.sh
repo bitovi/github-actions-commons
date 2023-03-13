@@ -20,8 +20,8 @@ export LB_LOGS_BUCKET="$(/bin/bash $GITHUB_ACTION_PATH/operations/_scripts/gener
 # Generate terraform variables
 /bin/bash $GITHUB_ACTION_PATH/operations/_scripts/generate/generate_tf_vars.sh
 
-# Generate dot_env
-/bin/bash $GITHUB_ACTION_PATH/operations/_scripts/generate/generate_dot_env.sh
+# Generate gh_env
+/bin/bash $GITHUB_ACTION_PATH/operations/_scripts/generate/generate_gh_env.sh
 
 # Generate app repo
 /bin/bash $GITHUB_ACTION_PATH/operations/_scripts/generate/generate_app_repo.sh
@@ -44,7 +44,7 @@ ls "$GITHUB_ACTION_PATH/operations/deployment/ansible/app/${GITHUB_REPO_NAME}"
 
 TERRAFORM_COMMAND=""
 TERRAFORM_DESTROY=""
-if [ "$STACK_DESTROY" == "true" ]; then
+if [ "$TF_STACK_DESTROY" == "true" ]; then
   TERRAFORM_COMMAND="destroy"
   TERRAFORM_DESTROY="true"
   ANSIBLE_SKIP_DEPLOY="true"
@@ -54,8 +54,6 @@ echo "::endgroup::"
 if [[ $SKIP_BITOPS_RUN == "true" ]]; then
   exit 1
 fi
-
-export ANSIBLE_SKIP_DEPLOY="true"
 
 echo "::group::BitOps Excecution"  
 echo "Running BitOps for env: $BITOPS_ENVIRONMENT"

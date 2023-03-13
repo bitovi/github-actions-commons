@@ -9,7 +9,7 @@
 
 - name: Check if efs mount directory is present
   stat:
-    path: "{{ app_install_root }}/{{ app_repo_name }}/{{ application_mount_target }}/"
+    path: "{{ app_install_root }}/{{ app_repo_name }}/{{ aws_efs_ec2_mount_point }}/"
   register: check_efs_mount
 
 - name: stat test
@@ -19,6 +19,6 @@
 
 - name: Unmount efs volume
   ansible.posix.mount:
-    path: "{{ app_install_root }}/{{ app_repo_name }}/{{ application_mount_target }}"
+    path: "{{ app_install_root }}/{{ app_repo_name }}/{{ aws_efs_ec2_mount_point }}"
     state: unmounted
   when: check_efs_mount.stat.exists

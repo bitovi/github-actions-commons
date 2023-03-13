@@ -49,9 +49,9 @@ resource "aws_elb" "vm_ssl" {
   }
 
   listener {
-    instance_port      = var.app_port
+    instance_port      = var.aws_elb_app_port
     instance_protocol  = "tcp"
-    lb_port            = var.lb_port != "" ? var.lb_port : 443
+    aws_elb_listen_port            = var.aws_elb_listen_port != "" ? var.aws_elb_listen_port : 443
     lb_protocol        = "ssl"
     ssl_certificate_id = local.selected_arn
   }
@@ -60,7 +60,7 @@ resource "aws_elb" "vm_ssl" {
     healthy_threshold   = 2
     unhealthy_threshold = 2
     timeout             = 3
-    target              = var.lb_healthcheck != "" ? var.lb_healthcheck : "HTTP:${var.app_port}/"
+    target              = var.aws_elb_healthcheck != "" ? var.aws_elb_healthcheck : "HTTP:${var.aws_elb_app_port}/"
     interval            = 30
   }
 
@@ -87,9 +87,9 @@ resource "aws_elb" "vm" {
   }
 
   listener {
-    instance_port     = var.app_port
+    instance_port     = var.aws_elb_app_port
     instance_protocol = "tcp"
-    lb_port           = var.lb_port != "" ? var.lb_port : 80
+    aws_elb_listen_port           = var.aws_elb_listen_port != "" ? var.aws_elb_listen_port : 80
     lb_protocol       = "tcp"
   }
 
@@ -97,7 +97,7 @@ resource "aws_elb" "vm" {
     healthy_threshold   = 2
     unhealthy_threshold = 2
     timeout             = 3
-    target              = var.lb_healthcheck != "" ? var.lb_healthcheck : "HTTP:${var.app_port}/"
+    target              = var.aws_elb_healthcheck != "" ? var.aws_elb_healthcheck : "HTTP:${var.aws_elb_app_port}/"
     interval            = 30
   }
 

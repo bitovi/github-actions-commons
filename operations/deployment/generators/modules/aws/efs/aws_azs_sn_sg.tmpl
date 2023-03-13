@@ -71,7 +71,7 @@ locals {
 data "aws_ec2_instance_type_offerings" "region_azs" {
   filter {
     name   = "instance-type"
-    values = [var.ec2_instance_type]
+    values = [var.aws_ec2_instance_type]
   }
 
   location_type = "availability-zone"

@@ -11,12 +11,12 @@ resource "aws_key_pair" "aws_key" {
 
 // Creates a secret manager secret for the public key
 resource "aws_secretsmanager_secret" "keys_sm_secret" {
-  count              = var.create_keypair_sm_entry ? 1 : 0
+  count              = var.aws_ec2_create_keypair_sm ? 1 : 0
   name   = "${var.aws_resource_identifier_supershort}-sm-${random_string.random.result}"
 }
  
 resource "aws_secretsmanager_secret_version" "keys_sm_secret_version" {
-  count     = var.create_keypair_sm_entry ? 1 : 0
+  count     = var.aws_ec2_create_keypair_sm ? 1 : 0
   secret_id = aws_secretsmanager_secret.keys_sm_secret[0].id
   secret_string = <<EOF
    {
@@ -57,10 +57,10 @@ data "aws_ami" "ubuntu" {
 
 resource "aws_instance" "server" {
   # ubuntu
-  ami                         = var.aws_ami_id != "" ? var.aws_ami_id : data.aws_ami.ubuntu.id
+  ami                         = var.aws_ec2_ami_id != "" ? var.aws_ec2_ami_id : data.aws_ami.ubuntu.id
   availability_zone           = local.preferred_az
   subnet_id                   = data.aws_subnet.selected[0].id
-  instance_type               = var.ec2_instance_type
+  instance_type               = var.aws_ec2_instance_type
   associate_public_ip_address = var.ec2_instance_public_ip
   vpc_security_group_ids      = [aws_security_group.ec2_security_group.id]
   key_name                    = aws_key_pair.aws_key.key_name

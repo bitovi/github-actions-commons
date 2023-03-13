@@ -2,11 +2,11 @@
 
 set -e
 
-if [ -z "${SUB_DOMAIN}" ]; then
+if [ -z "${AWS_R53_SUB_DOMAIN_NAME}" ]; then
   if [ -n "${GITHUB_IDENTIFIER}" ]; then
     GITHUB_IDENTIFIER="$($GITHUB_ACTION_PATH/operations/_scripts/generate/generate_identifier.sh)"
   fi
-  export SUB_DOMAIN="${GITHUB_IDENTIFIER}"
+  export AWS_R53_SUB_DOMAIN_NAME="${GITHUB_IDENTIFIER}"
 fi
 
-echo "$SUB_DOMAIN"
+echo "$AWS_R53_SUB_DOMAIN_NAME"

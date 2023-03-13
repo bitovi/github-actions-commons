@@ -34,12 +34,12 @@
 
 - name: Check if mount directory is present
   stat:
-    path: "{{ app_install_root }}/{{ app_repo_name }}/{{ application_mount_target }}/"
+    path: "{{ app_install_root }}/{{ app_repo_name }}/{{ aws_efs_ec2_mount_point }}/"
   register: check_efs_mount
 
 - name: Creates efs mount directory
   file:
-    path: "{{ app_install_root }}/{{ app_repo_name }}/{{ application_mount_target }}"
+    path: "{{ app_install_root }}/{{ app_repo_name }}/{{ aws_efs_ec2_mount_point }}"
     state: directory
   when: not check_efs_mount.stat.exists
 
@@ -47,16 +47,16 @@
 - name: Adding `HOST_DIR` to application .env
   ansible.builtin.lineinfile:
     path: "{{ app_install_root }}/{{ app_repo_name }}/.env"
-    line: HOST_DIR="{{ app_install_root }}/{{ app_repo_name }}/{{ application_mount_target }}"
+    line: HOST_DIR="{{ app_install_root }}/{{ app_repo_name }}/{{ aws_efs_ec2_mount_point }}"
 - name: Adding `TARGET_DIR` to application .env
   ansible.builtin.lineinfile:
     path: "{{ app_install_root }}/{{ app_repo_name }}/.env"
-    line: TARGET_DIR="{{ data_mount_target }}"
+    line: TARGET_DIR="{{ docker_efs_mount_target }}"
 
 - name: Mount efs volume
   ansible.posix.mount:
-    src: "{{ efs_url }}:/{{ efs_mount_target }}"
-    path: "{{ app_install_root }}/{{ app_repo_name }}/{{ application_mount_target }}"
+    src: "{{ efs_url }}:/{{ aws_efs_mount_target }}"
+    path: "{{ app_install_root }}/{{ app_repo_name }}/{{ aws_efs_ec2_mount_point }}"
     opts: "nfsvers=4.1,rsize=1048576,wsize=1048576,hard,timeo=600,retrans=2,noresvport"
     fstype: nfs4
     state: mounted
