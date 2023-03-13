@@ -254,7 +254,7 @@ runs:
 
         # Docker
         DOCKER_INSTALL: ${{ inputs.docker_install }}
-        DOCKER_APP_DIRECTORY: ${{ docker_app_directory }}
+        DOCKER_APP_DIRECTORY: ${{ inputs.docker_app_directory }}
         DOCKER_EFS_MOUNT_TARGET: ${{ inputs.docker_efs_mount_target }}
 
       run: |
