@@ -193,7 +193,7 @@ runs:
         TF_STATE_BUCKET: ${{ inputs.tf_state_bucket }}
         TF_STATE_BUCKET_DESTROY: ${{ inputs.tf_state_bucket_destroy }}
         TF_STATE_BUCKET_PROVIDER: ${{ inputs.tf_state_bucket_provider }}
-        TF_TARGETS: ${{ inputs.tf_targets }} -- TERRAFORM_TARGETS
+        TF_TARGETS: ${{ inputs.tf_targets }}
 
         # AWS Specific
         AWS_ACCESS_KEY_ID: ${{ inputs.aws_access_key_id }}
