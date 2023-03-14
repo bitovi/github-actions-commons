@@ -54,6 +54,11 @@ variable "ec2_instance_public_ip" {
   description = "Attach public IP to the EC2 instance"
 }
 
+#variable "aws_ec2_port_list" {
+#  type = list(number)
+#  default = []
+#}
+
 variable "security_group_name" {
   type        = string
   default     = "SG for deployment"
