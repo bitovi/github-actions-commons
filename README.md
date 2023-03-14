@@ -116,15 +116,15 @@ jobs:
 ## Customizing
 
 ### Inputs
-1. [Action Defaults](#action-defaults-inputs)
+1. [Action main inputs](#action-main-inputs)
+1. [AWS Specific](#aws-specific)
 1. [Secrets and Environment Variables](#secrets-and-environment-variables-inputs)
 1. [EC2](#ec2-inputs)
-1. [EFS](#efs-inputs)
-1. [RDS](#rds-inputs)
 1. [Certificates](#certificate-inputs)
 1. [Load Balancer](#load-balancer-inputs)
-1. [Application](#application-inputs)
-1. [Terraform](#terraform-inputs)
+1. [EFS](#efs-inputs)
+1. [RDS](#rds-inputs)
+1. [Docker](#docker-inputs)
 
 The following inputs can be used as `step.with` keys
 <br/>
@@ -134,12 +134,21 @@ The following inputs can be used as `step.with` keys
 | Name             | Type    | Description                        |
 |------------------|---------|------------------------------------|
 | `checkout` | Boolean | Set to `false` if the code is already checked out. (Default is `true`). |
-| `stack_destroy` | Boolean  | Set to `true` to destroy the stack - Will delete the `elb logs bucket` after the destroy action runs. |
+| `tf_stack_destroy` | Boolean  | Set to `true` to destroy the stack - Will delete the `elb logs bucket` after the destroy action runs. |
+| `tf_state_bucket` | String | AWS S3 bucket name to use for Terraform state. See [note](#s3-buckets-naming) | 
+| `tf_state_bucket_destroy` | Boolean | Force purge and deletion of S3 bucket defined. Any file contained there will be destroyed. `tf_stack_destroy` must also be `true`. Default is `false`. |
+| `tf_state_bucket_provider` | String | Bucket provider for Terraform State storage. [Disabled ATM, AWS as a default.] | 
+| `tf_targets` | List | A list of targets to create before the full stack creation. | 
+<hr/>
+<br/>
+
+#### **AWS Specific**
 | `aws_access_key_id` | String | AWS access key ID |
 | `aws_secret_access_key` | String | AWS secret access key |
 | `aws_session_token` | String | AWS session token |
 | `aws_default_region` | String | AWS default region. Defaults to `us-east-1` |
 | `aws_resource_identifier` | String | Set to override the AWS resource identifier for the deployment. Defaults to `${GITHUB_ORG_NAME}-${GITHUB_REPO_NAME}-${GITHUB_BRANCH_NAME}`. Use with destroy to destroy specific resources. |
+| `aws_additional_tags` | JSON | Add additional tags to the terraform [default tags](https://www.hashicorp.com/blog/default-tags-in-the-terraform-aws-provider), any tags put here will be added to all provisioned resources.|
 <hr/>
 <br/>
 
@@ -156,10 +165,35 @@ The following inputs can be used as `step.with` keys
 #### **EC2 Inputs**
 | Name             | Type    | Description                        |
 |------------------|---------|------------------------------------|
+| `aws_ec2_instance_create` | Boolean | Set to `true` if you wish to create an EC2 instance. (Default is `false`). |
 | `aws_ec2_ami_id` | String | AWS AMI ID. Will default to latest Ubuntu 22.04 server image (HVM). Accepts `ami-###` values. |
 | `aws_ec2_iam_instance_profile` | String | The AWS IAM instance profile to use for the EC2 instance. Default is `${GITHUB_ORG_NAME}-${GITHUB_REPO_NAME}-${GITHUB_BRANCH_NAME}`|
 | `aws_ec2_instance_type` | String | The AWS IAM instance type to use. Default is `t2.small`. See [this list](https://aws.amazon.com/ec2/instance-types/) for reference. |
 | `aws_ec2_create_keypair_sm` | Boolean | Generates and manage a secret manager entry that contains the public and private keys created for the ec2 instance. |
+<hr/>
+<br/>
+
+
+#### **Certificate Inputs**
+| Name             | Type    | Description                        |
+|------------------|---------|------------------------------------|
+| `aws_r53_enable` | Boolean | Set this to true if you wish to manage certificates through AWS Certificate Manager with Terraform. **See note**. Default is `false`. |
+| `aws_r53_domain_name` | String | Define the root domain name for the application. e.g. bitovi.com'. |
+| `aws_r53_sub_domain_name` | String | Define the sub-domain part of the URL. Defaults to `${GITHUB_ORG_NAME}-${GITHUB_REPO_NAME}-${GITHUB_BRANCH_NAME}`. |
+| `aws_r53_root_domain_deploy` | Boolean | Deploy application to root domain. Will create root and www records. Default is `false`. |
+| `aws_r53_enable_cert` | Boolean | Set this to true if you wish to manage certificates through AWS Certificate Manager with Terraform. **See note**. Default is `false`. |
+| `aws_r53_cert_arn` | String | Define the certificate ARN to use for the application. **See note**. |
+| `aws_r53_create_root_cert` | Boolean | Generates and manage the root cert for the application. **See note**. Default is `false`. |
+| `aws_r53_create_sub_cert` | Boolean | Generates and manage the sub-domain certificate for the application. **See note**. Default is `false`. |
+<hr/>
+<br/>
+
+#### **Load Balancer Inputs**
+| Name             | Type    | Description                        |
+|------------------|---------|------------------------------------|
+| `aws_elb_app_port` | String | Port to be expose for the container. Default is `3000` | 
+| `aws_elb_listen_port` | String | Load balancer listening port. Default is `80` if NO FQDN provided, `443` if FQDN provided. |
+| `aws_elb_healthcheck` | String | Load balancer health check string. Default is `HTTP:aws_elb_app_port`. |
 <hr/>
 <br/>
 
@@ -175,9 +209,8 @@ The following inputs can be used as `step.with` keys
 | `aws_efs_replication_destination` | String | AWS Region to target for replication. |
 | `aws_efs_mount_id` | String | ID of existing EFS. |
 | `aws_efs_mount_security_group_id` | String | ID of the primary security group used by the existing EFS. |
-| `aws_efs_ec2_mount_point` | String | The aws_efs_ec2_mount_point input represents the folder path within the EC2 instance to the data directory. Default is `/user/ubuntu/<application_repo>/data`. Additionally this value is loaded into the docker-compose `.env` file as `HOST_DIR`. |
-| `docker_efs_mount_target` | String | The docker_efs_mount_target input represents the target volume directory within the docker compose container. Default is `/data`. Additionally this value is loaded into the docker-compose container `.env` file as `TARGET_DIR`. |
 | `aws_efs_mount_target` | String | Directory path in efs to mount directory to. Default is `/`. |
+| `aws_efs_ec2_mount_point` | String | The aws_efs_ec2_mount_point input represents the folder path within the EC2 instance to the data directory. Default is `/user/ubuntu/<application_repo>/data`. Additionally this value is loaded into the docker-compose `.env` file as `HOST_DIR`. |
 <hr/>
 <br/>
 
@@ -194,41 +227,12 @@ The following inputs can be used as `step.with` keys
 <hr/>
 <br/>
 
-#### **Certificate Inputs**
+#### **Docker Inputs**
 | Name             | Type    | Description                        |
 |------------------|---------|------------------------------------|
-| `aws_r53_domain_name` | String | Define the root domain name for the application. e.g. bitovi.com'. |
-| `aws_r53_sub_domain_name` | String | Define the sub-domain part of the URL. Defaults to `${GITHUB_ORG_NAME}-${GITHUB_REPO_NAME}-${GITHUB_BRANCH_NAME}`. |
-| `aws_r53_root_domain_deploy` | Boolean | Deploy application to root domain. Will create root and www records. Default is `false`. |
-| `aws_r53_cert_arn` | String | Define the certificate ARN to use for the application. **See note**. |
-| `aws_r53_create_root_cert` | Boolean | Generates and manage the root cert for the application. **See note**. Default is `false`. |
-| `aws_r53_create_sub_cert` | Boolean | Generates and manage the sub-domain certificate for the application. **See note**. Default is `false`. |
-| `aws_r53_enable_cert` | Boolean | Set this to true if you wish to manage certificates through AWS Certificate Manager. **See note**. Default is `false`. |
-<hr/>
-<br/>
-
-#### **Load Balancer Inputs**
-| Name             | Type    | Description                        |
-|------------------|---------|------------------------------------|
-| `aws_elb_listen_port` | String | Load balancer listening port. Default is `80` if NO FQDN provided, `443` if FQDN provided. |
-| `aws_elb_healthcheck` | String | Load balancer health check string. Default is `HTTP:aws_elb_app_port`. |
-<hr/>
-<br/>
-
-#### **Application Inputs**
-| Name             | Type    | Description                        |
-|------------------|---------|------------------------------------|
-| `app_port` | String | Port to be expose for the container. Default is `3000` | 
+| `docker_install` | Boolean | Set to "true" to enable docker installation through Ansible. docker-compose up will be excecuted after. |
 | `docker_app_directory` | String | Relative path for the directory of the app. (i.e. where the `docker-compose.yaml` file is located). This is the directory that is copied into the EC2 instance. Default is `/`, the root of the repository. |
-<hr/>
-<br/>
-
-#### **Terraform Inputs**
-| Name             | Type    | Description                        |
-|------------------|---------|------------------------------------|
-| `tf_state_bucket` | String | AWS S3 bucket name to use for Terraform state. See [note](#s3-buckets-naming) | 
-| `tf_state_bucket_destroy` | Boolean | Force purge and deletion of S3 bucket defined. Any file contained there will be destroyed. `tf_stack_destroy` must also be `true`. Default is `false`. |
-| `aws_additional_tags` | JSON | Add additional tags to the terraform [default tags](https://www.hashicorp.com/blog/default-tags-in-the-terraform-aws-provider), any tags put here will be added to all provisioned resources.|
+| `docker_efs_mount_target` | String | Directory path within docker env to mount directory to. Default is `/data`|
 <hr/>
 <br/>
 <br/>
@@ -267,7 +271,7 @@ Users looking to add non-ephemeral storage to their created EC2 instance have th
 
 ### 1. Create EFS
 
-Option 1, you have access to the `create_efs` attribute which will create a EFS resource and mount it to the EC2 instance in the application directory at the path: "app_root/data".
+Option 1, you have access to the `aws_efs_create` attribute which will create a EFS resource and mount it to the EC2 instance in the application directory at the path: "app_root/data".
 
 > :warning: Be very careful here! The **EFS is fully managed by Terraform**. Therefor **it will be destroyed upon stack destruction**.
 

@@ -62,7 +62,7 @@ inputs:
     required: false
 
   # EC2 Instance
-  aws_ec2_instance:
+  aws_ec2_instance_create:
     description: 'Define if an EC2 instance should be created'
   aws_ec2_ami_id:
     description: 'AWS AMI ID. Will default to the latest Ubuntu 22.04 server image (HVM) '
@@ -75,13 +75,16 @@ inputs:
   aws_ec2_create_keypair_sm:
     required: false
     description: "Generates and manages a secret manager entry that contains the public and private keys created for the ec2 instance."
-    default: false
+    default: 'false'
   
   # AWS Route53 Domains abd Certificates
+  aws_r53_enable:
+    description: 'Enables the usage of Route53 to manage DNS records.'
+    required: false
   aws_r53_domain_name:
     description: 'Define the root domain name for the application. e.g. app.com'
     required: false
-  aws_r53_sub_domain:
+  aws_r53_sub_domain_name:
     description: 'Define the sub-domain part of the URL. Defaults to `${org}-${repo}-{branch}`'
   aws_r53_root_domain_deploy:
     description: 'Deploy to root domain. Will generate two DNS recrods, one for root, another for www'
@@ -100,6 +103,9 @@ inputs:
     required: false
 
   # AWS ELB
+  aws_elb_create:
+    description: 'Create a load balancer and map ports to the EC2 instance.'
+    required: false
   aws_elb_app_port:
     description: 'Port to expose for the app'
     required: false
@@ -186,7 +192,7 @@ runs:
         # Action defaults
         GITHUB_ACTION_PATH: ${{ github.action_path }}
         BITOPS_ENVIRONMENT: deployment
-        BITOPS_FAST_FAIL: true
+        BITOPS_FAST_FAIL: 'true'
 
         # Action main inputs
         TF_STACK_DESTROY: ${{ inputs.tf_stack_destroy }}
@@ -210,13 +216,14 @@ runs:
         ENV_GHV: ${{ inputs.env_ghv }}
 
         # EC2 Instance
-        AWS_EC2_INSTANCE: ${{ inputs.aws_ec2_instance }}
+        AWS_EC2_INSTANCE_CREATE: ${{ inputs.aws_ec2_instance_create }}
         AWS_EC2_AMI_ID: ${{ inputs.aws_ec2_ami_id }}
         AWS_EC2_IAM_INSTANCE_PROFILE: ${{ inputs.aws_ec2_iam_instance_profile }}
         AWS_EC2_INSTANCE_TYPE: ${{ inputs.aws_ec2_instance_type }} 
         AWS_EC2_CREATE_KEYPAIR_SM: ${{ inputs.aws_ec2_create_keypair_sm }}
 
         # AWS Route53 Domains abd Certificates
+        AWS_R53_ENABLE: ${{ inputs.aws_r53_enable }}
         AWS_R53_DOMAIN_NAME: ${{ inputs.aws_r53_domain_name }}
         AWS_R53_SUB_DOMAIN_NAME: ${{ inputs.aws_r53_sub_domain_name }}
         AWS_R53_ROOT_DOMAIN_DEPLOY: ${{ inputs.aws_r53_root_domain_deploy }}
@@ -226,6 +233,7 @@ runs:
         AWS_R53_CREATE_SUB_CERT: ${{ inputs.aws_r53_create_sub_cert }}
 
         # AWS ELB
+        AWS_ELB_CREATE: ${{ inputs.aws_elb_create }}
         AWS_ELB_APP_PORT: ${{ inputs.aws_elb_app_port }}
         AWS_ELB_LISTEN_PORT: ${{ inputs.aws_elb_listen_port }}
         AWS_ELB_HEALTHCHECK: ${{ inputs.aws_elb_healthcheck }}
