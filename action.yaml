@@ -74,8 +74,11 @@ inputs:
     required: false
   aws_ec2_create_keypair_sm:
     required: false
-    description: "Generates and manages a secret manager entry that contains the public and private keys created for the ec2 instance."
+    description: 'Generates and manages a secret manager entry that contains the public and private keys created for the ec2 instance.'
     default: 'false'
+  aws_ec2_instance_public_ip:
+    required: false
+    description: 'Add a public IP to the instance or not. (Not an Elastic IP)'
   
   # AWS Route53 Domains abd Certificates
   aws_r53_enable:
@@ -221,6 +224,7 @@ runs:
         AWS_EC2_IAM_INSTANCE_PROFILE: ${{ inputs.aws_ec2_iam_instance_profile }}
         AWS_EC2_INSTANCE_TYPE: ${{ inputs.aws_ec2_instance_type }} 
         AWS_EC2_CREATE_KEYPAIR_SM: ${{ inputs.aws_ec2_create_keypair_sm }}
+        AWS_EC2_INSTANCE_PUBLIC_IP: ${{ inputs.aws_ec2_instance_public_ip }}
 
         # AWS Route53 Domains abd Certificates
         AWS_R53_ENABLE: ${{ inputs.aws_r53_enable }}
