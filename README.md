@@ -143,6 +143,8 @@ The following inputs can be used as `step.with` keys
 <br/>
 
 #### **AWS Specific**
+| Name             | Type    | Description                        |
+|------------------|---------|------------------------------------|
 | `aws_access_key_id` | String | AWS access key ID |
 | `aws_secret_access_key` | String | AWS secret access key |
 | `aws_session_token` | String | AWS session token |
