@@ -233,7 +233,7 @@ The following inputs can be used as `step.with` keys
 | Name             | Type    | Description                        |
 |------------------|---------|------------------------------------|
 | `docker_install` | Boolean | Set to "true" to enable docker installation through Ansible. docker-compose up will be excecuted after. |
-| `docker_app_directory` | String | Relative path for the directory of the app. (i.e. where the `docker-compose.yaml` file is located). This is the directory that is copied into the EC2 instance. Default is `/`, the root of the repository. |
+| `docker_repo_app_directory` | String | Relative path for the directory of the app. (i.e. where the `docker-compose.yaml` file is located). This is the directory that is copied into the EC2 instance. Default is `/`, the root of the repository. |
 | `docker_efs_mount_target` | String | Directory path within docker env to mount directory to. Default is `/data`|
 <hr/>
 <br/>
