@@ -42,5 +42,5 @@ resource "aws_security_group_rule" "incoming_ports" {
 }
 
 locals {
-  incoming_ports = length(var.incoming_ports) = 0 ? (var.aws_elb_listen_port != "" ? tolist(var.aws_elb_listen_port) : []) : var.aws_ec2_
+  incoming_ports = length(var.aws_ec2_port_list) == 0 ? (var.aws_elb_listen_port != "" ? tolist(var.aws_elb_listen_port) : [] ) : var.aws_ec2_port_list
 }
