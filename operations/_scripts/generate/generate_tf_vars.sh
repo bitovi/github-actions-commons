@@ -179,6 +179,7 @@ $aws_ec2_ami_id
 $aws_ec2_iam_instance_profile
 $aws_ec2_instance_type
 $aws_ec2_create_keypair_sm
+$aws_ec2_instance_public_ip
 
 #-- R53 --#
 $aws_r53_domain_name
