@@ -85,5 +85,5 @@ output "instance_public_dns" {
 }
 
 locals {
-  public_ip_set = var.aws_ec2_instance_public_ip = "true" ? true : false
+  public_ip_set = var.aws_ec2_instance_public_ip == "true" ? true : false
 }
