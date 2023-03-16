@@ -57,8 +57,8 @@ variable "aws_ec2_instance_public_ip" {
 }
 
 variable "aws_ec2_port_list" {
-  type = list(number)
-  default = []
+  type = string
+  default = ""
 }
 
 # AWS Route53 Domains abd Certificates

@@ -172,7 +172,7 @@ The following inputs can be used as `step.with` keys
 | `aws_ec2_iam_instance_profile` | String | The AWS IAM instance profile to use for the EC2 instance. Default is `${GITHUB_ORG_NAME}-${GITHUB_REPO_NAME}-${GITHUB_BRANCH_NAME}`|
 | `aws_ec2_instance_type` | String | The AWS IAM instance type to use. Default is `t2.small`. See [this list](https://aws.amazon.com/ec2/instance-types/) for reference. |
 | `aws_ec2_create_keypair_sm` | Boolean | Generates and manage a secret manager entry that contains the public and private keys created for the ec2 instance. |
-| `aws_ec2_port_list` | List | List of ports to be enabled in the EC2 instance security group. (NOT THE ELB) In a `[xx,yy]` format. |
+| `aws_ec2_port_list` | String | Comma separated list of ports to be enabled in the EC2 instance security group. (NOT THE ELB) In a `xx,yy` format. |
 <hr/>
 <br/>
 
