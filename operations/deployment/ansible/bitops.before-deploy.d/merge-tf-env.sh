@@ -5,6 +5,13 @@ set -e
 
 echo "BitOps Ansible before script: Merge Terraform Enviornment Variables..."
 
+echo "ENVROOT"
+ls -lah ${BITOPS_ENVROOT}
+echo "ENVROOT-Ansible"
+ls -lah ${BITOPS_ENVROOT}/ansible/
+echo "ENVROOT-Terra"
+ls -lah ${BITOPS_ENVROOT}/terraform/
+
 # Merging order
 order=tf,postgres,repo,ghv,ghs,aws
 
