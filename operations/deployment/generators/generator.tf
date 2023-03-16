@@ -19,11 +19,11 @@ module "elb" {
 }
 
 module "exports" {
-  source = "./modules/aws/elb"
+  source = "./modules/aws/exports"
 }
 
 module "rds" {
-  source = "./modules/aws/elb"
+  source = "./modules/aws/rds"
 }
 
 module "route53" {
