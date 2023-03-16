@@ -61,7 +61,7 @@ resource "aws_instance" "server" {
   availability_zone           = local.preferred_az
   subnet_id                   = data.aws_subnet.selected[0].id
   instance_type               = var.aws_ec2_instance_type
-  associate_public_ip_address = tobool(var.aws_ec2_instance_public_ip)
+  associate_public_ip_address = local.public_ip_set
   vpc_security_group_ids      = [aws_security_group.ec2_security_group.id]
   key_name                    = aws_key_pair.aws_key.key_name
   monitoring                  = true
@@ -81,5 +81,9 @@ data "aws_instance" "server" {
 
 output "instance_public_dns" {
   description = "Public DNS address of the EC2 instance"
-  value       = var.aws_ec2_instance_public_ip ? aws_instance.server.public_dns : "EC2 Instance doesn't have public DNS"
+  value       = local.public_ip_set ? aws_instance.server.public_dns : "EC2 Instance doesn't have public DNS"
+}
+
+local {
+  public_ip_set = var.aws_ec2_instance_public_ip = "true" ? true : false
 }
