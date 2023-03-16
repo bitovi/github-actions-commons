@@ -56,6 +56,11 @@ variable "aws_ec2_instance_public_ip" {
   description = "Attach public IP to the EC2 instance"
 }
 
+variable "aws_ec2_port_list" {
+  type = list(number)
+  default = []
+}
+
 # AWS Route53 Domains abd Certificates
 
 variable "aws_r53_domain_name" {
@@ -283,11 +288,6 @@ variable "availability_zone" {
 }
 
 # EC2 
-
-#variable "aws_ec2_port_list" {
-#  type = list(number)
-#  default = []
-#}
 
 
 variable "security_group_name" {
