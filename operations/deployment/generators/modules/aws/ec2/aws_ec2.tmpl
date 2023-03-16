@@ -84,6 +84,6 @@ output "instance_public_dns" {
   value       = local.public_ip_set ? aws_instance.server.public_dns : "EC2 Instance doesn't have public DNS"
 }
 
-local {
+locals {
   public_ip_set = var.aws_ec2_instance_public_ip = "true" ? true : false
 }
