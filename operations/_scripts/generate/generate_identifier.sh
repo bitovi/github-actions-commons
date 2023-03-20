@@ -14,7 +14,7 @@ function shorten_identifier() {
 
   IDENTIFIER="$1"
 
-# if identifier is less than or equal to 60, shorten
+# if identifier is less than or equal to max-lenght, shorten
   IDENTIFIER_LENGTH=${#IDENTIFIER}
   if (( $IDENTIFIER_LENGTH < $MAX_IDENTIFIER_LENGTH )) ; then
     echo "$IDENTIFIER"
