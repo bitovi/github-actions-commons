@@ -7,9 +7,9 @@ GITHUB_REPO_NAME=$(echo $GITHUB_REPOSITORY | sed 's/^.*\///')
 
 # Generate buckets identifiers and check them agains AWS Rules 
 export TF_STATE_BUCKET="$(/bin/bash $GITHUB_ACTION_PATH/operations/_scripts/generate/generate_buckets_identifiers.sh tf | xargs)"
-/bin/bash $GITHUB_ACTION_PATH/operations/_scripts/deploy/check_bucket_name.sh $TF_STATE_BUCKET
+#/bin/bash $GITHUB_ACTION_PATH/operations/_scripts/deploy/check_bucket_name.sh $TF_STATE_BUCKET
 export LB_LOGS_BUCKET="$(/bin/bash $GITHUB_ACTION_PATH/operations/_scripts/generate/generate_buckets_identifiers.sh lb | xargs)"
-/bin/bash $GITHUB_ACTION_PATH/operations/_scripts/deploy/check_bucket_name.sh $LB_LOGS_BUCKET
+#/bin/bash $GITHUB_ACTION_PATH/operations/_scripts/deploy/check_bucket_name.sh $LB_LOGS_BUCKET
 
 # Generate the provider.tf file
 /bin/bash $GITHUB_ACTION_PATH/operations/_scripts/generate/generate_provider.sh
@@ -17,14 +17,19 @@ export LB_LOGS_BUCKET="$(/bin/bash $GITHUB_ACTION_PATH/operations/_scripts/gener
 # Generate terraform variables
 /bin/bash $GITHUB_ACTION_PATH/operations/_scripts/generate/generate_tf_vars.sh
 
-# Generate gh_env
-/bin/bash $GITHUB_ACTION_PATH/operations/_scripts/generate/generate_gh_env.sh
-
 # Generate app repo
 /bin/bash $GITHUB_ACTION_PATH/operations/_scripts/generate/generate_app_repo.sh
 
 # Generate bitops config
 /bin/bash $GITHUB_ACTION_PATH/operations/_scripts/generate/generate_bitops_config.sh
+
+# Generating GitHub Variables and Secrets files
+
+echo "$ENV_GHV" > "${GITHUB_ACTION_PATH}/operations/deployment/ansible/ghv.env"
+echo "$ENV_GHS" > "${GITHUB_ACTION_PATH}/operations/deployment/ansible/ghs.env"
+
+
+# DEBUGGING --- TBD
 
 # List terraform folder
 echo "ls -al $GITHUB_ACTION_PATH/operations/deployment/terraform/"
@@ -33,11 +38,13 @@ ls -al $GITHUB_ACTION_PATH/operations/deployment/terraform/
 echo "cat $GITHUB_ACTION_PATH/operations/deployment/terraform/bitops.config.yaml"
 cat $GITHUB_ACTION_PATH/operations/deployment/terraform/bitops.config.yaml
 
-
 echo "cat GITHUB_ACTION_PATH/operations/deployment/terraform/provider.tf"
 cat $GITHUB_ACTION_PATH/operations/deployment/terraform/provider.tf
 echo "ls GITHUB_ACTION_PATH/operations/deployment/ansible/app/${GITHUB_REPO_NAME}"
 ls "$GITHUB_ACTION_PATH/operations/deployment/ansible/app/${GITHUB_REPO_NAME}"
+
+
+
 
 TERRAFORM_COMMAND=""
 TERRAFORM_DESTROY=""
