@@ -25,25 +25,10 @@ if [[ $IDENTIFIER =~ $re ]]; then
       break;
     fi
 
-    # echo "BASE_REMATCH[0]"
-    # echo "${BASH_REMATCH[0]}"
-    # echo "BASE_REMATCH[1]"
-    # echo "${BASH_REMATCH[1]}"
-    # echo "BASE_REMATCH[2]"
-    # echo "${BASH_REMATCH[2]}"
-
-    # echo "==="
-    # echo "IDENTIFIER"
-    # echo "$IDENTIFIER"
-
     for current_match in "${BASH_REMATCH[@]}"; do
       if [ "$current_match" == "$IDENTIFIER" ]; then
         continue;
       fi
-
-
-      # echo "current_match"
-      # echo $current_match
 
       # get first letter
       current_match_first_character=${current_match:0:1}
@@ -58,12 +43,6 @@ if [[ $IDENTIFIER =~ $re ]]; then
         current_match_replace_length=$(expr $current_match_length - 2)
         current_replace="${current_match_first_character}${current_match_replace_length}${current_match_last_character}"
       fi
-      # echo "current_match_first_character"
-      # echo $current_match_first_character
-      # echo "current_match_last_character"
-      # echo $current_match_last_character
-      # echo "current_replace"
-      # echo $current_replace
 
       if [ -n "$final_id" ]; then
         final_id="${final_id}-${current_replace}"

@@ -6,7 +6,7 @@ echo "In generate_tf_vars.sh"
 
 # convert 'a,b,c'
 # to '["a","b","c"]'
-comma_str_to_tf_array () {
+function comma_str_to_tf_array () {
   local IFS=','
   local str=$1
 
@@ -46,13 +46,13 @@ echo "GITHUB_IDENTIFIER SS: [$GITHUB_IDENTIFIER_SS]"
 # Function to generate the variable content based on the fact that it could be empty. 
 # This way, we only pass terraform variables that are defined, hence not overwriting terraform defaults. 
 
-generate_var () {
+function generate_var () {
   if [[ -n "$2" ]];then
     echo "$1 = \"$2\""
   fi
 }
 
-# Fixed values
+# Fixed values - Values that are hardcoded or come from other variables.
 
 ops_repo_environment="ops_repo_environment = \"deployment\""
 app_org_name="app_org_name = \"${GITHUB_ORG_NAME}\""
@@ -64,7 +64,7 @@ aws_resource_identifier="aws_resource_identifier = \"${GITHUB_IDENTIFIER}\""
 aws_resource_identifier_supershort="aws_resource_identifier_supershort = \"${GITHUB_IDENTIFIER_SS}\""
 aws_security_group_name_pg="aws_security_group_name_pg = \"${GITHUB_IDENTIFIER}-pg\""
 
-# Special cases
+# Special cases - Values that need fallback values or special calculation
 
 aws_ec2_iam_instance_profile=
 if [ -n "${AWS_EC2_IAM_INSTANCE_PROFILE}" ]; then
@@ -74,10 +74,10 @@ else
 fi
 
 aws_r53_sub_domain_name=
-if [ -n "$AWS_R53_SUB_DOMAIN_NAME" ]; then
-  aws_r53_sub_domain_name="aws_r53_sub_domain_name = \"$AWS_R53_SUB_DOMAIN_NAME\""
+if [ -n "${AWS_R53_SUB_DOMAIN_NAME}" ]; then
+  aws_r53_sub_domain_name="aws_r53_sub_domain_name = \"${AWS_R53_SUB_DOMAIN_NAME}\""
 else
-  aws_r53_sub_domain_name="aws_r53_sub_domain_name = \"$GITHUB_IDENTIFIER\""
+  aws_r53_sub_domain_name="aws_r53_sub_domain_name = \"${GITHUB_IDENTIFIER}\""
 fi
 
 aws_postgres_subnets=
