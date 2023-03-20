@@ -15,7 +15,6 @@ case $1 in
           TF_STATE_BUCKET="${GITHUB_IDENTIFIER}-tf"
         fi
       fi
-      checkBucket $TF_STATE_BUCKET
       echo "$TF_STATE_BUCKET"
 
   ;;
@@ -27,7 +26,6 @@ case $1 in
       else
         LB_LOGS_BUCKET="${GITHUB_IDENTIFIER}-lg"
       fi
-      checkBucket $LB_LOGS_BUCKET
       echo "$LB_LOGS_BUCKET"
   ;;
 esac
