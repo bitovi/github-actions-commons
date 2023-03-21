@@ -59,7 +59,7 @@ resource "aws_instance" "server" {
   # ubuntu
   ami                         = var.aws_ec2_ami_id != "" ? var.aws_ec2_ami_id : data.aws_ami.ubuntu.id
   availability_zone           = local.preferred_az
-  subnet_id                   = try(data.aws_subnet.selected[0].id, "")
+  subnet_id                   = var.aws_efs_create ? data.aws_subnet.selected[0].id : ""
   instance_type               = var.aws_ec2_instance_type
   associate_public_ip_address = tobool(var.aws_ec2_instance_public_ip)
   vpc_security_group_ids      = [aws_security_group.ec2_security_group.id]
