@@ -27,7 +27,7 @@ export LB_LOGS_BUCKET="$(/bin/bash $GITHUB_ACTION_PATH/operations/_scripts/gener
 mkdir -p "${GITHUB_ACTION_PATH}/operations/deployment/env-files"
 echo "$ENV_GHV" > "${GITHUB_ACTION_PATH}/operations/deployment/env-files/ghv.env"
 echo "$ENV_GHS" > "${GITHUB_ACTION_PATH}/operations/deployment/env-files/ghs.env"
-if [ -s "$GITHUB_WORKSPACE/$REPO_ENV" ]; then
+if [ -s "$GITHUB_WORKSPACE/$ENV_REPO" ]; then
   cp "$GITHUB_WORKSPACE/$ENV_REPO" "${GITHUB_ACTION_PATH}/operations/deployment/env-files/repo.env"
 fi
 

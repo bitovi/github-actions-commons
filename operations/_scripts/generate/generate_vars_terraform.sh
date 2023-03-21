@@ -198,7 +198,7 @@ $aws_r53_enable
 $docker_install
 $st2_install
 
-" > "${GITHUB_ACTION_PATH}/operations/deployment/generators/variables.tfvars"
+" > "${GITHUB_ACTION_PATH}/operations/deployment/generators/terraform.tfvars"
 
 # -------------------------------------------------- #
 

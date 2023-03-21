@@ -49,9 +49,11 @@ echo -en "
     docker:
       plugin: ansible
 " >> $GITHUB_ACTION_PATH/operations/deployment/bitops.config.yaml
+fi
 
 if [ "$ST2_INSTALL" == "true" ]; then
 echo -en "
     st2:
       plugin: ansible
 " >> $GITHUB_ACTION_PATH/operations/deployment/bitops.config.yaml
+fi
