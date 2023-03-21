@@ -23,6 +23,7 @@ targets="$targets
     - random_integer.az_select"
 targets_attribute="$targets_attribute $targets"
 
+# Terraform Bitops Config
 echo -en "
 terraform:
   cli:
@@ -30,3 +31,27 @@ terraform:
     $targets_attribute
   options: {}
 " > $GITHUB_ACTION_PATH/operations/deployment/terraform/bitops.config.yaml
+
+
+# Global Bitops Config
+echo -en "
+bitops:
+  deployments:
+    generators:
+      plugin: terraform
+    terraform:
+      plugin: terraform
+" > $GITHUB_ACTION_PATH/operations/deployment/bitops.config.yaml
+
+
+if [ "$DOCKER_INSTALL" == "true" ]; then
+echo -en "
+    docker:
+      plugin: ansible
+" >> $GITHUB_ACTION_PATH/operations/deployment/bitops.config.yaml
+
+if [ "$ST2_INSTALL" == "true" ]; then
+echo -en "
+    st2:
+      plugin: ansible
+" >> $GITHUB_ACTION_PATH/operations/deployment/bitops.config.yaml

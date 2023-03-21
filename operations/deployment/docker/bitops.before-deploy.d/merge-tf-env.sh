@@ -5,10 +5,12 @@ set -e
 
 echo "BitOps Ansible before script: Merge Terraform Enviornment Variables..."
 
+ANSIBLE_DIR=docker
+
 echo "ENVROOT"
 ls -lah ${BITOPS_ENVROOT}
 echo "ENVROOT-Ansible"
-ls -lah ${BITOPS_ENVROOT}/ansible/
+ls -lah ${BITOPS_ENVROOT}/docker/
 echo "ENVROOT-Terra"
 ls -lah ${BITOPS_ENVROOT}/terraform/
 
@@ -16,7 +18,7 @@ ls -lah ${BITOPS_ENVROOT}/terraform/
 order=tf,postgres,repo,ghv,ghs,aws
 
 # Ansible dotenv file -> The final destination of all
-ENV_OUT_FILE="${BITOPS_ENVROOT}/ansible/app.env"
+ENV_OUT_FILE="${BITOPS_ENVROOT}/$ANSIBLE_DIR/app.env"
 
 # TF dotenv file
 ENV_TF_FILE="${BITOPS_ENVROOT}/terraform/tf.env"
@@ -25,13 +27,13 @@ ENV_TF_FILE="${BITOPS_ENVROOT}/terraform/tf.env"
 ENV_POSTGRES_FILE="${BITOPS_ENVROOT}/terraform/postgres.env"
 
 # Repo env file
-ENV_REPO_FILE="${BITOPS_ENVROOT}/ansible/repo.env"
+ENV_REPO_FILE="${BITOPS_ENVROOT}/env-files/repo.env"
 
 # GH Variables env file
-ENV_GHV_FILE="${BITOPS_ENVROOT}/ansible/ghv.env"
+ENV_GHV_FILE="${BITOPS_ENVROOT}/env-files/ghv.env"
 
 # GH Secrets  env file
-ENV_GHS_FILE="${BITOPS_ENVROOT}/ansible/ghs.env"
+ENV_GHS_FILE="${BITOPS_ENVROOT}/env-files/ghs.env"
 
 # TF AWS dotenv file
 ENV_AWS_SECRET_FILE="${BITOPS_ENVROOT}/terraform/aws.env"

@@ -15,18 +15,21 @@ export LB_LOGS_BUCKET="$(/bin/bash $GITHUB_ACTION_PATH/operations/_scripts/gener
 /bin/bash $GITHUB_ACTION_PATH/operations/_scripts/generate/generate_provider.sh
 
 # Generate terraform variables
-/bin/bash $GITHUB_ACTION_PATH/operations/_scripts/generate/generate_tf_vars.sh
+/bin/bash $GITHUB_ACTION_PATH/operations/_scripts/generate/generate_vars_terraform.sh
 
 # Generate app repo
-/bin/bash $GITHUB_ACTION_PATH/operations/_scripts/generate/generate_app_repo.sh
+/bin/bash $GITHUB_ACTION_PATH/operations/_scripts/generate/generate_app_repo.sh docker
 
 # Generate bitops config
 /bin/bash $GITHUB_ACTION_PATH/operations/_scripts/generate/generate_bitops_config.sh
 
 # Generating GitHub Variables and Secrets files
-
-echo "$ENV_GHV" > "${GITHUB_ACTION_PATH}/operations/deployment/ansible/ghv.env"
-echo "$ENV_GHS" > "${GITHUB_ACTION_PATH}/operations/deployment/ansible/ghs.env"
+mkdir -p "${GITHUB_ACTION_PATH}/operations/deployment/env-files"
+echo "$ENV_GHV" > "${GITHUB_ACTION_PATH}/operations/deployment/env-files/ghv.env"
+echo "$ENV_GHS" > "${GITHUB_ACTION_PATH}/operations/deployment/env-files/ghs.env"
+if [ -s "$GITHUB_WORKSPACE/$REPO_ENV" ]; then
+  cp "$GITHUB_WORKSPACE/$ENV_REPO" "${GITHUB_ACTION_PATH}/operations/deployment/env-files/repo.env"
+fi
 
 
 # DEBUGGING --- TBD
@@ -40,17 +43,13 @@ cat $GITHUB_ACTION_PATH/operations/deployment/terraform/bitops.config.yaml
 
 echo "cat GITHUB_ACTION_PATH/operations/deployment/terraform/provider.tf"
 cat $GITHUB_ACTION_PATH/operations/deployment/terraform/provider.tf
-echo "ls GITHUB_ACTION_PATH/operations/deployment/ansible/app/${GITHUB_REPO_NAME}"
-ls "$GITHUB_ACTION_PATH/operations/deployment/ansible/app/${GITHUB_REPO_NAME}"
-
-
+echo "ls GITHUB_ACTION_PATH/operations/deployment/docker/app/${GITHUB_REPO_NAME}"
+ls "$GITHUB_ACTION_PATH/operations/deployment/docker/app/${GITHUB_REPO_NAME}"
 
 
 TERRAFORM_COMMAND=""
-TERRAFORM_DESTROY=""
 if [ "$TF_STACK_DESTROY" == "true" ]; then
   TERRAFORM_COMMAND="destroy"
-  TERRAFORM_DESTROY="true"
   ANSIBLE_SKIP_DEPLOY="true"
 fi
 echo "::endgroup::"

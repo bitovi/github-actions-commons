@@ -2,7 +2,7 @@
 
 set -e
 
-echo "In generate_tf_vars.sh"
+echo "In generate_vars_terrafomr.sh"
 
 # convert 'a,b,c'
 # to '["a","b","c"]'
@@ -94,31 +94,44 @@ echo "AWS Postgres subnets: $aws_postgres_subnets"
 aws_additional_tags=$(generate_var aws_additional_tags $AWS_ADDITIONAL_TAGS)
 
 #-- ENV Files --#
-env_aws_secret=$(generate_var env_aws_secret $ENV_AWS_SECRET)
+if [ -n "$ENV_AWS_SECRET" ]; then
+  env_aws_secret=$(generate_var env_aws_secret $ENV_AWS_SECRET)
+fi
 
 #-- EC2 Instance --#
-aws_ec2_ami_id=$(generate_var aws_ec2_ami_id $AWS_EC2_AMI_ID)
-# aws_ec2_iam_instance_profile=$(generate_var aws_ec2_iam_instance_profile AWS_EC2_IAM_INSTANCE_PROFILE - Special case
-aws_ec2_instance_type=$(generate_var aws_ec2_instance_type $AWS_EC2_INSTANCE_TYPE)
-aws_ec2_create_keypair_sm=$(generate_var aws_ec2_create_keypair_sm $AWS_EC2_CREATE_KEYPAIR_SM)
-aws_ec2_instance_public_ip=$(generate_var aws_ec2_instance_public_ip $AWS_EC2_INSTANCE_PUBLIC_IP)
-aws_ec2_port_list=$(generate_var aws_ec2_port_list $AWS_EC2_PORT_LIST)
-
+if [[ $AWS_EC2_INSTANCE_CREATE = true ]]; then
+  aws_ec2_instance_create=$(generate_var aws_ec2_instance_create $AWS_EC2_INSTANCE_CREATE)
+  aws_ec2_ami_id=$(generate_var aws_ec2_ami_id $AWS_EC2_AMI_ID)
+  # aws_ec2_iam_instance_profile=$(generate_var aws_ec2_iam_instance_profile AWS_EC2_IAM_INSTANCE_PROFILE - Special case
+  aws_ec2_instance_type=$(generate_var aws_ec2_instance_type $AWS_EC2_INSTANCE_TYPE)
+  aws_ec2_create_keypair_sm=$(generate_var aws_ec2_create_keypair_sm $AWS_EC2_CREATE_KEYPAIR_SM)
+  aws_ec2_instance_public_ip=$(generate_var aws_ec2_instance_public_ip $AWS_EC2_INSTANCE_PUBLIC_IP)
+  aws_ec2_port_list=$(generate_var aws_ec2_port_list $AWS_EC2_PORT_LIST)
+fi
 
 
 #-- AWS Route53 and certs --#
-aws_r53_domain_name=$(generate_var aws_r53_domain_name $AWS_R53_DOMAIN_NAME)
-# aws_r53_sub_domain_name=$(generate_var aws_r53_sub_domain_name $AWs_R53_SUB_DOMAIN_NAME)  - Special case
-aws_r53_root_domain_deploy=$(generate_var aws_r53_root_domain_deploy $AWS_R53_ROOT_DOMAIN_DEPLOY)
-aws_r53_enable_cert=$(generate_var aws_r53_enable_cert $AWS_R53_ENABLE_CERT)
-aws_r53_cert_arn=$(generate_var aws_r53_cert_arn $AWS_R53_CERT_ARN)
-aws_r53_create_root_cert=$(generate_var aws_r53_create_root_cert $AWS_R53_CREATE_ROOT_CERT)
-aws_r53_create_sub_cert=$(generate_var aws_r53_create_sub_cert $AWS_R53_CREATE_SUB_CERT)
+if [[ $AWS_R53_ENABLE = true ]]; then
+  aws_r53_enable=$(generate_var aws_r53_enable $AWS_R53_ENABLE)
+  aws_r53_domain_name=$(generate_var aws_r53_domain_name $AWS_R53_DOMAIN_NAME)
+  # aws_r53_sub_domain_name=$(generate_var aws_r53_sub_domain_name $AWs_R53_SUB_DOMAIN_NAME)  - Special case
+  aws_r53_root_domain_deploy=$(generate_var aws_r53_root_domain_deploy $AWS_R53_ROOT_DOMAIN_DEPLOY)
+fi
+
+if [[ $AWS_R53_ENABLE_CERT = true ]]; then
+  aws_r53_enable_cert=$(generate_var aws_r53_enable_cert $AWS_R53_ENABLE_CERT)
+  aws_r53_cert_arn=$(generate_var aws_r53_cert_arn $AWS_R53_CERT_ARN)
+  aws_r53_create_root_cert=$(generate_var aws_r53_create_root_cert $AWS_R53_CREATE_ROOT_CERT)
+  aws_r53_create_sub_cert=$(generate_var aws_r53_create_sub_cert $AWS_R53_CREATE_SUB_CERT)
+fi
 
 #-- AWS ELB --#
-aws_elb_app_port=$(generate_var aws_elb_app_port $AWS_ELB_APP_PORT)
-aws_elb_listen_port=$(generate_var aws_elb_listen_port $AWS_ELB_LISTEN_PORT)
-aws_elb_healthcheck=$(generate_var aws_elb_healthcheck $AWS_ELB_HEALTHCHECK)
+if [[ $AWS_ELB_CREATE = true ]]; then
+  aws_elb_create=$(generate_var aws_elb_create $AWS_ELB_CREATE)
+  aws_elb_app_port=$(generate_var aws_elb_app_port $AWS_ELB_APP_PORT)
+  aws_elb_listen_port=$(generate_var aws_elb_listen_port $AWS_ELB_LISTEN_PORT)
+  aws_elb_healthcheck=$(generate_var aws_elb_healthcheck $AWS_ELB_HEALTHCHECK)
+fi
 
 #-- AWS EFS --#
 if [[ $AWS_EFS_CREATE = true ]]; then
@@ -147,8 +160,16 @@ if [[ $AWS_POSTGRES_ENABLE = true ]]; then
   aws_postgres_database_port=$(generate_var aws_postgres_database_port $AWS_POSTGRES_DATABASE_PORT)
 fi
 
-docker_efs_mount_target=$(generate_var docker_efs_mount_target $DOCKER_EFS_MOUNT_TARGET)
 
+#-- ANSIBLE --#
+if [[ $DOCKER_INSTALL = true ]]; then
+  docker_install=$(generate_var docker_install $DOCKER_INSTALL)
+  docker_efs_mount_target=$(generate_var docker_efs_mount_target $DOCKER_EFS_MOUNT_TARGET)
+fi
+
+if [[ $ST2_INSTALL = true ]]; then
+  st2_install=$(generate_var st2_install $ST2_INSTALL)
+fi
 
 #-- Application --#
 # ops_repo_environment=$(generate_var ops_repo_environment OPS_REPO_ENVIRONMENT - Fixed
@@ -164,6 +185,20 @@ lb_access_bucket_name=$(generate_var lb_access_bucket_name $LB_LOGS_BUCKET)
 security_group_name=$(generate_var security_group_name $SECURITY_GROUP_NAME)
 
 
+# -------------------------------------------------- #
+
+echo "
+$aws_r53_enable_cert
+$aws_ec2_instance_create
+$aws_efs_create
+$aws_elb_create
+$env_aws_secret
+$aws_postgres_enable
+$aws_r53_enable
+$docker_install
+$st2_install
+
+" > "${GITHUB_ACTION_PATH}/operations/deployment/generators/variables.tfvars"
 
 # -------------------------------------------------- #
 
@@ -234,3 +269,5 @@ $app_install_root
 $security_group_name
 
 " > "${GITHUB_ACTION_PATH}/operations/deployment/terraform/terraform.tfvars"
+
+# -------------------------------------------------- #
