@@ -51,8 +51,8 @@ variable "aws_ec2_create_keypair_sm" {
 }
 
 variable "aws_ec2_instance_public_ip" {
-  type        = string
-  default     = "false"
+  type        = bool
+  default     = false
   description = "Attach public IP to the EC2 instance"
 }
 
@@ -77,13 +77,13 @@ variable "aws_r53_sub_domain_name" {
 
 
 variable "aws_r53_root_domain_deploy" {
-  type        = string
+  type        = bool
   description = "deploy to root domain"
   default     = ""
 }
 
 variable "aws_r53_enable_cert" {
-  type        = string
+  type        = bool
   description = "Enable AWS Certificate management."
   default     = ""
 }
@@ -95,13 +95,13 @@ variable "aws_r53_cert_arn" {
 }
 
 variable "aws_r53_create_root_cert" {
-  type        = string
+  type        = bool
   description = "deploy to root domain"
   default     = ""
 }
 
 variable "aws_r53_create_sub_cert" {
-  type        = string
+  type        = bool
   description = "deploy to root domain"
   default     = ""
 }
@@ -202,9 +202,9 @@ variable "aws_efs_ec2_mount_point" {
 # AWS RDS
 
 variable "aws_postgres_enable" {
-  type        = string
+  type        = bool
   description = "deploy a postgres database"
-  default     = ""
+  default     = false
 }
 variable "aws_postgres_engine" {
   type        = string

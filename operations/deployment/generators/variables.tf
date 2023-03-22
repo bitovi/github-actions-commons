@@ -1,17 +1,17 @@
 variable "aws_r53_enable_cert" {
-  type        = string
+  type        = bool
   default     = "false"
 }
 variable "aws_ec2_instance_create" {
-  type        = string
+  type        = bool
   default     = "false"
 }
 variable "aws_efs_create" {
-  type        = string
+  type        = bool
   default     = "false"
 }
 variable "aws_elb_create" {
-  type        = string
+  type        = bool
   default     = "false"
 }
 variable "env_aws_secret" {
@@ -19,18 +19,18 @@ variable "env_aws_secret" {
   default     = ""
 }
 variable "aws_postgres_enable" {
-  type        = string
+  type        = bool
   default     = "false"
 }
 variable "aws_r53_enable" {
-  type        = string
+  type        = bool
   default     = "false"
 }
 variable "docker_install" {
-  type        = string
+  type        = bool
   default     = "false"
 }
 variable "st2_install" {
-  type        = string
+  type        = bool
   default     = "false"
 }

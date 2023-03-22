@@ -1,5 +1,5 @@
 resource "aws_security_group" "pg_security_group" {
-  count = var.aws_postgres_enable == "true" ? 1 : 0
+  count = var.aws_postgres_enable ? 1 : 0
   name        = var.aws_security_group_name_pg
   description = "SG for ${var.aws_resource_identifier} - PG"
   egress {
@@ -15,7 +15,7 @@ resource "aws_security_group" "pg_security_group" {
 
 
 resource "aws_security_group_rule" "ingress_postgres" {
-  count = var.aws_postgres_enable == "true" ? 1 : 0
+  count = var.aws_postgres_enable ? 1 : 0
   type              = "ingress"
   description       = "${var.aws_resource_identifier} - pgPort"
   from_port         = tonumber(var.aws_postgres_database_port)
@@ -26,7 +26,7 @@ resource "aws_security_group_rule" "ingress_postgres" {
 }
 
 module "rds_cluster" {
-  count = var.aws_postgres_enable == "true" ? 1 : 0
+  count = var.aws_postgres_enable ? 1 : 0
   depends_on     = [data.aws_subnets.vpc_subnets]
   source         = "terraform-aws-modules/rds-aurora/aws"
   version        = "v7.6.0"
@@ -99,12 +99,12 @@ resource "random_password" "rds" {
 
 // Creates a secret manager secret for the databse credentials
 resource "aws_secretsmanager_secret" "database_credentials" {
-   count = var.aws_postgres_enable == "true" ? 1 : 0
+   count = var.aws_postgres_enable ? 1 : 0
    name   = "${var.aws_resource_identifier_supershort}-ec2db-pub-${random_string.random_sm.result}"
 }
  
 resource "aws_secretsmanager_secret_version" "database_credentials_sm_secret_version" {
-  count = var.aws_postgres_enable == "true" ? 1 : 0
+  count = var.aws_postgres_enable ? 1 : 0
   secret_id = aws_secretsmanager_secret.database_credentials[0].id
   secret_string = <<EOF
    {

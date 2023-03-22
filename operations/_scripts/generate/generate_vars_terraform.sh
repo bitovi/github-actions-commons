@@ -46,11 +46,21 @@ echo "GITHUB_IDENTIFIER SS: [$GITHUB_IDENTIFIER_SS]"
 # Function to generate the variable content based on the fact that it could be empty. 
 # This way, we only pass terraform variables that are defined, hence not overwriting terraform defaults. 
 
+# Removes anything from the variable and leave only alpha characters, and lowers them. This is to validate if boolean.
+function alpha_only() {
+    echo "$1" | tr -cd '[:alpha:]' | tr '[:upper:]' '[:lower:]'
+}
+
 function generate_var () {
   if [[ -n "$2" ]];then
-    echo "$1 = \"$2\""
+    if [[ $(alpha_only "$2") == "true" ]] || [[ $(alpha_only "$2") == "false" ]]; then
+      echo "$1 = $(alpha_only $2)"
+    else
+      echo "$1 = \"$2\""
+    fi
   fi
 }
+
 
 # Fixed values - Values that are hardcoded or come from other variables.
 
@@ -99,7 +109,7 @@ if [ -n "$ENV_AWS_SECRET" ]; then
 fi
 
 #-- EC2 Instance --#
-if [[ $AWS_EC2_INSTANCE_CREATE = true ]]; then
+if [[ $(alpha_only "$AWS_EC2_INSTANCE_CREATE") == true ]]; then
   aws_ec2_instance_create=$(generate_var aws_ec2_instance_create $AWS_EC2_INSTANCE_CREATE)
   aws_ec2_ami_id=$(generate_var aws_ec2_ami_id $AWS_EC2_AMI_ID)
   # aws_ec2_iam_instance_profile=$(generate_var aws_ec2_iam_instance_profile AWS_EC2_IAM_INSTANCE_PROFILE - Special case
@@ -111,14 +121,14 @@ fi
 
 
 #-- AWS Route53 and certs --#
-if [[ $AWS_R53_ENABLE = true ]]; then
+if [[ $(alpha_only "$AWS_R53_ENABLE") == true ]]; then
   aws_r53_enable=$(generate_var aws_r53_enable $AWS_R53_ENABLE)
   aws_r53_domain_name=$(generate_var aws_r53_domain_name $AWS_R53_DOMAIN_NAME)
   # aws_r53_sub_domain_name=$(generate_var aws_r53_sub_domain_name $AWs_R53_SUB_DOMAIN_NAME)  - Special case
   aws_r53_root_domain_deploy=$(generate_var aws_r53_root_domain_deploy $AWS_R53_ROOT_DOMAIN_DEPLOY)
 fi
 
-if [[ $AWS_R53_ENABLE_CERT = true ]]; then
+if [[ $(alpha_only "$AWS_R53_ENABLE_CERT") == true ]]; then
   aws_r53_enable_cert=$(generate_var aws_r53_enable_cert $AWS_R53_ENABLE_CERT)
   aws_r53_cert_arn=$(generate_var aws_r53_cert_arn $AWS_R53_CERT_ARN)
   aws_r53_create_root_cert=$(generate_var aws_r53_create_root_cert $AWS_R53_CREATE_ROOT_CERT)
@@ -126,7 +136,7 @@ if [[ $AWS_R53_ENABLE_CERT = true ]]; then
 fi
 
 #-- AWS ELB --#
-if [[ $AWS_ELB_CREATE = true ]]; then
+if [[ $(alpha_only "$AWS_ELB_CREATE") == true ]]; then
   aws_elb_create=$(generate_var aws_elb_create $AWS_ELB_CREATE)
   aws_elb_app_port=$(generate_var aws_elb_app_port $AWS_ELB_APP_PORT)
   aws_elb_listen_port=$(generate_var aws_elb_listen_port $AWS_ELB_LISTEN_PORT)
@@ -134,7 +144,7 @@ if [[ $AWS_ELB_CREATE = true ]]; then
 fi
 
 #-- AWS EFS --#
-if [[ $AWS_EFS_CREATE = true ]]; then
+if [[ $(alpha_only "$AWS_EFS_CREATE") == true ]]; then
   aws_efs_create=$(generate_var aws_efs_create $AWS_EFS_CREATE)
   aws_efs_create_ha=$(generate_var aws_efs_create_ha $AWS_EFS_CREATE_HA)
   aws_efs_create_replica=$(generate_var aws_efs_create_replica $AWS_EFS_CREATE_REPLICA)
@@ -149,7 +159,7 @@ if [[ $AWS_EFS_CREATE = true ]]; then
 fi
 
 #-- RDS --#
-if [[ $AWS_POSTGRES_ENABLE = true ]]; then
+if [[ $(alpha_only "$AWS_POSTGRES_ENABLE") == true ]]; then
   # aws_security_group_name_pg=$(generate_var aws_security_group_name_pg $AWS_SECURITY_GROUP_NAME_PG) - Fixed
   aws_postgres_enable=$(generate_var aws_postgres_enable $AWS_POSTGRES_ENABLE)
   aws_postgres_engine=$(generate_var aws_postgres_engine $AWS_POSTGRES_ENGINE)
@@ -162,12 +172,12 @@ fi
 
 
 #-- ANSIBLE --#
-if [[ $DOCKER_INSTALL = true ]]; then
+if [[ $(alpha_only "$DOCKER_INSTALL") == true ]]; then
   docker_install=$(generate_var docker_install $DOCKER_INSTALL)
   docker_efs_mount_target=$(generate_var docker_efs_mount_target $DOCKER_EFS_MOUNT_TARGET)
 fi
 
-if [[ $ST2_INSTALL = true ]]; then
+if [[ $(alpha_only "$ST2_INSTALL") == true ]]; then
   st2_install=$(generate_var st2_install $ST2_INSTALL)
 fi
 

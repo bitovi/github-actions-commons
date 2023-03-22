@@ -11,13 +11,13 @@ inputs:
     default: 'true'
   tf_stack_destroy:
     description: 'Set to "true" to Destroy the stack through terraform.'
+    required: false
   tf_state_bucket:
     description: 'AWS S3 bucket to use for Terraform state. Defaults to `${org}-${repo}-{branch}-tf-state`'
     required: false
   tf_state_bucket_destroy:
     description: 'Force purge and deletion of S3 bucket defined. Any file contained there will be destroyed. `tf_stack_destroy` must also be `true`'
     required: false
-    default: 'false'
   tf_state_bucket_provider: 
     description: 'Bucket provider for tfstate storage.'
     required: false
@@ -28,10 +28,10 @@ inputs:
   # AWS Specific
   aws_access_key_id:
     description: 'AWS access key ID'
-    required: true
+    required: false
   aws_secret_access_key:
     description: 'AWS secret access key'
-    required: true
+    required: false
   aws_session_token:
     description: 'AWS session token'
     required: false
@@ -41,6 +41,7 @@ inputs:
     required: false
   aws_resource_identifier:
     description: 'Set to override the AWS resource identifier for the deployment.  Defaults to `${org}-{repo}-{branch}`.  Use with destroy to destroy specific resources.'
+    required: false
   aws_additional_tags:
     description: 'A JSON object of additional tags that will be included on created resources. Example: `{"key1": "value1", "key2": "value2"}`'
     required: false
@@ -49,11 +50,9 @@ inputs:
   env_aws_secret:
     description: 'Secret name to pull env variables from AWS Secret Manager'
     required: false
-    default: ''
   env_repo:
     description: 'File containing environment variables to be used with the app'
     required: false
-    default: 'env_repo'
   env_ghs:
     description: '`.env` file to be used with the app from Github secrets'
     required: false
@@ -64,24 +63,25 @@ inputs:
   # EC2 Instance
   aws_ec2_instance_create:
     description: 'Define if an EC2 instance should be created'
+    required: false
   aws_ec2_ami_id:
     description: 'AWS AMI ID. Will default to the latest Ubuntu 22.04 server image (HVM) '
     required: false
   aws_ec2_iam_instance_profile:
     description: 'The AWS IAM instance profile to use for the EC2 instance'
+    required: false
   aws_ec2_instance_type: 
     description: 'The AWS Instance type'
     required: false
   aws_ec2_create_keypair_sm:
     required: false
     description: 'Generates and manages a secret manager entry that contains the public and private keys created for the ec2 instance.'
-    default: 'false'
   aws_ec2_instance_public_ip:
-    required: false
     description: 'Add a public IP to the instance or not. (Not an Elastic IP)'
-  aws_ec2_port_list:
     required: false
+  aws_ec2_port_list:
     description: 'List of ports to be enabled as an ingress rule in the EC2 SG, in a [xx,yy] format - Not the ELB'
+    required: false
   
   # AWS Route53 Domains abd Certificates
   aws_r53_enable:
@@ -125,26 +125,37 @@ inputs:
   # AWS EFS
   aws_efs_create:
     description: "Toggle to indicate whether to create and EFS and mount it to the ec2 as a part of the provisioning. Note: The EFS will be managed by the stack and will be destroyed along with the stack"
+    required: false
   aws_efs_create_ha:
     description: Toggle to indicate whether the EFS resource should be highly available (target mounts in all available zones within region)
+    required: false
   aws_efs_create_replica:
     description: Toggle to indiciate whether a read-only replica should be created for the EFS primary file system
+    required: false
   aws_efs_enable_backup_policy:
     description: Toggle to indiciate whether the EFS should have a backup policy, default is `false`
+    required: false
   aws_efs_zone_mapping:
     description: Information on Zone Mapping can be found in the [README.md](README.md#efs-zone-mapping)
+    required: false
   aws_efs_transition_to_inactive:
     description: Indicates how long it takes to transition files to the IA storage class
+    required: false
   aws_efs_replication_destination:
     description: "AWS Region to target for replication"
+    required: false
   aws_efs_mount_id:
     description: ID of existing EFS
+    required: false
   aws_efs_mount_security_group_id:
     description: ID of the primary security group used by the existing EFS
+    required: false
   aws_efs_mount_target: 
     description: Directory path in the EFS volume to mount directory to. Default is /.
+    required: false
   aws_efs_ec2_mount_point:
     description: Directory path in EC2 Instance to mount the EFS volume. Default is `data`. Exported as `HOST_DIR` in `.env`
+    required: false
     
   
   # AWS RDS
@@ -174,10 +185,13 @@ inputs:
   # Docker 
   docker_install: 
     description: "Define if docker should be installed. After this, docker-compose up will be excecuted."
+    required: false
   docker_repo_app_directory:
     description: 'Relative path for the directory of the app (i.e. where `Dockerfile` and `docker-compose.yaml` files are located). This is the directory that is copied to the compute instance (EC2).  Default is the root of the repo.'
+    required: false
   docker_efs_mount_target:
     description: "Directory path within docker env to mount directory to, default is `/data`"
+    required: false
 
 outputs:
   vm_url:
