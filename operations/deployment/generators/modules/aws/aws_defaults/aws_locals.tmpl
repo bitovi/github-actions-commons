@@ -1,0 +1,22 @@
+locals {
+  fqdn_provided = (
+    (var.aws_r53_domain_name != "") ?
+    (var.aws_r53_sub_domain_name != "" ?
+      true :
+      var.aws_r53_root_domain_deploy ? true : false
+    ) :
+    false
+  )
+
+  cert_available = (
+    var.aws_r53_enable_cert ?
+    (var.aws_r53_cert_arn != "" ? true :
+      (!var.aws_r53_create_root_cert ?
+        (!var.aws_r53_create_sub_cert ?
+          (local.fqdn_provided ? true : false)
+          : true
+        ) : true
+      )
+    ) : false
+  )
+}

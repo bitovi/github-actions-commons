@@ -65,17 +65,6 @@ locals {
       ) 
     ) : ""
   )
-  cert_available = (
-    var.aws_r53_enable_cert ?
-    (var.aws_r53_cert_arn != "" ? true :
-      (!var.aws_r53_create_root_cert ?
-        (!var.aws_r53_create_sub_cert ?
-          (local.fqdn_provided ? true : false)
-          : true
-        ) : true
-      )
-    ) : false
-  )
 }
 
 output "selected_arn" {

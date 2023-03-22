@@ -50,16 +50,7 @@ output "application_public_dns" {
   value       = local.url
 }
 
-locals {
-  fqdn_provided = (
-    (var.aws_r53_domain_name != "") ?
-    (var.aws_r53_sub_domain_name != "" ?
-      true :
-      var.aws_r53_root_domain_deploy ? true : false
-    ) :
-    false
-  )
-}
+
 
 locals {
   protocol    = local.selected_arn != "" ? "https://" : "http://"
