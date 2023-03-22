@@ -79,13 +79,13 @@ variable "aws_r53_sub_domain_name" {
 variable "aws_r53_root_domain_deploy" {
   type        = bool
   description = "deploy to root domain"
-  default     = ""
+  default     = false
 }
 
 variable "aws_r53_enable_cert" {
   type        = bool
   description = "Enable AWS Certificate management."
-  default     = ""
+  default     = false
 }
 
 variable "aws_r53_cert_arn" {
@@ -97,13 +97,13 @@ variable "aws_r53_cert_arn" {
 variable "aws_r53_create_root_cert" {
   type        = bool
   description = "deploy to root domain"
-  default     = ""
+  default     = false
 }
 
 variable "aws_r53_create_sub_cert" {
   type        = bool
   description = "deploy to root domain"
-  default     = ""
+  default     = false
 }
 
 
