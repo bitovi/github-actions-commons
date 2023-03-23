@@ -10,11 +10,9 @@ resource "aws_route53_record" "dev" {
   name    = "${var.aws_r53_sub_domain_name}.${var.aws_r53_domain_name}"
   type    = "A"
 
-  # NOTE: using the array syntax (aws_elb.vm_ssl[0]) because the aws_elb is optional via the count property
-  #       which causes the properties to exist as a list
   alias {
-    name                   = local.selected_arn != "" ? aws_elb.vm_ssl[0].dns_name : aws_elb.vm[0].dns_name
-    zone_id                = local.selected_arn != "" ? aws_elb.vm_ssl[0].zone_id : aws_elb.vm[0].zone_id
+    name                   = aws_elb.vm_lb.dns_name
+    zone_id                = aws_elb.vm_lb.zone_id
     evaluate_target_health = true
   }
 }
@@ -26,8 +24,8 @@ resource "aws_route53_record" "root-a" {
   type    = "A"
 
   alias {
-    name                   = local.selected_arn != "" ? aws_elb.vm_ssl[0].dns_name : aws_elb.vm[0].dns_name
-    zone_id                = local.selected_arn != "" ? aws_elb.vm_ssl[0].zone_id : aws_elb.vm[0].zone_id
+    name                   = aws_elb.vm_lb.dns_name
+    zone_id                = aws_elb.vm_lb.zone_id
     evaluate_target_health = true
   }
 }
@@ -39,8 +37,8 @@ resource "aws_route53_record" "www-a" {
   type    = "A"
 
   alias {
-    name                   = local.selected_arn != "" ? aws_elb.vm_ssl[0].dns_name : aws_elb.vm[0].dns_name
-    zone_id                = local.selected_arn != "" ? aws_elb.vm_ssl[0].zone_id : aws_elb.vm[0].zone_id
+    name                   = aws_elb.vm_lb.dns_name
+    zone_id                = aws_elb.vm_lb.zone_id
     evaluate_target_health = true
   }
 }
@@ -58,7 +56,7 @@ locals {
       "${local.protocol}${var.aws_r53_domain_name}${local.public_port}" :
       "${local.protocol}${var.aws_r53_sub_domain_name}.${var.aws_r53_domain_name}${local.public_port}"
     ) :
-  "http://${aws_elb.vm[0].dns_name}${local.public_port}")
+  "http://${aws_elb.vm_lb.dns_name}${local.public_port}")
 
   fqdn_provided = (
     (var.aws_r53_domain_name != "") ?
