@@ -10,6 +10,10 @@ variable "aws_efs_create" {
   type        = bool
   default     = "false"
 }
+variable "aws_efs_create_ha" {
+  type        = bool
+  default     = "false"
+}
 variable "aws_elb_create" {
   type        = bool
   default     = "false"

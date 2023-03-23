@@ -57,7 +57,7 @@ locals {
   # create_mount_targets: boolean on whether to create mount_targets
   create_mount_targets = var.aws_efs_create || var.aws_efs_create_ha ? local.mount_target : {}
   # create_efs: boolean, checks whether to create an EFS or not
-  create_efs           = var.aws_efs_create ? true : (var.aws_efs_create_ha ? true : false)
+  create_efs           = var.aws_efs_create || var.aws_efs_create_ha ? true : false 
 }
 
 # ---------------------CREATE--------------------------- #

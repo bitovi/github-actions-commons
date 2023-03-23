@@ -202,6 +202,7 @@ $aws_r53_enable_cert
 $aws_ec2_instance_create
 $aws_efs_create
 $aws_elb_create
+$aws_efs_create_ha
 $env_aws_secret
 $aws_postgres_enable
 $aws_r53_enable
