@@ -65,6 +65,17 @@ locals {
       ) 
     ) : ""
   )
+  cert_available = (
+    var.no_cert == "true" ? false :
+    (var.cert_arn != "" ? true :
+      (var.create_root_cert != "true" ?
+        (var.create_sub_cert != "true" ?
+          (local.fqdn_provided ? true : false)
+          : true
+        ) : true
+      )
+    )
+  )
 }
 
 output "selected_arn" {

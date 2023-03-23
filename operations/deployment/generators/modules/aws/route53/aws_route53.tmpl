@@ -50,8 +50,6 @@ output "application_public_dns" {
   value       = local.url
 }
 
-
-
 locals {
   protocol    = local.selected_arn != "" ? "https://" : "http://"
   public_port = var.aws_elb_listen_port != "" ? ":${var.aws_elb_listen_port}" : ""
@@ -61,6 +59,15 @@ locals {
       "${local.protocol}${var.aws_r53_sub_domain_name}.${var.aws_r53_domain_name}${local.public_port}"
     ) :
   "http://${aws_elb.vm[0].dns_name}${local.public_port}")
+
+  fqdn_provided = (
+    (var.aws_r53_domain_name != "") ?
+    (var.aws_r53_sub_domain_name != "" ?
+      true :
+      var.aws_r53_root_domain_deploy ? true : false
+    ) :
+    false
+  )
 }
 
 output "vm_url" {
