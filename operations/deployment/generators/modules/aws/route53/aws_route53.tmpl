@@ -49,7 +49,7 @@ output "application_public_dns" {
 }
 
 locals {
-  protocol    = aws_elb.vm_lb.listener.ssl_certificate_id != "" ? "http://" : "https://"
+  protocol    = length([for l in aws_elb.vm_lb.listener : l.ssl_certificate_id]) > 0 ? "http://" : "https://"
   public_port = var.aws_elb_listen_port != "" ? ":${var.aws_elb_listen_port}" : ""
   url = (local.fqdn_provided ?
     (var.aws_r53_root_domain_deploy ?
