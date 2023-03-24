@@ -58,6 +58,13 @@
     echo "HOST_DIR={{ app_install_root }}/{{ app_repo_name }}/{{ aws_efs_ec2_mount_point }}" > "{{ app_install_root }}/{{ app_repo_name }}/efs.env"
     echo "TARGET_DIR={{ docker_efs_mount_target }}" >> "{{ app_install_root }}/{{ app_repo_name }}/efs.env"
 
+- name: Cat env file
+  ansible.builtin.shell: |
+    echo "HOST_DIR={{ app_install_root }}/{{ app_repo_name }}/{{ aws_efs_ec2_mount_point }}"
+    echo "TARGET_DIR={{ docker_efs_mount_target }}"
+    cat "{{ app_install_root }}/{{ app_repo_name }}/efs.env"
+
+
 - name: Mount efs volume
   ansible.posix.mount:
     src: "{{ efs_url }}:/{{ aws_efs_mount_target }}"

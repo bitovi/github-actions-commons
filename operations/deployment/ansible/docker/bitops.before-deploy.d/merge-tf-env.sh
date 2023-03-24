@@ -100,3 +100,7 @@ IFS=',' read -r -a options <<< "$order"
 for option in "${options[@]}"; do
   process "$option"
 done
+
+# Echoing env_out_file
+echo "ENV_OUT_FILE" 
+cat $ENV_OUT_FILE
