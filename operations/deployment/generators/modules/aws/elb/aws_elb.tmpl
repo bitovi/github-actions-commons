@@ -20,10 +20,10 @@ resource "aws_s3_bucket_policy" "allow_access_from_another_account" {
         "s3:PutObject"
       ],
       "Effect": "Allow",
-      "Resource": "arn:aws:s3:::$$${var.lb_access_bucket_name}/*",
+      "Resource": "arn:aws:s3:::$${var.lb_access_bucket_name}/*",
       "Principal": {
         "AWS": [
-          "$$${data.aws_elb_service_account.main.arn}"
+          "$${data.aws_elb_service_account.main.arn}"
         ]
       }
     }
@@ -73,7 +73,7 @@ resource "aws_elb" "vm_lb" {
   connection_draining_timeout = 400
 
   tags = {
-    Name = "$$${var.aws_resource_identifier_supershort}"
+    Name = "$${var.aws_resource_identifier_supershort}"
   }
 }
 
