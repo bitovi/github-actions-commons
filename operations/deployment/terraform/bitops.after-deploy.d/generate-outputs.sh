@@ -13,7 +13,7 @@
 
 #set -x
 
-echo "In afterhook - output.sh"
+echo "In afterhook - generate-outputs.sh"
 env
 echo "End env"
 

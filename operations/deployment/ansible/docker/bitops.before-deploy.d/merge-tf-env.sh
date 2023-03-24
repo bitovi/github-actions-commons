@@ -7,6 +7,9 @@ echo "BitOps Ansible before script: Merge Terraform Enviornment Variables..."
 
 ANSIBLE_DIR=ansible/docker
 
+echo "PWD"
+pwd
+
 echo "ENVROOT"
 ls -lah ${BITOPS_ENVROOT}
 echo "ENVROOT-Ansible"
