@@ -44,19 +44,19 @@
   when: not check_efs_mount.stat.exists
 
 ## Add to env file
-# - name: Adding `HOST_DIR` to application .env
-#   ansible.builtin.lineinfile:
-#     path: "{{ app_install_root }}/{{ app_repo_name }}/.env"
-#     line: HOST_DIR="{{ app_install_root }}/{{ app_repo_name }}/{{ aws_efs_ec2_mount_point }}"
-# - name: Adding `TARGET_DIR` to application .env
-#   ansible.builtin.lineinfile:
-#     path: "{{ app_install_root }}/{{ app_repo_name }}/.env"
-#     line: TARGET_DIR="{{ docker_efs_mount_target }}"
+- name: Adding `HOST_DIR` to application .env
+  ansible.builtin.lineinfile:
+    path: "{{ app_install_root }}/{{ app_repo_name }}/efs.env"
+    line: HOST_DIR="{{ app_install_root }}/{{ app_repo_name }}/{{ aws_efs_ec2_mount_point }}"
+- name: Adding `TARGET_DIR` to application .env
+  ansible.builtin.lineinfile:
+    path: "{{ app_install_root }}/{{ app_repo_name }}/efs.env"
+    line: TARGET_DIR="{{ docker_efs_mount_target }}"
 
-- name: Create temporary env file with new vars
-  ansible.builtin.shell: |
-    echo "HOST_DIR={{ app_install_root }}/{{ app_repo_name }}/{{ aws_efs_ec2_mount_point }}" > "{{ app_install_root }}/{{ app_repo_name }}/efs.env"
-    echo "TARGET_DIR={{ docker_efs_mount_target }}" >> "{{ app_install_root }}/{{ app_repo_name }}/efs.env"
+#- name: Create temporary env file with new vars
+#  ansible.builtin.shell: |
+#    echo "HOST_DIR={{ app_install_root }}/{{ app_repo_name }}/{{ aws_efs_ec2_mount_point }}" > "{{ app_install_root }}/{{ app_repo_name }}/efs.env"
+#    echo "TARGET_DIR={{ docker_efs_mount_target }}" >> "{{ app_install_root }}/{{ app_repo_name }}/efs.env"
 
 - name: Cat env file
   ansible.builtin.shell: |
