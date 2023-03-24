@@ -1,4 +1,9 @@
 # copy code to the VM
+- name: Create {{ app_install_root }}/{{ app_repo_name }} directory
+  file: 
+    path: "{{ app_install_root }}/{{ app_repo_name }}"
+    state: directory
+
 - name: Install the aws ca bundle
   get_url:
     url: "https://s3.amazonaws.com/rds-downloads/rds-combined-ca-bundle.pem"
