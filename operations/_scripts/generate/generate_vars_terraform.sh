@@ -144,7 +144,7 @@ if [[ $(alpha_only "$AWS_ELB_CREATE") == true ]]; then
 fi
 
 #-- AWS EFS --#
-if [[ $(alpha_only "$AWS_EFS_CREATE") == true ]]; then
+if [[ $(alpha_only "$AWS_EFS_CREATE") == true ]] || [[ $(alpha_only "$AWS_EFS_CREATE_HA") == true ]] ; then
   aws_efs_create=$(generate_var aws_efs_create $AWS_EFS_CREATE)
   aws_efs_create_ha=$(generate_var aws_efs_create_ha $AWS_EFS_CREATE_HA)
   aws_efs_create_replica=$(generate_var aws_efs_create_replica $AWS_EFS_CREATE_REPLICA)
