@@ -1,9 +1,4 @@
 # copy code to the VM
-- name: copy the .env file
-  copy:
-    src: "{{ lookup('ansible.builtin.env', 'BITOPS_OPSREPO_ENVIRONMENT_DIR') }}/app.env"
-    dest: "{{ app_install_root }}/{{ app_repo_name }}/.env"
-
 - name: Install the aws ca bundle
   get_url:
     url: "https://s3.amazonaws.com/rds-downloads/rds-combined-ca-bundle.pem"
