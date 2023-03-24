@@ -2,7 +2,7 @@
 
 set -e
 
-echo "BitOps Ansible before script: Merge Terraform Enviornment Variables..."
+echo "BitOps --> Moving Terraform generated files to be excecuted by Terraform..."
 
 
 ls -lah "${BITOPS_ENVROOT}/generators"

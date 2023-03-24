@@ -46,7 +46,7 @@ bitops:
 
 if [ "$DOCKER_INSTALL" == "true" ]; then
 echo -en "
-    docker:
+    ansible/docker:
       plugin: ansible
 " >> $GITHUB_ACTION_PATH/operations/deployment/bitops.config.yaml
 fi
