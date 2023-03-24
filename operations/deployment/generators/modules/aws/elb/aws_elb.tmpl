@@ -53,10 +53,10 @@ resource "aws_elb" "vm_lb" {
   listener {
     instance_port     = var.aws_elb_app_port
     instance_protocol = "tcp"
-    lb_port           = var.aws_elb_listen_port != "" ? var.aws_elb_listen_port : 80
-    lb_protocol       = "tcp"
+    lb_port            = var.aws_elb_listen_port != "" ? var.aws_elb_listen_port : local.aws_elb_arn != "" ? 443 : 80
+    lb_protocol        = local.aws_elb_arn != "" ? "ssl": "tcp"
+    ssl_certificate_id = local.aws_elb_arn
   }
-
 
   health_check {
     healthy_threshold   = 2
@@ -80,4 +80,8 @@ resource "aws_elb" "vm_lb" {
 output "lb_public_dns" {
   description = "Public DNS address of the LB"
   value       = aws_elb.vm_lb.dns_name
+}
+
+locals {
+  aws_elb_arn = ${aws_elb_arn}  
 }

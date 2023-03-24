@@ -18,14 +18,10 @@ module "efs" {
   source = "./modules/aws/efs"
 }
 
-module "elb_no_cert" {
-  count  = var.aws_elb_create ? (var.aws_r53_enable_cert ? 0 : (var.aws_ec2_instance_create ? 1 : 0)) : 0 
-  source = "./modules/aws/elb_no_cert"
-}
-
-module "elb_with_cert" {
-  count  = var.aws_elb_create ? (var.aws_r53_enable_cert ? (var.aws_ec2_instance_create ? 1 : 0) : 0) : 0 
-  source = "./modules/aws/elb_with_cert"
+module "elb" {
+  count  = var.aws_elb_create ? (var.aws_ec2_instance_create ? 1 : 0) : 0
+  source = "./modules/aws/elb"
+  aws_r53_enable_cert = var.aws_r53_enable_cert
 }
 
 module "exports" {

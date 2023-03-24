@@ -47,25 +47,25 @@ bitops:
       plugin: terraform
 " > $GITHUB_ACTION_PATH/operations/deployment/bitops.config.yaml
 
-# Ansible - Install EFS
-if [[ $(alpha_only "$AWS_EFS_CREATE") == true ]] || [[ $(alpha_only "$AWS_EFS_CREATE_HA") == true ]] ; then
-echo -en "
-    ansible/efs:
-      plugin: ansible
-" >> $GITHUB_ACTION_PATH/operations/deployment/bitops.config.yaml
-fi
-
-# Ansible - Install Docker
-if [[ $(alpha_only "$DOCKER_INSTALL") == true ]]; then
-echo -en "
-    ansible/docker:
-      plugin: ansible
-" >> $GITHUB_ACTION_PATH/operations/deployment/bitops.config.yaml
-fi
-
-if [[ $(alpha_only "$ST2_INSTALL") == true ]]; then
-echo -en "
-    st2:
-      plugin: ansible
-" >> $GITHUB_ACTION_PATH/operations/deployment/bitops.config.yaml
-fi
+## DISABLING ANSIBLE AFTER - ##  # Ansible - Install EFS
+## DISABLING ANSIBLE AFTER - ##  if [[ $(alpha_only "$AWS_EFS_CREATE") == true ]] || [[ $(alpha_only "$AWS_EFS_CREATE_HA") == true ]] ; then
+## DISABLING ANSIBLE AFTER - ##  echo -en "
+## DISABLING ANSIBLE AFTER - ##      ansible/efs:
+## DISABLING ANSIBLE AFTER - ##        plugin: ansible
+## DISABLING ANSIBLE AFTER - ##  " >> $GITHUB_ACTION_PATH/operations/deployment/bitops.config.yaml
+## DISABLING ANSIBLE AFTER - ##  fi
+## DISABLING ANSIBLE AFTER - ##  
+## DISABLING ANSIBLE AFTER - ##  # Ansible - Install Docker
+## DISABLING ANSIBLE AFTER - ##  if [[ $(alpha_only "$DOCKER_INSTALL") == true ]]; then
+## DISABLING ANSIBLE AFTER - ##  echo -en "
+## DISABLING ANSIBLE AFTER - ##      ansible/docker:
+## DISABLING ANSIBLE AFTER - ##        plugin: ansible
+## DISABLING ANSIBLE AFTER - ##  " >> $GITHUB_ACTION_PATH/operations/deployment/bitops.config.yaml
+## DISABLING ANSIBLE AFTER - ##  fi
+## DISABLING ANSIBLE AFTER - ##  
+## DISABLING ANSIBLE AFTER - ##  if [[ $(alpha_only "$ST2_INSTALL") == true ]]; then
+## DISABLING ANSIBLE AFTER - ##  echo -en "
+## DISABLING ANSIBLE AFTER - ##      st2:
+## DISABLING ANSIBLE AFTER - ##        plugin: ansible
+## DISABLING ANSIBLE AFTER - ##  " >> $GITHUB_ACTION_PATH/operations/deployment/bitops.config.yaml
+## DISABLING ANSIBLE AFTER - ##  fi
