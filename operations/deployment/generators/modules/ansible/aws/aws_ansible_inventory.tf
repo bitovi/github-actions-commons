@@ -1,9 +1,4 @@
 resource "local_file" "aws_ansible_inventory" {
-    filename = format("%s/%s", abspath(path.root), "aws_ansible_inventory.tf")
-    content = file(format("%s/%s", abspath(path.module), "aws_ansible_inventory.tmpl"))
-}
-
-resource "local_file" "aws_ansible_inventory" {
     count = var.aws_ec2_instance_public_ip ? 1 : 0
     filename = format("%s/%s", abspath(path.root), "aws_ansible_inventory.tf")
     content  = templatefile(format("%s/%s", abspath(path.module), "aws_ansible_inventory.tmpl"), {
