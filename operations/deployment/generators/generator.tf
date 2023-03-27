@@ -25,8 +25,9 @@ module "elb" {
 }
 
 module "exports" {
-  count  = var.env_aws_secret != "" ? 1 : 0
+  count  = local.aws_in_usage
   source = "./modules/aws/exports"
+  env_aws_secret          = var.env_aws_secret
   aws_ec2_instance_create = var.aws_ec2_instance_create
   aws_efs_create          = var.aws_efs_create
   aws_efs_create_ha       = var.aws_efs_create_ha
