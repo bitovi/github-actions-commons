@@ -73,5 +73,5 @@ output "vm_url" {
 }
 
 output "debug_cert_length" {
-  value = length([for l in aws_elb.vm_lb.listener : l.ssl_certificate_id if l.ssl_certificate_id != "" || l.ssl_certificate_id != null ])
+  value = [for l in aws_elb.vm_lb.listener : l.ssl_certificate_id if l.ssl_certificate_id != "" || l.ssl_certificate_id != null ]
 }
