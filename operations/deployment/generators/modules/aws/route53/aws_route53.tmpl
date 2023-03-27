@@ -71,3 +71,7 @@ locals {
 output "vm_url" {
   value = local.url
 }
+
+output "debug_cert_length" {
+  value = length([for l in aws_elb.vm_lb.listener : l.ssl_certificate_id])
+}
