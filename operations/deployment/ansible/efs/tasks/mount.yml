@@ -44,6 +44,9 @@
   when: not check_efs_mount.stat.exists
 
 ## Add to env file
+- name: Touch env file
+  ansible.builtin.shell: |
+    touch "{{ app_install_root }}/{{ app_repo_name }}/efs.env"
 - name: Adding `HOST_DIR` to application .env
   ansible.builtin.lineinfile:
     path: "{{ app_install_root }}/{{ app_repo_name }}/efs.env"
