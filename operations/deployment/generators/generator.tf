@@ -46,6 +46,7 @@ module "route53" {
 module "ansible" {
   count  = var.docker_install ? 1 : var.st2_install ? 1 : 0
   source = "./modules/ansible/aws"
+  aws_ec2_instance_public_ip = var.aws_ec2_instance_public_ip
 }
 
 locals {

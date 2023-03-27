@@ -6,6 +6,11 @@ variable "aws_ec2_instance_create" {
   type        = bool
   default     = "false"
 }
+variable "aws_ec2_instance_public_ip" {
+  type        = bool
+  default     = false
+  description = "Attach public IP to the EC2 instance"
+}
 variable "aws_efs_create" {
   type        = bool
   default     = "false"
