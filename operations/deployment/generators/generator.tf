@@ -27,6 +27,9 @@ module "elb" {
 module "exports" {
   count  = var.env_aws_secret != "" ? 1 : 0
   source = "./modules/aws/exports"
+  aws_ec2_instance_create = var.aws_ec2_instance_create
+  aws_efs_create          = var.aws_efs_create
+  aws_efs_create_ha       = var.aws_efs_create_ha
 }
 
 module "rds" {
