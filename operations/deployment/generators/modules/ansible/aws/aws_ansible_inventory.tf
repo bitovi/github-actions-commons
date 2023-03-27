@@ -35,7 +35,7 @@ locals {
    mount_efs: $${local.mount_efs}
    efs_url: $${local.efs_url}
    aws_efs_ec2_mount_point: $${var.aws_efs_ec2_mount_point}
-   aws_efs_mount_target: $${var.aws_efs_mount_target != null ? $${var.aws_efs_mount_target} : ""}
+   aws_efs_mount_target: $${var.aws_efs_mount_target != null ? var.aws_efs_mount_target : ""}
    docker_efs_mount_target: $${var.docker_efs_mount_target}
    EOT
 }
