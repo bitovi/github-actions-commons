@@ -79,3 +79,7 @@ output "debug_cert_length" {
 output "debug_cert_length_content" {
   value = [for l in aws_elb.vm_lb.listener : l.ssl_certificate_id if l.ssl_certificate_id != "" || l.ssl_certificate_id != null || l.ssl_certificate_id != [] ]
 }
+
+output "debug_cert_length_content_no_if" {
+  value = [for l in aws_elb.vm_lb.listener : l.ssl_certificate_id]
+}
