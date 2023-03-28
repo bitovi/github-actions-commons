@@ -79,7 +79,7 @@ resource "aws_elb" "${elb_resource_string}" {
 
 output "lb_public_dns" {
   description = "Public DNS address of the LB"
-  value       = aws_elb.vm_lb.dns_name
+  value       = aws_elb.${elb_resource_string}.dns_name
 }
 
 locals {
