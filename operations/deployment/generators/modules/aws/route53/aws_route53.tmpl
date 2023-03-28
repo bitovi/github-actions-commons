@@ -49,7 +49,7 @@ output "application_public_dns" {
 }
 
 locals {
-  protocol    = length([for l in aws_elb.${elb_resource_string}.listener : l.ssl_certificate_id if trim(l.ssl_certificate_id) != ""]) > 0 ? "https://" : "http://"
+  protocol    = ${r53_protocol_string}
   public_port = var.aws_elb_listen_port != "" ? ":$${var.aws_elb_listen_port}" : ""
   url = (local.fqdn_provided ?
     (var.aws_r53_root_domain_deploy ?
@@ -70,16 +70,4 @@ locals {
 
 output "vm_url" {
   value = local.url
-}
-
-output "debug_cert_length" {
-  value = length([for l in aws_elb.${elb_resource_string}.listener : l.ssl_certificate_id if trim(l.ssl_certificate_id) != ""])
-}
-
-output "debug_cert_length_content" {
-  value = [for l in aws_elb.${elb_resource_string}.listener : l.ssl_certificate_id  if trim(l.ssl_certificate_id) != ""]
-}
-
-output "debug_cert_length_content_no_if" {
-  value = [for l in aws_elb.${elb_resource_string}.listener : l.ssl_certificate_id]
 }
