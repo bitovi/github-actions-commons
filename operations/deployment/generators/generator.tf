@@ -41,6 +41,7 @@ module "rds" {
 module "route53" {
   count  = var.aws_r53_enable ? 1 : 0
   source = "./modules/aws/route53"
+  aws_r53_enable_cert = var.aws_r53_enable_cert
 }
 
 module "ansible" {
