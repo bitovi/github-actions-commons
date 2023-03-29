@@ -44,6 +44,12 @@ variable "aws_ec2_instance_type" {
   description = "Instance type for the EC2 instance"
 }
 
+variable "aws_ec2_security_group_name" {
+  type        = string
+  default     = ""
+  description = "Name of the security group to use"
+}
+
 variable "aws_ec2_create_keypair_sm" {
   type = bool
   description = "y/n create sm entry for ec2 keypair"
@@ -221,6 +227,11 @@ variable "aws_postgres_instance_class" {
   description = "The size of the db instances.  For more details, see: https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Concepts.DBInstanceClass.html, https://registry.terraform.io/modules/terraform-aws-modules/rds-aurora/aws/latest?tab=inputs"
   default     = "db.t3.medium"
 }
+variable "aws_postgres_security_group_name" {
+  type        = string
+  default     = ""
+  description = "Name of the security group to use for postgres"
+}
 variable "aws_postgres_subnets" {
   type        = list(string)
   description = "The list of subnet ids to use for postgres. For more details, see: https://registry.terraform.io/modules/terraform-aws-modules/rds-aurora/aws/latest?tab=inputs"
@@ -231,7 +242,6 @@ variable "aws_postgres_database_name" {
   description = "The name of the database. will be created if it does not exist."
   default     = "root"
 }
-
 variable "aws_postgres_database_port" {
   type        = string
   default     = "5432"
@@ -290,18 +300,10 @@ variable "availability_zone" {
 # EC2 
 
 
-variable "security_group_name" {
-  type        = string
-  default     = "SG for deployment"
-  description = "Name of the security group to use"
-}
+
 
 # POSTGRES
-variable "aws_security_group_name_pg" {
-  type        = string
-  default     = "SG for postgres deployment"
-  description = "Name of the security group to use for postgres"
-}
+
 
 # ELB
 variable "lb_access_bucket_name" {

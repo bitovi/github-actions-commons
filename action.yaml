@@ -4,6 +4,11 @@ branding:
   icon: upload-cloud
   color: red
 inputs:
+  # Calling repo
+  calling_repo:
+    description: 'URL of calling repo'
+    required: false
+
   # Action main inputs
   checkout:
     description: 'Specifies if this action should checkout the code'
@@ -73,6 +78,9 @@ inputs:
   aws_ec2_instance_type: 
     description: 'The AWS Instance type'
     required: false
+  aws_ec2_security_group_name:
+    description: 'The name of the EC2 security group'
+    required: false
   aws_ec2_create_keypair_sm:
     required: false
     description: 'Generates and manages a secret manager entry that contains the public and private keys created for the ec2 instance.'
@@ -124,52 +132,55 @@ inputs:
   
   # AWS EFS
   aws_efs_create:
-    description: "Toggle to indicate whether to create and EFS and mount it to the ec2 as a part of the provisioning. Note: The EFS will be managed by the stack and will be destroyed along with the stack"
+    description: 'Toggle to indicate whether to create and EFS and mount it to the ec2 as a part of the provisioning. Note: The EFS will be managed by the stack and will be destroyed along with the stack'
     required: false
   aws_efs_create_ha:
-    description: Toggle to indicate whether the EFS resource should be highly available (target mounts in all available zones within region)
+    description: 'Toggle to indicate whether the EFS resource should be highly available (target mounts in all available zones within region)'
     required: false
   aws_efs_create_replica:
-    description: Toggle to indiciate whether a read-only replica should be created for the EFS primary file system
+    description: 'Toggle to indiciate whether a read-only replica should be created for the EFS primary file system'
     required: false
   aws_efs_enable_backup_policy:
-    description: Toggle to indiciate whether the EFS should have a backup policy, default is `false`
+    description: 'Toggle to indiciate whether the EFS should have a backup policy, default is `false`'
     required: false
   aws_efs_zone_mapping:
-    description: Information on Zone Mapping can be found in the [README.md](README.md#efs-zone-mapping)
+    description: 'Information on Zone Mapping can be found in the [README.md](README.md#efs-zone-mapping)'
     required: false
   aws_efs_transition_to_inactive:
-    description: Indicates how long it takes to transition files to the IA storage class
+    description: 'Indicates how long it takes to transition files to the IA storage class.'
     required: false
   aws_efs_replication_destination:
-    description: "AWS Region to target for replication"
+    description: 'AWS Region to target for replication'
     required: false
   aws_efs_mount_id:
-    description: ID of existing EFS
+    description: 'ID of existing EFS'
     required: false
   aws_efs_mount_security_group_id:
-    description: ID of the primary security group used by the existing EFS
+    description: 'ID of the primary security group used by the existing EFS'
     required: false
   aws_efs_mount_target: 
-    description: Directory path in the EFS volume to mount directory to. Default is /.
+    description: 'Directory path in the EFS volume to mount directory to. Default is /.'
     required: false
   aws_efs_ec2_mount_point:
-    description: Directory path in EC2 Instance to mount the EFS volume. Default is `data`. Exported as `HOST_DIR` in `.env`
+    description: 'Directory path in EC2 Instance to mount the EFS volume. Default is `data`. Exported as `HOST_DIR` in `.env`'
     required: false
     
   
   # AWS RDS
   aws_postgres_enable:
-    description: Set to "true" to enable a postgres database
+    description: 'Set to "true" to enable a postgres database'
     required: false
   aws_postgres_engine: 
-    description: Which Database engine to use
+    description: 'Which Database engine to use'
     required: false
   aws_postgres_engine_version:
-    description: Specify Postgres version 
+    description: 'Specify Postgres version'
     required: false
   aws_postgres_instance_class:
-    description: Define the size of the instances in the DB cluster
+    description: 'Define the size of the instances in the DB cluster'
+    required: false
+  aws_postgres_security_group_name:
+    description:  'The name of the Postgres security group'
     required: false
   aws_postgres_subnets:
     description: 'Specify which subnets to use as a list of strings.  Example: `i-1234,i-5678,i-9101`'
@@ -184,13 +195,13 @@ inputs:
   
   # Docker 
   docker_install: 
-    description: "Define if docker should be installed. After this, docker-compose up will be excecuted."
+    description: 'Define if docker should be installed. After this, docker-compose up will be excecuted.'
     required: false
   docker_repo_app_directory:
     description: 'Relative path for the directory of the app (i.e. where `Dockerfile` and `docker-compose.yaml` files are located). This is the directory that is copied to the compute instance (EC2).  Default is the root of the repo.'
     required: false
   docker_efs_mount_target:
-    description: "Directory path within docker env to mount directory to, default is `/data`"
+    description: 'Directory path within docker env to mount directory to, default is `/data`'
     required: false
 
 outputs:
@@ -213,6 +224,9 @@ runs:
         GITHUB_ACTION_PATH: ${{ github.action_path }}
         BITOPS_ENVIRONMENT: deployment
         BITOPS_FAST_FAIL: 'true'
+
+        # Inonmig repo
+        CALLING_REPO: ${{ inputs.calling_repo }}
 
         # Action main inputs
         TF_STACK_DESTROY: ${{ inputs.tf_stack_destroy }}
@@ -240,6 +254,7 @@ runs:
         AWS_EC2_AMI_ID: ${{ inputs.aws_ec2_ami_id }}
         AWS_EC2_IAM_INSTANCE_PROFILE: ${{ inputs.aws_ec2_iam_instance_profile }}
         AWS_EC2_INSTANCE_TYPE: ${{ inputs.aws_ec2_instance_type }} 
+        AWS_EC2_SECURITY_GROUP_NAME: ${{ inputs.aws_ec2_security_group_name }}
         AWS_EC2_CREATE_KEYPAIR_SM: ${{ inputs.aws_ec2_create_keypair_sm }}
         AWS_EC2_INSTANCE_PUBLIC_IP: ${{ inputs.aws_ec2_instance_public_ip }}
         AWS_EC2_PORT_LIST: ${{ inputs.aws_ec2_port_list }}
@@ -278,6 +293,7 @@ runs:
         AWS_POSTGRES_ENGINE:  ${{ inputs.aws_postgres_engine }}
         AWS_POSTGRES_ENGINE_VERSION:  ${{ inputs.aws_postgres_engine_version }}
         AWS_POSTGRES_INSTANCE_CLASS: ${{ inputs.aws_postgres_instance_class }}
+        AWS_POSTGRES_SECURITY_GROUP_NAME: ${{ inputs.aws_postgres_security_group_name }}
         AWS_POSTGRES_SUBNETS: ${{ inputs.aws_postgres_subnets }}
         AWS_POSTGRES_DATABASE_NAME: ${{ inputs.aws_postgres_database_name }}
         AWS_POSTGRES_DATABASE_PORT: ${{ inputs.aws_postgres_database_port}}

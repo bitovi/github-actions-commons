@@ -4,6 +4,9 @@ set -e
 
 echo "In generate_vars_terrafomr.sh"
 
+echo "$CALLING_REPO"
+
+
 # convert 'a,b,c'
 # to '["a","b","c"]'
 function comma_str_to_tf_array () {
@@ -69,10 +72,8 @@ app_org_name="app_org_name = \"${GITHUB_ORG_NAME}\""
 app_repo_name="app_repo_name = \"${GITHUB_REPO_NAME}\""
 app_branch_name="app_branch_name = \"${GITHUB_BRANCH_NAME}\""
 app_install_root="app_install_root = \"/home/ubuntu\""
-security_group_name="security_group_name = \"${GITHUB_IDENTIFIER}\""
 aws_resource_identifier="aws_resource_identifier = \"${GITHUB_IDENTIFIER}\""
 aws_resource_identifier_supershort="aws_resource_identifier_supershort = \"${GITHUB_IDENTIFIER_SS}\""
-aws_security_group_name_pg="aws_security_group_name_pg = \"${GITHUB_IDENTIFIER}-pg\""
 
 # Special cases - Values that need fallback values or special calculation
 
@@ -114,6 +115,7 @@ if [[ $(alpha_only "$AWS_EC2_INSTANCE_CREATE") == true ]]; then
   aws_ec2_ami_id=$(generate_var aws_ec2_ami_id $AWS_EC2_AMI_ID)
   # aws_ec2_iam_instance_profile=$(generate_var aws_ec2_iam_instance_profile AWS_EC2_IAM_INSTANCE_PROFILE - Special case
   aws_ec2_instance_type=$(generate_var aws_ec2_instance_type $AWS_EC2_INSTANCE_TYPE)
+  aws_ec2_security_group_name=$(generate_var aws_ec2_security_group_name $AWS_EC2_SECURITY_GROUP_NAME)
   aws_ec2_create_keypair_sm=$(generate_var aws_ec2_create_keypair_sm $AWS_EC2_CREATE_KEYPAIR_SM)
   aws_ec2_instance_public_ip=$(generate_var aws_ec2_instance_public_ip $AWS_EC2_INSTANCE_PUBLIC_IP)
   aws_ec2_port_list=$(generate_var aws_ec2_port_list $AWS_EC2_PORT_LIST)
@@ -160,11 +162,11 @@ fi
 
 #-- RDS --#
 if [[ $(alpha_only "$AWS_POSTGRES_ENABLE") == true ]]; then
-  # aws_security_group_name_pg=$(generate_var aws_security_group_name_pg $AWS_SECURITY_GROUP_NAME_PG) - Fixed
   aws_postgres_enable=$(generate_var aws_postgres_enable $AWS_POSTGRES_ENABLE)
   aws_postgres_engine=$(generate_var aws_postgres_engine $AWS_POSTGRES_ENGINE)
   aws_postgres_engine_version=$(generate_var aws_postgres_engine_version $AWS_POSTGRES_ENGINE_VERSION)
   aws_postgres_instance_class=$(generate_var aws_postgres_instance_class $AWS_POSTGRES_INSTANCE_CLASS)
+  aws_postgres_security_group_name=$(generate_var aws_postgres_security_group_name $AWS_POSTGRES_SECURITY_GROUP_NAME )
   # aws_postgres_subnets=$(generate_var aws_postgres_subnets $AWS_POSTGRES_SUBNETS) - Special case
   aws_postgres_database_name=$(generate_var aws_postgres_database_name $AWS_POSTGRES_DATABASE_NAME)
   aws_postgres_database_port=$(generate_var aws_postgres_database_port $AWS_POSTGRES_DATABASE_PORT)
@@ -191,9 +193,6 @@ fi
 
 #-- Logging --#
 lb_access_bucket_name=$(generate_var lb_access_bucket_name $LB_LOGS_BUCKET)
-#-- Security Groups --#
-security_group_name=$(generate_var security_group_name $SECURITY_GROUP_NAME)
-
 
 # -------------------------------------------------- #
 
@@ -227,6 +226,7 @@ $env_aws_secret
 $aws_ec2_ami_id
 $aws_ec2_iam_instance_profile
 $aws_ec2_instance_type
+$aws_ec2_security_group_name
 $aws_ec2_create_keypair_sm
 $aws_ec2_instance_public_ip
 
@@ -259,11 +259,11 @@ $aws_efs_mount_target
 $aws_efs_ec2_mount_point
 
 #-- RDS --#
-$aws_security_group_name_pg
 $aws_postgres_enable
 $aws_postgres_engine
 $aws_postgres_engine_version
 $aws_postgres_instance_class
+$aws_postgres_security_group_name
 $aws_postgres_subnets
 $aws_postgres_database_name
 $aws_postgres_database_port
@@ -276,9 +276,6 @@ $app_org_name
 $app_repo_name
 $app_branch_name
 $app_install_root
-
-#-- Security Groups --#
-$security_group_name
 
 " > "${GITHUB_ACTION_PATH}/operations/deployment/terraform/terraform.tfvars"
 
