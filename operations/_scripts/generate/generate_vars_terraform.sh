@@ -2,9 +2,10 @@
 
 set -e
 
-echo "In generate_vars_terrafomr.sh"
+echo "In generate_vars_terraform.sh"
 
-echo "$CALLING_REPO"
+echo "Calling repo: $CALLING_REPO"
+ls -lah $CALLING_REPO
 
 
 # convert 'a,b,c'
