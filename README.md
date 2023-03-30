@@ -1,12 +1,9 @@
-# Docker to AWS VM
+# Bitovi Github Actions Commons
 
-GitHub action to deploy any [Docker](https://www.bitovi.com/academy/learn-docker.html)-based app to an AWS VM (EC2) using Docker and Docker Compose.
-
-The action will copy this repo to the VM and then run `docker-compose up`.
+This is a work in progress to embed a root tool to deploy wrapper actions in order to trim the excess of inputs yet be flexible. 
 
 ## Getting Started Intro Video
-[![Getting Started - Youtube](https://img.youtube.com/vi/oya5LuHUCXc/0.jpg)](https://www.youtube.com/watch?v=oya5LuHUCXc)
-
+No video for now. Sorry. :disappointed:
 
 ## Need help or have questions?
 This project is supported by [Bitovi, a DevOps Consultancy](https://www.bitovi.com/devops-consulting) and a proud supporter of Open Source software.
@@ -15,43 +12,13 @@ You can **get help or ask questions** on [Discord channel](https://discord.gg/J7
 
 Or, you can hire us for training, consulting, or development. [Set up a free consultation](https://www.bitovi.com/devops-consulting).
 
-
 ## Requirements
 
-1. Files for Docker
-2. An AWS account
-
-### 1. Files for Docker
-Your app needs a `Dockerfile` and a `docker-compose.yaml` file.
-
-> For more details on setting up Docker and Docker Compose, check out Bitovi's Academy Course: [Learn Docker](https://www.bitovi.com/academy/learn-docker.html)
->
-
-### 2. An AWS account
-You'll need [Access Keys](https://docs.aws.amazon.com/powershell/latest/userguide/pstools-appendix-sign-up.html) from an [AWS account](https://aws.amazon.com/premiumsupport/knowledge-center/create-and-activate-aws-account/)
+Not defined for now. 
 
 ## Environment variables
 
-For envirnoment variables in your app, you can provide:
- - `env_repo` - A file in your repo that contains env vars
- - `env_ghv` - An entry in [Github actions variables](https://docs.github.com/en/actions/learn-github-actions/variables)
- - `env_ghs` - An entry in [Github secrets](https://docs.github.com/es/actions/security-guides/encrypted-secrets)
- - `env_aws_secret` - The path to a JSON format secret in AWS
- 
-Then hook it up in your `docker-compose.yaml` file like:
-
-```
-version: '3.9'
-services:
-  app:
-    env_file: .env
-```
-
-These environment variables are merged to the .env file quoted in the following order:
- - Terraform passed env vars ( This is not optional nor customizable )
- - Repository checked-in env vars - repo_env file as default. (KEY=VALUE style)
- - Github Secret - Create a secret named DOT_ENV - (KEY=VALUE style)
- - AWS Secret - JSON style like '{"key":"value"}'
+Not defined for now.
 
 ## Example usage
 
@@ -69,48 +36,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - id: deploy
-        uses: bitovi/github-actions-deploy-docker-to-ec2@v0.5.0
+        uses: bitovi/github-actions-deploy-commons@main # <--- Check version to use, main for now.
         with:
           aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws_default_region: us-east-1
           env_ghs: ${{ secrets.DOT_ENV }}
-```
-
-### Advanced example
-
-```yaml
-name: Advanced deploy
-on:
-  push:
-    branches: [ main ]
-
-permissions:
-  contents: read
-
-jobs:
-  EC2-Deploy:
-    runs-on: ubuntu-latest
-    environment:
-      name: ${{ github.ref_name }}
-      url: ${{ steps.deploy.outputs.vm_url }}
-    steps:
-    - id: deploy
-      name: Deploy
-      uses: bitovi/github-actions-deploy-docker-to-ec2@v0.5.0
-      with:
-        aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        aws_session_token: ${{ secrets.AWS_SESSION_TOKEN }}
-        aws_default_region: us-east-1
-        aws_r53_domain_name: bitovi.com
-        aws_r53_sub_domain_name: app
-        tf_state_bucket: my-terraform-state-bucket
-        env_ghs: ${{ secrets.DOT_ENV }}
-        env_ghv: ${{ vars.VARS }}
-        aws_elb_app_port: 3000
-        aws_additional_tags: "{\"key1\": \"value1\",\"key2\": \"value2\"}"
-
 ```
 
 ## Customizing

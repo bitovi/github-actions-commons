@@ -59,12 +59,6 @@ if [[ $SKIP_BITOPS_RUN == "true" ]]; then
   exit 1
 fi
 
-echo "::group::Tree Excecution"  
-apt update && apt install tree -y -q
-tree /
-echo "::endgroup::"
-
-
 echo "::group::BitOps Excecution"  
 echo "Running BitOps for env: $BITOPS_ENVIRONMENT"
 docker run --rm --name bitops \
