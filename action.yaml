@@ -1,0 +1,344 @@
+name: 'Deploy Docker to AWS (EC2)'
+description: 'Deploy a Docker app to an AWS Virtual Machine (EC2) with Docker Compose'
+branding:
+  icon: upload-cloud
+  color: red
+inputs:
+  # Calling repo
+  calling_repo:
+    description: 'URL of calling repo'
+    required: false
+
+  # Action main inputs
+  checkout:
+    description: 'Specifies if this action should checkout the code'
+    required: false
+    default: 'true'
+  tf_stack_destroy:
+    description: 'Set to "true" to Destroy the stack through terraform.'
+    required: false
+  tf_state_bucket:
+    description: 'AWS S3 bucket to use for Terraform state. Defaults to `${org}-${repo}-{branch}-tf-state`'
+    required: false
+  tf_state_bucket_destroy:
+    description: 'Force purge and deletion of S3 bucket defined. Any file contained there will be destroyed. `tf_stack_destroy` must also be `true`'
+    required: false
+  tf_state_bucket_provider: 
+    description: 'Bucket provider for tfstate storage.'
+    required: false
+    default: 'aws'
+  tf_targets:
+    description: 'A list of targets to create before the full stack creation. Example: `'
+    
+  # AWS Specific
+  aws_access_key_id:
+    description: 'AWS access key ID'
+    required: false
+  aws_secret_access_key:
+    description: 'AWS secret access key'
+    required: false
+  aws_session_token:
+    description: 'AWS session token'
+    required: false
+  aws_default_region:
+    description: 'AWS default region'
+    default: us-east-1
+    required: false
+  aws_resource_identifier:
+    description: 'Set to override the AWS resource identifier for the deployment.  Defaults to `${org}-{repo}-{branch}`.  Use with destroy to destroy specific resources.'
+    required: false
+  aws_additional_tags:
+    description: 'A JSON object of additional tags that will be included on created resources. Example: `{"key1": "value1", "key2": "value2"}`'
+    required: false
+
+  # ENV files
+  env_aws_secret:
+    description: 'Secret name to pull env variables from AWS Secret Manager'
+    required: false
+  env_repo:
+    description: 'File containing environment variables to be used with the app'
+    required: false
+  env_ghs:
+    description: '`.env` file to be used with the app from Github secrets'
+    required: false
+  env_ghv:
+    description: '`.env` file to be used with the app from Github variables'
+    required: false
+
+  # EC2 Instance
+  aws_ec2_instance_create:
+    description: 'Define if an EC2 instance should be created'
+    required: false
+  aws_ec2_ami_id:
+    description: 'AWS AMI ID. Will default to the latest Ubuntu 22.04 server image (HVM) '
+    required: false
+  aws_ec2_iam_instance_profile:
+    description: 'The AWS IAM instance profile to use for the EC2 instance'
+    required: false
+  aws_ec2_instance_type: 
+    description: 'The AWS Instance type'
+    required: false
+  aws_ec2_security_group_name:
+    description: 'The name of the EC2 security group'
+    required: false
+  aws_ec2_create_keypair_sm:
+    required: false
+    description: 'Generates and manages a secret manager entry that contains the public and private keys created for the ec2 instance.'
+  aws_ec2_instance_public_ip:
+    description: 'Add a public IP to the instance or not. (Not an Elastic IP)'
+    required: false
+  aws_ec2_port_list:
+    description: 'List of ports to be enabled as an ingress rule in the EC2 SG, in a [xx,yy] format - Not the ELB'
+    required: false
+  
+  # AWS Route53 Domains abd Certificates
+  aws_r53_enable:
+    description: 'Enables the usage of Route53 to manage DNS records.'
+    required: false
+  aws_r53_domain_name:
+    description: 'Define the root domain name for the application. e.g. app.com'
+    required: false
+  aws_r53_sub_domain_name:
+    description: 'Define the sub-domain part of the URL. Defaults to `${org}-${repo}-{branch}`'
+  aws_r53_root_domain_deploy:
+    description: 'Deploy to root domain. Will generate two DNS recrods, one for root, another for www'
+    required: false
+  aws_r53_enable_cert:
+    description: 'Makes the application use a certificate by enabling a certificate lookup.'
+    required: false
+  aws_r53_cert_arn:
+    description: 'Define the certificate ARN to use for the application'
+    required: false
+  aws_r53_create_root_cert:
+    description: 'Generates and manage the root cert for the application'
+    required: false
+  aws_r53_create_sub_cert: 
+    description: 'Generates and manage the sub-domain certificate for the application'
+    required: false
+
+  # AWS ELB
+  aws_elb_create:
+    description: 'Create a load balancer and map ports to the EC2 instance.'
+    required: false
+  aws_elb_app_port:
+    description: 'Port to expose for the app'
+    required: false
+  aws_elb_listen_port:
+    description: 'Load balancer listening port. Defaults to 80 if NO FQDN provided, 443 if FQDN provided'
+    required: false
+  aws_elb_healthcheck: 
+    description: 'Load balancer health check string. Defaults to HTTP:aws_elb_app_port'
+    required: false
+  
+  # AWS EFS
+  aws_efs_create:
+    description: 'Toggle to indicate whether to create and EFS and mount it to the ec2 as a part of the provisioning. Note: The EFS will be managed by the stack and will be destroyed along with the stack'
+    required: false
+  aws_efs_create_ha:
+    description: 'Toggle to indicate whether the EFS resource should be highly available (target mounts in all available zones within region)'
+    required: false
+  aws_efs_create_replica:
+    description: 'Toggle to indiciate whether a read-only replica should be created for the EFS primary file system'
+    required: false
+  aws_efs_enable_backup_policy:
+    description: 'Toggle to indiciate whether the EFS should have a backup policy, default is `false`'
+    required: false
+  aws_efs_zone_mapping:
+    description: 'Information on Zone Mapping can be found in the [README.md](README.md#efs-zone-mapping)'
+    required: false
+  aws_efs_transition_to_inactive:
+    description: 'Indicates how long it takes to transition files to the IA storage class.'
+    required: false
+  aws_efs_replication_destination:
+    description: 'AWS Region to target for replication'
+    required: false
+  aws_efs_mount_id:
+    description: 'ID of existing EFS'
+    required: false
+  aws_efs_mount_security_group_id:
+    description: 'ID of the primary security group used by the existing EFS'
+    required: false
+  aws_efs_mount_target: 
+    description: 'Directory path in the EFS volume to mount directory to. Default is /.'
+    required: false
+  aws_efs_ec2_mount_point:
+    description: 'Directory path in EC2 Instance to mount the EFS volume. Default is `data`. Exported as `HOST_DIR` in `.env`'
+    required: false
+    
+  
+  # AWS RDS
+  aws_postgres_enable:
+    description: 'Set to "true" to enable a postgres database'
+    required: false
+  aws_postgres_engine: 
+    description: 'Which Database engine to use'
+    required: false
+  aws_postgres_engine_version:
+    description: 'Specify Postgres version'
+    required: false
+  aws_postgres_instance_class:
+    description: 'Define the size of the instances in the DB cluster'
+    required: false
+  aws_postgres_security_group_name:
+    description:  'The name of the Postgres security group'
+    required: false
+  aws_postgres_subnets:
+    description: 'Specify which subnets to use as a list of strings.  Example: `i-1234,i-5678,i-9101`'
+    required: false
+  aws_postgres_database_name:
+    description: 'Specify a database name. Will be created if it does not exist'
+    required: false
+    # TODO: create another user and point to that instead
+  aws_postgres_database_port:
+    description: 'Postgres database port'
+    required: false
+  
+  # Docker 
+  docker_install: 
+    description: 'Define if docker should be installed. After this, docker-compose up will be excecuted.'
+    required: false
+  docker_repo_app_directory:
+    description: 'Relative path for the directory of the app (i.e. where `Dockerfile` and `docker-compose.yaml` files are located). This is the directory that is copied to the compute instance (EC2).  Default is the root of the repo.'
+    required: false
+  docker_efs_mount_target:
+    description: 'Directory path within docker env to mount directory to, default is `/data`'
+    required: false
+
+outputs:
+  vm_url:
+    description: "The URL of the generated app"
+    value: ${{ steps.deploy.outputs.vm_url }}
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Checkout if required
+      if: ${{ inputs.checkout == 'true' }}
+      uses: actions/checkout@v3
+
+    - name: Deploy with BitOps
+      id: deploy
+      shell: bash
+      env:
+        # Action defaults
+        GITHUB_ACTION_PATH: ${{ github.action_path }}
+        BITOPS_ENVIRONMENT: deployment
+        BITOPS_FAST_FAIL: 'true'
+
+        # Inonmig repo
+        CALLING_REPO: ${{ inputs.calling_repo }}
+
+        # Action main inputs
+        TF_STACK_DESTROY: ${{ inputs.tf_stack_destroy }}
+        TF_STATE_BUCKET: ${{ inputs.tf_state_bucket }}
+        TF_STATE_BUCKET_DESTROY: ${{ inputs.tf_state_bucket_destroy }}
+        TF_STATE_BUCKET_PROVIDER: ${{ inputs.tf_state_bucket_provider }}
+        TF_TARGETS: ${{ inputs.tf_targets }}
+
+        # AWS Specific
+        AWS_ACCESS_KEY_ID: ${{ inputs.aws_access_key_id }}
+        AWS_SECRET_ACCESS_KEY: ${{ inputs.aws_secret_access_key }}
+        AWS_SESSION_TOKEN: ${{ inputs.aws_session_token }}
+        AWS_DEFAULT_REGION: ${{ inputs.aws_default_region }}
+        AWS_RESOURCE_IDENTIFIER: ${{ inputs.aws_resource_identifier }}
+        AWS_ADDITIONAL_TAGS: ${{ inputs.additional_tags }}
+
+        # ENV Files
+        ENV_AWS_SECRET: ${{ inputs.env_aws_secret }}
+        ENV_REPO: ${{ inputs.env_repo }}
+        ENV_GHS: ${{ inputs.env_ghs }}
+        ENV_GHV: ${{ inputs.env_ghv }}
+
+        # EC2 Instance
+        AWS_EC2_INSTANCE_CREATE: ${{ inputs.aws_ec2_instance_create }}
+        AWS_EC2_AMI_ID: ${{ inputs.aws_ec2_ami_id }}
+        AWS_EC2_IAM_INSTANCE_PROFILE: ${{ inputs.aws_ec2_iam_instance_profile }}
+        AWS_EC2_INSTANCE_TYPE: ${{ inputs.aws_ec2_instance_type }} 
+        AWS_EC2_SECURITY_GROUP_NAME: ${{ inputs.aws_ec2_security_group_name }}
+        AWS_EC2_CREATE_KEYPAIR_SM: ${{ inputs.aws_ec2_create_keypair_sm }}
+        AWS_EC2_INSTANCE_PUBLIC_IP: ${{ inputs.aws_ec2_instance_public_ip }}
+        AWS_EC2_PORT_LIST: ${{ inputs.aws_ec2_port_list }}
+
+        # AWS Route53 Domains abd Certificates
+        AWS_R53_ENABLE: ${{ inputs.aws_r53_enable }}
+        AWS_R53_DOMAIN_NAME: ${{ inputs.aws_r53_domain_name }}
+        AWS_R53_SUB_DOMAIN_NAME: ${{ inputs.aws_r53_sub_domain_name }}
+        AWS_R53_ROOT_DOMAIN_DEPLOY: ${{ inputs.aws_r53_root_domain_deploy }}
+        AWS_R53_ENABLE_CERT: ${{ inputs.aws_r53_enable_cert }}
+        AWS_R53_CERT_ARN: ${{ inputs.aws_r53_cert_arn }}
+        AWS_R53_CREATE_ROOT_CERT: ${{ inputs.aws_r53_create_root_cert }}
+        AWS_R53_CREATE_SUB_CERT: ${{ inputs.aws_r53_create_sub_cert }}
+
+        # AWS ELB
+        AWS_ELB_CREATE: ${{ inputs.aws_elb_create }}
+        AWS_ELB_APP_PORT: ${{ inputs.aws_elb_app_port }}
+        AWS_ELB_LISTEN_PORT: ${{ inputs.aws_elb_listen_port }}
+        AWS_ELB_HEALTHCHECK: ${{ inputs.aws_elb_healthcheck }}
+                
+        # AWS EFS
+        AWS_EFS_CREATE: ${{ inputs.aws_efs_create }}
+        AWS_EFS_CREATE_HA: ${{ inputs.aws_efs_create_ha }}
+        AWS_EFS_CREATE_REPLICA: ${{ inputs.aws_efs_create_replica }}
+        AWS_EFS_ENABLE_BACKUP_POLICY: ${{ inputs.aws_efs_enable_backup_policy }}
+        AWS_EFS_ZONE_MAPPING: ${{ inputs.aws_efs_zone_mapping }}
+        AWS_EFS_TRANSITION_TO_INACTIVE: ${{ inputs.aws_efs_transition_to_inactive }}
+        AWS_EFS_REPLICATION_DESTINATION: ${{ inputs.aws_efs_replication_destination }}
+        AWS_EFS_MOUNT_ID: ${{ inputs.aws_efs_mount_id }}
+        AWS_EFS_MOUNT_SECURITY_GROUP_ID: ${{ inputs.aws_efs_mount_security_group_id }}
+        AWS_EFS_MOUNT_TARGET: ${{ inputs.aws_efs_mount_target }}
+        AWS_EFS_EC2_MOUNT_POINT: ${{ inputs.aws_efs_ec2_mount_point }}
+
+        # AWS RDS
+        AWS_POSTGRES_ENABLE: ${{ inputs.aws_postgres_enable }}
+        AWS_POSTGRES_ENGINE:  ${{ inputs.aws_postgres_engine }}
+        AWS_POSTGRES_ENGINE_VERSION:  ${{ inputs.aws_postgres_engine_version }}
+        AWS_POSTGRES_INSTANCE_CLASS: ${{ inputs.aws_postgres_instance_class }}
+        AWS_POSTGRES_SECURITY_GROUP_NAME: ${{ inputs.aws_postgres_security_group_name }}
+        AWS_POSTGRES_SUBNETS: ${{ inputs.aws_postgres_subnets }}
+        AWS_POSTGRES_DATABASE_NAME: ${{ inputs.aws_postgres_database_name }}
+        AWS_POSTGRES_DATABASE_PORT: ${{ inputs.aws_postgres_database_port}}
+
+        # Docker
+        DOCKER_INSTALL: ${{ inputs.docker_install }}
+        DOCKER_REPO_APP_DIRECTORY: ${{ inputs.docker_repo_app_directory }}
+        DOCKER_EFS_MOUNT_TARGET: ${{ inputs.docker_efs_mount_target }}
+
+      run: |
+        echo "running operations/_scripts/deploy/deploy.sh"
+        $GITHUB_ACTION_PATH/operations/_scripts/deploy/deploy.sh
+        echo "running operations/_scripts/deploy/export_vars.sh"
+        $GITHUB_ACTION_PATH/operations/_scripts/deploy/export_vars.sh
+
+    # output results to GitHub
+    - if: ${{ success() && steps.deploy.outputs.vm_url != '' }}
+      name: Print result created
+      shell: bash
+      run: |
+        echo "## VM Created! :rocket:" >> $GITHUB_STEP_SUMMARY
+        echo " ${{ steps.deploy.outputs.vm_url }}" >> $GITHUB_STEP_SUMMARY
+    - if: ${{ success() && steps.deploy.outputs.vm_url == '' && inputs.tf_stack_destroy != 'true' }}
+      name: Print result destroyed
+      shell: bash
+      run: |
+        echo "## Deploy finished! But no URL found. :thinking: " >> $GITHUB_STEP_SUMMARY
+        echo "If expecting an URL, please check the logs for possible  errors." >> $GITHUB_STEP_SUMMARY
+        echo "If you consider this is a bug in the Github Action, please submit an issue to our repo." >> $GITHUB_STEP_SUMMARY
+    - if: ${{ success() && steps.deploy.outputs.vm_url == '' && inputs.tf_stack_destroy == 'true' && inputs.tf_state_bucket_destroy != 'true' }}
+      name: Print result destroyed
+      shell: bash
+      run: |
+        echo "## VM Destroyed! :boom:" >> $GITHUB_STEP_SUMMARY
+        echo "Infrastructure should be gone now!" >> $GITHUB_STEP_SUMMARY
+    - if: ${{ success() && steps.deploy.outputs.vm_url == '' && inputs.tf_stack_destroy == 'true' && inputs.tf_state_bucket_destroy == 'true' }}
+      name: Print result destroyed
+      shell: bash
+      run: |
+        echo "## VM Destroyed! :boom:" >> $GITHUB_STEP_SUMMARY
+        echo "Buckets and infrastructure should be gone now!" >> $GITHUB_STEP_SUMMARY
+    - if: ${{ failure() }} 
+      name: Print error result
+      shell: bash
+      run: |
+        echo "## Workflow failed to run :fire:" >> $GITHUB_STEP_SUMMARY
+        echo "Please check the logs for possible errors." >> $GITHUB_STEP_SUMMARY
+        echo "If you consider this is a bug in the Github Action, please submit an issue to our repo." >> $GITHUB_STEP_SUMMARY
