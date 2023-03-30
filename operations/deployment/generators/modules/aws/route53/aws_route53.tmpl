@@ -56,7 +56,7 @@ locals {
       "$${local.protocol}$${var.aws_r53_domain_name}$${local.public_port}" :
       "$${local.protocol}$${var.aws_r53_sub_domain_name}.$${var.aws_r53_domain_name}$${local.public_port}"
     ) :
-  "$${local.protocol}://$${aws_elb.${elb_resource_string}.dns_name}$${local.public_port}")
+  "$${local.protocol}$${aws_elb.${elb_resource_string}.dns_name}$${local.public_port}")
 
   fqdn_provided = (
     (var.aws_r53_domain_name != "") ?
