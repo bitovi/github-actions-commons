@@ -5,7 +5,7 @@ set -e
 
 echo "BitOps Ansible before script: Merge Terraform Enviornment Variables..."
 
-ANSIBLE_DIR=ansible/docker
+ANSIBLE_DIR=ansible/clone_repo
 
 echo "PWD"
 pwd
