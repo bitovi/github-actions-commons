@@ -18,13 +18,13 @@ echo "ENVROOT-Terra"
 ls -lah ${BITOPS_ENVROOT}/terraform/
 
 # Merging order
-order=tf,efs,postgres,repo,ghv,ghs,aws
+order=ec2,efs,postgres,repo,ghv,ghs,aws
 
 # Ansible dotenv file -> The final destination of all
 ENV_OUT_FILE="${BITOPS_ENVROOT}/${ANSIBLE_DIR}/app.env"
 
 # TF dotenv file
-ENV_TF_FILE="${BITOPS_ENVROOT}/terraform/tf.env"
+ENV_EC2_FILE="${BITOPS_ENVROOT}/terraform/ec2.env"
 
 # EFS dotenv file
 ENV_EFS_FILE="${BITOPS_ENVROOT}/terraform/efs.env"
@@ -81,9 +81,9 @@ function process {
       # Code to be executed for option4
       merge $ENV_GHS_FILE "GH-Secret"
       ;;
-    tf)
+    ec2)
       # Code to be executed for option5
-      merge $ENV_TF_FILE "Terraform"
+      merge $ENV_EC2_FILE "EC2"
       ;;
     efs)
       # Code to be executed for option6
