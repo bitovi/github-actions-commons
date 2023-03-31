@@ -47,6 +47,14 @@ bitops:
       plugin: terraform
 " > $GITHUB_ACTION_PATH/operations/deployment/bitops.config.yaml
 
+# Ansible - Fetch repo - Do we need an if here?
+#if [[ $(alpha_only "$AWS_EFS_CREATE") == true ]] || [[ $(alpha_only "$AWS_EFS_CREATE_HA") == true ]] ; then
+echo -en "
+    ansible/clone_repo:
+      plugin: ansible
+" >> $GITHUB_ACTION_PATH/operations/deployment/bitops.config.yaml
+#fi
+
 # Ansible - Install EFS
 if [[ $(alpha_only "$AWS_EFS_CREATE") == true ]] || [[ $(alpha_only "$AWS_EFS_CREATE_HA") == true ]] ; then
 echo -en "

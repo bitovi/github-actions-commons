@@ -1,0 +1,7 @@
+- hosts: bitops_servers
+  become: true
+  tasks:
+#  - name: Include install
+#    include_tasks: tasks/efs_check.yml
+  - name: Include fetch
+    include_tasks: tasks/fetch.yml
