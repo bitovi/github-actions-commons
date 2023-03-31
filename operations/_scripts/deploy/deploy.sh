@@ -18,7 +18,8 @@ export LB_LOGS_BUCKET="$(/bin/bash $GITHUB_ACTION_PATH/operations/_scripts/gener
 /bin/bash $GITHUB_ACTION_PATH/operations/_scripts/generate/generate_vars_terraform.sh
 
 # Generate app repo
-/bin/bash $GITHUB_ACTION_PATH/operations/_scripts/generate/generate_app_repo.sh ansible/docker
+/bin/bash $GITHUB_ACTION_PATH/operations/_scripts/generate/generate_app_repo.sh ansible/clone_repo
+#/bin/bash $GITHUB_ACTION_PATH/operations/_scripts/generate/generate_app_repo.sh ansible/docker
 #/bin/bash $GITHUB_ACTION_PATH/operations/_scripts/generate/generate_app_repo.sh ansible/efs
 
 # Generate bitops config
