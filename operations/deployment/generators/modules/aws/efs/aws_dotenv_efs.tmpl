@@ -1,0 +1,8 @@
+resource "local_file" "efs-dotenv" {
+  filename = format("%s/%s", abspath(path.root), "efs.env")
+  content  = <<-EOT
+#### EFS
+HOST_DIR="${var.app_install_root}/${var.app_repo_name}/$${var.aws_efs_ec2_mount_point}"
+TARGET_DIR="${var.docker_efs_mount_target}"
+EOT
+}
