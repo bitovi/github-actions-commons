@@ -1,5 +1,5 @@
 - name: Check if HOST variable is defined
-  shell: "grep '^HOST=' {{ app_install_root }}/{{ app_repo_name }}/.env"
+  shell: "grep '^HOST_DIR=' {{ app_install_root }}/{{ app_repo_name }}/.env"
   register: host_variable
   changed_when: false
   failed_when: false
@@ -10,16 +10,6 @@
   changed_when: false
   failed_when: false
   when: host_variable.stdout == ""
-    
-- name: Check if efs mount directory is present
-  stat:
-    path: "{{ nfs_mount_path.stdout }}"
-  register: check_efs_mount
-
-- name: Stat test
-  debug:
-    msg: "The file or directory exists"
-  when: check_efs_mount.stat.exists
 
 - name: Unmount the NFS volume
   shell: "umount {{ nfs_mount_path.stdout }} || umount -f {{ nfs_mount_path.stdout }} || umount -fl {{ nfs_mount_path.stdout }}"
