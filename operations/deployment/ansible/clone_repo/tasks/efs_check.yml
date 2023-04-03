@@ -1,15 +1,14 @@
 - name: Find and unmount EFS volume
   vars:
-    folder_a_path: "/path/to/FOLDER-A"
     file_env_path: "{{ app_install_root }}/{{ app_repo_name }}/.env"
   tasks:
     - name: Check if HOST variable is defined
-      shell: "grep '^HOST=' {{ file_env_path }}"
+      shell: "grep -c '^HOST=' {{ file_env_path }}"
       register: host_variable
       changed_when: false
       failed_when: false
     - name: Find the mounted NFS volume
-      shell: "mount | grep '{{ mount_options }}' | awk '{print $3}'"
+      shell: "mount | grep -c '{{ mount_options }}' | awk '{print $3}'"
       register: nfs_mount_path
       changed_when: false
       failed_when: false
