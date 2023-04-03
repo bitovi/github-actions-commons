@@ -78,7 +78,7 @@ resource "aws_efs_file_system" "efs" {
 
 resource "aws_security_group" "efs_security_group" {
   count  = local.create_efs ? 1 : 0
-  name   = "${var.aws_resource_identifier}-security-group"
+  name   = "SG for ${var.aws_resource_identifier} - EFS"
   vpc_id = data.aws_vpc.default.id
 
   ingress {
@@ -105,7 +105,7 @@ resource "aws_security_group" "efs_security_group" {
   }
 
   tags = {
-    Name = "${var.aws_resource_identifier}-security-group"
+    Name = "${var.aws_resource_identifier}-efs-sg"
   }
 }
 
