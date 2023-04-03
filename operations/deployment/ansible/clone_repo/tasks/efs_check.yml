@@ -1,28 +1,27 @@
-- name: Find and unmount EFS volume
-  vars:
-    file_env_path: "{{ app_install_root }}/{{ app_repo_name }}/.env"
-  tasks:
-    - name: Check if HOST variable is defined
-      shell: "grep -c '^HOST=' {{ file_env_path }}"
-      register: host_variable
-      changed_when: false
-      failed_when: false
-    - name: Find the mounted NFS volume
-      shell: "mount | grep -c '{{ mount_options }}' | awk '{print $3}'"
-      register: nfs_mount_path
-      changed_when: false
-      failed_when: false
-      when: host_variable.stdout == ""
-    - name: Unmount the NFS volume
-      mount:
-        path: "{{ nfs_mount_path.stdout }}"
-        state: unmounted
-      become: true
-      when: nfs_mount_path.stdout != "" and host_variable.stdout == ""
-    - name: Remove entry from /etc/fstab
-      lineinfile:
-        path: /etc/fstab
-        regexp: "{{ nfs_mount_path.stdout }}.*{{ mount_options }}"
-        state: absent
-      become: true
-      when: nfs_mount_path.stdout != "" and host_variable.stdout == ""
+- name: Check if HOST variable is defined
+  shell: "grep -c '^HOST=' {{ app_install_root }}/{{ app_repo_name }}/.env"
+  register: host_variable
+  changed_when: false
+  failed_when: false
+
+- name: Find the mounted NFS volume
+  shell: "mount | grep -c '{{ mount_options }}' | awk '{print $3}'"
+  register: nfs_mount_path
+  changed_when: false
+  failed_when: false
+  when: host_variable.stdout == ""
+
+- name: Unmount the NFS volume
+  mount:
+    path: "{{ nfs_mount_path.stdout }}"
+    state: unmounted
+  become: true
+  when: nfs_mount_path.stdout != "" and host_variable.stdout == ""
+  
+- name: Remove entry from /etc/fstab
+  lineinfile:
+    path: /etc/fstab
+    regexp: "{{ nfs_mount_path.stdout }}.*{{ mount_options }}"
+    state: absent
+  become: true
+  when: nfs_mount_path.stdout != "" and host_variable.stdout == ""
