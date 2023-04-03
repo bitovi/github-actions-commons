@@ -1,5 +1,5 @@
 - name: Check if HOST variable is defined
-  shell: "grep -c '^HOST=' {{ app_install_root }}/{{ app_repo_name }}/.env"
+  shell: "grep '^HOST=' {{ app_install_root }}/{{ app_repo_name }}/.env"
   register: host_variable
   changed_when: false
   failed_when: false
