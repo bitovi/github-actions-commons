@@ -17,7 +17,7 @@
     path: "{{ nfs_mount_path.stdout }}"
     state: unmounted
   become: true
-  when: nfs_mount_path.stdout != "" and host_variable.stdout == ""
+  when: host_variable.stdout == "" and nfs_mount_path.stdout != ""
 
 - name: Remove entry from /etc/fstab
   lineinfile:
@@ -25,4 +25,4 @@
     regexp: "{{ nfs_mount_path.stdout }}.*'{{ mount_options }}'"
     state: absent
   become: true
-  when: nfs_mount_path.stdout != "" and host_variable.stdout == ""
+  when: host_variable.stdout == "" and nfs_mount_path.stdout != ""
