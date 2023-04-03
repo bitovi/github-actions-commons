@@ -11,12 +11,21 @@
   failed_when: false
   when: host_variable.stdout == ""
     
-- name: Unmount the NFS volume
-  mount:
+- name: Check if efs mount directory is present
+  stat:
+    path: "{{ nfs_mount_path.stdout }}"
+  register: check_efs_mount
+
+- name: Stat test
+  debug:
+    msg: "The file or directory exists"
+  when: check_efs_mount.stat.exists
+
+- name: Unmount efs volume
+  ansible.posix.mount:
     path: "{{ nfs_mount_path.stdout }}"
     state: unmounted
-  become: true
-  when: host_variable.stdout == "" and nfs_mount_path.stdout != ""
+  when: check_efs_mount.stat.exists
 
 - name: Remove entry from /etc/fstab
   lineinfile:
@@ -24,4 +33,4 @@
     regexp: "{{ nfs_mount_path.stdout }}.*'{{ mount_options }}'"
     state: absent
   become: true
-  when: host_variable.stdout == "" and nfs_mount_path.stdout != ""
+  when: check_efs_mount.stat.exists
