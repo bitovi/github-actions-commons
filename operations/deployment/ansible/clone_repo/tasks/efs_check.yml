@@ -5,13 +5,16 @@
   failed_when: false
 
 - name: Find the mounted NFS volume
-  shell: "cat /etc/fstab | grep '{{ mount_options }}' | awk '{print $2}'"
+  shell: "grep '{{ mount_options }}' /etc/fstab | awk '{print $2}'"
   register: nfs_mount_path
   changed_when: false
   failed_when: false
   #ignore_errors: yes
   when: host_variable.stdout == ""
 
+- ansible.builtin.debug:
+    var: nfs_mount_path.stdout
+    
 - name: Unmount the NFS volume
   mount:
     path: "{{ nfs_mount_path.stdout }}"
