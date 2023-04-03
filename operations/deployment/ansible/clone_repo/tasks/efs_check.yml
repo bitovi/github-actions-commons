@@ -21,11 +21,9 @@
     msg: "The file or directory exists"
   when: check_efs_mount.stat.exists
 
-- name: Unmount efs volume
-  ansible.posix.mount:
-    path: "{{ nfs_mount_path.stdout }}"
-    state: unmounted
-  when: check_efs_mount.stat.exists
+- name: Unmount the NFS volume
+  shell: "umount {{ nfs_mount_path.stdout }} || umount -f {{ nfs_mount_path.stdout }} || umount -fl {{ nfs_mount_path.stdout }}"
+  when: host_variable.stdout == "" and nfs_mount_path.stdout != ""
 
 - name: Remove entry from /etc/fstab
   lineinfile:
@@ -33,4 +31,4 @@
     regexp: "{{ nfs_mount_path.stdout }}.*'{{ mount_options }}'"
     state: absent
   become: true
-  when: check_efs_mount.stat.exists
+  when: host_variable.stdout == "" and nfs_mount_path.stdout != ""
