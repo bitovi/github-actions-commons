@@ -17,7 +17,7 @@
 
 - name: Deletes efs mount directory
   file:
-    path: "{{ app_install_root }}/{{ app_repo_name }}/{{ aws_efs_ec2_mount_point }}"
+    path: "{{ nfs_mount_path.stdout }}"
     state: absent
   when: host_variable.stdout == "" and nfs_mount_path.stdout != ""
 
