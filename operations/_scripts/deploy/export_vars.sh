@@ -12,5 +12,5 @@ if [ "$TF_STACK_DESTROY" != "true" ]; then
     echo "BO_OUT is not a file or it's empty"
   fi
 else
-  echo "Destrit execution. No variables to be exported."
+  echo "Destroy process executed. No variables to be exported."
 fi

@@ -1,8 +1,6 @@
 - hosts: bitops_servers
   become: true
   tasks:
-  - name: Include install
-    include_tasks: tasks/install.yml
   - name: Include fetch
     include_tasks: tasks/fetch.yml
   - name: Mount efs
