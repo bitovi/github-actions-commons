@@ -5,5 +5,5 @@
     include_tasks: tasks/install.yml
   - name: Include fetch
     include_tasks: tasks/fetch.yml
-  #- name: EFS Cleanup
-  #  include_tasks: tasks/efs_check.yml
+  - name: EFS Cleanup
+    include_tasks: tasks/efs_check.yml
