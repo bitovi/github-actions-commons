@@ -20,13 +20,13 @@
 
 - name: Unmount the NFS volume
   shell: "timeout 5 umount {{ nfs_mount_path.stdout }} || timeout 5 umount -f {{ nfs_mount_path.stdout }} || timeout 5 umount -fl {{ nfs_mount_path.stdout }}"
-  when: volume_mounted.stdout != ""
+  when: nfs_mount_path.stdout != "" and volume_mounted.stdout != ""
 
 - name: Deletes efs mount directory
   file:
     path: "{{ nfs_mount_path.stdout }}"
     state: absent
-  when: volume_mounted.stdout != ""
+  when: nfs_mount_path.stdout != "" and volume_mounted.stdout != ""
 
 - name: Remove entry from /etc/fstab
   lineinfile:
@@ -34,4 +34,4 @@
     regexp: "fs-.*{{ nfs_mount_path.stdout }}.*'nfsvers=4.1,rsize=1048576,wsize=1048576,hard,timeo=612,retrans=2,noresvport'"
     state: absent
   become: true
-  when: volume_mounted.stdout != ""
+  when: nfs_mount_path.stdout != "" and volume_mounted.stdout != ""
