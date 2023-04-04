@@ -33,15 +33,6 @@
   become: yes
   when: not check_efs_utils.stat.exists
 
-#- name: Check if mount directory is present
-#  ansible.builtin.shell: 
-#    cmd: |
-#      timeout 3 stat {{ app_install_root }}/{{ app_repo_name }}/{{ aws_efs_ec2_mount_point }}/
-#      echo $?
-#  #stat:
-#  #  path: "{{ app_install_root }}/{{ app_repo_name }}/{{ aws_efs_ec2_mount_point }}/"
-#  register: check_efs_mount
-
 - name: Find the mounted NFS volume
   shell: "grep 'nfsvers=4.1,rsize=1048576,wsize=1048576,hard,timeo=612,retrans=2,noresvport' /etc/fstab | awk '{print $2}'"
   register: nfs_mount_path
