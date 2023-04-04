@@ -18,7 +18,7 @@
 - name: Remove entry from /etc/fstab
   lineinfile:
     path: /etc/fstab
-    regexp: "{{ nfs_mount_path.stdout }}.*'{{ mount_options }}'"
+    regexp: "{{ nfs_mount_path.stdout }}.*'nfsvers=4.1,rsize=1048576,wsize=1048576,hard,timeo=612,retrans=2,noresvport'"
     state: absent
   become: true
   when: host_variable.stdout == "" and nfs_mount_path.stdout != ""
