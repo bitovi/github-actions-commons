@@ -62,4 +62,4 @@
     fstype: nfs4
     state: mounted
     boot: false
-  when: nfs_mount_path.stdout == "" and not check_efs_utils.stat.exists 
+  when: nfs_mount_path.stdout == ""
