@@ -12,7 +12,7 @@
   when: host_variable.stdout == ""
 
 - name: Unmount the NFS volume
-  shell: "umount {{ nfs_mount_path.stdout }} || umount -f {{ nfs_mount_path.stdout }} || umount -fl {{ nfs_mount_path.stdout }}"
+  shell: "timeout 5 umount {{ nfs_mount_path.stdout }} || timeout 5 umount -f {{ nfs_mount_path.stdout }} || timeout 5 umount -fl {{ nfs_mount_path.stdout }}"
   when: host_variable.stdout == "" and nfs_mount_path.stdout != ""
 
 - name: Remove entry from /etc/fstab
