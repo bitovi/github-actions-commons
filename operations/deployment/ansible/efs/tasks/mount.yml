@@ -34,15 +34,19 @@
   when: not check_efs_utils.stat.exists
 
 - name: Check if mount directory is present
-  stat:
-    path: "{{ app_install_root }}/{{ app_repo_name }}/{{ aws_efs_ec2_mount_point }}/"
+  ansible.builtin.shell: 
+    cmd: |
+      timeout 3 stat {{ app_install_root }}/{{ app_repo_name }}/{{ aws_efs_ec2_mount_point }}/
+      echo $?
+  #stat:
+  #  path: "{{ app_install_root }}/{{ app_repo_name }}/{{ aws_efs_ec2_mount_point }}/"
   register: check_efs_mount
 
 - name: Creates efs mount directory
   file:
     path: "{{ app_install_root }}/{{ app_repo_name }}/{{ aws_efs_ec2_mount_point }}"
     state: directory
-  when: not check_efs_mount.stat.exists
+  when: not check_efs_mount.stdout
 
 - name: Mount efs volume
   ansible.posix.mount:
