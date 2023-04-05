@@ -1,0 +1,7 @@
+resource "local_file" "ec2-dotenv" {
+  filename = format("%s/%s", abspath(path.root), "ec2.env")
+  content  = <<-EOT
+#### EC2 values
+AWS_INSTANCE_URL="${aws_instance.server.public_dns}"
+EOT
+}
