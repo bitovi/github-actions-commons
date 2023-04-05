@@ -32,6 +32,18 @@ variable "aws_ec2_ami_id" {
   default     = ""
 }
 
+variable "aws_ec2_ami_filter" {
+  type        = string
+  description = "AWS AMI Filter string. Will be used to lookup for lates image based on the string."
+  default     = "ubuntu/images/hvm-ssd/ubuntu-jammy-22.04-amd64-server-*"
+}
+
+variable "aws_ec2_ami_owner" {
+  type        = string
+  description = "Owner of AWS AMI image. This ensures the provider is the one we are looking for."
+  default     = "099720109477"
+}
+
 variable "aws_ec2_iam_instance_profile" {
   type        = string
   description = "IAM role for the ec2 instance"

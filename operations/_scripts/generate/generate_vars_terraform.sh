@@ -114,6 +114,8 @@ fi
 #-- EC2 Instance --#
 if [[ $(alpha_only "$AWS_EC2_INSTANCE_CREATE") == true ]]; then
   aws_ec2_instance_create=$(generate_var aws_ec2_instance_create $AWS_EC2_INSTANCE_CREATE)
+  aws_ec2_ami_filter=$(generate_var aws_ec2_ami_filter $AWS_EC2_AMI_FILTER)
+  aws_ec2_ami_owner=$(generate_var aws_ec2_ami_owner $AWS_EC2_AMI_OWNER)
   aws_ec2_ami_id=$(generate_var aws_ec2_ami_id $AWS_EC2_AMI_ID)
   # aws_ec2_iam_instance_profile=$(generate_var aws_ec2_iam_instance_profile AWS_EC2_IAM_INSTANCE_PROFILE - Special case
   aws_ec2_instance_type=$(generate_var aws_ec2_instance_type $AWS_EC2_INSTANCE_TYPE)
@@ -225,6 +227,8 @@ $aws_additional_tags
 $env_aws_secret
 
 #-- EC2 --#
+$aws_ec2_ami_filter
+$aws_ec2_ami_owner
 $aws_ec2_ami_id
 $aws_ec2_iam_instance_profile
 $aws_ec2_instance_type
