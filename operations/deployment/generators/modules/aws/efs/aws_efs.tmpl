@@ -76,40 +76,6 @@ resource "aws_efs_file_system" "efs" {
   }
 }
 
-#resource "aws_security_group" "efs_security_group" {
-#  count  = local.create_efs ? 1 : 0
-#  name   = "SG for ${var.aws_resource_identifier} - EFS"
-#  vpc_id = data.aws_vpc.default.id
-#
-#  ingress {
-#    description = "TLS from VPC"
-#    from_port   = 443
-#    to_port     = 443
-#    protocol    = "tcp"
-#    cidr_blocks = ["0.0.0.0/0"]
-#  }
-#
-#  ingress {
-#    description = "HTTP from VPC"
-#    from_port   = 80
-#    to_port     = 80
-#    protocol    = "tcp"
-#    cidr_blocks = ["0.0.0.0/0"]
-#  }
-#
-#  egress {
-#    from_port   = 0
-#    to_port     = 0
-#    protocol    = "-1"
-#    cidr_blocks = ["0.0.0.0/0"]
-#  }
-#
-#  tags = {
-#    Name = "${var.aws_resource_identifier}-efs-sg"
-#  }
-#}
-
-
 resource "aws_security_group" "efs_security_group" {
   count  = local.create_efs ? 1 : 0
   name   = "SG for ${var.aws_resource_identifier} - EFS"

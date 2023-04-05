@@ -99,6 +99,8 @@ The following inputs can be used as `step.with` keys
 | Name             | Type    | Description                        |
 |------------------|---------|------------------------------------|
 | `aws_ec2_instance_create` | Boolean | Set to `true` if you wish to create an EC2 instance. (Default is `false`). |
+| `aws_ec2_ami_filter` | String | AWS AMI Filter string. Will be used to lookup for lates image based on the string. Defaults to `ubuntu/images/hvm-ssd/ubuntu-jammy-22.04-amd64-server-*`.' |
+| `aws_ec2_ami_owner` | String | 'Owner of AWS AMI image. This ensures the provider is the one we are looking for. Defaults to `099720109477`, Canonical (Ubuntu).' |
 | `aws_ec2_ami_id` | String | AWS AMI ID. Will default to latest Ubuntu 22.04 server image (HVM). Accepts `ami-###` values. |
 | `aws_ec2_iam_instance_profile` | String | The AWS IAM instance profile to use for the EC2 instance. Default is `${GITHUB_ORG_NAME}-${GITHUB_REPO_NAME}-${GITHUB_BRANCH_NAME}`|
 | `aws_ec2_instance_type` | String | The AWS IAM instance type to use. Default is `t2.small`. See [this list](https://aws.amazon.com/ec2/instance-types/) for reference. |
@@ -182,6 +184,12 @@ We limit this to a 60 characters string because some AWS resources have a length
 We use the kubernetes style for this. For example, kubernetes -> k(# of characters)s -> k8s. And so you might see some compressions are made.
 
 For some specific resources, we have a 32 characters limit. If the identifier length exceeds this number after compression, we remove the middle part and replace it for a hash made up from the string itself. 
+
+## Note about AWS EC2 AMI image selection
+
+As it is defined right now, we expect a Debian based packet manager, so we require Debian based images that suports apt repos. 
+This action is tested with Ubuntu 22 server image. (As the default.) We cannot ensure it will work on different specific distributions. 
+If this is a requirement for you, feel free to open an issue and/or a pull request. 
 
 ### S3 buckets naming
 
