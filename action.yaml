@@ -257,8 +257,8 @@ runs:
 
         # EC2 Instance
         AWS_EC2_INSTANCE_CREATE: ${{ inputs.aws_ec2_instance_create }}
-        AWS_ECS_AMI_FILTER: ${{ inputs.aws_ec2_ami_filter }}
-        AWS_ECS_AMI_OWNER: ${{ inputs.aws_ec2_ami_owner }}
+        AWS_EC2_AMI_FILTER: ${{ inputs.aws_ec2_ami_filter }}
+        AWS_EC2_AMI_OWNER: ${{ inputs.aws_ec2_ami_owner }}
         AWS_EC2_AMI_ID: ${{ inputs.aws_ec2_ami_id }}
         AWS_EC2_IAM_INSTANCE_PROFILE: ${{ inputs.aws_ec2_iam_instance_profile }}
         AWS_EC2_INSTANCE_TYPE: ${{ inputs.aws_ec2_instance_type }} 
