@@ -95,11 +95,15 @@ echo "GH_CALLING_REPO/GH_INPUT_ANSIBLE"
 echo "$GH_CALLING_REPO/$GH_INPUT_ANSIBLE"
 echo GH_INPUT_ANSIBLE_PLAYBOOK
 echo $GH_INPUT_ANSIBLE_PLAYBOOK
+GH_CALLING_REPO=${GH_CALLING_REPO%%/home/runner/work/_actions/*/*/*}
+echo "New GH Calling Repo ----> $GH_CALLING_REPO"
 
 if [ -n "$GH_CALLING_REPO" ]; then
   #  ANSIBLE PART
+  echo "Inside ansible part"
   if [ -n "$GH_INPUT_ANSIBLE" ]; then
     GH_INPUT_ANSIBLE_PATH="$GH_CALLING_REPO/$GH_INPUT_ANSIBLE"
+    echo "GH_INPUT_ANSIBLE_PATH -> $GH_INPUT_ANSIBLE_PATH"
     if [ -s "$GH_INPUT_ANSIBLE_PATH/$GH_INPUT_ANSIBLE_PLAYBOOK" ]; then
       echo " --> Moving $GH_INPUT_ANSIBLE_PATH"
       ls -lah "$GH_INPUT_ANSIBLE_PATH"
