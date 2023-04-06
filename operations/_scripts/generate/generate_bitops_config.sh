@@ -27,6 +27,12 @@ targets="$targets
     - random_integer.az_select"
 targets_attribute="$targets_attribute $targets"
 
+
+ls -lah $GH_CALLING_REPO
+echo "Actions folder:"
+ls -al /home/runner/work/_actions
+
+
 # Terraform Bitops Config
 echo -en "
 terraform:
@@ -76,4 +82,51 @@ echo -en "
     st2:
       plugin: ansible
 " >> $GITHUB_ACTION_PATH/operations/deployment/bitops.config.yaml
+fi
+
+# Generate GH Incoming pieces
+
+
+echo GH_CALLING_REPO
+echo $GH_CALLING_REPO
+echo GH_INCOMING_ANSIBLE
+echo $GH_INCOMING_ANSIBLE
+echo "GH_CALLING_REPO/GH_INCOMING_ANSIBLE"
+echo "$GH_CALLING_REPO/$GH_INCOMING_ANSIBLE"
+echo GH_INPUT_ANSIBLE_PLAYBOOK
+echo $GH_INPUT_ANSIBLE_PLAYBOOK
+
+if [ -n "$GH_CALLING_REPO"]; then
+  #  ANSIBLE PART
+  if [ -n "$GH_INCOMING_ANSIBLE" ]; then
+    GH_INCONMIG_ANSIBLE_PATH="$GH_CALLING_REPO/$GH_INCOMING_ANSIBLE"
+    if [ -s "$GH_INCONMIG_ANSIBLE_PATH/$GH_INPUT_ANSIBLE_PLAYBOOK" ]; then
+      echo " --> Moving $GH_INCONMIG_ANSIBLE_PATH"
+      ls -lah "$GH_INCONMIG_ANSIBLE_PATH"
+      mv "$GH_INCONMIG_ANSIBLE_PATH" "$GITHUB_ACTION_PATH/operations/deployment/ansible/."
+  
+      if ! [ -s "$GH_INCOMING_ANSIBLE_PATH/bitops.config.yaml" ]; then
+
+echo -en "
+ansible:
+  cli:
+    main-playbook: $GH_INPUT_ANSIBLE_PLAYBOOK
+  options: {}
+" >  $GITHUB_ACTION_PATH/operations/deployment/ansible/$GH_INCOMING_ANSIBLE/bitops.config.yaml
+echo "Cating bitops.config.yaml"
+cat $GITHUB_ACTION_PATH/operations/deployment/ansible/$GH_INCOMING_ANSIBLE/bitops.config.yaml
+      fi
+
+      # Add Ansible - Incoming GH
+echo -en "
+    ansible/$GH_INCOMING_ANSIBLE:
+      plugin: ansible
+" >> $GITHUB_ACTION_PATH/operations/deployment/bitops.config.yaml
+echo "Cating MAIN bitops.config.yaml"
+$GITHUB_ACTION_PATH/operations/deployment/bitops.config.yaml
+    fi
+  fi
+  
+  # TERRAFORM PART
+  # TBC
 fi

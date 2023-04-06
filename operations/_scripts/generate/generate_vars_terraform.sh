@@ -4,11 +4,6 @@ set -e
 
 echo "In generate_vars_terraform.sh"
 
-echo "Calling repo: $CALLING_REPO"
-ls -lah $CALLING_REPO
-echo "Actions folder:"
-ls -al /home/runner/work/_actions
-
 # convert 'a,b,c'
 # to '["a","b","c"]'
 function comma_str_to_tf_array () {

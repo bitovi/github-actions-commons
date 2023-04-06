@@ -47,7 +47,8 @@ jobs:
 ## Customizing
 
 ### Inputs
-1. [Action main inputs](#action-main-inputs)
+1. [GitHub Calling repo inputs]{#github-calling-repo-inputs}
+1. [Action default inputs](#action-default-inputs)
 1. [AWS Specific](#aws-specific)
 1. [Secrets and Environment Variables](#secrets-and-environment-variables-inputs)
 1. [EC2](#ec2-inputs)
@@ -61,7 +62,17 @@ The following inputs can be used as `step.with` keys
 <br/>
 <br/>
 
-#### **Action defaults Inputs**
+#### **GitHub Calling repo inputs**
+| Name             | Type    | Description                        |
+|------------------|---------|------------------------------------|
+| `gh_calling_repo` | String | URL of calling repo |
+| `gh_input_terraform` | String | Folder to store Terraform files to be included during Terraform execution. |
+| `gh_input_ansible` | String | Folder where a whole Ansible structure is expected. If missing bitops.config.yaml a default will be generated. |
+| `gh_input_ansible_playbook` | String | Main playbook to be looked for. Defaults to `playbook.yml`. |
+<hr/>
+<br/>
+
+#### **Action default Inputs**
 | Name             | Type    | Description                        |
 |------------------|---------|------------------------------------|
 | `checkout` | Boolean | Set to `false` if the code is already checked out. (Default is `true`). |

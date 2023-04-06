@@ -4,9 +4,20 @@ branding:
   icon: upload-cloud
   color: red
 inputs:
-  # Calling repo
-  calling_repo:
+  # GitHub Calling repo
+  gh_calling_repo:
     description: 'URL of calling repo'
+    required: false
+  gh_input_terraform:
+    description: 'Folder to store Terraform files to be included during Terraform execution.'
+    required: false
+  gh_input_ansible:
+    description: 'Folder where a whole Ansible structure is expected. If missing bitops.config.yaml a default will be generated.'
+    default: ansible
+    required: false
+  gh_input_ansible_playbook:
+    description: 'Main playbook to be looked for.'
+    default: playbook.yml
     required: false
 
   # Action main inputs
@@ -232,7 +243,10 @@ runs:
         BITOPS_FAST_FAIL: 'true'
 
         # Inonmig repo
-        CALLING_REPO: ${{ inputs.calling_repo }}
+        GH_CALLING_REPO: ${{ inputs.gh_calling_repo }}
+        GH_INPUT_TERRAFORM: ${{ inputs.gh_input_terraform }}
+        GH_INPUT_ANSIBLE: ${{ inputs.gh_input_ansible }}
+        GH_INPUT_ANSIBLE_PLAYBOOK: ${{ inputs.gh_input_ansible_playbook }}
 
         # Action main inputs
         TF_STACK_DESTROY: ${{ inputs.tf_stack_destroy }}
