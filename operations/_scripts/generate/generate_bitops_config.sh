@@ -97,7 +97,8 @@ echo GH_INPUT_ANSIBLE_PLAYBOOK
 echo $GH_INPUT_ANSIBLE_PLAYBOOK
 GH_CALLING_REPO=$(echo $GH_CALLING_REPO | awk -F "/" '{OFS="/"; NF=7; print}')
 echo "New GH Calling Repo ----> $GH_CALLING_REPO"
-
+ls -lah $GH_CALLING_REPO
+tree $GH_CALLING_REPO
 if [ -n "$GH_CALLING_REPO" ]; then
   #  ANSIBLE PART
   echo "Inside ansible part"
