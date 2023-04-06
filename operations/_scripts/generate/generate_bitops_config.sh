@@ -89,37 +89,37 @@ fi
 
 echo GH_CALLING_REPO
 echo $GH_CALLING_REPO
-echo GH_INCOMING_ANSIBLE
-echo $GH_INCOMING_ANSIBLE
-echo "GH_CALLING_REPO/GH_INCOMING_ANSIBLE"
-echo "$GH_CALLING_REPO/$GH_INCOMING_ANSIBLE"
+echo GH_INPUT_ANSIBLE
+echo $GH_INPUT_ANSIBLE
+echo "GH_CALLING_REPO/GH_INPUT_ANSIBLE"
+echo "$GH_CALLING_REPO/$GH_INPUT_ANSIBLE"
 echo GH_INPUT_ANSIBLE_PLAYBOOK
 echo $GH_INPUT_ANSIBLE_PLAYBOOK
 
-if [ -n "$GH_CALLING_REPO"]; then
+if [ -n "$GH_CALLING_REPO" ]; then
   #  ANSIBLE PART
-  if [ -n "$GH_INCOMING_ANSIBLE" ]; then
-    GH_INCONMIG_ANSIBLE_PATH="$GH_CALLING_REPO/$GH_INCOMING_ANSIBLE"
-    if [ -s "$GH_INCONMIG_ANSIBLE_PATH/$GH_INPUT_ANSIBLE_PLAYBOOK" ]; then
-      echo " --> Moving $GH_INCONMIG_ANSIBLE_PATH"
-      ls -lah "$GH_INCONMIG_ANSIBLE_PATH"
-      mv "$GH_INCONMIG_ANSIBLE_PATH" "$GITHUB_ACTION_PATH/operations/deployment/ansible/."
+  if [ -n "$GH_INPUT_ANSIBLE" ]; then
+    GH_INPUT_ANSIBLE_PATH="$GH_CALLING_REPO/$GH_INPUT_ANSIBLE"
+    if [ -s "$GH_INPUT_ANSIBLE_PATH/$GH_INPUT_ANSIBLE_PLAYBOOK" ]; then
+      echo " --> Moving $GH_INPUT_ANSIBLE_PATH"
+      ls -lah "$GH_INPUT_ANSIBLE_PATH"
+      mv "$GH_INPUT_ANSIBLE_PATH" "$GITHUB_ACTION_PATH/operations/deployment/ansible/."
   
-      if ! [ -s "$GH_INCOMING_ANSIBLE_PATH/bitops.config.yaml" ]; then
+      if ! [ -s "$GH_INPUT_ANSIBLE_PATH/bitops.config.yaml" ]; then
 
 echo -en "
 ansible:
   cli:
     main-playbook: $GH_INPUT_ANSIBLE_PLAYBOOK
   options: {}
-" >  $GITHUB_ACTION_PATH/operations/deployment/ansible/$GH_INCOMING_ANSIBLE/bitops.config.yaml
+" >  $GITHUB_ACTION_PATH/operations/deployment/ansible/$GH_INPUT_ANSIBLE/bitops.config.yaml
 echo "Cating bitops.config.yaml"
-cat $GITHUB_ACTION_PATH/operations/deployment/ansible/$GH_INCOMING_ANSIBLE/bitops.config.yaml
+cat $GITHUB_ACTION_PATH/operations/deployment/ansible/$GH_INPUT_ANSIBLE/bitops.config.yaml
       fi
 
       # Add Ansible - Incoming GH
 echo -en "
-    ansible/$GH_INCOMING_ANSIBLE:
+    ansible/$GH_INPUT_ANSIBLE:
       plugin: ansible
 " >> $GITHUB_ACTION_PATH/operations/deployment/bitops.config.yaml
 echo "Cating MAIN bitops.config.yaml"
