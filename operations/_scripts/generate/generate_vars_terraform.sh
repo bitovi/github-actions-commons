@@ -140,7 +140,9 @@ fi
 if [[ $(alpha_only "$AWS_ELB_CREATE") == true ]]; then
   aws_elb_create=$(generate_var aws_elb_create $AWS_ELB_CREATE)
   aws_elb_app_port=$(generate_var aws_elb_app_port $AWS_ELB_APP_PORT)
+  aws_elb_app_protocol=$(generate_var aws_elb_app_protocol $AWS_ELB_APP_PROTOCOL)
   aws_elb_listen_port=$(generate_var aws_elb_listen_port $AWS_ELB_LISTEN_PORT)
+  aws_elb_listen_protocol=$(generate_var aws_elb_listen_protocol $AWS_ELB_LISTEN_PROTOCOL)
   aws_elb_healthcheck=$(generate_var aws_elb_healthcheck $AWS_ELB_HEALTHCHECK)
 fi
 
@@ -242,7 +244,9 @@ $aws_r53_create_sub_cert
 
 #-- ELB --#
 $aws_elb_app_port
+$aws_elb_app_protocol
 $aws_elb_listen_port
+$aws_elb_listen_protocol
 $aws_elb_healthcheck
 $lb_access_bucket_name
 

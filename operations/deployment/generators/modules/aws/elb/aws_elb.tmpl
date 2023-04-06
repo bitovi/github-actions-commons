@@ -52,9 +52,9 @@ resource "aws_elb" "${elb_resource_string}" {
 
   listener {
     instance_port     = var.aws_elb_app_port
-    instance_protocol = "tcp"
+    instance_protocol = var.aws_elb_app_protocol
     lb_port            = var.aws_elb_listen_port != "" ? var.aws_elb_listen_port : local.aws_elb_arn != "" ? 443 : 80
-    lb_protocol        = local.aws_elb_arn != "" ? "ssl": "tcp"
+    lb_protocol        = var.aws_elb_listen_protocol != "" ? var.aws_elb_listen_protocol : local.aws_elb_arn != "" ? "ssl": "tcp"
     ssl_certificate_id = local.aws_elb_arn
   }
 

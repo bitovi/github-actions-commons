@@ -133,17 +133,30 @@ variable "aws_elb_app_port" {
   default     = "3000"
   description = "app port"
 }
+
+variable "aws_elb_app_protocol" {
+  type        = string
+  default     = "tcp"
+  description = "Protocol to enable. Could be HTTP, HTTPS, TCP or SSL."
+}
+
 variable "aws_elb_listen_port" {
   type        = string
   default     = ""
   description = "Load balancer listening port. Defaults to 80 if NO FQDN provided, 443 if FQDN provided"
 }
+
+variable "aws_elb_listen_protocol" {
+  type        = string
+  default     = ""
+  description = "Protocol to enable. Could be HTTP, HTTPS, TCP or SSL. Defaults to TCP if NO FQDN provided, SSL if FQDN provided"
+}
+
 variable "aws_elb_healthcheck" {
   type        = string
   default     = ""
   description = "Load balancer health check string. Defaults to HTTP:aws_elb_app_port"
 }
-
 
 # AWS EFS
 

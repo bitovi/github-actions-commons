@@ -140,8 +140,14 @@ inputs:
   aws_elb_app_port:
     description: 'Port to expose for the app'
     required: false
+  aws_elb_app_protocol:
+    description: 'Protocol to enable. Could be HTTP, HTTPS, TCP or SSL. Defaults to TCP.'
+    required: false
   aws_elb_listen_port:
     description: 'Load balancer listening port. Defaults to 80 if NO FQDN provided, 443 if FQDN provided'
+    required: false
+  aws_elb_listen_protocol:
+    description: 'Protocol to enable. Could be HTTP, HTTPS, TCP or SSL. Defaults to TCP if NO FQDN provided, SSL if FQDN provided'
     required: false
   aws_elb_healthcheck: 
     description: 'Load balancer health check string. Defaults to HTTP:aws_elb_app_port'
@@ -294,7 +300,9 @@ runs:
         # AWS ELB
         AWS_ELB_CREATE: ${{ inputs.aws_elb_create }}
         AWS_ELB_APP_PORT: ${{ inputs.aws_elb_app_port }}
+        AWS_ELB_APP_PROTOCOL: ${{ inputs.aws_elb_app_protocol }}
         AWS_ELB_LISTEN_PORT: ${{ inputs.aws_elb_listen_port }}
+        AWS_ELB_LISTEN_PROTOCOL: ${{ inputs.aws_elb_listen_protocol }}
         AWS_ELB_HEALTHCHECK: ${{ inputs.aws_elb_healthcheck }}
                 
         # AWS EFS

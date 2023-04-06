@@ -130,7 +130,7 @@ echo -en "
       plugin: ansible
 " >> $GITHUB_ACTION_PATH/operations/deployment/bitops.config.yaml
 echo "Cating MAIN bitops.config.yaml"
-$GITHUB_ACTION_PATH/operations/deployment/bitops.config.yaml
+cat $GITHUB_ACTION_PATH/operations/deployment/bitops.config.yaml
     fi
   fi
   
