@@ -107,12 +107,9 @@ if [ -n "$GH_CALLING_REPO" ]; then
     echo "GH_INPUT_ANSIBLE_PATH -> $GH_INPUT_ANSIBLE_PATH"
     ls -lah $GH_INPUT_ANSIBLE_PATH
     if [ -s "$GH_INPUT_ANSIBLE_PATH/$GH_INPUT_ANSIBLE_PLAYBOOK" ]; then
-      echo " --> Moving $GH_INPUT_ANSIBLE_PATH"
       ls -lah "$GH_INPUT_ANSIBLE_PATH"
-      mv "$GH_INPUT_ANSIBLE_PATH" "$GITHUB_ACTION_PATH/operations/deployment/ansible/."
   
       if ! [ -s "$GH_INPUT_ANSIBLE_PATH/bitops.config.yaml" ]; then
-
 echo -en "
 ansible:
   cli:
@@ -123,9 +120,13 @@ echo "Cating bitops.config.yaml"
 cat $GITHUB_ACTION_PATH/operations/deployment/ansible/$GH_INPUT_ANSIBLE/bitops.config.yaml
       fi
 
+      echo " --> Moving $GH_INPUT_ANSIBLE_PATH"
+      mv "$GH_INPUT_ANSIBLE_PATH" "$GITHUB_ACTION_PATH/operations/deployment/ansible/incoming"
+
+
       # Add Ansible - Incoming GH
 echo -en "
-    ansible/$GH_INPUT_ANSIBLE:
+    ansible/incoming:
       plugin: ansible
 " >> $GITHUB_ACTION_PATH/operations/deployment/bitops.config.yaml
 echo "Cating MAIN bitops.config.yaml"
