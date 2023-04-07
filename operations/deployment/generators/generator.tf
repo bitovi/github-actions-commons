@@ -14,7 +14,7 @@ module "ec2" {
 }
 
 module "efs" {
-  count  = var.aws_efs_create || var.aws_efs_create_ha ? 1 : 0
+  count  = local.enable_efs ? 1 : 0
   source = "./modules/aws/efs"
 }
 
