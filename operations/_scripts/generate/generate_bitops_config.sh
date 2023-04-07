@@ -53,28 +53,28 @@ bitops:
       plugin: terraform
 " > $GITHUB_ACTION_PATH/operations/deployment/bitops.config.yaml
 
-if [[ "$(alpha_only $ANSIBLE_SKIP)" == "true" ]]; then
+if [[ "$(alpha_only $ANSIBLE_SKIP)" != "true" ]]; then
   # Ansible - Fetch repo - Do we need an if here?
   #if [[ $(alpha_only "$AWS_EFS_CREATE") == true ]] || [[ $(alpha_only "$AWS_EFS_CREATE_HA") == true ]] ; then
   echo -en "
-      ansible/clone_repo:
-        plugin: ansible
+    ansible/clone_repo:
+      plugin: ansible
   " >> $GITHUB_ACTION_PATH/operations/deployment/bitops.config.yaml
   #fi
   
   # Ansible - Install EFS
   if [[ $(alpha_only "$AWS_EFS_CREATE") == true ]] || [[ $(alpha_only "$AWS_EFS_CREATE_HA") == true ]] || [[ "$AWS_EFS_MOUNT_ID" != "" ]]; then
   echo -en "
-      ansible/efs:
-        plugin: ansible
+    ansible/efs:
+      plugin: ansible
   " >> $GITHUB_ACTION_PATH/operations/deployment/bitops.config.yaml
   fi
   
   # Ansible - Install Docker
   if [[ $(alpha_only "$DOCKER_INSTALL") == true ]]; then
   echo -en "
-      ansible/docker:
-        plugin: ansible
+    ansible/docker:
+      plugin: ansible
   " >> $GITHUB_ACTION_PATH/operations/deployment/bitops.config.yaml
   fi
 fi
@@ -98,7 +98,7 @@ tree $GH_CALLING_REPO
 if [ -n "$GH_CALLING_REPO" ]; then
   #  ANSIBLE PART
   echo "Inside ansible part"
-  if [ -n "$GH_INPUT_ANSIBLE" ] && [[ "$(alpha_only $ANSIBLE_SKIP)" == "true" ]]; then
+  if [ -n "$GH_INPUT_ANSIBLE" ] && [[ "$(alpha_only $ANSIBLE_SKIP)" != "true" ]]; then
     GH_INPUT_ANSIBLE_PATH="$GH_CALLING_REPO/$GH_INPUT_ANSIBLE"
     echo "GH_INPUT_ANSIBLE_PATH -> $GH_INPUT_ANSIBLE_PATH"
     ls -lah $GH_INPUT_ANSIBLE_PATH
@@ -132,9 +132,4 @@ cat $GITHUB_ACTION_PATH/operations/deployment/bitops.config.yaml
   
   # TERRAFORM PART
   # TBC
-fi
-
-
-if [[ "$(alpha_only $ANSIBLE_SKIP)" == "true" ]]; then
-  ansible_skip=$(generate_var ansible_skip $ANSIBLE_SKIP)
 fi
