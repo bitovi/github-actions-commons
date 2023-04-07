@@ -2,6 +2,11 @@
 
 #set -x
 
+# Removes anything from the variable and leave only alpha characters, and lowers them. This is to validate if boolean.
+function alpha_only() {
+    echo "$1" | tr -cd '[:alpha:]' | tr '[:upper:]' '[:lower:]'
+}
+
 echo "::group::In Deploy"
 GITHUB_REPO_NAME=$(echo $GITHUB_REPOSITORY | sed 's/^.*\///')
 
@@ -50,10 +55,15 @@ ls "$GITHUB_ACTION_PATH/operations/deployment/docker/app/${GITHUB_REPO_NAME}"
 
 
 TERRAFORM_COMMAND=""
-if [ "$TF_STACK_DESTROY" == "true" ]; then
+if [ "$(alpha_only $TF_STACK_DESTROY)" == "true" ]; then
   TERRAFORM_COMMAND="destroy"
-  ANSIBLE_SKIP_DEPLOY="true"
+  ANSIBLE_SKIP="true"
 fi
+
+if [ "$(alpha_only $ANSIBLE_SKIP)" == "true" ]; then
+  ANSIBLE_SKIP="true"
+fi
+
 echo "::endgroup::"
 
 if [[ $SKIP_BITOPS_RUN == "true" ]]; then
@@ -71,7 +81,7 @@ docker run --rm --name bitops \
 -e SKIP_DEPLOY_TERRAFORM="${SKIP_DEPLOY_TERRAFORM}" \
 -e SKIP_DEPLOY_HELM="${SKIP_DEPLOY_HELM}" \
 -e BITOPS_TERRAFORM_COMMAND="${TERRAFORM_COMMAND}" \
--e BITOPS_ANSIBLE_SKIP_DEPLOY="${ANSIBLE_SKIP_DEPLOY}" \
+-e BITOPS_ANSIBLE_SKIP_DEPLOY="${ANSIBLE_SKIP}" \
 -e TF_STATE_BUCKET="${TF_STATE_BUCKET}" \
 -e TF_STATE_BUCKET_DESTROY="${TF_STATE_BUCKET_DESTROY}" \
 -e DEFAULT_FOLDER_NAME="_default" \

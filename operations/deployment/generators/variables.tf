@@ -1,3 +1,7 @@
+variable "ansible_skip" {
+  type        = bool
+  default     = "false"
+}
 variable "aws_r53_enable_cert" {
   type        = bool
   default     = "false"
@@ -19,6 +23,11 @@ variable "aws_efs_create_ha" {
   type        = bool
   default     = "false"
 }
+variable "aws_efs_mount_id" {
+  type        = string
+  description = "ID of existing EFS"
+  default     = ""
+}
 variable "aws_elb_create" {
   type        = bool
   default     = "false"
@@ -36,10 +45,6 @@ variable "aws_r53_enable" {
   default     = "false"
 }
 variable "docker_install" {
-  type        = bool
-  default     = "false"
-}
-variable "st2_install" {
   type        = bool
   default     = "false"
 }

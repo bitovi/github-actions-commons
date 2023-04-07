@@ -147,7 +147,7 @@ if [[ $(alpha_only "$AWS_ELB_CREATE") == true ]]; then
 fi
 
 #-- AWS EFS --#
-if [[ $(alpha_only "$AWS_EFS_CREATE") == true ]] || [[ $(alpha_only "$AWS_EFS_CREATE_HA") == true ]] ; then
+if [[ $(alpha_only "$AWS_EFS_CREATE") == true ]] || [[ $(alpha_only "$AWS_EFS_CREATE_HA") == true ]] || [[ $AWS_EFS_MOUNT_ID != "" ]]; then
   aws_efs_create=$(generate_var aws_efs_create $AWS_EFS_CREATE)
   aws_efs_create_ha=$(generate_var aws_efs_create_ha $AWS_EFS_CREATE_HA)
   aws_efs_create_replica=$(generate_var aws_efs_create_replica $AWS_EFS_CREATE_REPLICA)
@@ -175,13 +175,13 @@ fi
 
 
 #-- ANSIBLE --#
+if [[ "$(alpha_only $ANSIBLE_SKIP)" == "true" ]]; then
+  ansible_skip=$(generate_var ansible_skip $ANSIBLE_SKIP)
+fi
+
 if [[ $(alpha_only "$DOCKER_INSTALL") == true ]]; then
   docker_install=$(generate_var docker_install $DOCKER_INSTALL)
   docker_efs_mount_target=$(generate_var docker_efs_mount_target $DOCKER_EFS_MOUNT_TARGET)
-fi
-
-if [[ $(alpha_only "$ST2_INSTALL") == true ]]; then
-  st2_install=$(generate_var st2_install $ST2_INSTALL)
 fi
 
 #-- Application --#
@@ -198,17 +198,18 @@ lb_access_bucket_name=$(generate_var lb_access_bucket_name $LB_LOGS_BUCKET)
 # -------------------------------------------------- #
 
 echo "
+$ansible_skip
 $aws_r53_enable_cert
 $aws_ec2_instance_create
 $aws_ec2_instance_public_ip
 $aws_efs_create
-$aws_elb_create
 $aws_efs_create_ha
+$aws_efs_mount_id
+$aws_elb_create
 $env_aws_secret
 $aws_postgres_enable
 $aws_r53_enable
 $docker_install
-$st2_install
 
 " > "${GITHUB_ACTION_PATH}/operations/deployment/generators/terraform.tfvars"
 

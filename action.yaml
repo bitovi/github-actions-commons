@@ -26,7 +26,7 @@ inputs:
     required: false
     default: 'true'
   tf_stack_destroy:
-    description: 'Set to "true" to Destroy the stack through terraform.'
+    description: 'Set to "true" to Destroy the stack through Terraform.'
     required: false
   tf_state_bucket:
     description: 'AWS S3 bucket to use for Terraform state. Defaults to `${org}-${repo}-{branch}-tf-state`'
@@ -40,6 +40,8 @@ inputs:
     default: 'aws'
   tf_targets:
     description: 'A list of targets to create before the full stack creation. Example: `'
+  ansible_skip:
+    description: 'Skip Ansible execution after Terraform excecution.'
     
   # AWS Specific
   aws_access_key_id:
@@ -187,7 +189,6 @@ inputs:
   aws_efs_ec2_mount_point:
     description: 'Directory path in EC2 Instance to mount the EFS volume. Default is `data`. Exported as `HOST_DIR` in `.env`'
     required: false
-    
   
   # AWS RDS
   aws_postgres_enable:
@@ -260,6 +261,7 @@ runs:
         TF_STATE_BUCKET_DESTROY: ${{ inputs.tf_state_bucket_destroy }}
         TF_STATE_BUCKET_PROVIDER: ${{ inputs.tf_state_bucket_provider }}
         TF_TARGETS: ${{ inputs.tf_targets }}
+        ANSIBLE_SKIP: ${{ inputs.ansible_skip }}
 
         # AWS Specific
         AWS_ACCESS_KEY_ID: ${{ inputs.aws_access_key_id }}

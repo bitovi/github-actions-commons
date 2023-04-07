@@ -81,6 +81,7 @@ The following inputs can be used as `step.with` keys
 | `tf_state_bucket_destroy` | Boolean | Force purge and deletion of S3 bucket defined. Any file contained there will be destroyed. `tf_stack_destroy` must also be `true`. Default is `false`. |
 | `tf_state_bucket_provider` | String | Bucket provider for Terraform State storage. [Disabled ATM, AWS as a default.] | 
 | `tf_targets` | List | A list of targets to create before the full stack creation. | 
+| `ansible_skip` | Boolean | Skip Ansible execution after Terraform excecution. |
 <hr/>
 <br/>
 
@@ -229,7 +230,7 @@ Users looking to add non-ephemeral storage to their created EC2 instance have th
 
 ### 1. Create EFS
 
-Option 1, you have access to the `aws_efs_create` attribute which will create a EFS resource and mount it to the EC2 instance in the application directory at the path: "app_root/data".
+Option 1, you have access to the `aws_efs_create` or `aws_efs_create_ha` attribute which will create a EFS resource and mount it to the EC2 instance in the application directory at the path: "app_root/data".
 
 > :warning: Be very careful here! The **EFS is fully managed by Terraform**. Therefor **it will be destroyed upon stack destruction**.
 
