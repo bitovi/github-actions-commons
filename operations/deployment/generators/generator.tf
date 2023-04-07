@@ -62,6 +62,6 @@ locals {
     )
   )
   enable_efs = (
-    var.aws_efs_create || var.aws_efs_create_ha || var.aws_efs_mount_id != "" ? 1 : 0
+    var.aws_efs_create || var.aws_efs_create_ha || var.aws_efs_mount_id != "" ? true : false
   )
 }
