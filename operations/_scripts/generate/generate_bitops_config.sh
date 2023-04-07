@@ -127,7 +127,7 @@ cat $GITHUB_ACTION_PATH/operations/deployment/ansible/$GH_INPUT_ANSIBLE/bitops.c
         echo "Got into adding extra vars"
   
         boc_file="$GITHUB_ACTION_PATH/operations/deployment/ansible/incoming/bitops.config.yaml"
-        extra_vars_file="@$(basename $GH_INPUT_ANSIBLE_EXTRA_VARS_FILE)"
+        extra_vars_file="$(basename $GH_INPUT_ANSIBLE_EXTRA_VARS_FILE)"
   
         # Read the value of the extra-vars parameter
         extra_vars=$(awk '/extra-vars/ {print $2}' $boc_file)
