@@ -125,11 +125,12 @@ echo -en "
     ansible/incoming:
       plugin: ansible
 " >> $GITHUB_ACTION_PATH/operations/deployment/bitops.config.yaml
-echo "Cating MAIN bitops.config.yaml"
-cat $GITHUB_ACTION_PATH/operations/deployment/bitops.config.yaml
     fi
   fi
   
   # TERRAFORM PART
   # TBC
 fi
+
+echo "Cating MAIN bitops.config.yaml"
+cat $GITHUB_ACTION_PATH/operations/deployment/bitops.config.yaml
