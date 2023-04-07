@@ -119,7 +119,30 @@ cat $GITHUB_ACTION_PATH/operations/deployment/ansible/$GH_INPUT_ANSIBLE/bitops.c
       echo " --> Moving $GH_INPUT_ANSIBLE_PATH"
       mv "$GH_INPUT_ANSIBLE_PATH" "$GITHUB_ACTION_PATH/operations/deployment/ansible/incoming"
 
-
+      ######### Add extra vars file here. 
+      # Copying Github Ansible extra-vars file
+      if [ -s "$GITHUB_WORKSPACE/$GH_INPUT_ANSIBLE_EXTRA_VARS_FILE" ] && [ -n "$GH_INPUT_ANSIBLE_EXTRA_VARS_FILE" ]; then
+        cp "$GITHUB_WORKSPACE/$GH_INPUT_ANSIBLE_EXTRA_VARS_FILE" "${GITHUB_ACTION_PATH}/operations/deployment/ansible/incoming/."
+        
+  
+        boc_file="$GITHUB_ACTION_PATH/operations/deployment/ansible/incoming/bitops.config.yaml"
+        extra_vars_file="@$(basename $GH_INPUT_ANSIBLE_EXTRA_VARS_FILE)"
+  
+        # Read the value of the extra-vars parameter
+        extra_vars=$(awk '/extra-vars/ {print $2}' $boc_file)
+        
+        # Check if extra-vars is defined
+        if [[ -n "$extra_vars" ]]; then
+          # If there's already a vars-file, replace it 
+          value=${extra_vars##*@}
+          echo "::notice::There's already an extra-vars definition. File called is: $value"
+          echo "::notice::Overwriting definition with $extra_vars_file"
+          sed -i "s|extra-vars: \"@$value\"|extra-vars: \"@$extra_vars_file\"|" $boc_file
+        else
+          # Append the extra-vars parameter after the main-playbook parameter
+          sed -i "/main-playbook/a \\      extra-vars: \"@$extra_vars_file\"" $boc_file
+        fi
+      fi
       # Add Ansible - Incoming GH
 echo -en "
     ansible/incoming:

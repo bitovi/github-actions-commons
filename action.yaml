@@ -19,6 +19,9 @@ inputs:
     description: 'Main playbook to be looked for.'
     default: playbook.yml
     required: false
+  gh_input_ansible_extra_vars_file:
+    description: "Relative path to file from project root to Ansible vars file."
+    required: false
 
   # Action main inputs
   checkout:
@@ -254,6 +257,7 @@ runs:
         GH_INPUT_TERRAFORM: ${{ inputs.gh_input_terraform }}
         GH_INPUT_ANSIBLE: ${{ inputs.gh_input_ansible }}
         GH_INPUT_ANSIBLE_PLAYBOOK: ${{ inputs.gh_input_ansible_playbook }}
+        GH_INPUT_ANSIBLE_EXTRA_VARS_FILE: ${{ inputs.gh_input_ansible_extra_vars_file }}
 
         # Action main inputs
         TF_STACK_DESTROY: ${{ inputs.tf_stack_destroy }}

@@ -69,6 +69,7 @@ The following inputs can be used as `step.with` keys
 | `gh_input_terraform` | String | Folder to store Terraform files to be included during Terraform execution. |
 | `gh_input_ansible` | String | Folder where a whole Ansible structure is expected. If missing bitops.config.yaml a default will be generated. |
 | `gh_input_ansible_playbook` | String | Main playbook to be looked for. Defaults to `playbook.yml`. |
+| `gh_input_ansible_extra_vars_file` | String | Relative path to file from project root to Ansible vars file. |
 <hr/>
 <br/>
 
