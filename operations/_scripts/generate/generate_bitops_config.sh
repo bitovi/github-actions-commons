@@ -138,7 +138,7 @@ cat $GITHUB_ACTION_PATH/operations/deployment/ansible/$GH_INPUT_ANSIBLE/bitops.c
           value=${extra_vars##*@}
           echo "::notice::There's already an extra-vars definition. File called is: $value"
           echo "::notice::Overwriting definition with $extra_vars_file"
-          sed -i "s|extra-vars: \"@$value\"|extra-vars: \"@$extra_vars_file\"|" $boc_file
+          sed -i 's/\(extra-vars:.*\)@'"$value"'/\1'"@$extra_vars_file"'/' $boc_file
                   echo "Got into duplicate line found"
 
         else
