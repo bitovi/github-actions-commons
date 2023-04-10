@@ -163,5 +163,8 @@ echo -en "
   # TBC
 fi
 
+echo "Cating BOC file"
+cat $boc_file
+exit 1
 echo "Cating MAIN bitops.config.yaml"
 cat $GITHUB_ACTION_PATH/operations/deployment/bitops.config.yaml
