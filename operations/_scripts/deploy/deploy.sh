@@ -65,6 +65,7 @@ fi
 
 echo "::endgroup::"
 
+exit 1
 if [[ $SKIP_BITOPS_RUN == "true" ]]; then
   exit 1
 fi

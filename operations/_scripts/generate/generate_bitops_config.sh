@@ -135,7 +135,8 @@ cat $GITHUB_ACTION_PATH/operations/deployment/ansible/$GH_INPUT_ANSIBLE/bitops.c
         # Check if extra-vars is defined
         if [[ -n "$extra_vars" ]]; then
           # If there's already a vars-file, replace it 
-          value=${extra_vars##*@}
+          value=${extra_vars//@/}
+          value=${value//\"/}
           echo "::notice::There's already an extra-vars definition. File called is: $value"
           echo "::notice::Overwriting definition with $extra_vars_file"
           sed -i 's/\(extra-vars:.*\)@'"$value"'/\1'"@$extra_vars_file"'/' $boc_file
@@ -165,6 +166,5 @@ fi
 
 echo "Cating BOC file"
 cat $boc_file
-exit 1
 echo "Cating MAIN bitops.config.yaml"
 cat $GITHUB_ACTION_PATH/operations/deployment/bitops.config.yaml
