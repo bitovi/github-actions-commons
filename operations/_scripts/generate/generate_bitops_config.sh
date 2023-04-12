@@ -96,11 +96,13 @@ if [ -n "$GH_CALLING_REPO" ]; then
       fi
       if [ -s "$GITHUB_WORKSPACE/$GH_INPUT_ANSIBLE_EXTRA_VARS_FILE" ] && [ -n "$GH_INPUT_ANSIBLE_EXTRA_VARS_FILE" ]; then
         /tmp/yq ".ansible.cli.extra-vars = \"@$(basename $GH_INPUT_ANSIBLE_EXTRA_VARS_FILE)\"" -i "$GH_INPUT_ANSIBLE_PATH/bitops.config.yaml"
+        # Incoming Ansible folder from proxy action
+        mv "$GH_INPUT_ANSIBLE_PATH" "$GITHUB_ACTION_PATH/operations/deployment/ansible/incoming"
+        # Incoming Ansible vars-file from end-user action
         mv "$GITHUB_WORKSPACE/$GH_INPUT_ANSIBLE_EXTRA_VARS_FILE" "${GITHUB_ACTION_PATH}/operations/deployment/ansible/incoming/."
-      fi
-      echo " --> Moving $GH_INPUT_ANSIBLE_PATH"
-      mv "$GH_INPUT_ANSIBLE_PATH" "$GITHUB_ACTION_PATH/operations/deployment/ansible/incoming"
-      
+      else
+        mv "$GH_INPUT_ANSIBLE_PATH" "$GITHUB_ACTION_PATH/operations/deployment/ansible/incoming"
+      fi      
       # Add Ansible - Incoming GH to main bitops.config.yaml
 echo -en "
     ansible/incoming:
@@ -119,3 +121,5 @@ echo "Incoming bitops config -> ${GITHUB_ACTION_PATH}/operations/deployment/ansi
 cat ${GITHUB_ACTION_PATH}/operations/deployment/ansible/incoming/bitops.config.yaml
 echo "Generated BO Config -> $GITHUB_ACTION_PATH/operations/deployment/bitops.config.yaml"
 cat $GITHUB_ACTION_PATH/operations/deployment/bitops.config.yaml
+
+exit 1
