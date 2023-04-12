@@ -170,10 +170,12 @@ ansible:
     main-playbook: $GH_INPUT_ANSIBLE_PLAYBOOK
   options: {}
 " >  $GITHUB_ACTION_PATH/operations/deployment/ansible/$GH_INPUT_ANSIBLE/bitops.config.yaml
+ 
+      fi
 
       echo " --> Moving $GH_INPUT_ANSIBLE_PATH"
       mv "$GH_INPUT_ANSIBLE_PATH" "$GITHUB_ACTION_PATH/operations/deployment/ansible/incoming"
-
+      
       # Check for existance of extra_vars_file, if so, handle it. 
       if [ -s "$GITHUB_WORKSPACE/$GH_INPUT_ANSIBLE_EXTRA_VARS_FILE" ] && [ -n "$GH_INPUT_ANSIBLE_EXTRA_VARS_FILE" ]; then
         cp "$GITHUB_WORKSPACE/$GH_INPUT_ANSIBLE_EXTRA_VARS_FILE" "${GITHUB_ACTION_PATH}/operations/deployment/ansible/incoming/."
