@@ -71,12 +71,6 @@ if [ "$(alpha_only $ANSIBLE_SKIP)" == "true" ]; then
   ANSIBLE_SKIP="true"
 fi
 
-echo "::endgroup::"
-echo "::group::ENV_VARS"
-env
-echo "::endgroup::"
-
-
 if [[ $SKIP_BITOPS_RUN == "true" ]]; then
   exit 1
 fi
