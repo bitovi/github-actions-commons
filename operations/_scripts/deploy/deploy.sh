@@ -31,7 +31,11 @@ export LB_LOGS_BUCKET="$(/bin/bash $GITHUB_ACTION_PATH/operations/_scripts/gener
 /bin/bash $GITHUB_ACTION_PATH/operations/_scripts/generate/generate_bitops_config.sh
 
 # Generate bitops incoming repos config
-/bin/bash $GITHUB_ACTION_PATH/operations/_scripts/generate/generate_bitops_incoming.sh
+if [ -n "$GH_CALLING_REPO" ]; then
+  if [ "$(alpha_only $GH_INPUT_TERRAFORM)" == "true" ] || [ "$(alpha_only $GH_INPUT_ANSIBLE)" == "true" ]; then
+    /bin/bash $GITHUB_ACTION_PATH/operations/_scripts/generate/generate_bitops_incoming.sh
+  fi
+fi
 
 # Generating GitHub Variables and Secrets files
 mkdir -p "${GITHUB_ACTION_PATH}/operations/deployment/env-files"
@@ -67,7 +71,14 @@ if [ "$(alpha_only $ANSIBLE_SKIP)" == "true" ]; then
 fi
 
 echo "::endgroup::"
+echo "::group::ENV_VARS"
+env
+wget https://github.com/mikefarah/yq/releases/download/${VERSION}/${BINARY} -O yq && chmod +x yq
+./yq -V
+echo "::endgroup::"
 
+
+exit 1
 if [[ $SKIP_BITOPS_RUN == "true" ]]; then
   exit 1
 fi
