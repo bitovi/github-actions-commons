@@ -80,7 +80,7 @@ fi
 
 ### Generate incoming repo's
 # Get yq to parse any incoming yaml
-wget https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64 -O /tmp/yq && chmod +x /tmp/yq
+wget -q https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64 -O /tmp/yq && chmod +x /tmp/yq
 
 if [ -n "$GH_CALLING_REPO" ]; then
   #  ANSIBLE PART
@@ -116,10 +116,3 @@ echo -en "
   # TERRAFORM PART
   # TBC
 fi
-
-echo "Incoming bitops config -> ${GITHUB_ACTION_PATH}/operations/deployment/ansible/incoming/bitops.config.yaml"
-cat ${GITHUB_ACTION_PATH}/operations/deployment/ansible/incoming/bitops.config.yaml
-echo "Generated BO Config -> $GITHUB_ACTION_PATH/operations/deployment/bitops.config.yaml"
-cat $GITHUB_ACTION_PATH/operations/deployment/bitops.config.yaml
-
-exit 1
