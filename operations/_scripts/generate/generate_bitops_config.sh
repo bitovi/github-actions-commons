@@ -76,3 +76,46 @@ if [[ "$(alpha_only $ANSIBLE_SKIP)" != "true" ]]; then
   " >> $GITHUB_ACTION_PATH/operations/deployment/bitops.config.yaml
   fi
 fi
+
+
+### Generate incoming repo's
+# Get yq to parse any incoming yaml
+wget https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64 -O /tmp/yq && chmod +x /tmp/yq
+
+if [ -n "$GH_CALLING_REPO" ]; then
+  #  ANSIBLE PART
+  echo "Inside ansible part"
+  if [ -n "$GH_INPUT_ANSIBLE" ] && [[ "$(alpha_only $ANSIBLE_SKIP)" != "true" ]]; then
+    GH_INPUT_ANSIBLE_PATH="$GH_CALLING_REPO/$GH_INPUT_ANSIBLE"
+    echo "GH_INPUT_ANSIBLE_PATH -> $GH_INPUT_ANSIBLE_PATH"
+
+    if [ -s "$GH_INPUT_ANSIBLE_PATH/$GH_INPUT_ANSIBLE_PLAYBOOK" ]; then
+      if ! [ -s "$GH_INPUT_ANSIBLE_PATH/bitops.config.yaml" ]; then
+        touch "$GH_INPUT_ANSIBLE_PATH/bitops.config.yaml"
+        /tmp/yq ".ansible.cli.main-playbook = \"$GH_INPUT_ANSIBLE_PLAYBOOK\"" -i "$GH_INPUT_ANSIBLE_PATH/bitops.config.yaml"
+      fi
+      if [ -s "$GITHUB_WORKSPACE/$GH_INPUT_ANSIBLE_EXTRA_VARS_FILE" ] && [ -n "$GH_INPUT_ANSIBLE_EXTRA_VARS_FILE" ]; then
+        /tmp/yq ".ansible.cli.extra-vars = \"@$(basename $GH_INPUT_ANSIBLE_EXTRA_VARS_FILE)\"" -i "$GH_INPUT_ANSIBLE_PATH/bitops.config.yaml"
+        mv "$GITHUB_WORKSPACE/$GH_INPUT_ANSIBLE_EXTRA_VARS_FILE" "${GITHUB_ACTION_PATH}/operations/deployment/ansible/incoming/."
+      fi
+      echo " --> Moving $GH_INPUT_ANSIBLE_PATH"
+      mv "$GH_INPUT_ANSIBLE_PATH" "$GITHUB_ACTION_PATH/operations/deployment/ansible/incoming"
+      
+      # Add Ansible - Incoming GH to main bitops.config.yaml
+echo -en "
+    ansible/incoming:
+      plugin: ansible
+" >> $GITHUB_ACTION_PATH/operations/deployment/bitops.config.yaml
+    else
+      echo "::error::Couldn't find $GH_INPUT_ANSIBLE_PLAYBOOK inside incoming Ansible folder."
+    fi
+  fi
+  
+  # TERRAFORM PART
+  # TBC
+fi
+
+echo "Incoming bitops config -> ${GITHUB_ACTION_PATH}/operations/deployment/ansible/incoming/bitops.config.yaml"
+cat ${GITHUB_ACTION_PATH}/operations/deployment/ansible/incoming/bitops.config.yaml
+echo "Generated BO Config -> $GITHUB_ACTION_PATH/operations/deployment/bitops.config.yaml"
+cat $GITHUB_ACTION_PATH/operations/deployment/bitops.config.yaml

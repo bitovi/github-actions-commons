@@ -31,11 +31,11 @@ export LB_LOGS_BUCKET="$(/bin/bash $GITHUB_ACTION_PATH/operations/_scripts/gener
 /bin/bash $GITHUB_ACTION_PATH/operations/_scripts/generate/generate_bitops_config.sh
 
 # Generate bitops incoming repos config
-if [ -n "$GH_CALLING_REPO" ]; then
-  if [ "$(alpha_only $GH_INPUT_TERRAFORM)" == "true" ] || [ "$(alpha_only $GH_INPUT_ANSIBLE)" == "true" ]; then
-    /bin/bash $GITHUB_ACTION_PATH/operations/_scripts/generate/generate_bitops_incoming.sh
-  fi
-fi
+#if [ -n "$GH_CALLING_REPO" ]; then
+#  if [ "$(alpha_only $GH_INPUT_TERRAFORM)" == "true" ] || [ "$(alpha_only $GH_INPUT_ANSIBLE)" == "true" ]; then
+#    /bin/bash $GITHUB_ACTION_PATH/operations/_scripts/generate/generate_bitops_incoming.sh
+#  fi
+#fi
 
 # Generating GitHub Variables and Secrets files
 mkdir -p "${GITHUB_ACTION_PATH}/operations/deployment/env-files"
@@ -59,6 +59,7 @@ cat $GITHUB_ACTION_PATH/operations/deployment/terraform/provider.tf
 echo "ls GITHUB_ACTION_PATH/operations/deployment/docker/app/${GITHUB_REPO_NAME}"
 ls "$GITHUB_ACTION_PATH/operations/deployment/docker/app/${GITHUB_REPO_NAME}"
 
+### 
 
 TERRAFORM_COMMAND=""
 if [ "$(alpha_only $TF_STACK_DESTROY)" == "true" ]; then
@@ -73,8 +74,6 @@ fi
 echo "::endgroup::"
 echo "::group::ENV_VARS"
 env
-wget https://github.com/mikefarah/yq/releases/download/${VERSION}/${BINARY} -O yq && chmod +x yq
-./yq -V
 echo "::endgroup::"
 
 
@@ -99,6 +98,7 @@ docker run --rm --name bitops \
 -e TF_STATE_BUCKET_DESTROY="${TF_STATE_BUCKET_DESTROY}" \
 -e DEFAULT_FOLDER_NAME="_default" \
 -e BITOPS_FAST_FAIL="${BITOPS_FAST_FAIL}" \
+${DOCKER_EXTRA_ARGS} \
 -v $(echo $GITHUB_ACTION_PATH)/operations:/opt/bitops_deployment \
 bitovi/bitops:2.5.0
 BITOPS_RESULT=$?
