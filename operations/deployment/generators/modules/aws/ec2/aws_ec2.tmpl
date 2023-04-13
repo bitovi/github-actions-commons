@@ -70,7 +70,7 @@ resource "aws_instance" "server" {
     Name = "${var.aws_resource_identifier} - Instance"
   }
   lifecycle {
-    ignore_changes = local.instance_lifecycle_ignore
+    ignore_changes = var.aws_ec2_ami_update ? [] : ["ami"] 
   }
 }
 
@@ -79,10 +79,6 @@ data "aws_instance" "server" {
     name   = "dns-name"
     values = [aws_instance.server.public_dns]
   }
-}
-
-locals {
-  instance_lifecycle_ignore = var.aws_ec2_ami_update ? [] : [ami]  
 }
 
 output "instance_public_dns" {

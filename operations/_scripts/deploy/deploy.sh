@@ -73,13 +73,13 @@ if [[ $SKIP_BITOPS_RUN == "true" ]]; then
 fi
 
 ENV_BITOPS_FILE=$(find /home/runner/work/ -name $ENV_BITOPS -print)
-echo $ENV_BITOPS_FILE
 
 if [ -s $ENV_BITOPS_FILE ]; then
   DOCKER_EXTRA_ARGS=""
   for i in $(cat $ENV_BITOPS_FILE); do
     DOCKER_EXTRA_ARGS="${DOCKER_EXTRA_ARGS} -e ${i}"
   done
+  echo "File is here -> $ENV_BITOPS_FILE"
 else
   echo "ENV_BITOPS is empty or couldn't be found."
 fi
