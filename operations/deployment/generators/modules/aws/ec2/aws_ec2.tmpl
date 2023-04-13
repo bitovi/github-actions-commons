@@ -69,8 +69,12 @@ resource "aws_instance" "server" {
   tags = {
     Name = "${var.aws_resource_identifier} - Instance"
   }
-  lifecycle {
-    ignore_changes = var.aws_ec2_ami_update ? [] : ["ami"] 
+  dynamic "lifecycle" {
+    for_each = var.aws_ec2_ami_update ? [] : ["ignore_changes"]
+
+    content {
+      ignore_changes = ["ami"]
+    }
   }
 }
 
