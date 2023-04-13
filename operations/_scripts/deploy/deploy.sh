@@ -72,7 +72,7 @@ if [[ $SKIP_BITOPS_RUN == "true" ]]; then
   exit 1
 fi
 
-ENV_BITOPS_FILE=$"(find $(pwd) -name $ENV_BITOPS -print)"
+ENV_BITOPS_FILE=$"(find /home/runner/work/ -name $ENV_BITOPS -print)"
 echo $ENV_BITOPS_FILE
 
 if [ -s $ENV_BITOPS_FILE ]; then
