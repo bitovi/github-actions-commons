@@ -56,6 +56,12 @@ variable "aws_ec2_instance_type" {
   description = "Instance type for the EC2 instance"
 }
 
+variable "aws_ec2_instance_root_vol_size" {
+  type        = string
+  default     = "8"
+  description = "Instance type for the EC2 instance"
+}
+
 variable "aws_ec2_security_group_name" {
   type        = string
   default     = ""
