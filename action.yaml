@@ -68,6 +68,9 @@ inputs:
     required: false
 
   # ENV files
+  env_bitops:
+    description: '`.env` file containing environment variables to be exported before BitOps execution'
+    required: false
   env_aws_secret:
     description: 'Secret name to pull env variables from AWS Secret Manager'
     required: false
@@ -285,6 +288,7 @@ runs:
         AWS_ADDITIONAL_TAGS: ${{ inputs.additional_tags }}
 
         # ENV Files
+        ENV_BITOPS: ${{ inputs.env_bitops }}
         ENV_AWS_SECRET: ${{ inputs.env_aws_secret }}
         ENV_REPO: ${{ inputs.env_repo }}
         ENV_GHS: ${{ inputs.env_ghs }}
