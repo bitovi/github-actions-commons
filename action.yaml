@@ -94,11 +94,17 @@ inputs:
   aws_ec2_ami_id:
     description: 'AWS AMI ID. Will default to lookup for latest image of the `aws_ec2_ami_filter` string. This will override `aws_ec2_ami_filter` lookup.'
     required: false
+  aws_ec2_ami_update:
+    description: 'Set this to true if you want to recreate the EC2 instance if there is a newer version of the AMI.'
+    required: false
   aws_ec2_iam_instance_profile:
     description: 'The AWS IAM instance profile to use for the EC2 instance'
     required: false
   aws_ec2_instance_type: 
     description: 'The AWS Instance type'
+    required: false
+  aws_ec2_instance_protect:
+    description: 'Set this to true to enable instance deletion protection.'
     required: false
   aws_ec2_instance_root_vol_size:
     description: 'Define the volume size (in GiB) for the root volume on the AWS Instance.'
@@ -289,8 +295,10 @@ runs:
         AWS_EC2_AMI_FILTER: ${{ inputs.aws_ec2_ami_filter }}
         AWS_EC2_AMI_OWNER: ${{ inputs.aws_ec2_ami_owner }}
         AWS_EC2_AMI_ID: ${{ inputs.aws_ec2_ami_id }}
+        AWS_EC2_AMI_UPDATE: ${{ inputs. aws_ec2_ami_update }}
         AWS_EC2_IAM_INSTANCE_PROFILE: ${{ inputs.aws_ec2_iam_instance_profile }}
         AWS_EC2_INSTANCE_TYPE: ${{ inputs.aws_ec2_instance_type }} 
+        AWS_EC2_INSTANCE_PROTECT: ${{ inputs.aws_ec2_instance_protect }}
         AWS_EC2_INSTANCE_ROOT_VOL_SIZE: ${{ inputs.aws_ec2_instance_root_vol_size }}
         AWS_EC2_SECURITY_GROUP_NAME: ${{ inputs.aws_ec2_security_group_name }}
         AWS_EC2_CREATE_KEYPAIR_SM: ${{ inputs.aws_ec2_create_keypair_sm }}

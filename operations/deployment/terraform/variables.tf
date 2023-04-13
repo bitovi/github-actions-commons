@@ -32,6 +32,12 @@ variable "aws_ec2_ami_id" {
   default     = ""
 }
 
+variable "aws_ec2_ami_update" {
+  type        = bool
+  description = "Recreates the EC2 instance if there is a newer version of the AMI"
+  default     = false
+}
+
 variable "aws_ec2_ami_filter" {
   type        = string
   description = "AWS AMI Filter string. Will be used to lookup for lates image based on the string."
@@ -56,6 +62,12 @@ variable "aws_ec2_instance_type" {
   description = "Instance type for the EC2 instance"
 }
 
+variable "aws_ec2_instance_protect" {
+  type        = bool
+  description = "Set this to true to enable instance deletion protection"
+  default     = false
+}
+
 variable "aws_ec2_instance_root_vol_size" {
   type        = string
   default     = "8"
@@ -69,9 +81,9 @@ variable "aws_ec2_security_group_name" {
 }
 
 variable "aws_ec2_create_keypair_sm" {
-  type = bool
+  type        = bool
   description = "y/n create sm entry for ec2 keypair"
-  default = false
+  default     = false
 }
 
 variable "aws_ec2_instance_public_ip" {

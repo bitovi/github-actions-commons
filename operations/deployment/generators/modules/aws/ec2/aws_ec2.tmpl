@@ -62,11 +62,15 @@ resource "aws_instance" "server" {
   key_name                    = aws_key_pair.aws_key.key_name
   monitoring                  = true
   iam_instance_profile        = aws_iam_instance_profile.ec2_profile.name
+  disable_api_termination     = var.aws_ec2_instance_protect
   root_block_device {
     volume_size = tonumber(var.aws_ec2_instance_root_vol_size)
   }
   tags = {
     Name = "${var.aws_resource_identifier} - Instance"
+  }
+  lifecycle {
+    ignore_changes = ["${local.instance_lifecycle_ignore}"]
   }
 }
 
@@ -75,6 +79,10 @@ data "aws_instance" "server" {
     name   = "dns-name"
     values = [aws_instance.server.public_dns]
   }
+}
+
+locals {
+  instance_lifecycle_ignore = var.aws_ec2_ami_update ? "" : "ami"  
 }
 
 output "instance_public_dns" {

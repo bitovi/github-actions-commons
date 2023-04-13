@@ -112,8 +112,10 @@ if [[ $(alpha_only "$AWS_EC2_INSTANCE_CREATE") == true ]]; then
   aws_ec2_ami_filter=$(generate_var aws_ec2_ami_filter $AWS_EC2_AMI_FILTER)
   aws_ec2_ami_owner=$(generate_var aws_ec2_ami_owner $AWS_EC2_AMI_OWNER)
   aws_ec2_ami_id=$(generate_var aws_ec2_ami_id $AWS_EC2_AMI_ID)
+  aws_ec2_ami_update=$(generate_var aws_ec2_ami_update $AWS_EC2_AMI_UPDATE)
   # aws_ec2_iam_instance_profile=$(generate_var aws_ec2_iam_instance_profile AWS_EC2_IAM_INSTANCE_PROFILE - Special case
   aws_ec2_instance_type=$(generate_var aws_ec2_instance_type $AWS_EC2_INSTANCE_TYPE)
+  aws_ec2_instance_protect=$(generate_var aws_ec2_instance_protect $AWS_EC2_INSTANCE_PROTECT)
   aws_ec2_instance_root_vol_size=$(generate_var aws_ec2_instance_root_vol_size $AWS_EC2_INSTANCE_ROOT_VOL_SIZE)
   aws_ec2_security_group_name=$(generate_var aws_ec2_security_group_name $AWS_EC2_SECURITY_GROUP_NAME)
   aws_ec2_create_keypair_sm=$(generate_var aws_ec2_create_keypair_sm $AWS_EC2_CREATE_KEYPAIR_SM)
@@ -229,8 +231,10 @@ $env_aws_secret
 $aws_ec2_ami_filter
 $aws_ec2_ami_owner
 $aws_ec2_ami_id
+$aws_ec2_ami_update
 $aws_ec2_iam_instance_profile
 $aws_ec2_instance_type
+$aws_ec2_instance_protect
 $aws_ec2_instance_root_vol_size
 $aws_ec2_security_group_name
 $aws_ec2_create_keypair_sm
