@@ -72,7 +72,10 @@ if [[ $SKIP_BITOPS_RUN == "true" ]]; then
   exit 1
 fi
 
-ENV_BITOPS_FILE=$(find /home/runner/work/ -name $ENV_BITOPS -print)
+ENV_BITOPS_FILE="$GITHUB_WORKSPACE/$ENV_BITOPS"
+
+echo "CAT ENV_BITOPS_FILE"
+cat $ENV_BITOPS_FILE
 
 if [ -s $ENV_BITOPS_FILE ]; then
   DOCKER_EXTRA_ARGS=""
