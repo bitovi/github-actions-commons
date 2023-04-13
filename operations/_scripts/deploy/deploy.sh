@@ -56,9 +56,6 @@ cat $GITHUB_ACTION_PATH/operations/deployment/terraform/bitops.config.yaml
 
 echo "cat GITHUB_ACTION_PATH/operations/deployment/terraform/provider.tf"
 cat $GITHUB_ACTION_PATH/operations/deployment/terraform/provider.tf
-echo "ls GITHUB_ACTION_PATH/operations/deployment/docker/app/${GITHUB_REPO_NAME}"
-ls "$GITHUB_ACTION_PATH/operations/deployment/docker/app/${GITHUB_REPO_NAME}"
-
 ### 
 
 TERRAFORM_COMMAND=""
@@ -74,6 +71,9 @@ fi
 if [[ $SKIP_BITOPS_RUN == "true" ]]; then
   exit 1
 fi
+
+echo "BitOps ready to run!" 
+exit 0
 
 echo "::group::BitOps Excecution"  
 echo "Running BitOps for env: $BITOPS_ENVIRONMENT"
