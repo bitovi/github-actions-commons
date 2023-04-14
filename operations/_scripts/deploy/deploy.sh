@@ -32,7 +32,7 @@ export LB_LOGS_BUCKET="$(/bin/bash $GITHUB_ACTION_PATH/operations/_scripts/gener
 
 # Generate bitops incoming repos config
 if [ -n "$GH_CALLING_REPO" ]; then
-  if [ "$(alpha_only $GH_INPUT_TERRAFORM)" == "true" ] || [ "$(alpha_only $GH_INPUT_ANSIBLE)" == "true" ]; then
+  if [ -n "$GH_INPUT_TERRAFORM" ] || [ -n "$GH_INPUT_ANSIBLE" ]; then
     /bin/bash $GITHUB_ACTION_PATH/operations/_scripts/generate/generate_bitops_incoming.sh
   fi
 fi
