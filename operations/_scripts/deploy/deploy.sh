@@ -59,7 +59,7 @@ if [[ $SKIP_BITOPS_RUN == "true" ]]; then
   exit 1
 fi
 
-echo "BITOPS_EXTRA_ENV_VARS => $BITOPS_EXTRA_ENV_VARS"
+echo "BITOPS_EXTRA_ENV_VARS => ${BITOPS_EXTRA_ENV_VARS}"
 
 echo "docker run --rm --name bitops \
 -e AWS_ACCESS_KEY_ID="${AWS_ACCESS_KEY_ID}" \
@@ -75,7 +75,7 @@ echo "docker run --rm --name bitops \
 -e TF_STATE_BUCKET_DESTROY="${TF_STATE_BUCKET_DESTROY}" \
 -e DEFAULT_FOLDER_NAME="_default" \
 -e BITOPS_FAST_FAIL="${BITOPS_FAST_FAIL}" \
-"$BITOPS_EXTRA_ENV_VARS" \
+"${BITOPS_EXTRA_ENV_VARS}" \
 -v $(echo $GITHUB_ACTION_PATH)/operations:/opt/bitops_deployment \
 bitovi/bitops:2.5.0"
 
@@ -96,7 +96,7 @@ docker run --rm --name bitops \
 -e TF_STATE_BUCKET_DESTROY="${TF_STATE_BUCKET_DESTROY}" \
 -e DEFAULT_FOLDER_NAME="_default" \
 -e BITOPS_FAST_FAIL="${BITOPS_FAST_FAIL}" \
-"$BITOPS_EXTRA_ENV_VARS" \
+"${BITOPS_EXTRA_ENV_VARS}" \
 -v $(echo $GITHUB_ACTION_PATH)/operations:/opt/bitops_deployment \
 bitovi/bitops:2.5.0
 BITOPS_RESULT=$?
