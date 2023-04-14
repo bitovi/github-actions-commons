@@ -79,7 +79,6 @@ echo "docker run --rm --name bitops \
 -v $(echo $GITHUB_ACTION_PATH)/operations:/opt/bitops_deployment \
 bitovi/bitops:2.5.0"
 
-exit 1
 
 echo "::group::BitOps Excecution"  
 echo "Running BitOps for env: $BITOPS_ENVIRONMENT"
