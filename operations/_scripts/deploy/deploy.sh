@@ -76,7 +76,7 @@ if [ -n "${ENV_BITOPS}" ]; then
   IFS=','
   # Loop through the list and extract each variable
   for var in ${ENV_BITOPS}; do
-      DOCKER_EXTRA_ARGS="${DOCKER_EXTRA_ARGS} -e ${var}"
+      DOCKER_EXTRA_ARGS="${DOCKER_EXTRA_ARGS} -e \"${var}\""
   done
   echo "DOCKER_EXTRA_ARGS -> ${DOCKER_EXTRA_ARGS}"
   ## DOCKER_EXTRA_ARGS=""
