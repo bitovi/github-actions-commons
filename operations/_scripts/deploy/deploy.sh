@@ -76,10 +76,9 @@ if [ -n "${ENV_BITOPS}" ]; then
   IFS=','
   # Loop through the list and extract each variable
   for var in ${ENV_BITOPS}; do
-      echo "Variable: \"$var\""
       DOCKER_EXTRA_ARGS="${DOCKER_EXTRA_ARGS} -e ${var}"
   done
-
+  echo "DOCKER_EXTRA_ARGS -> ${DOCKER_EXTRA_ARGS}"
   ## DOCKER_EXTRA_ARGS=""
   ## for i in $(cat $ENV_BITOPS_FILE); do
   ##   DOCKER_EXTRA_ARGS="${DOCKER_EXTRA_ARGS} -e ${i}"
@@ -107,7 +106,7 @@ docker run --rm --name bitops \
 -e TF_STATE_BUCKET_DESTROY="${TF_STATE_BUCKET_DESTROY}" \
 -e DEFAULT_FOLDER_NAME="_default" \
 -e BITOPS_FAST_FAIL="${BITOPS_FAST_FAIL}" \
-${DOCKER_EXTRA_ARGS} \
+"${DOCKER_EXTRA_ARGS}" \
 -v $(echo $GITHUB_ACTION_PATH)/operations:/opt/bitops_deployment \
 bitovi/bitops:2.5.0
 BITOPS_RESULT=$?
