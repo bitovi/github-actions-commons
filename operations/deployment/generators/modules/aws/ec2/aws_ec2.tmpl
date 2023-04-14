@@ -70,7 +70,7 @@ resource "aws_instance" "server" {
     Name = "$${var.aws_resource_identifier} - Instance"
   }
   lifecycle {
-    ignore_changes = ${lifecycle_content}
+    ignore_changes = "${lifecycle_content}"
   }
 }
 
