@@ -31,11 +31,11 @@ export LB_LOGS_BUCKET="$(/bin/bash $GITHUB_ACTION_PATH/operations/_scripts/gener
 /bin/bash $GITHUB_ACTION_PATH/operations/_scripts/generate/generate_bitops_config.sh
 
 # Generate bitops incoming repos config
-#if [ -n "$GH_CALLING_REPO" ]; then
-#  if [ "$(alpha_only $GH_INPUT_TERRAFORM)" == "true" ] || [ "$(alpha_only $GH_INPUT_ANSIBLE)" == "true" ]; then
-#    /bin/bash $GITHUB_ACTION_PATH/operations/_scripts/generate/generate_bitops_incoming.sh
-#  fi
-#fi
+if [ -n "$GH_CALLING_REPO" ]; then
+  if [ "$(alpha_only $GH_INPUT_TERRAFORM)" == "true" ] || [ "$(alpha_only $GH_INPUT_ANSIBLE)" == "true" ]; then
+    /bin/bash $GITHUB_ACTION_PATH/operations/_scripts/generate/generate_bitops_incoming.sh
+  fi
+fi
 
 # Generating GitHub Variables and Secrets files
 mkdir -p "${GITHUB_ACTION_PATH}/operations/deployment/env-files"
@@ -44,19 +44,6 @@ echo "$ENV_GHS" > "${GITHUB_ACTION_PATH}/operations/deployment/env-files/ghs.env
 if [ -s "$GITHUB_WORKSPACE/$ENV_REPO" ] && [ -n "$ENV_REPO" ]; then
   cp "$GITHUB_WORKSPACE/$ENV_REPO" "${GITHUB_ACTION_PATH}/operations/deployment/env-files/repo.env"
 fi
-
-# DEBUGGING --- TBD
-
-# List terraform folder
-echo "ls -al $GITHUB_ACTION_PATH/operations/deployment/terraform/"
-ls -al $GITHUB_ACTION_PATH/operations/deployment/terraform/
-# Prints out bitops.config.yaml
-echo "cat $GITHUB_ACTION_PATH/operations/deployment/terraform/bitops.config.yaml"
-cat $GITHUB_ACTION_PATH/operations/deployment/terraform/bitops.config.yaml
-
-echo "cat GITHUB_ACTION_PATH/operations/deployment/terraform/provider.tf"
-cat $GITHUB_ACTION_PATH/operations/deployment/terraform/provider.tf
-### 
 
 TERRAFORM_COMMAND=""
 if [ "$(alpha_only $TF_STACK_DESTROY)" == "true" ]; then
@@ -71,24 +58,6 @@ fi
 if [[ $SKIP_BITOPS_RUN == "true" ]]; then
   exit 1
 fi
-
-#if [ -n "${ENV_BITOPS}" ]; then
-#  IFS=','
-#  # Loop through the list and extract each variable
-#  for var in ${ENV_BITOPS}; do
-#      DOCKER_EXTRA_ARGS="${DOCKER_EXTRA_ARGS} -e \"${var}\""
-#  done
-#  echo "DOCKER_EXTRA_ARGS -> ${DOCKER_EXTRA_ARGS}"
-#  ## DOCKER_EXTRA_ARGS=""
-#  ## for i in $(cat $ENV_BITOPS_FILE); do
-#  ##   DOCKER_EXTRA_ARGS="${DOCKER_EXTRA_ARGS} -e ${i}"
-#  ## done
-#  ## echo "File is here -> $ENV_BITOPS_FILE"
-#else
-#  echo "ENV_BITOPS is empty or couldn't be found."
-#fi
-
-
 
 echo "::group::BitOps Excecution"  
 echo "Running BitOps for env: $BITOPS_ENVIRONMENT"
@@ -106,7 +75,7 @@ docker run --rm --name bitops \
 -e TF_STATE_BUCKET_DESTROY="${TF_STATE_BUCKET_DESTROY}" \
 -e DEFAULT_FOLDER_NAME="_default" \
 -e BITOPS_FAST_FAIL="${BITOPS_FAST_FAIL}" \
-"${ENV_BITOPS}" \
+"${BITOPS_EXTRA_ENV_VARS}" \
 -v $(echo $GITHUB_ACTION_PATH)/operations:/opt/bitops_deployment \
 bitovi/bitops:2.5.0
 BITOPS_RESULT=$?
