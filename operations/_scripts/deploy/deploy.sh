@@ -72,17 +72,19 @@ if [[ $SKIP_BITOPS_RUN == "true" ]]; then
   exit 1
 fi
 
-ENV_BITOPS_FILE="$GITHUB_WORKSPACE/$ENV_BITOPS"
-
-echo "CAT ENV_BITOPS_FILE"
-cat $ENV_BITOPS_FILE
-
-if [ -s $ENV_BITOPS_FILE ]; then
-  DOCKER_EXTRA_ARGS=""
-  for i in $(cat $ENV_BITOPS_FILE); do
-    DOCKER_EXTRA_ARGS="${DOCKER_EXTRA_ARGS} -e ${i}"
+if [ -n "${ENV_BITOPS}" ]; then
+  IFS=','
+  # Loop through the list and extract each variable
+  for var in ${ENV_BITOPS}; do
+      echo "Variable: \"$var\""
+      DOCKER_EXTRA_ARGS="${DOCKER_EXTRA_ARGS} -e ${var}"
   done
-  echo "File is here -> $ENV_BITOPS_FILE"
+
+  ## DOCKER_EXTRA_ARGS=""
+  ## for i in $(cat $ENV_BITOPS_FILE); do
+  ##   DOCKER_EXTRA_ARGS="${DOCKER_EXTRA_ARGS} -e ${i}"
+  ## done
+  ## echo "File is here -> $ENV_BITOPS_FILE"
 else
   echo "ENV_BITOPS is empty or couldn't be found."
 fi

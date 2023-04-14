@@ -11,6 +11,7 @@ module "certificates" {
 module "ec2" {
   count  = var.aws_ec2_instance_create ? 1 : 0
   source = "./modules/aws/ec2"
+  aws_ec2_ami_update = var.aws_ec2_ami_update
 }
 
 module "efs" {
@@ -52,7 +53,7 @@ locals {
   aws_in_usage = (
     var.aws_r53_enable_cert ? 1 :
     ( var.aws_ec2_instance_create ? 1 : 
-      ( var.aws_efs_create || var.aws_efs_create_ha ? 1 : 
+      ( local.enable_efs ? 1 : 
         ( var.aws_elb_create ? 1 :
           ( var.aws_postgres_enable ? 1 :
             ( var.aws_r53_enable ? 1 : 0 )

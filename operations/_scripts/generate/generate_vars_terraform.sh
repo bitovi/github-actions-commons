@@ -204,6 +204,7 @@ echo "
 $ansible_skip
 $aws_r53_enable_cert
 $aws_ec2_instance_create
+$aws_ec2_ami_update
 $aws_ec2_instance_public_ip
 $aws_efs_create
 $aws_efs_create_ha

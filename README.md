@@ -101,7 +101,7 @@ The following inputs can be used as `step.with` keys
 #### **Secrets and Environment Variables Inputs**
 | Name             | Type    | Description - Check note about [**environment variables**](#environment-variables). |
 |------------------|---------|------------------------------------|
-| `env_bitops` | String | `.env` file containing environment variables to be exported before BitOps execution. Defaults to `env_bitops`. |
+| `env_bitops` | String | `.env` file containing environment variables to be exported before BitOps execution. |
 | `env_aws_secret` | String | Secret name to pull environment variables from AWS Secret Manager. |
 | `env_repo` | String | `.env` file containing environment variables to be used with the app. Name defaults to `repo_env`. |
 | `env_ghs` | String | `.env` file to be used with the app. This is the name of the [Github secret](https://docs.github.com/es/actions/security-guides/encrypted-secrets). |
