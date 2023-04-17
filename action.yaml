@@ -31,6 +31,9 @@ inputs:
   bitops_extra_env_vars:
     description: 'Variables to be passed to BitOps as Docker extra vars. Format should be `-e KEY1=VALUE1 -e KEY2=VALUE2`'
     required: false
+  bitops_extra_env_vars_file:
+    description: '.env file to pass to BitOps Docker run. Usefull for long variables.'
+    required: false
   tf_stack_destroy:
     description: 'Set to "true" to Destroy the stack through Terraform.'
     required: false
@@ -273,6 +276,7 @@ runs:
 
         # Action main inputs
         BITOPS_EXTRA_ENV_VARS: ${{ inputs.bitops_extra_env_vars }}
+        BITOPS_EXTRA_ENV_VARS_FILE: ${{ inputs.bitops_extra_env_vars_file }}
         TF_STACK_DESTROY: ${{ inputs.tf_stack_destroy }}
         TF_STATE_BUCKET: ${{ inputs.tf_state_bucket }}
         TF_STATE_BUCKET_DESTROY: ${{ inputs.tf_state_bucket_destroy }}

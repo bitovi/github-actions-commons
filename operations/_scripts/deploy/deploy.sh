@@ -35,6 +35,9 @@ if [ -n "$GH_CALLING_REPO" ]; then
   if [ -n "$GH_INPUT_TERRAFORM" ] || [ -n "$GH_INPUT_ANSIBLE" ]; then
     /bin/bash $GITHUB_ACTION_PATH/operations/_scripts/generate/generate_bitops_incoming.sh
   fi
+  # Generating incoming extra_vars_file if it exists
+  if [ -s "$GH_CALLING_REPO/$BITOPS_EXTRA_ENV_VARS_FILE" ]; then
+    BITOPS_EXTRA_ENV_VARS_FILE="${GH_CALLING_REPO}/${BITOPS_EXTRA_ENV_VARS_FILE}"
 fi
 
 # Generating GitHub Variables and Secrets files
@@ -75,6 +78,7 @@ echo "docker run --rm --name bitops \
 -e TF_STATE_BUCKET_DESTROY="${TF_STATE_BUCKET_DESTROY}" \
 -e DEFAULT_FOLDER_NAME="_default" \
 -e BITOPS_FAST_FAIL="${BITOPS_FAST_FAIL}" \
+${BITOPS_EXTRA_ENV_VARS_FILE} \
 ${BITOPS_EXTRA_ENV_VARS} \
 -v $(echo $GITHUB_ACTION_PATH)/operations:/opt/bitops_deployment \
 bitovi/bitops:2.5.0"
@@ -96,6 +100,7 @@ docker run --rm --name bitops \
 -e TF_STATE_BUCKET_DESTROY="${TF_STATE_BUCKET_DESTROY}" \
 -e DEFAULT_FOLDER_NAME="_default" \
 -e BITOPS_FAST_FAIL="${BITOPS_FAST_FAIL}" \
+${BITOPS_EXTRA_ENV_VARS_FILE} \
 ${BITOPS_EXTRA_ENV_VARS} \
 -v $(echo $GITHUB_ACTION_PATH)/operations:/opt/bitops_deployment \
 bitovi/bitops:2.5.0
