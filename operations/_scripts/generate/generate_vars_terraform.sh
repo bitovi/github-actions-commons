@@ -293,3 +293,5 @@ $app_install_root
 " > "${GITHUB_ACTION_PATH}/operations/deployment/terraform/terraform.tfvars"
 
 # -------------------------------------------------- #
+
+echo "Done with generate_vars_terraform.sh"

@@ -41,3 +41,5 @@ provider \"aws\" {
   }
 }
 " > "${GITHUB_ACTION_PATH}/operations/deployment/terraform/provider.tf"
+
+echo "Done with generate_provider.sh"

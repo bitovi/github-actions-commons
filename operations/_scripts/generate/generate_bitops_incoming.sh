@@ -46,3 +46,5 @@ if [ -n "$GH_CALLING_REPO" ]; then
   # TERRAFORM PART
   # TBC
 fi
+
+echo "Done with generate_bitops_incoming.sh"

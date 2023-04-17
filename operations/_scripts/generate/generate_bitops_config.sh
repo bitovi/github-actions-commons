@@ -27,12 +27,6 @@ targets="$targets
     - random_integer.az_select"
 targets_attribute="$targets_attribute $targets"
 
-
-ls -lah $GH_CALLING_REPO
-echo "Actions folder:"
-ls -al /home/runner/work/_actions
-
-
 # Terraform Bitops Config
 echo -en "
 terraform:
@@ -76,3 +70,5 @@ if [[ "$(alpha_only $ANSIBLE_SKIP)" != "true" ]]; then
   " >> $GITHUB_ACTION_PATH/operations/deployment/bitops.config.yaml
   fi
 fi
+
+echo "Done with generate_bitops_config.sh"
