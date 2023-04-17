@@ -42,10 +42,6 @@ if [ -n "$GH_CALLING_REPO" ]; then
   # Generating incoming extra_vars_file if it exists
   if [ -n "$BITOPS_EXTRA_ENV_VARS_FILE" ]; then
     echo here5
-    BITOPS_EXTRA_ENV_VARS_FILE="--env-file ./${BITOPS_EXTRA_ENV_VARS_FILE}"
-  fi
-  if [ -n "$BITOPS_EXTRA_ENV_VARS_FILE" ]; then
-    echo here5
       if [ -s $GH_CALLING_REPO/$BITOPS_EXTRA_ENV_VARS_FILE ]; then
         BITOPS_EXTRA_ENV_VARS_FILE="--env-file $GH_CALLING_REPO/$BITOPS_EXTRA_ENV_VARS_FILE"
         cat $GH_CALLING_REPO/$BITOPS_EXTRA_ENV_VARS_FILE
