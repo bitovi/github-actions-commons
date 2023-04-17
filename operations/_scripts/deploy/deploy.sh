@@ -52,6 +52,7 @@ if [ -n "$GH_CALLING_REPO" ]; then
     else
       echo "File $BITOPS_EXTRA_ENV_VARS_FILE missing or empty"
     fi
+  fi
 fi
 
 # Generating GitHub Variables and Secrets files
