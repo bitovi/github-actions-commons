@@ -40,9 +40,9 @@ if [ -n "$GH_CALLING_REPO" ]; then
   fi
   echo here4
   # Generating incoming extra_vars_file if it exists
-  if [ -s "$GH_CALLING_REPO/$BITOPS_EXTRA_ENV_VARS_FILE" ]; then
+  if [ -s "$BITOPS_EXTRA_ENV_VARS_FILE" ]; then
     echo here5
-    BITOPS_EXTRA_ENV_VARS_FILE="${GH_CALLING_REPO}/${BITOPS_EXTRA_ENV_VARS_FILE}"
+    BITOPS_EXTRA_ENV_VARS_FILE="--env-file ./${BITOPS_EXTRA_ENV_VARS_FILE}"
   fi
 fi
 
@@ -51,7 +51,7 @@ mkdir -p "${GITHUB_ACTION_PATH}/operations/deployment/env-files"
 echo "$ENV_GHV" > "${GITHUB_ACTION_PATH}/operations/deployment/env-files/ghv.env"
 echo "$ENV_GHS" > "${GITHUB_ACTION_PATH}/operations/deployment/env-files/ghs.env"
 if [ -s "$GITHUB_WORKSPACE/$ENV_REPO" ] && [ -n "$ENV_REPO" ]; then
-  cp "$GITHUB_WORKSPACE/$ENV_REPO" "--env-file ${GITHUB_ACTION_PATH}/operations/deployment/env-files/repo.env"
+  cp "$GITHUB_WORKSPACE/$ENV_REPO" "${GITHUB_ACTION_PATH}/operations/deployment/env-files/repo.env"
 fi
 
 TERRAFORM_COMMAND=""
