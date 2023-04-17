@@ -78,6 +78,7 @@ The following inputs can be used as `step.with` keys
 |------------------|---------|------------------------------------|
 | `checkout` | Boolean | Set to `false` if the code is already checked out. (Default is `true`). |
 | `bitops_extra_env_vars` | String | Variables to be passed to BitOps as Docker extra vars. Format should be `-e KEY1=VALUE1 -e KEY2=VALUE2`. |
+| `bitops_extra_env_vars_file` | String | `.env` file to pass to BitOps Docker run. Usefull for long variables. |
 | `tf_stack_destroy` | Boolean  | Set to `true` to destroy the stack - Will delete the `elb logs bucket` after the destroy action runs. |
 | `tf_state_bucket` | String | AWS S3 bucket name to use for Terraform state. See [note](#s3-buckets-naming) | 
 | `tf_state_bucket_destroy` | Boolean | Force purge and deletion of S3 bucket defined. Any file contained there will be destroyed. `tf_stack_destroy` must also be `true`. Default is `false`. |

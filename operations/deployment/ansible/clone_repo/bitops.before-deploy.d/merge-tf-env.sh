@@ -7,16 +7,6 @@ echo "BitOps Ansible before script: Merge Terraform Enviornment Variables..."
 
 ANSIBLE_DIR=ansible/clone_repo
 
-echo "PWD"
-pwd
-
-echo "ENVROOT"
-ls -lah ${BITOPS_ENVROOT}
-echo "ENVROOT-Ansible"
-ls -lah ${BITOPS_ENVROOT}/${ANSIBLE_DIR}
-echo "ENVROOT-Terra"
-ls -lah ${BITOPS_ENVROOT}/terraform/
-
 # Merging order
 order=ec2,efs,postgres,repo,ghv,ghs,aws
 
@@ -107,7 +97,3 @@ IFS=',' read -r -a options <<< "$order"
 for option in "${options[@]}"; do
   process "$option"
 done
-
-# Echoing env_out_file
-echo "ENV_OUT_FILE" 
-cat $ENV_OUT_FILE
