@@ -30,11 +30,13 @@ export LB_LOGS_BUCKET="$(/bin/bash $GITHUB_ACTION_PATH/operations/_scripts/gener
 # Generate bitops config
 /bin/bash $GITHUB_ACTION_PATH/operations/_scripts/generate/generate_bitops_config.sh
 
+echo here
 # Generate bitops incoming repos config
 if [ -n "$GH_CALLING_REPO" ]; then
   if [ -n "$GH_INPUT_TERRAFORM" ] || [ -n "$GH_INPUT_ANSIBLE" ]; then
     /bin/bash $GITHUB_ACTION_PATH/operations/_scripts/generate/generate_bitops_incoming.sh
   fi
+  echo here2
   # Generating incoming extra_vars_file if it exists
   if [ -s "$GH_CALLING_REPO/$BITOPS_EXTRA_ENV_VARS_FILE" ]; then
     BITOPS_EXTRA_ENV_VARS_FILE="${GH_CALLING_REPO}/${BITOPS_EXTRA_ENV_VARS_FILE}"
