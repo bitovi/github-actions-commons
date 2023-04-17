@@ -44,6 +44,7 @@ if [ -n "$GH_CALLING_REPO" ]; then
     echo here5
     ls -lah $GH_CALLING_REPO
     echo here6
+    ls -lah /home/runner/work/devops-training-ec2-gha-example/devops-training-ec2-gha-example
     ls -lah /home/runner/work/_actions/bitovi/github-actions-commons/13-add-support-to-add-terraform-ansible-code
     find /home/runner/work/. -iname extra_env
     if [ -s $GH_CALLING_REPO/$BITOPS_EXTRA_ENV_VARS_FILE ]; then
