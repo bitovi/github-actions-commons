@@ -30,23 +30,13 @@ export LB_LOGS_BUCKET="$(/bin/bash $GITHUB_ACTION_PATH/operations/_scripts/gener
 # Generate bitops config
 /bin/bash $GITHUB_ACTION_PATH/operations/_scripts/generate/generate_bitops_config.sh
 
-echo here
 # Generate bitops incoming repos config
 if [ -n "$GH_CALLING_REPO" ]; then
-  echo here2
   if [ -n "$GH_INPUT_TERRAFORM" ] || [ -n "$GH_INPUT_ANSIBLE" ]; then
     /bin/bash $GITHUB_ACTION_PATH/operations/_scripts/generate/generate_bitops_incoming.sh
-    echo here3
   fi
-  echo here4
   # Generating incoming extra_vars_file if it exists
   if [ -n "$BITOPS_EXTRA_ENV_VARS_FILE" ]; then
-    echo here5
-    ls -lah $GH_CALLING_REPO
-    echo here6
-    ls -lah /home/runner/work/devops-training-ec2-gha-example/devops-training-ec2-gha-example
-    ls -lah /home/runner/work/_actions/bitovi/github-actions-commons/13-add-support-to-add-terraform-ansible-code
-    find /home/runner/work/. -iname extra_env
     if [ -s $GH_CALLING_REPO/$BITOPS_EXTRA_ENV_VARS_FILE ]; then
       BITOPS_EXTRA_ENV_VARS_FILE="--env-file $GH_CALLING_REPO/$BITOPS_EXTRA_ENV_VARS_FILE"
       cat $GH_CALLING_REPO/$BITOPS_EXTRA_ENV_VARS_FILE
@@ -77,28 +67,6 @@ fi
 if [[ $SKIP_BITOPS_RUN == "true" ]]; then
   exit 1
 fi
-
-echo "BITOPS_EXTRA_ENV_VARS => ${BITOPS_EXTRA_ENV_VARS}"
-
-echo "docker run --rm --name bitops \
--e AWS_ACCESS_KEY_ID="${AWS_ACCESS_KEY_ID}" \
--e AWS_SECRET_ACCESS_KEY="${AWS_SECRET_ACCESS_KEY}" \
--e AWS_SESSION_TOKEN="${AWS_SESSION_TOKEN}" \
--e AWS_DEFAULT_REGION="${AWS_DEFAULT_REGION}" \
--e BITOPS_ENVIRONMENT="${BITOPS_ENVIRONMENT}" \
--e SKIP_DEPLOY_TERRAFORM="${SKIP_DEPLOY_TERRAFORM}" \
--e SKIP_DEPLOY_HELM="${SKIP_DEPLOY_HELM}" \
--e BITOPS_TERRAFORM_COMMAND="${TERRAFORM_COMMAND}" \
--e BITOPS_ANSIBLE_SKIP_DEPLOY="${ANSIBLE_SKIP}" \
--e TF_STATE_BUCKET="${TF_STATE_BUCKET}" \
--e TF_STATE_BUCKET_DESTROY="${TF_STATE_BUCKET_DESTROY}" \
--e DEFAULT_FOLDER_NAME="_default" \
--e BITOPS_FAST_FAIL="${BITOPS_FAST_FAIL}" \
-${BITOPS_EXTRA_ENV_VARS_FILE} \
-${BITOPS_EXTRA_ENV_VARS} \
--v $(echo $GITHUB_ACTION_PATH)/operations:/opt/bitops_deployment \
-bitovi/bitops:2.5.0"
-
 
 echo "::group::BitOps Excecution"  
 echo "Running BitOps for env: $BITOPS_ENVIRONMENT"
