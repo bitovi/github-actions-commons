@@ -10,6 +10,17 @@ function alpha_only() {
 echo "::group::In Deploy"
 GITHUB_REPO_NAME=$(echo $GITHUB_REPOSITORY | sed 's/^.*\///')
 
+# Validating if Terraform is set to destroy, and avoid Ansible
+TERRAFORM_COMMAND=""
+if [ "$(alpha_only $TF_STACK_DESTROY)" == "true" ]; then
+  TERRAFORM_COMMAND="destroy"
+  ANSIBLE_SKIP="true"
+fi
+
+if [ "$(alpha_only $ANSIBLE_SKIP)" == "true" ]; then
+  ANSIBLE_SKIP="true"
+fi
+
 # Generate buckets identifiers and check them agains AWS Rules 
 export TF_STATE_BUCKET="$(/bin/bash $GITHUB_ACTION_PATH/operations/_scripts/generate/generate_buckets_identifiers.sh tf | xargs)"
 /bin/bash $GITHUB_ACTION_PATH/operations/_scripts/deploy/check_bucket_name.sh $TF_STATE_BUCKET
@@ -52,16 +63,6 @@ echo "$ENV_GHV" > "${GITHUB_ACTION_PATH}/operations/deployment/env-files/ghv.env
 echo "$ENV_GHS" > "${GITHUB_ACTION_PATH}/operations/deployment/env-files/ghs.env"
 if [ -s "$GITHUB_WORKSPACE/$ENV_REPO" ] && [ -n "$ENV_REPO" ]; then
   cp "$GITHUB_WORKSPACE/$ENV_REPO" "${GITHUB_ACTION_PATH}/operations/deployment/env-files/repo.env"
-fi
-
-TERRAFORM_COMMAND=""
-if [ "$(alpha_only $TF_STACK_DESTROY)" == "true" ]; then
-  TERRAFORM_COMMAND="destroy"
-  ANSIBLE_SKIP="true"
-fi
-
-if [ "$(alpha_only $ANSIBLE_SKIP)" == "true" ]; then
-  ANSIBLE_SKIP="true"
 fi
 
 if [[ $SKIP_BITOPS_RUN == "true" ]]; then
