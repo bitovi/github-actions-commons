@@ -47,7 +47,8 @@ jobs:
 ## Customizing
 
 ### Inputs
-1. [GitHub Calling repo inputs]{#github-calling-repo-inputs}
+1. [GitHub Deployment repo inputs](#github-deployment-repo-inputs)
+1. [GitHub Action repo inputs](#github-action-repo-inputs)
 1. [Action default inputs](#action-default-inputs)
 1. [AWS Specific](#aws-specific)
 1. [Secrets and Environment Variables](#secrets-and-environment-variables-inputs)
@@ -62,18 +63,24 @@ The following inputs can be used as `step.with` keys
 <br/>
 <br/>
 
-#### **GitHub Calling repo inputs**
+#### **GitHub Deployment repo inputs**
 | Name             | Type    | Description                        |
 |------------------|---------|------------------------------------|
-| `gh_calling_repo` | String | URL of calling repo |
-| `gh_input_terraform` | String | Folder to store Terraform files to be included during Terraform execution. |
-| `gh_input_ansible` | String | Folder where a whole Ansible structure is expected. If missing bitops.config.yaml a default will be generated. |
-| `gh_input_ansible_playbook` | String | Main playbook to be looked for. Defaults to `playbook.yml`. |
-| `gh_input_ansible_extra_vars_file` | String | Relative path to file from project root to Ansible vars file. |
+| `gh_action_input_ansible_extra_vars_file` | String | Relative path to file from project root to Ansible vars file. |
 <hr/>
 <br/>
 
-#### **Action default Inputs**
+#### **GitHub Action repo inputs**
+| Name             | Type    | Description                        |
+|------------------|---------|------------------------------------|
+| `gh_action_repo` | String | URL of calling repo. |
+| `gh_action_input_terraform` | String | Folder to store Terraform files to be included during Terraform execution. |
+| `gh_action_input_ansible` | String | Folder where a whole Ansible structure is expected. If missing bitops.config.yaml a default will be generated. |
+| `gh_action_input_ansible_playbook` | String | Main playbook to be looked for. Defaults to `playbook.yml`. |
+<hr/>
+<br/>
+
+#### **GitHub Commons main inputs**
 | Name             | Type    | Description                        |
 |------------------|---------|------------------------------------|
 | `checkout` | Boolean | Set to `false` if the code is already checked out. (Default is `true`). |

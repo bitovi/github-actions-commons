@@ -31,15 +31,15 @@ export LB_LOGS_BUCKET="$(/bin/bash $GITHUB_ACTION_PATH/operations/_scripts/gener
 /bin/bash $GITHUB_ACTION_PATH/operations/_scripts/generate/generate_bitops_config.sh
 
 # Generate bitops incoming repos config
-if [ -n "$GH_CALLING_REPO" ]; then
-  if [ -n "$GH_INPUT_TERRAFORM" ] || [ -n "$GH_INPUT_ANSIBLE" ]; then
+if [ -n "$GH_ACTION_REPO" ]; then
+  if [ -n "$GH_ACTION_INPUT_TERRAFORM" ] || [ -n "$GH_ACTION_INPUT_ANSIBLE" ]; then
     /bin/bash $GITHUB_ACTION_PATH/operations/_scripts/generate/generate_bitops_incoming.sh
   fi
   # Generating incoming extra_vars_file if it exists
   if [ -n "$BITOPS_EXTRA_ENV_VARS_FILE" ]; then
-    if [ -s $GH_CALLING_REPO/$BITOPS_EXTRA_ENV_VARS_FILE ]; then
-      BITOPS_EXTRA_ENV_VARS_FILE="--env-file $GH_CALLING_REPO/$BITOPS_EXTRA_ENV_VARS_FILE"
-      cat $GH_CALLING_REPO/$BITOPS_EXTRA_ENV_VARS_FILE
+    if [ -s $GH_ACTION_REPO/$BITOPS_EXTRA_ENV_VARS_FILE ]; then
+      BITOPS_EXTRA_ENV_VARS_FILE="--env-file $GH_ACTION_REPO/$BITOPS_EXTRA_ENV_VARS_FILE"
+      cat $GH_ACTION_REPO/$BITOPS_EXTRA_ENV_VARS_FILE
     else
       echo "File $BITOPS_EXTRA_ENV_VARS_FILE missing or empty"
     fi

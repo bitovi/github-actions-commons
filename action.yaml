@@ -4,26 +4,28 @@ branding:
   icon: upload-cloud
   color: red
 inputs:
-  # GitHub Calling repo
-  gh_calling_repo:
-    description: 'URL of calling repo'
-    required: false
-  gh_input_terraform:
-    description: 'Folder to store Terraform files to be included during Terraform execution.'
-    required: false
-  gh_input_ansible:
-    description: 'Folder where a whole Ansible structure is expected. If missing bitops.config.yaml a default will be generated.'
-    default: ansible
-    required: false
-  gh_input_ansible_playbook:
-    description: 'Main playbook to be looked for.'
-    default: playbook.yml
-    required: false
-  gh_input_ansible_extra_vars_file:
+  # GitHub Deployment repo inputs
+  gh_deployment_ansible_action_extra_vars_file:
     description: "Relative path to file from project root to Ansible vars file."
     required: false
 
-  # Action main inputs
+  # GitHub Action repo inputs
+  gh_action_repo:
+    description: 'URL of calling repo'
+    required: false
+  gh_action_input_terraform:
+    description: 'Folder to store Terraform files to be included during Terraform execution.'
+    required: false
+  gh_action_input_ansible:
+    description: 'Folder where a whole Ansible structure is expected. If missing bitops.config.yaml a default will be generated.'
+    default: ansible
+    required: false
+  gh_action_input_ansible_playbook:
+    description: 'Main playbook to be looked for.'
+    default: playbook.yml
+    required: false
+
+  # GitHub Commons main inputs
   checkout:
     description: 'Specifies if this action should checkout the code'
     required: false
@@ -267,12 +269,14 @@ runs:
         BITOPS_ENVIRONMENT: deployment
         BITOPS_FAST_FAIL: 'true'
 
-        # Inonmig repo
-        GH_CALLING_REPO: ${{ inputs.gh_calling_repo }}
-        GH_INPUT_TERRAFORM: ${{ inputs.gh_input_terraform }}
-        GH_INPUT_ANSIBLE: ${{ inputs.gh_input_ansible }}
-        GH_INPUT_ANSIBLE_PLAYBOOK: ${{ inputs.gh_input_ansible_playbook }}
-        GH_INPUT_ANSIBLE_EXTRA_VARS_FILE: ${{ inputs.gh_input_ansible_extra_vars_file }}
+        # Deployment repo
+        GH_DEPLOYMENT_ANSIBLE_ACTION_EXTRA_VARS_FILE: ${{ inputs.gh_deployment_ansible_action_extra_vars_file }}
+
+        # Action repo
+        GH_ACTION_REPO: ${{ inputs.gh_action_repo }}
+        GH_ACTION_INPUT_TERRAFORM: ${{ inputs.gh_action_input_terraform }}
+        GH_ACTION_INPUT_ANSIBLE: ${{ inputs.gh_action_input_ansible }}
+        GH_ACTION_INPUT_ANSIBLE_PLAYBOOK: ${{ inputs.gh_action_input_ansible_playbook }}
 
         # Action main inputs
         BITOPS_EXTRA_ENV_VARS: ${{ inputs.bitops_extra_env_vars }}
