@@ -18,7 +18,6 @@ inputs:
     required: false
   gh_action_input_ansible:
     description: 'Folder where a whole Ansible structure is expected. If missing bitops.config.yaml a default will be generated.'
-    default: ansible
     required: false
   gh_action_input_ansible_playbook:
     description: 'Main playbook to be looked for.'
