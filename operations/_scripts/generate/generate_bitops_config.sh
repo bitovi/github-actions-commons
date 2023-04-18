@@ -11,6 +11,7 @@ function alpha_only() {
 CONFIG_STACK_ACTION="apply"
 if [ "$TF_STACK_DESTROY" == "true" ]; then
   CONFIG_STACK_ACTION="destroy"
+  ANSIBLE_SKIP=true
 fi
 
 targets_attribute="targets:"
