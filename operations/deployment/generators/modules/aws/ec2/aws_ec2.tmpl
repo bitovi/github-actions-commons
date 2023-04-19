@@ -64,7 +64,8 @@ resource "aws_instance" "server" {
   iam_instance_profile        = aws_iam_instance_profile.ec2_profile.name
   disable_api_termination     = var.aws_ec2_instance_protect
   root_block_device {
-    volume_size = tonumber(var.aws_ec2_instance_root_vol_size)
+    volume_size           = tonumber(var.aws_ec2_instance_root_vol_size)
+    delete_on_termination = var.aws_ec2_instance_root_vol_preserve ? false : true
   }
   tags = {
     Name = "$${var.aws_resource_identifier} - Instance"

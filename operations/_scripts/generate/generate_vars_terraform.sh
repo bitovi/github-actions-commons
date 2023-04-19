@@ -117,6 +117,7 @@ if [[ $(alpha_only "$AWS_EC2_INSTANCE_CREATE") == true ]]; then
   aws_ec2_instance_type=$(generate_var aws_ec2_instance_type $AWS_EC2_INSTANCE_TYPE)
   aws_ec2_instance_protect=$(generate_var aws_ec2_instance_protect $AWS_EC2_INSTANCE_PROTECT)
   aws_ec2_instance_root_vol_size=$(generate_var aws_ec2_instance_root_vol_size $AWS_EC2_INSTANCE_ROOT_VOL_SIZE)
+  aws_ec2_instance_root_vol_preserve=$(generate_var aws_ec2_instance_root_vol_preserve $AWS_EC2_INSTANCE_ROOT_VOL_PRESERVE)
   aws_ec2_security_group_name=$(generate_var aws_ec2_security_group_name $AWS_EC2_SECURITY_GROUP_NAME)
   aws_ec2_create_keypair_sm=$(generate_var aws_ec2_create_keypair_sm $AWS_EC2_CREATE_KEYPAIR_SM)
   aws_ec2_instance_public_ip=$(generate_var aws_ec2_instance_public_ip $AWS_EC2_INSTANCE_PUBLIC_IP)

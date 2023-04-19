@@ -15,6 +15,10 @@ TERRAFORM_COMMAND=""
 if [ "$(alpha_only $TF_STACK_DESTROY)" == "true" ]; then
   TERRAFORM_COMMAND="destroy"
   ANSIBLE_SKIP="true"
+  if [ "$(alpha_only $AWS_EC2_INSTANCE_PROTECT)" == "true" ] && [ "$(alpha_only $AWS_EC2_INSTANCE_CREATE)" == "true" ]; then
+    echo "::error:: You need to set aws_ec2_instance_protect to false before before destroying infrastructure."
+    exit 1
+  fi
 fi
 
 if [ "$(alpha_only $ANSIBLE_SKIP)" == "true" ]; then

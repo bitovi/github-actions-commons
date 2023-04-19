@@ -74,6 +74,12 @@ variable "aws_ec2_instance_root_vol_size" {
   description = "Instance type for the EC2 instance"
 }
 
+variable "aws_ec2_instance_root_vol_preserve" {
+  type        = bool
+  default     = false
+  description = "Set this to true to avoid deletion of root volume on termination."
+}
+
 variable "aws_ec2_security_group_name" {
   type        = string
   default     = ""

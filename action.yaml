@@ -111,10 +111,13 @@ inputs:
     description: 'The AWS Instance type'
     required: false
   aws_ec2_instance_protect:
-    description: 'Set this to true to enable instance deletion protection.'
+    description: 'NOT RECOMMENDED - You'll need to delete every resource created manually afterwards. Set this to true to enable API instance deletion protection.'
     required: false
   aws_ec2_instance_root_vol_size:
     description: 'Define the volume size (in GiB) for the root volume on the AWS Instance.'
+    required: false
+  aws_ec2_instance_root_vol_preserve:
+    description: 'Set this to true to avoid deletion of root volume on termination. Defaults to false.'
     required: false
   aws_ec2_security_group_name:
     description: 'The name of the EC2 security group'
@@ -311,6 +314,7 @@ runs:
         AWS_EC2_INSTANCE_TYPE: ${{ inputs.aws_ec2_instance_type }} 
         AWS_EC2_INSTANCE_PROTECT: ${{ inputs.aws_ec2_instance_protect }}
         AWS_EC2_INSTANCE_ROOT_VOL_SIZE: ${{ inputs.aws_ec2_instance_root_vol_size }}
+        AWS_EC2_INSTANCE_ROOT_VOL_PRESERVE: ${{ inputs.aws_ec2_instance_root_vol_preserve }}
         AWS_EC2_SECURITY_GROUP_NAME: ${{ inputs.aws_ec2_security_group_name }}
         AWS_EC2_CREATE_KEYPAIR_SM: ${{ inputs.aws_ec2_create_keypair_sm }}
         AWS_EC2_INSTANCE_PUBLIC_IP: ${{ inputs.aws_ec2_instance_public_ip }}
