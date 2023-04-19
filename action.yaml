@@ -111,7 +111,7 @@ inputs:
     description: 'The AWS Instance type'
     required: false
   aws_ec2_instance_protect:
-    description: 'NOT RECOMMENDED - You'll need to delete every resource created manually afterwards. Set this to true to enable API instance deletion protection.'
+    description: 'Set this to true to enable API instance deletion protection.'
     required: false
   aws_ec2_instance_root_vol_size:
     description: 'Define the volume size (in GiB) for the root volume on the AWS Instance.'
