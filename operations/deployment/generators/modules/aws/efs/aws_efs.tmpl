@@ -150,7 +150,13 @@ resource "aws_efs_file_system_policy" "efs_policy_protect_deletion" {
         Effect = "Allow"
         Principal = "*"
         Action = [
-          "elasticfilesystem:*"
+          "elasticfilesystem:Client*",
+          "elasticfilesystem:Des*",
+          "elasticfilesystem:P*",
+          "elasticfilesystem:ListTagsForResource",
+          "elasticfilesystem:ModifyMountTargetSecurityGroups",
+          "elasticfilesystem:TagResource",
+          "elasticfilesystem:UntagResource",
         ]
         Resource = aws_efs_file_system.efs[0].arn
       },
@@ -163,7 +169,6 @@ resource "aws_efs_file_system_policy" "efs_policy_protect_deletion" {
     ]
   })
 }
-
 
 # resource "aws_efs_file_system_policy" "policy" {
 #   file_system_id = aws_efs_file_system.efs[0].id
