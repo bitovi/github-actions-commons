@@ -292,7 +292,7 @@ $aws_postgres_subnets
 $aws_postgres_database_name
 $aws_postgres_database_port
 $aws_postgres_database_protection
-$aws_postgress_database_final_snapshot
+$aws_postgres_database_final_snapshot
 
 $docker_efs_mount_target
 
