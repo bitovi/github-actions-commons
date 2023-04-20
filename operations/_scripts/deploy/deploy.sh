@@ -19,6 +19,9 @@ if [ "$(alpha_only $TF_STACK_DESTROY)" == "true" ]; then
     echo "::error:: You need to set aws_ec2_instance_protect to false before before destroying infrastructure."
     exit 1
   fi
+  if [ "$(alpha_only $AWS_POSTGRES_DATABASE_PROTECTION)" == "true" ]; then
+    echo "::notice:: Database protection enabled. Database will not be deleted."
+  fi
 fi
 
 if [ "$(alpha_only $ANSIBLE_SKIP)" == "true" ]; then
