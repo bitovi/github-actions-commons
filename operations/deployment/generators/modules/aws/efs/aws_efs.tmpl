@@ -146,6 +146,14 @@ resource "aws_efs_file_system_policy" "efs_policy" {
     Version = "2012-10-17"
     Statement = [
       {
+        Effect = "Allow"
+        Principal = "*"
+        Action = [
+          "elasticfilesystem:*"
+        ]
+        Resource = aws_efs_file_system.efs[0].arn
+      },
+      {
         Effect = "Deny"
         Principal = "*"
         Action = "elasticfilesystem:DeleteFileSystem"
@@ -154,6 +162,7 @@ resource "aws_efs_file_system_policy" "efs_policy" {
     ]
   })
 }
+
 
 # resource "aws_efs_file_system_policy" "policy" {
 #   file_system_id = aws_efs_file_system.efs[0].id
