@@ -238,7 +238,13 @@ inputs:
   aws_postgres_database_port:
     description: 'Postgres database port'
     required: false
-  
+  aws_postgres_database_protection:
+    description: 'Protects the database from deletion.'
+    required: false
+  aws_postgres_database_final_snapshot:
+    description: 'Generates a snapshot of the database before deletion.'
+    required: false
+    
   # Docker 
   docker_install: 
     description: 'Define if docker should be installed. After this, docker-compose up will be excecuted.'
@@ -360,6 +366,8 @@ runs:
         AWS_POSTGRES_SUBNETS: ${{ inputs.aws_postgres_subnets }}
         AWS_POSTGRES_DATABASE_NAME: ${{ inputs.aws_postgres_database_name }}
         AWS_POSTGRES_DATABASE_PORT: ${{ inputs.aws_postgres_database_port}}
+        AWS_POSTGRES_DATABASE_PROTECTION: ${{ inputs.aws_postgres_database_protection }}
+        AWS_POSTGRES_DATABASE_FINAL_SNAPSHOT: ${{ inputs.aws_postgres_database_final_snapshot }}
 
         # Docker
         DOCKER_INSTALL: ${{ inputs.docker_install }}

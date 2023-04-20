@@ -297,6 +297,18 @@ variable "aws_postgres_database_port" {
   description = "database port"
 }
 
+variable "aws_postgres_database_protection" {
+  type        = bool
+  default     = false
+  description = "Protects the database from deletion."
+}
+
+variable "aws_postgres_database_final_snapshot" {
+  type        = string
+  default     = ""
+  description = "Generates a snapshot of the database before deletion."
+}
+
 # Docker
 
 variable "docker_efs_mount_target" {

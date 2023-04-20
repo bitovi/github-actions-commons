@@ -94,7 +94,14 @@ if [ -n "${AWS_POSTGRES_SUBNETS}" ]; then
 fi
 echo "AWS Postgres subnets: $aws_postgres_subnets"
 
-
+aws_postgress_database_final_snapshot=
+if [ -n "$AWS_POSTGRESS_DATABASE_FINAL_SNAPSHOT" ];then
+  if [[ $(alpha_only "$2") == "true" ]]; then
+    aws_postgress_database_final_snapshot="aws_postgress_database_final_snapshot = =\"${GITHUB_IDENTIFIER}\""
+  else
+    aws_postgress_database_final_snapshot="aws_postgress_database_final_snapshot = =\"${AWS_POSTGRESS_DATABASE_FINAL_SNAPSHOT}\""
+  fi
+fi
 
 #-- AWS Specific --#
 # aws_resource_identifier=$(generate_var aws_resource_identifier AWS_RESOURCE_IDENTIFIER - Fixed
@@ -175,6 +182,8 @@ if [[ $(alpha_only "$AWS_POSTGRES_ENABLE") == true ]]; then
   # aws_postgres_subnets=$(generate_var aws_postgres_subnets $AWS_POSTGRES_SUBNETS) - Special case
   aws_postgres_database_name=$(generate_var aws_postgres_database_name $AWS_POSTGRES_DATABASE_NAME)
   aws_postgres_database_port=$(generate_var aws_postgres_database_port $AWS_POSTGRES_DATABASE_PORT)
+  aws_postgres_database_protection=$(generate_var aws_postgres_database_protection $AWS_POSTGRES_DATABASE_PROTECTION )
+  # aws_postgress_database_final_snapshot=$(generate_var aws_postgress_database_final_snapshot $AWS_POSTGRES_DATABASE_FINAL_SNAPSHOT ) - Special case
 fi
 
 
@@ -282,6 +291,8 @@ $aws_postgres_security_group_name
 $aws_postgres_subnets
 $aws_postgres_database_name
 $aws_postgres_database_port
+$aws_postgres_database_protection
+$aws_postgress_database_final_snapshot
 
 $docker_efs_mount_target
 
