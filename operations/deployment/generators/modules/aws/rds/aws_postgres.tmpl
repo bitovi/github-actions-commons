@@ -61,7 +61,7 @@ module "rds_cluster" {
   create_random_password                 = false
   apply_immediately                      = true
   skip_final_snapshot                    = aws_postgres_database_final_snapshot == "" ? true : false
-  final_snapshot_identifier              = var.aws_postgres_database_final_snapshot
+  snapshot_identifier                    = var.aws_postgres_database_final_snapshot
   create_db_cluster_parameter_group      = true
   db_cluster_parameter_group_name        = var.aws_resource_identifier
   db_cluster_parameter_group_family      = "aurora-postgresql11"
