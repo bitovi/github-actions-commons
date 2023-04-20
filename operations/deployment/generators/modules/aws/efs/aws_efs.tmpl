@@ -157,6 +157,7 @@ resource "aws_efs_file_system_policy" "efs_policy_protect_deletion" {
           "elasticfilesystem:ModifyMountTargetSecurityGroups",
           "elasticfilesystem:TagResource",
           "elasticfilesystem:UntagResource",
+          "elasticfilesystem:BypassPolicyLockoutSafetyCheck",
         ]
         Resource = aws_efs_file_system.efs[0].arn
       },
