@@ -208,6 +208,12 @@ variable "aws_efs_enable_backup_policy" {
   description = "Toggle to indiciate whether the EFS should have a backup policy, default is `false`"
 }
 
+variable "aws_efs_volume_preserve" {
+  type        = bool
+  default     = false
+  description = "Set this to true to avoid deletion of EFS volume on termination."
+}
+
 variable "aws_efs_zone_mapping" {
   type = map(object({
     subnet_id       = string

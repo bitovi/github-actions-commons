@@ -139,47 +139,30 @@ resource "aws_efs_mount_target" "efs_mount_target" {
   security_groups = [aws_security_group.efs_security_group[0].id]
 }
 
-#resource "aws_efs_file_system_policy" "efs_policy_allow" {
-#  file_system_id = aws_efs_file_system.efs[0].id
-#
-#  policy = jsonencode({
-#    Version = "2012-10-17"
-#    Statement = [
-#      {
-#        Effect = "Allow"
-#        Principal = "*"
-#        Action = [
-#          "elasticfilesystem:*"
-#        ]
-#        Resource = aws_efs_file_system.efs[0].arn
-#      }
-#    ]
-#  })
-#}
+resource "aws_efs_file_system_policy" "efs_policy_protect_deletion" {
+  count          = var.aws_efs_volume_preserve ? 1 : 0
+  file_system_id = aws_efs_file_system.efs[0].id
 
-#resource "aws_efs_file_system_policy" "efs_policy_deny" {
-#  file_system_id = aws_efs_file_system.efs[0].id
-#
-#  policy = jsonencode({
-#    Version = "2012-10-17"
-#    Statement = [
-#      {
-#        Effect = "Allow"
-#        Principal = "*"
-#        Action = [
-#          "elasticfilesystem:*"
-#        ]
-#        Resource = aws_efs_file_system.efs[0].arn
-#      },
-#      {
-#        Effect = "Deny"
-#        Principal = "*"
-#        Action = "elasticfilesystem:DeleteFileSystem"
-#        Resource = aws_efs_file_system.efs[0].arn
-#      }
-#    ]
-#  })
-#}
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow"
+        Principal = "*"
+        Action = [
+          "elasticfilesystem:*"
+        ]
+        Resource = aws_efs_file_system.efs[0].arn
+      },
+      {
+        Effect = "Deny"
+        Principal = "*"
+        Action = "elasticfilesystem:DeleteFileSystem"
+        Resource = aws_efs_file_system.efs[0].arn
+      }
+    ]
+  })
+}
 
 
 # resource "aws_efs_file_system_policy" "policy" {

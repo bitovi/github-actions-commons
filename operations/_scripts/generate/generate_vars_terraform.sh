@@ -162,6 +162,7 @@ if [[ $(alpha_only "$AWS_EFS_CREATE") == true ]] || [[ $(alpha_only "$AWS_EFS_CR
   aws_efs_create_ha=$(generate_var aws_efs_create_ha $AWS_EFS_CREATE_HA)
   aws_efs_create_replica=$(generate_var aws_efs_create_replica $AWS_EFS_CREATE_REPLICA)
   aws_efs_enable_backup_policy=$(generate_var aws_efs_enable_backup_policy $AWS_EFS_ENABLE_BACKUP_POLICY)
+  aws_efs_volume_preserve=$(generate_var aws_efs_volume_preserve $AWS_EFS_VOLUME_PRESERVE)
   aws_efs_zone_mapping=$(generate_var aws_efs_zone_mapping $AWS_EFS_ZONE_MAPPING)
   aws_efs_transition_to_inactive=$(generate_var aws_efs_transition_to_inactive $AWS_EFS_TRANSITION_TO_INACTIVE)
   aws_efs_replication_destination=$(generate_var aws_efs_replication_destination $AWS_EFS_REPLICATION_DESTINATION)
@@ -273,6 +274,7 @@ $aws_efs_create
 $aws_efs_create_ha
 $aws_efs_create_replica
 $aws_efs_enable_backup_policy
+$aws_efs_volume_preserve
 $aws_efs_zone_mapping
 $aws_efs_transition_to_inactive
 $aws_efs_replication_destination
