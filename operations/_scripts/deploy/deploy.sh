@@ -20,8 +20,19 @@ if [ "$(alpha_only $TF_STACK_DESTROY)" == "true" ]; then
     exit 1
   fi
   if [ "$(alpha_only $AWS_POSTGRES_DATABASE_PROTECTION)" == "true" ]; then
-    echo "::notice:: Database protection enabled. Database will not be deleted."
+    echo "::error:: Database protection enabled. Disable it before destroying."
+    exit 1
   fi
+  if [ "$(alpha_only $AWS_EFS_VOLUME_PRESERVE)" == "true" ]; then
+    echo "::info:: There is no real EFS protection to enable. Just a flag we created to avoid unintentional deletion."
+    echo "::error:: EFS volume protection enabled. Disable it before destroying."
+    exit 1
+  fi
+fi
+
+if [ "$(alpha_only $AWS_EFS_VOLUME_PRESERVE)" == "true" ]; then
+  echo "::info:: There is no real EFS protection to enable from AWS."
+  echo "::info:: This is just a flag we created to avoid unintentional deletion on destruction."
 fi
 
 if [ "$(alpha_only $ANSIBLE_SKIP)" == "true" ]; then
