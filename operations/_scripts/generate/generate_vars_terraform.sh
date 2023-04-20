@@ -94,9 +94,8 @@ if [ -n "${AWS_POSTGRES_SUBNETS}" ]; then
 fi
 echo "AWS Postgres subnets: $aws_postgres_subnets"
 
-aws_postgres_database_final_snapshot=
-if ! [ -n "$AWS_POSTGRES_DATABASE_FINAL_SNAPSHOT" ];then
-  if [[ $(alpha_only "$2") == "true" ]]; then
+if [ -n "$AWS_POSTGRES_DATABASE_FINAL_SNAPSHOT" ];then
+  if [[ $(alpha_only "$AWS_POSTGRES_DATABASE_FINAL_SNAPSHOT") == "true" ]]; then
     aws_postgres_database_final_snapshot="aws_postgres_database_final_snapshot = \"${GITHUB_IDENTIFIER}\""
   else
     aws_postgres_database_final_snapshot="aws_postgres_database_final_snapshot = \"${AWS_POSTGRES_DATABASE_FINAL_SNAPSHOT}\""
