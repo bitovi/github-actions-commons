@@ -352,7 +352,7 @@ runs:
         AWS_EFS_CREATE_HA: ${{ inputs.aws_efs_create_ha }}
         AWS_EFS_CREATE_REPLICA: ${{ inputs.aws_efs_create_replica }}
         AWS_EFS_ENABLE_BACKUP_POLICY: ${{ inputs.aws_efs_enable_backup_policy }}
-        AWS_EFS_VOLUME_PRESERVE: : ${{ inputs.aws_efs_volume_preserve }}
+        AWS_EFS_VOLUME_PRESERVE: ${{ inputs.aws_efs_volume_preserve }}
         AWS_EFS_ZONE_MAPPING: ${{ inputs.aws_efs_zone_mapping }}
         AWS_EFS_TRANSITION_TO_INACTIVE: ${{ inputs.aws_efs_transition_to_inactive }}
         AWS_EFS_REPLICATION_DESTINATION: ${{ inputs.aws_efs_replication_destination }}
