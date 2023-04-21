@@ -69,7 +69,6 @@ resource "aws_efs_file_system" "efs" {
 
   lifecycle_policy {
     transition_to_ia = var.aws_efs_transition_to_inactive
-    prevent_destroy  = true
   }
 
   lifecycle {
