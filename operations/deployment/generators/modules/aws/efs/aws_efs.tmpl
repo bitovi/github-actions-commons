@@ -71,9 +71,9 @@ resource "aws_efs_file_system" "efs" {
     transition_to_ia = var.aws_efs_transition_to_inactive
   }
 
-  lifecycle {
-    prevent_destroy  = true
-  }
+#  lifecycle {
+#    prevent_destroy  = true
+#  }
 
   tags = {
     Name = "${var.aws_resource_identifier}-efs-modular"
