@@ -29,6 +29,10 @@ inputs:
     description: 'Specifies if this action should checkout the code'
     required: false
     default: 'true'
+  bitops_code_store:
+    description: 'Store BitOps code as a GitHub artifact'
+    required: false
+    default: false
   bitops_extra_env_vars:
     description: 'Variables to be passed to BitOps as Docker extra vars. Format should be `-e KEY1=VALUE1 -e KEY2=VALUE2`'
     required: false
@@ -417,3 +421,14 @@ runs:
         echo "## Workflow failed to run :fire:" >> $GITHUB_STEP_SUMMARY
         echo "Please check the logs for possible errors." >> $GITHUB_STEP_SUMMARY
         echo "If you consider this is a bug in the Github Action, please submit an issue to our repo." >> $GITHUB_STEP_SUMMARY
+    - if: ${{ inputs.bitops_code_store == 'true' }}
+      name: Archive production artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: Storing code - Terraform
+        retention-days: 5
+        path: |
+          operations/deployment
+          !operations/deployment/**/ghs.env
+          !operations/deployment/**/.env
+          !operations/deployment/**/app.env
