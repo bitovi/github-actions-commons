@@ -190,6 +190,9 @@ inputs:
   aws_efs_enable_backup_policy:
     description: 'Toggle to indiciate whether the EFS should have a backup policy, default is false'
     required: false
+  aws_efs_volume_preserve:
+    description: 'Set this to true to avoid deletion of EFS volume on termination'
+    required: false
   aws_efs_zone_mapping:
     description: 'Information on Zone Mapping can be found in the [README.md](README.md#efs-zone-mapping)'
     required: false
