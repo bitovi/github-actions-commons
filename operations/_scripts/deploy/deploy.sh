@@ -16,23 +16,24 @@ if [ "$(alpha_only $TF_STACK_DESTROY)" == "true" ]; then
   TERRAFORM_COMMAND="destroy"
   ANSIBLE_SKIP="true"
   if [ "$(alpha_only $AWS_EC2_INSTANCE_PROTECT)" == "true" ] && [ "$(alpha_only $AWS_EC2_INSTANCE_CREATE)" == "true" ]; then
-    echo "::error:: You need to set aws_ec2_instance_protect to false before before destroying infrastructure."
+    echo "::error::You need to set aws_ec2_instance_protect to false before before destroying infrastructure."
     exit 1
   fi
   if [ "$(alpha_only $AWS_POSTGRES_DATABASE_PROTECTION)" == "true" ]; then
-    echo "::error:: Database protection enabled. Disable it before destroying."
+    echo "::error::Database protection enabled. Disable it before destroying."
     exit 1
   fi
   if [ "$(alpha_only $AWS_EFS_VOLUME_PRESERVE)" == "true" ]; then
-    echo "::info:: There is no real EFS protection to enable. Just a flag we created to avoid unintentional deletion."
-    echo "::error:: EFS volume protection enabled. Disable it before destroying."
+    echo "::notice::There is no real EFS protection to enable. Just a flag we created to avoid unintentional deletion."
+    echo "::notice::Please backup your volume before deletion."
+    echo "::error::EFS volume protection enabled. Disable it before destroying."
     exit 1
   fi
 fi
 
 if [ "$(alpha_only $AWS_EFS_VOLUME_PRESERVE)" == "true" ]; then
-  echo "::info:: There is no real EFS protection to enable from AWS."
-  echo "::info:: This is just a flag we created to avoid unintentional deletion on destruction."
+  echo "::notice::There is no real EFS protection to enable from AWS."
+  echo "::notice::This is just a flag we created to avoid unintentional deletion on destruction."
 fi
 
 if [ "$(alpha_only $ANSIBLE_SKIP)" == "true" ]; then
