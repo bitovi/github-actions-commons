@@ -29,11 +29,11 @@ if [ "$(alpha_only $TF_STACK_DESTROY)" == "true" ]; then
     echo "::error::EFS volume protection enabled. Disable it before destroying."
     exit 1
   fi
-fi
-
-if [ "$(alpha_only $AWS_EFS_VOLUME_PRESERVE)" == "true" ]; then
-  echo "::notice::There is no real EFS protection to enable from AWS."
-  echo "::notice::This is just a flag we created to avoid unintentional deletion on destruction."
+else 
+  if [ "$(alpha_only $AWS_EFS_VOLUME_PRESERVE)" == "true" ]; then
+    echo "::notice::There is no real EFS protection to enable from AWS."
+    echo "::notice::This is just a flag we created to avoid unintentional deletion on destruction."
+  fi
 fi
 
 if [ "$(alpha_only $ANSIBLE_SKIP)" == "true" ]; then
