@@ -91,3 +91,7 @@ resource "random_integer" "az_select" {
     ignore_changes = all
   }
 }
+
+output "instance_type_available" {
+  value       = length(data.aws_ec2_instance_type_offerings.region_azs.locations) > 0 ? "EC2 Instance type valid for this region" : "EC2 Instance type invalid for this region."
+}
