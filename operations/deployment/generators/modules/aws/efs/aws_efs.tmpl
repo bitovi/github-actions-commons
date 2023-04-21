@@ -72,6 +72,10 @@ resource "aws_efs_file_system" "efs" {
     prevent_destroy  = true
   }
 
+  lifecycle {
+    prevent_destroy  = true
+  }
+
   tags = {
     Name = "${var.aws_resource_identifier}-efs-modular"
   }
