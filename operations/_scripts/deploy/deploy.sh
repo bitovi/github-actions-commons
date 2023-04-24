@@ -107,7 +107,6 @@ docker run --rm --name bitops \
 ${BITOPS_EXTRA_ENV_VARS_FILE} \
 ${BITOPS_EXTRA_ENV_VARS} \
 -v $(echo $GITHUB_ACTION_PATH)/operations:/opt/bitops_deployment \
-
 bitovi/bitops:2.5.0
 BITOPS_RESULT=$?
 echo "::endgroup::"
