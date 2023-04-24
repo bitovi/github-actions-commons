@@ -404,9 +404,9 @@ runs:
       name: Print code built
       shell: bash
       run: |
-        echo "## BitOps Code generated. :thinking: " >> $GITHUB_STEP_SUMMARY
+        echo "## BitOps Code generated. :tada: " >> $GITHUB_STEP_SUMMARY
         echo "Download the code artifact. Will be there for 5 days." >> $GITHUB_STEP_SUMMARY
-    - if: ${{ success() && steps.deploy.outputs.vm_url == '' && inputs.tf_stack_destroy != 'true' }}
+    - if: ${{ success() && steps.deploy.outputs.vm_url == '' && inputs.tf_stack_destroy != 'true' && inputs.bitops_code_only != 'true' }}
       name: Print result destroyed
       shell: bash
       run: |
