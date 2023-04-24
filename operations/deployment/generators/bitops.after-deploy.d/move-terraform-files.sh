@@ -15,5 +15,5 @@ ls -lah "${BITOPS_ENVROOT}/terraform"
 echo "BITOPS_ENVROOT ${BITOPS_ENVROOT}"
 ls -lah "${BITOPS_ENVROOT}"
 mkdir /opt/bitops_deployment/generated_code
-cp -r "${BITOPS_ENVROOT}" /opt/bitops_deployment/generated_code
+cp -r "${BITOPS_ENVROOT}/deployment" /opt/bitops_deployment/generated_code
 env

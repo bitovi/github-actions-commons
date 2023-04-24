@@ -116,7 +116,7 @@ if [[ "$(alpha_only $BITOPS_CODE_ONLY)" == "true" ]]; then
   echo "Generating bitops.config.yaml based on your definitions:"
   /bin/bash $GITHUB_ACTION_PATH/operations/_scripts/generate/generate_bitops_config_code_only.sh
   ls -lah $GITHUB_ACTION_PATH/operations/generated_code
-  apt-get install zip
+  sudo apt-get install zip -y 
   echo "::endgroup::"
 fi
 
