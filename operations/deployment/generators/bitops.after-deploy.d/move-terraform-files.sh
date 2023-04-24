@@ -14,3 +14,5 @@ rm -rf "${BITOPS_ENVROOT}/generators"
 ls -lah "${BITOPS_ENVROOT}/terraform"
 echo "BITOPS_ENVROOT ${BITOPS_ENVROOT}"
 ls -lah "${BITOPS_ENVROOT}"
+
+zip --help
