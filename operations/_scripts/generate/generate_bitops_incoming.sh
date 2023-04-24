@@ -37,7 +37,7 @@ if [ -n "$GH_ACTION_REPO" ]; then
         mv "$GH_ACTION_INPUT_ANSIBLE_PATH" "$GITHUB_ACTION_PATH/operations/deployment/ansible/incoming"
       fi
       # Add Ansible - Incoming GH to main bitops.config.yaml
-      if [[ "$(alpha_only $BITOPS_CODE_ONLY)" == "true" ]]; then
+      if [[ "$(alpha_only $BITOPS_CODE_ONLY)" != "true" ]]; then
         /tmp/yq ".bitops.deployments.ansible/incoming.plugin = \"ansible\"" -i $GITHUB_ACTION_PATH/operations/deployment/bitops.config.yaml
       fi
     else

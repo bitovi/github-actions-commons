@@ -46,7 +46,7 @@ bitops:
       plugin: terraform
 " > $GITHUB_ACTION_PATH/operations/deployment/bitops.config.yaml
 
-if [[ "$(alpha_only $BITOPS_CODE_ONLY)" == "true" ]]; then
+if [[ "$(alpha_only $BITOPS_CODE_ONLY)" != "true" ]]; then
   # Terraform - Generate infra
   echo -en "
     terraform:

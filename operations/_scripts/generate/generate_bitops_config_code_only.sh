@@ -74,9 +74,7 @@ if [ -n "$GH_ACTION_REPO" ]; then
   if [ -n "$GH_ACTION_INPUT_ANSIBLE" ] && [[ "$(alpha_only $ANSIBLE_SKIP)" != "true" ]]; then
     if [ -s "$GH_ACTION_INPUT_ANSIBLE_PATH/$GH_ACTION_INPUT_ANSIBLE_PLAYBOOK" ]; then
       # Add Ansible - Incoming GH to main bitops.config.yaml
-      if [[ "$(alpha_only $BITOPS_CODE_ONLY)" == "true" ]]; then
         /tmp/yq ".bitops.deployments.ansible/incoming.plugin = \"ansible\"" -i $GITHUB_ACTION_PATH/operations/deployment/bitops.config.yaml
-      fi
     else
       echo "::error::Couldn't find $GH_ACTION_INPUT_ANSIBLE_PLAYBOOK inside incoming Ansible folder."
     fi
