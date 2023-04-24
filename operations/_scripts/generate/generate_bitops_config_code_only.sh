@@ -87,4 +87,4 @@ fi
 
 
 
-echo "Done with generate_bitops_config.sh"
+echo "Done with generate_bitops_config_code_only.sh"

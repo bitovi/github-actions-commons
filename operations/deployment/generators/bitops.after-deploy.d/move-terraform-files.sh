@@ -12,3 +12,5 @@ rm "${BITOPS_ENVROOT}/generators/terraform.tfvars"
 mv "${BITOPS_ENVROOT}"/generators/*.tf "${BITOPS_ENVROOT}"/terraform/.
 rm -rf "${BITOPS_ENVROOT}/generators"
 ls -lah "${BITOPS_ENVROOT}/terraform"
+echo "BITOPS_ENVROOT ${BITOPS_ENVROOT}"
+ls -lah "${BITOPS_ENVROOT}"

@@ -111,10 +111,8 @@ bitovi/bitops:2.5.0
 BITOPS_RESULT=$?
 echo "::endgroup::"
 
-echo "::group::BitOps Excecution"  
-
-
 if [[ "$(alpha_only $BITOPS_CODE_ONLY)" == "true" ]]; then
+  echo "::group::Generating BitOps code archive"  
   echo "Generating bitops.config.yaml based on your definitions:"
   /bin/bash $GITHUB_ACTION_PATH/operations/_scripts/generate/generate_bitops_config_code_only.sh
   echo "::endgroup::"
