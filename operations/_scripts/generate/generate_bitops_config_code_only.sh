@@ -39,38 +39,37 @@ fi
 
 # Destination file
 BITOPS_CONFIG_FINAL="${GITHUB_ACTION_PATH}/operations/generated_code/bitops.config.yaml"
-echo "Catting BITOPS_CONFIG_FINAL"
-sudo rm $BITOPS_CONFIG_FINAL
+BITOPS_CONFIG_TEMP="/tmp/bitops.config.yaml"
 
 # Global Bitops Config
-sudo echo -en "
+echo -en "
 bitops:
   deployments:
     terraform:
       plugin: terraform
-" > $BITOPS_CONFIG_FINAL
+" > $BITOPS_CONFIG_TEMP
 
 if [[ "$(alpha_only $ANSIBLE_SKIP)" != "true" ]]; then
   # Ansible - Fetch repo
-  sudo echo -en "
+  echo -en "
     ansible/clone_repo:
       plugin: ansible
-  " >> $BITOPS_CONFIG_FINAL
+  " >> $BITOPS_CONFIG_TEMP
 
   # Ansible - Install EFS
   if [[ $(alpha_only "$AWS_EFS_CREATE") == true ]] || [[ $(alpha_only "$AWS_EFS_CREATE_HA") == true ]] || [[ "$AWS_EFS_MOUNT_ID" != "" ]]; then
-  sudo echo -en "
+  echo -en "
     ansible/efs:
       plugin: ansible
-  " >> $BITOPS_CONFIG_FINAL
+  " >> $BITOPS_CONFIG_TEMP
   fi
   
   # Ansible - Install Docker
   if [[ $(alpha_only "$DOCKER_INSTALL") == true ]]; then
-  sudo echo -en "
+  echo -en "
     ansible/docker:
       plugin: ansible
-  " >> $BITOPS_CONFIG_FINAL
+  " >> $BITOPS_CONFIG_TEMP
   fi
 fi
 
@@ -78,7 +77,7 @@ if [ -n "$GH_ACTION_REPO" ]; then
   if [ -n "$GH_ACTION_INPUT_ANSIBLE" ] && [[ "$(alpha_only $ANSIBLE_SKIP)" != "true" ]]; then
     if [ -s "$GH_ACTION_INPUT_ANSIBLE_PATH/$GH_ACTION_INPUT_ANSIBLE_PLAYBOOK" ]; then
       # Add Ansible - Incoming GH to main bitops.config.yaml
-        sudo /tmp/yq ".bitops.deployments.ansible/incoming.plugin = \"ansible\"" -i $BITOPS_CONFIG_FINAL
+      /tmp/yq ".bitops.deployments.ansible/incoming.plugin = \"ansible\"" -i $BITOPS_CONFIG_TEMP
     else
       echo "::error::Couldn't find $GH_ACTION_INPUT_ANSIBLE_PLAYBOOK inside incoming Ansible folder."
     fi
@@ -88,7 +87,9 @@ if [ -n "$GH_ACTION_REPO" ]; then
   # TBC
 fi
 
+sudo rm $BITOPS_CONFIG_FINAL
+sudo mv $BITOPS_CONFIG_TEMP $BITOPS_CONFIG_FINAL
 echo "Catting final:"
-cat $BITOPS_CONFIG_FINAL
+sudo cat $BITOPS_CONFIG_FINAL
 
 echo "Done with generate_bitops_config_code_only.sh"
