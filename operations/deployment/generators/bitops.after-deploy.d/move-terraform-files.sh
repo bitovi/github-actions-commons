@@ -15,4 +15,5 @@ ls -lah "${BITOPS_ENVROOT}/terraform"
 echo "BITOPS_ENVROOT ${BITOPS_ENVROOT}"
 ls -lah "${BITOPS_ENVROOT}"
 
+apt-get install zip -y -q
 zip --help
