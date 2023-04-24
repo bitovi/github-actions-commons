@@ -38,6 +38,8 @@ fi
 ##" > $GITHUB_ACTION_PATH/operations/deployment/terraform/bitops.config.yaml
 
 # Destination file
+BITOPS_CONFIG_FINAL="${GITHUB_ACTION_PATH}/operations/generated_code/bitops.config.yaml"
+echo "Catting $BITOPS_CONFIG_FINAL"
 sudo rm $BITOPS_CONFIG_FINAL
 
 # Global Bitops Config
