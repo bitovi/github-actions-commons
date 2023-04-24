@@ -4,11 +4,6 @@ set -e
 
 echo "In generate_vars_terraform.sh"
 
-echo "Calling repo: $CALLING_REPO"
-ls -lah $CALLING_REPO
-echo "Actions folder:"
-ls -al /home/runner/work/_actions
-
 # convert 'a,b,c'
 # to '["a","b","c"]'
 function comma_str_to_tf_array () {
@@ -99,7 +94,13 @@ if [ -n "${AWS_POSTGRES_SUBNETS}" ]; then
 fi
 echo "AWS Postgres subnets: $aws_postgres_subnets"
 
-
+if [ -n "$AWS_POSTGRES_DATABASE_FINAL_SNAPSHOT" ];then
+  if [[ $(alpha_only "$AWS_POSTGRES_DATABASE_FINAL_SNAPSHOT") == "true" ]]; then
+    aws_postgres_database_final_snapshot="aws_postgres_database_final_snapshot = \"${GITHUB_IDENTIFIER}\""
+  else
+    aws_postgres_database_final_snapshot="aws_postgres_database_final_snapshot = \"${AWS_POSTGRES_DATABASE_FINAL_SNAPSHOT}\""
+  fi
+fi
 
 #-- AWS Specific --#
 # aws_resource_identifier=$(generate_var aws_resource_identifier AWS_RESOURCE_IDENTIFIER - Fixed
@@ -117,8 +118,12 @@ if [[ $(alpha_only "$AWS_EC2_INSTANCE_CREATE") == true ]]; then
   aws_ec2_ami_filter=$(generate_var aws_ec2_ami_filter $AWS_EC2_AMI_FILTER)
   aws_ec2_ami_owner=$(generate_var aws_ec2_ami_owner $AWS_EC2_AMI_OWNER)
   aws_ec2_ami_id=$(generate_var aws_ec2_ami_id $AWS_EC2_AMI_ID)
+  aws_ec2_ami_update=$(generate_var aws_ec2_ami_update $AWS_EC2_AMI_UPDATE)
   # aws_ec2_iam_instance_profile=$(generate_var aws_ec2_iam_instance_profile AWS_EC2_IAM_INSTANCE_PROFILE - Special case
   aws_ec2_instance_type=$(generate_var aws_ec2_instance_type $AWS_EC2_INSTANCE_TYPE)
+  aws_ec2_instance_protect=$(generate_var aws_ec2_instance_protect $AWS_EC2_INSTANCE_PROTECT)
+  aws_ec2_instance_root_vol_size=$(generate_var aws_ec2_instance_root_vol_size $AWS_EC2_INSTANCE_ROOT_VOL_SIZE)
+  aws_ec2_instance_root_vol_preserve=$(generate_var aws_ec2_instance_root_vol_preserve $AWS_EC2_INSTANCE_ROOT_VOL_PRESERVE)
   aws_ec2_security_group_name=$(generate_var aws_ec2_security_group_name $AWS_EC2_SECURITY_GROUP_NAME)
   aws_ec2_create_keypair_sm=$(generate_var aws_ec2_create_keypair_sm $AWS_EC2_CREATE_KEYPAIR_SM)
   aws_ec2_instance_public_ip=$(generate_var aws_ec2_instance_public_ip $AWS_EC2_INSTANCE_PUBLIC_IP)
@@ -145,16 +150,19 @@ fi
 if [[ $(alpha_only "$AWS_ELB_CREATE") == true ]]; then
   aws_elb_create=$(generate_var aws_elb_create $AWS_ELB_CREATE)
   aws_elb_app_port=$(generate_var aws_elb_app_port $AWS_ELB_APP_PORT)
+  aws_elb_app_protocol=$(generate_var aws_elb_app_protocol $AWS_ELB_APP_PROTOCOL)
   aws_elb_listen_port=$(generate_var aws_elb_listen_port $AWS_ELB_LISTEN_PORT)
+  aws_elb_listen_protocol=$(generate_var aws_elb_listen_protocol $AWS_ELB_LISTEN_PROTOCOL)
   aws_elb_healthcheck=$(generate_var aws_elb_healthcheck $AWS_ELB_HEALTHCHECK)
 fi
 
 #-- AWS EFS --#
-if [[ $(alpha_only "$AWS_EFS_CREATE") == true ]] || [[ $(alpha_only "$AWS_EFS_CREATE_HA") == true ]] ; then
+if [[ $(alpha_only "$AWS_EFS_CREATE") == true ]] || [[ $(alpha_only "$AWS_EFS_CREATE_HA") == true ]] || [[ $AWS_EFS_MOUNT_ID != "" ]]; then
   aws_efs_create=$(generate_var aws_efs_create $AWS_EFS_CREATE)
   aws_efs_create_ha=$(generate_var aws_efs_create_ha $AWS_EFS_CREATE_HA)
   aws_efs_create_replica=$(generate_var aws_efs_create_replica $AWS_EFS_CREATE_REPLICA)
   aws_efs_enable_backup_policy=$(generate_var aws_efs_enable_backup_policy $AWS_EFS_ENABLE_BACKUP_POLICY)
+  aws_efs_volume_preserve=$(generate_var aws_efs_volume_preserve $AWS_EFS_VOLUME_PRESERVE)
   aws_efs_zone_mapping=$(generate_var aws_efs_zone_mapping $AWS_EFS_ZONE_MAPPING)
   aws_efs_transition_to_inactive=$(generate_var aws_efs_transition_to_inactive $AWS_EFS_TRANSITION_TO_INACTIVE)
   aws_efs_replication_destination=$(generate_var aws_efs_replication_destination $AWS_EFS_REPLICATION_DESTINATION)
@@ -174,17 +182,19 @@ if [[ $(alpha_only "$AWS_POSTGRES_ENABLE") == true ]]; then
   # aws_postgres_subnets=$(generate_var aws_postgres_subnets $AWS_POSTGRES_SUBNETS) - Special case
   aws_postgres_database_name=$(generate_var aws_postgres_database_name $AWS_POSTGRES_DATABASE_NAME)
   aws_postgres_database_port=$(generate_var aws_postgres_database_port $AWS_POSTGRES_DATABASE_PORT)
+  aws_postgres_database_protection=$(generate_var aws_postgres_database_protection $AWS_POSTGRES_DATABASE_PROTECTION )
+  # aws_postgress_database_final_snapshot=$(generate_var aws_postgress_database_final_snapshot $AWS_POSTGRES_DATABASE_FINAL_SNAPSHOT ) - Special case
 fi
 
 
 #-- ANSIBLE --#
+if [[ "$(alpha_only $ANSIBLE_SKIP)" == "true" ]]; then
+  ansible_skip=$(generate_var ansible_skip $ANSIBLE_SKIP)
+fi
+
 if [[ $(alpha_only "$DOCKER_INSTALL") == true ]]; then
   docker_install=$(generate_var docker_install $DOCKER_INSTALL)
   docker_efs_mount_target=$(generate_var docker_efs_mount_target $DOCKER_EFS_MOUNT_TARGET)
-fi
-
-if [[ $(alpha_only "$ST2_INSTALL") == true ]]; then
-  st2_install=$(generate_var st2_install $ST2_INSTALL)
 fi
 
 #-- Application --#
@@ -201,17 +211,19 @@ lb_access_bucket_name=$(generate_var lb_access_bucket_name $LB_LOGS_BUCKET)
 # -------------------------------------------------- #
 
 echo "
+$ansible_skip
 $aws_r53_enable_cert
 $aws_ec2_instance_create
+$aws_ec2_ami_update
 $aws_ec2_instance_public_ip
 $aws_efs_create
-$aws_elb_create
 $aws_efs_create_ha
+$aws_efs_mount_id
+$aws_elb_create
 $env_aws_secret
 $aws_postgres_enable
 $aws_r53_enable
 $docker_install
-$st2_install
 
 " > "${GITHUB_ACTION_PATH}/operations/deployment/generators/terraform.tfvars"
 
@@ -230,8 +242,12 @@ $env_aws_secret
 $aws_ec2_ami_filter
 $aws_ec2_ami_owner
 $aws_ec2_ami_id
+$aws_ec2_ami_update
 $aws_ec2_iam_instance_profile
 $aws_ec2_instance_type
+$aws_ec2_instance_protect
+$aws_ec2_instance_root_vol_size
+$aws_ec2_instance_root_vol_preserve
 $aws_ec2_security_group_name
 $aws_ec2_create_keypair_sm
 $aws_ec2_instance_public_ip
@@ -247,7 +263,9 @@ $aws_r53_create_sub_cert
 
 #-- ELB --#
 $aws_elb_app_port
+$aws_elb_app_protocol
 $aws_elb_listen_port
+$aws_elb_listen_protocol
 $aws_elb_healthcheck
 $lb_access_bucket_name
 
@@ -273,6 +291,8 @@ $aws_postgres_security_group_name
 $aws_postgres_subnets
 $aws_postgres_database_name
 $aws_postgres_database_port
+$aws_postgres_database_protection
+$aws_postgres_database_final_snapshot
 
 $docker_efs_mount_target
 
@@ -286,3 +306,5 @@ $app_install_root
 " > "${GITHUB_ACTION_PATH}/operations/deployment/terraform/terraform.tfvars"
 
 # -------------------------------------------------- #
+
+echo "Done with generate_vars_terraform.sh"

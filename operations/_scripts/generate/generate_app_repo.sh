@@ -2,7 +2,6 @@
 
 set -e
 
-
 echo "In generate_app_repo.sh"
 GITHUB_REPO_NAME=$(echo $GITHUB_REPOSITORY | sed 's/^.*\///')
 
@@ -16,3 +15,5 @@ if [ -n "$DOCKER_REPO_APP_DIRECTORY" ]; then
 fi
 
 cp -rf "$TARGET_PATH"/* "${GITHUB_ACTION_PATH}/operations/deployment/$1/app/${GITHUB_REPO_NAME}/"
+
+echo "Done with generate_app_repo.sh"

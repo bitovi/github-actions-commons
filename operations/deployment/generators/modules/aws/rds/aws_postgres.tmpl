@@ -47,6 +47,7 @@ module "rds_cluster" {
 
   database_name          = var.aws_postgres_database_name
   port                   = var.aws_postgres_database_port
+  deletion_protection    = var.aws_postgres_database_protection
   storage_encrypted      = true
   monitoring_interval    = 60
   create_db_subnet_group = true
@@ -59,7 +60,8 @@ module "rds_cluster" {
   master_password                        = random_password.rds.result
   create_random_password                 = false
   apply_immediately                      = true
-  skip_final_snapshot                    = true
+  skip_final_snapshot                    = var.aws_postgres_database_final_snapshot == "" ? true : false
+  snapshot_identifier                    = var.aws_postgres_database_final_snapshot
   create_db_cluster_parameter_group      = true
   db_cluster_parameter_group_name        = var.aws_resource_identifier
   db_cluster_parameter_group_family      = "aurora-postgresql11"

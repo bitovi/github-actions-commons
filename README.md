@@ -47,7 +47,9 @@ jobs:
 ## Customizing
 
 ### Inputs
-1. [Action main inputs](#action-main-inputs)
+1. [GitHub Deployment repo inputs](#github-deployment-repo-inputs)
+1. [GitHub Action repo inputs](#github-action-repo-inputs)
+1. [Action default inputs](#action-default-inputs)
 1. [AWS Specific](#aws-specific)
 1. [Secrets and Environment Variables](#secrets-and-environment-variables-inputs)
 1. [EC2](#ec2-inputs)
@@ -61,15 +63,37 @@ The following inputs can be used as `step.with` keys
 <br/>
 <br/>
 
-#### **Action defaults Inputs**
+#### **GitHub Deployment repo inputs**
+| Name             | Type    | Description                        |
+|------------------|---------|------------------------------------|
+| `gh_action_input_ansible_extra_vars_file` | String | Relative path to file from project root to Ansible vars file. |
+<hr/>
+<br/>
+
+#### **GitHub Action repo inputs**
+| Name             | Type    | Description                        |
+|------------------|---------|------------------------------------|
+| `gh_action_repo` | String | URL of calling repo. |
+| `gh_action_input_terraform` | String | Folder to store Terraform files to be included during Terraform execution. |
+| `gh_action_input_ansible` | String | Folder where a whole Ansible structure is expected. If missing bitops.config.yaml a default will be generated. |
+| `gh_action_input_ansible_playbook` | String | Main playbook to be looked for. Defaults to `playbook.yml`. |
+<hr/>
+<br/>
+
+#### **GitHub Commons main inputs**
 | Name             | Type    | Description                        |
 |------------------|---------|------------------------------------|
 | `checkout` | Boolean | Set to `false` if the code is already checked out. (Default is `true`). |
+| `bitops_code_only` | Boolean | If `true`, will run only the generation phase of BitOps, where the Terraform and Ansible code is built. |
+| `bitops_code_store` | Boolean | Store BitOps generated code as a GitHub artifact. |
+| `bitops_extra_env_vars` | String | Variables to be passed to BitOps as Docker extra vars. Format should be `-e KEY1=VALUE1 -e KEY2=VALUE2`. |
+| `bitops_extra_env_vars_file` | String | `.env` file to pass to BitOps Docker run. Usefull for long variables. |
 | `tf_stack_destroy` | Boolean  | Set to `true` to destroy the stack - Will delete the `elb logs bucket` after the destroy action runs. |
 | `tf_state_bucket` | String | AWS S3 bucket name to use for Terraform state. See [note](#s3-buckets-naming) | 
 | `tf_state_bucket_destroy` | Boolean | Force purge and deletion of S3 bucket defined. Any file contained there will be destroyed. `tf_stack_destroy` must also be `true`. Default is `false`. |
 | `tf_state_bucket_provider` | String | Bucket provider for Terraform State storage. [Disabled ATM, AWS as a default.] | 
 | `tf_targets` | List | A list of targets to create before the full stack creation. | 
+| `ansible_skip` | Boolean | Skip Ansible execution after Terraform excecution. |
 <hr/>
 <br/>
 
@@ -102,8 +126,12 @@ The following inputs can be used as `step.with` keys
 | `aws_ec2_ami_filter` | String | AWS AMI Filter string. Will be used to lookup for lates image based on the string. Defaults to `ubuntu/images/hvm-ssd/ubuntu-jammy-22.04-amd64-server-*`.' |
 | `aws_ec2_ami_owner` | String | 'Owner of AWS AMI image. This ensures the provider is the one we are looking for. Defaults to `099720109477`, Canonical (Ubuntu).' |
 | `aws_ec2_ami_id` | String | AWS AMI ID. Will default to latest Ubuntu 22.04 server image (HVM). Accepts `ami-###` values. |
+| `aws_ec2_ami_update` | Boolean | Set this to `true` if you want to recreate the EC2 instance if there is a newer version of the AMI. Defaults to `false`.|
 | `aws_ec2_iam_instance_profile` | String | The AWS IAM instance profile to use for the EC2 instance. Default is `${GITHUB_ORG_NAME}-${GITHUB_REPO_NAME}-${GITHUB_BRANCH_NAME}`|
 | `aws_ec2_instance_type` | String | The AWS IAM instance type to use. Default is `t2.small`. See [this list](https://aws.amazon.com/ec2/instance-types/) for reference. |
+| `aws_ec2_instance_protect` | Boolean | Set this to true to enable API instance deletion protection. Defaults to `false`. |
+| `aws_ec2_instance_root_vol_size` | Integer | Define the volume size (in GiB) for the root volume on the AWS Instance. Defaults to `8`. | 
+| `aws_ec2_instance_root_vol_preserve` | Boolean | Set this to true to avoid deletion of root volume on termination. Defaults to `false`. | 
 | `aws_ec2_security_group_name` | String | The name of the EC2 security group. Defaults to `SG for ${aws_resource_identifier} - EC2`. |
 | `aws_ec2_create_keypair_sm` | Boolean | Generates and manage a secret manager entry that contains the public and private keys created for the ec2 instance. |
 | `aws_ec2_instance_public_ip` | Boolean | Add a public IP to the instance or not. (Not an Elastic IP). |
@@ -130,7 +158,9 @@ The following inputs can be used as `step.with` keys
 | Name             | Type    | Description                        |
 |------------------|---------|------------------------------------|
 | `aws_elb_app_port` | String | Port to be expose for the container. Default is `3000` | 
+| `aws_elb_app_protocol` | String | Protocol to enable. Could be HTTP, HTTPS, TCP or SSL. Defaults to TCP. |
 | `aws_elb_listen_port` | String | Load balancer listening port. Default is `80` if NO FQDN provided, `443` if FQDN provided. |
+| `aws_elb_listen_protocol` | String | Protocol to enable. Could be HTTP, HTTPS, TCP or SSL. Defaults to TCP if NO FQDN provided, SSL if FQDN provided. |
 | `aws_elb_healthcheck` | String | Load balancer health check string. Default is `HTTP:aws_elb_app_port`. |
 <hr/>
 <br/>
@@ -142,6 +172,7 @@ The following inputs can be used as `step.with` keys
 | `aws_efs_create_ha` | Boolean | Toggle to indicate whether the EFS resource should be highly available (target mounts in all available zones within region) |
 | `aws_efs_create_replica` | Boolean | Toggle to indiciate whether a read-only replica should be created for the EFS primary file system |
 | `aws_efs_enable_backup_policy` | Boolean | Toggle to indiciate whether the EFS should have a backup policy |
+| `aws_efs_volume_preserve` | Boolean | Set this to true to avoid deletion of EFS volume on termination. Defaults to `false`.|
 | `aws_efs_zone_mapping` | JSON | Zone Mapping in the form of `{\"<availabillity zone>\":{\"subnet_id\":\"subnet-abc123\", \"security_groups\":\[\"sg-abc123\"\]} }` |
 | `aws_efs_transition_to_inactive` | String | Indicates how long it takes to transition files to the IA storage class. |
 | `aws_efs_replication_destination` | String | AWS Region to target for replication. |
@@ -163,6 +194,8 @@ The following inputs can be used as `step.with` keys
 | `aws_postgres_subnets` | String | Specify which subnets to use as a list of strings.  Example: `i-1234,i-5678,i-9101`. |
 | `aws_postgres_database_name` | String | Specify a database name. Will be created if it does not exist. Default is `root`. |
 | `aws_postgres_database_port` | String | Specify a listening port for the database. Default is `5432`.|
+| `aws_postgres_database_protection` | Boolean | Protects the database from deletion. Default is `false`.|
+| `aws_postgres_database_final_snapshot` | Boolean | Creates a snapshot before deletion. If a string is passed, it will be used as snapsthot name. Defaults to `false`.|
 <hr/>
 <br/>
 
@@ -216,7 +249,7 @@ Users looking to add non-ephemeral storage to their created EC2 instance have th
 
 ### 1. Create EFS
 
-Option 1, you have access to the `aws_efs_create` attribute which will create a EFS resource and mount it to the EC2 instance in the application directory at the path: "app_root/data".
+Option 1, you have access to the `aws_efs_create` or `aws_efs_create_ha` attribute which will create a EFS resource and mount it to the EC2 instance in the application directory at the path: "app_root/data".
 
 > :warning: Be very careful here! The **EFS is fully managed by Terraform**. Therefor **it will be destroyed upon stack destruction**.
 

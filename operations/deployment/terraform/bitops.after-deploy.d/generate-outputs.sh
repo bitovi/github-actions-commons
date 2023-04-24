@@ -14,8 +14,6 @@
 #set -x
 
 echo "In afterhook - generate-outputs.sh"
-env
-echo "End env"
 
 if [ "$BITOPS_TERRAFORM_COMMAND" != "destroy" ]; then
     # The sed command will make each variable be in it's line, and in case a list is present, will transform it into a line

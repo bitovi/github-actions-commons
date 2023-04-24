@@ -65,7 +65,7 @@ data "aws_subnet" "defaultf" {
 
 locals {
   aws_ec2_instance_type_offerings = sort(data.aws_ec2_instance_type_offerings.region_azs.locations)
-  preferred_az = var.availability_zone != null ? var.availability_zone : local.aws_ec2_instance_type_offerings[random_integer.az_select.result]
+  preferred_az = var.availability_zone != null ? var.availability_zone : local.aws_ec2_instance_type_offerings[random_integer.az_select[0].result]
 }
 
 data "aws_ec2_instance_type_offerings" "region_azs" {
@@ -84,10 +84,16 @@ data "aws_subnet" "selected" {
 }
 
 resource "random_integer" "az_select" {
-  min = 0
-  max = length(data.aws_ec2_instance_type_offerings.region_azs.locations) - 1
+  count = length(data.aws_ec2_instance_type_offerings.region_azs.locations) > 0 ? 1 : 0
+  
+  min   = 0
+  max   = length(data.aws_ec2_instance_type_offerings.region_azs.locations) - 1
 
   lifecycle {
     ignore_changes = all
   }
+}
+
+output "instance_type_available" {
+  value       = length(data.aws_ec2_instance_type_offerings.region_azs.locations) > 0 ? "EC2 Instance type valid for this region" : "EC2 Instance type invalid for this region."
 }

@@ -8,7 +8,7 @@ data "aws_vpc" "default" {
 
 resource "aws_security_group" "ec2_security_group" {
   name        = var.aws_ec2_security_group_name != "" ? var.aws_ec2_security_group_name : "SG for ${var.aws_resource_identifier} - EC2"
-  description = "SG for ${var.aws_resource_identifier}"
+  description = "SG for ${var.aws_resource_identifier} - EC2"
   vpc_id      = data.aws_vpc.default.id
   egress {
     from_port   = 0
@@ -17,7 +17,7 @@ resource "aws_security_group" "ec2_security_group" {
     cidr_blocks = ["0.0.0.0/0"]
   }
   tags = {
-    Name = "${var.aws_resource_identifier}-instance-sg"
+    Name = "${var.aws_resource_identifier}-ec2-sg"
   }
 }
 
@@ -43,6 +43,6 @@ resource "aws_security_group_rule" "incoming_ports" {
 
 locals {
   aws_ec2_port_list = var.aws_ec2_port_list != "" ? [for n in split(",", var.aws_ec2_port_list) : tonumber(n)] : []
-  aws_elb_listen_port = var.aws_elb_listen_port != "" ? [for n in split(",", var.aws_elb_listen_port) : tonumber(n)] : []
-  incoming_ports = length(local.aws_ec2_port_list) != 0 ? local.aws_ec2_port_list : local.aws_elb_listen_port
+  aws_elb_app_port = var.aws_elb_app_port != "" ? [for n in split(",", var.aws_elb_app_port) : tonumber(n)] : []
+  incoming_ports = length(local.aws_ec2_port_list) != 0 ? local.aws_ec2_port_list : local.aws_elb_app_port
 }
