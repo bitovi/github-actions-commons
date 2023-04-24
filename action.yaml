@@ -29,10 +29,12 @@ inputs:
     description: 'Specifies if this action should checkout the code'
     required: false
     default: 'true'
+  bitops_code_only:
+    description: 'Will run only the generation phase of BitOps, where the Terraform and Ansible code is built.'
+    required: false
   bitops_code_store:
     description: 'Store BitOps code as a GitHub artifact'
     required: false
-    default: false
   bitops_extra_env_vars:
     description: 'Variables to be passed to BitOps as Docker extra vars. Format should be `-e KEY1=VALUE1 -e KEY2=VALUE2`'
     required: false
@@ -53,9 +55,11 @@ inputs:
     required: false
     default: 'aws'
   tf_targets:
-    description: 'A list of targets to create before the full stack creation. Example: `'
+    description: 'A list of targets to create before the full stack creation.'
+    required: false
   ansible_skip:
     description: 'Skip Ansible execution after Terraform excecution.'
+    required: false
     
   # AWS Specific
   aws_access_key_id:
@@ -294,6 +298,7 @@ runs:
         GH_ACTION_INPUT_ANSIBLE_PLAYBOOK: ${{ inputs.gh_action_input_ansible_playbook }}
 
         # Action main inputs
+        BITOPS_CODE_ONLY: ${{ inputs.bitops_code_only }}
         BITOPS_EXTRA_ENV_VARS: ${{ inputs.bitops_extra_env_vars }}
         BITOPS_EXTRA_ENV_VARS_FILE: ${{ inputs.bitops_extra_env_vars_file }}
         TF_STACK_DESTROY: ${{ inputs.tf_stack_destroy }}
@@ -395,6 +400,12 @@ runs:
       run: |
         echo "## VM Created! :rocket:" >> $GITHUB_STEP_SUMMARY
         echo " ${{ steps.deploy.outputs.vm_url }}" >> $GITHUB_STEP_SUMMARY
+    - if: ${{ success() && steps.deploy.outputs.vm_url == '' && inputs.bitops_code_only == 'true' }}
+      name: Print code built
+      shell: bash
+      run: |
+        echo "## BitOps Code generated. :thinking: " >> $GITHUB_STEP_SUMMARY
+        echo "Download the code artifact. Will be there for 5 days." >> $GITHUB_STEP_SUMMARY
     - if: ${{ success() && steps.deploy.outputs.vm_url == '' && inputs.tf_stack_destroy != 'true' }}
       name: Print result destroyed
       shell: bash
