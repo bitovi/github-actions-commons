@@ -47,6 +47,7 @@ bitops:
   deployments:
     terraform:
       plugin: terraform
+
 " > $BITOPS_CONFIG_TEMP
 
 if [[ "$(alpha_only $ANSIBLE_SKIP)" != "true" ]]; then
@@ -89,7 +90,5 @@ fi
 
 sudo rm $BITOPS_CONFIG_FINAL
 sudo mv $BITOPS_CONFIG_TEMP $BITOPS_CONFIG_FINAL
-echo "Catting final:"
-sudo cat $BITOPS_CONFIG_FINAL
 
 echo "Done with generate_bitops_config_code_only.sh"
