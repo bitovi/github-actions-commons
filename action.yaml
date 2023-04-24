@@ -439,5 +439,5 @@ runs:
         name: Storing code - Terraform
         retention-days: 5
         path: |
-          /opt/bitops_deployment/generated_code
-          !/opt/bitops_deployment/generated_code/**/ghs.env
+          ${{ github.action_path }}/operations/generated_code
+          !${{ github.action_path }}/operations/generated_code/**/ghs.env
