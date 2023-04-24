@@ -95,7 +95,7 @@ docker run --rm --name bitops \
 -e AWS_SECRET_ACCESS_KEY="${AWS_SECRET_ACCESS_KEY}" \
 -e AWS_SESSION_TOKEN="${AWS_SESSION_TOKEN}" \
 -e AWS_DEFAULT_REGION="${AWS_DEFAULT_REGION}" \
--e BITOPS_ENVIRONMENT="${BITOPS_ENVIRONMENT}" \
+/opt/bitops_deployment-e BITOPS_ENVIRONMENT="${BITOPS_ENVIRONMENT}" \
 -e SKIP_DEPLOY_TERRAFORM="${SKIP_DEPLOY_TERRAFORM}" \
 -e SKIP_DEPLOY_HELM="${SKIP_DEPLOY_HELM}" \
 -e BITOPS_TERRAFORM_COMMAND="${TERRAFORM_COMMAND}" \
@@ -106,7 +106,7 @@ docker run --rm --name bitops \
 -e BITOPS_FAST_FAIL="${BITOPS_FAST_FAIL}" \
 ${BITOPS_EXTRA_ENV_VARS_FILE} \
 ${BITOPS_EXTRA_ENV_VARS} \
--v $(echo $GITHUB_ACTION_PATH)/operations:/opt/bitops_deployment \
+-v $(echo $GITHUB_ACTION_PATH)/operations: \
 bitovi/bitops:2.5.0
 BITOPS_RESULT=$?
 echo "::endgroup::"
@@ -115,6 +115,8 @@ if [[ "$(alpha_only $BITOPS_CODE_ONLY)" == "true" ]]; then
   echo "::group::Generating BitOps code archive"  
   echo "Generating bitops.config.yaml based on your definitions:"
   /bin/bash $GITHUB_ACTION_PATH/operations/_scripts/generate/generate_bitops_config_code_only.sh
+  ls -lah $GITHUB_ACTION_PATH/operations/generated_code
+  apt-get install zip
   echo "::endgroup::"
 fi
 
