@@ -46,26 +46,30 @@ echo -en "
 bitops:
   deployments:
     terraform:
-      plugin: terraform" > $BITOPS_CONFIG_TEMP
+      plugin: terraform
+" > $BITOPS_CONFIG_TEMP
 
 if [[ "$(alpha_only $ANSIBLE_SKIP)" != "true" ]]; then
   # Ansible - Fetch repo
   echo -en "
     ansible/clone_repo:
-      plugin: ansible" >> $BITOPS_CONFIG_TEMP
+      plugin: ansible
+  " >> $BITOPS_CONFIG_TEMP
 
   # Ansible - Install EFS
   if [[ $(alpha_only "$AWS_EFS_CREATE") == true ]] || [[ $(alpha_only "$AWS_EFS_CREATE_HA") == true ]] || [[ "$AWS_EFS_MOUNT_ID" != "" ]]; then
   echo -en "
     ansible/efs:
-      plugin: ansible" >> $BITOPS_CONFIG_TEMP
+      plugin: ansible
+  " >> $BITOPS_CONFIG_TEMP
   fi
   
   # Ansible - Install Docker
   if [[ $(alpha_only "$DOCKER_INSTALL") == true ]]; then
   echo -en "
     ansible/docker:
-      plugin: ansible" >> $BITOPS_CONFIG_TEMP
+      plugin: ansible
+  " >> $BITOPS_CONFIG_TEMP
   fi
 fi
 
