@@ -42,8 +42,21 @@ inputs:
     required: false
 
   # GitHub Deployment repo inputs
-  gh_deployment_ansible_action_extra_vars_file:
-    description: "Relative path to file from project root to Ansible vars file."
+  gh_deployment_input_terraform:
+    description: 'Folder to store Terraform files to be included during Terraform execution.'
+    required: false
+  gh_deployment_input_ansible:
+    description: 'Folder where a whole Ansible structure is expected. If missing bitops.config.yaml a default will be generated.'
+    required: false
+  gh_deployment_input_ansible_playbook:
+    description: 'Main playbook to be looked for.'
+    default: playbook.yml
+    required: false
+  gh_deployment_input_ansible_extra_vars_file:
+    description: "Relative path to file from project root to Ansible vars file to be applied. "
+    required: false
+  gh_deployment_action_input_ansible_extra_vars_file:
+    description: "Relative path to file from project root to Ansible vars file to be applied into the Action Ansible execution. "
     required: false
 
   # GitHub Action repo inputs
@@ -300,8 +313,12 @@ runs:
         ANSIBLE_SKIP: ${{ inputs.ansible_skip }}
 
         # Deployment repo
-        GH_DEPLOYMENT_ANSIBLE_ACTION_EXTRA_VARS_FILE: ${{ inputs.gh_deployment_ansible_action_extra_vars_file }}
-
+        GH_DEPLOYMENT_INPUT_TERRAFORM: ${{ inputs.gh_deployment_input_terraform }}
+        GH_DEPLOYMENT_INPUT_ANSIBLE: ${{ inputs.gh_deployment_input_ansible }}
+        GH_DEPLOYMENT_INPUT_ANSIBLE_PLAYBOOK: ${{ inputs.gh_deployment_input_ansible_playbook }}
+        GH_DEPLOYMENT_INPUT_ANSIBLE_EXTRA_VARS_FILE: ${{ inputs.gh_deployment_input_ansible_extra_vars_file }}
+        GH_DEPLOYMENT_ACTION_INPUT_ANSIBLE_EXTRA_VARS_FILE: ${{ inputs.gh_deployment_action_input_ansible_extra_vars_file }}
+        
         # Action repo
         GH_ACTION_REPO: ${{ inputs.gh_action_repo }}
         GH_ACTION_INPUT_TERRAFORM: ${{ inputs.gh_action_input_terraform }}
