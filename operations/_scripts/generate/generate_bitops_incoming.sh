@@ -50,16 +50,25 @@ if [ -n "$GH_ACTION_REPO" ]; then
   fi
   
   # TERRAFORM PART
-#  if [ -n "$GH_ACTION_INPUT_TERRAFORM" ]; then
-#    GH_ACTION_INPUT_TERRAFORM_PATH="$GH_ACTION_REPO/$GH_ACTION_INPUT_TERRAFORM"
-#
+  if [ -n "$GH_ACTION_INPUT_TERRAFORM" ]; then
+    GH_ACTION_INPUT_TERRAFORM_PATH="$GH_ACTION_REPO/$GH_ACTION_INPUT_TERRAFORM"
+
 #    # Create a bitops.config.yaml for Ansible plugin if none provided with the Ansible code
 #    if ! [ -s "$GH_ACTION_INPUT_TERRAFORM_PATH/bitops.config.yaml" ]; then
 #      touch "$GH_ACTION_INPUT_TERRAFORM_PATH/bitops.config.yaml"
 #      /tmp/yq ".terraform.cli.stack-action = \"apply\"" -i "$GH_ACTION_INPUT_TERRAFORM_PATH/bitops.config.yaml"
 #    fi
-#    mv "$GH_ACTION_INPUT_TERRAFORM_PATH" "$GITHUB_ACTION_PATH/operations/deployment/terraform/action"
-#  fi
+    mv "$GH_ACTION_INPUT_TERRAFORM_PATH" "$GITHUB_ACTION_PATH/operations/deployment/terraform/action"
+
+
+echo -en "
+module "terraform_action" {
+  source = "./action/"
+}
+" > $GITHUB_ACTION_PATH/operations/deployment/terraform/action.tf
+
+
+  fi
 fi
 
 ### Generate incoming deployment repo's
@@ -96,15 +105,22 @@ if [ -n "$GH_DEPLOYMENT_INPUT_ANSIBLE" ] && [[ "$(alpha_only $ANSIBLE_SKIP)" != 
 fi
 
 # TERRAFORM PART
-#if [ -n "$GH_DEPLOYMENT_INPUT_TERRAFORM" ]; then
-#  GH_DEPLOYMENT_INPUT_TERRAFORM_PATH="$GITHUB_WORKSPACE/$GH_DEPLOYMENT_INPUT_TERRAFORM"
-#  
-#  # Create a bitops.config.yaml for Ansible plugin if none provided with the Ansible code
-#  if ! [ -s "$GH_DEPLOYMENT_INPUT_TERRAFORM_PATH/bitops.config.yaml" ]; then
-#    touch "$GH_DEPLOYMENT_INPUT_TERRAFORM_PATH/bitops.config.yaml"
-#    /tmp/yq ".terraform.cli.stack-action = \"apply\"" -i "$GH_DEPLOYMENT_INPUT_TERRAFORM_PATH/bitops.config.yaml"
-#  fi
-#  mv "$GH_DEPLOYMENT_INPUT_TERRAFORM_PATH" "$GITHUB_ACTION_PATH/operations/deployment/terraform/action"
-#fi
+if [ -n "$GH_DEPLOYMENT_INPUT_TERRAFORM" ]; then
+  GH_DEPLOYMENT_INPUT_TERRAFORM_PATH="$GITHUB_WORKSPACE/$GH_DEPLOYMENT_INPUT_TERRAFORM"
+  
+  # Create a bitops.config.yaml for Ansible plugin if none provided with the Ansible code
+  #if ! [ -s "$GH_DEPLOYMENT_INPUT_TERRAFORM_PATH/bitops.config.yaml" ]; then
+  #  touch "$GH_DEPLOYMENT_INPUT_TERRAFORM_PATH/bitops.config.yaml"
+  #  /tmp/yq ".terraform.cli.stack-action = \"apply\"" -i "$GH_DEPLOYMENT_INPUT_TERRAFORM_PATH/bitops.config.yaml"
+  #fi
+  mv "$GH_DEPLOYMENT_INPUT_TERRAFORM_PATH" "$GITHUB_ACTION_PATH/operations/deployment/terraform/deployment"
+
+echo -en "
+module "terraform_deployment" {
+  source = "./deployment/"
+}
+" > $GITHUB_ACTION_PATH/operations/deployment/terraform/deployment.tf
+
+fi
 
 echo "Done with generate_bitops_incoming.sh"
