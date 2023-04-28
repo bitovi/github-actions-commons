@@ -40,6 +40,6 @@ provider \"aws\" {
     )
   }
 }
-" > "${GITHUB_ACTION_PATH}/operations/deployment/terraform/provider.tf"
+" > "${GITHUB_ACTION_PATH}/operations/deployment/terraform/bitovi_provider.tf"
 
 echo "Done with generate_provider.sh"
