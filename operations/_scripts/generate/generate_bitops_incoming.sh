@@ -73,10 +73,10 @@ if [ -n "$GH_ACTION_REPO" ]; then
 
     cd "$GH_ACTION_INPUT_TERRAFORM_PATH"
     for file in $(find . -maxdepth 1 -type f ); do
-      mv "${file}" "$GITHUB_ACTION_PATH/operations/deployment/terraform/action_${file##*/}"
+      mv "\"${file}\"" "$GITHUB_ACTION_PATH/operations/deployment/terraform/action_${file##*/}"
     done
     for folder in $(find . -maxdepth 1 -type d -not -name "."); do 
-      mv "${folder}" "${GITHUB_ACTION_PATH}"/operations/deployment/terraform/.
+      mv "\"${folder}\"" "${GITHUB_ACTION_PATH}"/operations/deployment/terraform/.
     done
     cd -
   fi
@@ -127,10 +127,10 @@ if [ -n "$GH_DEPLOYMENT_INPUT_TERRAFORM" ]; then
 
   cd "$GH_DEPLOYMENT_INPUT_TERRAFORM_PATH"
   for file in $(find . -maxdepth 1 -type f ); do
-    mv "${file}" "$GITHUB_ACTION_PATH/operations/deployment/terraform/deployment_${file##*/}"
+    mv "\"${file}\"" "$GITHUB_ACTION_PATH/operations/deployment/terraform/deployment_${file##*/}"
   done
   for folder in $(find . -maxdepth 1 -type d -not -name "."); do 
-    mv "${folder}" "${GITHUB_ACTION_PATH}"/operations/deployment/terraform/.
+    mv "\"${folder}\"" "${GITHUB_ACTION_PATH}"/operations/deployment/terraform/.
   done
   cd -
 fi
