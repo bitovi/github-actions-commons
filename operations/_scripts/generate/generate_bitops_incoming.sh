@@ -62,7 +62,10 @@ if [ -n "$GH_ACTION_REPO" ]; then
   
   # TERRAFORM PART
   if [ -n "$GH_ACTION_INPUT_TERRAFORM" ]; then
+    echo "Action terra input"
     GH_ACTION_INPUT_TERRAFORM_PATH="$GH_ACTION_REPO/$GH_ACTION_INPUT_TERRAFORM"
+
+    ls -lah $GH_ACTION_INPUT_TERRAFORM_PATH
 
 #    # Create a bitops.config.yaml for Ansible plugin if none provided with the Ansible code
 #    if ! [ -s "$GH_ACTION_INPUT_TERRAFORM_PATH/bitops.config.yaml" ]; then
@@ -118,8 +121,12 @@ fi
 
 # TERRAFORM PART
 if [ -n "$GH_DEPLOYMENT_INPUT_TERRAFORM" ]; then
+  echo "Deploy terra input"
+
   GH_DEPLOYMENT_INPUT_TERRAFORM_PATH="$GITHUB_WORKSPACE/$GH_DEPLOYMENT_INPUT_TERRAFORM"
   
+  ls -lah $GH_DEPLOYMENT_INPUT_TERRAFORM_PATH
+
   # Create a bitops.config.yaml for Ansible plugin if none provided with the Ansible code
   #if ! [ -s "$GH_DEPLOYMENT_INPUT_TERRAFORM_PATH/bitops.config.yaml" ]; then
   #  touch "$GH_DEPLOYMENT_INPUT_TERRAFORM_PATH/bitops.config.yaml"
