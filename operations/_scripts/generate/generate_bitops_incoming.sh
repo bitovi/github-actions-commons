@@ -143,3 +143,4 @@ fi
 ls -lah "${GITHUB_ACTION_PATH}"/operations/deployment/terraform
 
 echo "Done with generate_bitops_incoming.sh"
+exit 1
