@@ -73,7 +73,7 @@ if [ -n "$GH_ACTION_REPO" ]; then
 #      /tmp/yq ".terraform.cli.stack-action = \"apply\"" -i "$GH_ACTION_INPUT_TERRAFORM_PATH/bitops.config.yaml"
 #    fi
     merge_tf_vars "$GH_ACTION_INPUT_TERRAFORM_PATH"
-    mv "${GH_ACTION_INPUT_TERRAFORM_PATH}"/* "{$GITHUB_ACTION_PATH}"/operations/deployment/terraform/.
+    mv "${GH_ACTION_INPUT_TERRAFORM_PATH}"/* "${GITHUB_ACTION_PATH}"/operations/deployment/terraform/.
 
 
 #echo -en "
@@ -134,7 +134,7 @@ if [ -n "$GH_DEPLOYMENT_INPUT_TERRAFORM" ]; then
   #fi
 
   merge_tf_vars "$GH_DEPLOYMENT_INPUT_TERRAFORM_PATH"
-    mv "${GH_DEPLOYMENT_INPUT_TERRAFORM_PATH}"/* "{$GITHUB_ACTION_PATH}"/operations/deployment/terraform/.
+    mv "${GH_DEPLOYMENT_INPUT_TERRAFORM_PATH}"/* "${GITHUB_ACTION_PATH}"/operations/deployment/terraform/.
 
 #echo -en "
 #module "terraform_deployment" {
