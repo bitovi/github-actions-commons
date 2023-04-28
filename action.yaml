@@ -4,26 +4,6 @@ branding:
   icon: upload-cloud
   color: red
 inputs:
-  # GitHub Deployment repo inputs
-  gh_deployment_ansible_action_extra_vars_file:
-    description: "Relative path to file from project root to Ansible vars file."
-    required: false
-
-  # GitHub Action repo inputs
-  gh_action_repo:
-    description: 'URL of calling repo'
-    required: false
-  gh_action_input_terraform:
-    description: 'Folder to store Terraform files to be included during Terraform execution.'
-    required: false
-  gh_action_input_ansible:
-    description: 'Folder where a whole Ansible structure is expected. If missing bitops.config.yaml a default will be generated.'
-    required: false
-  gh_action_input_ansible_playbook:
-    description: 'Main playbook to be looked for.'
-    default: playbook.yml
-    required: false
-
   # GitHub Commons main inputs
   checkout:
     description: 'Specifies if this action should checkout the code'
@@ -59,6 +39,39 @@ inputs:
     required: false
   ansible_skip:
     description: 'Skip Ansible execution after Terraform excecution.'
+    required: false
+
+  # GitHub Deployment repo inputs
+  gh_deployment_input_terraform:
+    description: 'Folder to store Terraform files to be included during Terraform execution.'
+    required: false
+  gh_deployment_input_ansible:
+    description: 'Folder where a whole Ansible structure is expected. If missing bitops.config.yaml a default will be generated.'
+    required: false
+  gh_deployment_input_ansible_playbook:
+    description: 'Main playbook to be looked for.'
+    default: playbook.yml
+    required: false
+  gh_deployment_input_ansible_extra_vars_file:
+    description: "Relative path to file from project root to Ansible vars file to be applied. "
+    required: false
+  gh_deployment_action_input_ansible_extra_vars_file:
+    description: "Relative path to file from project root to Ansible vars file to be applied into the Action Ansible execution. "
+    required: false
+
+  # GitHub Action repo inputs
+  gh_action_repo:
+    description: 'URL of calling repo'
+    required: false
+  gh_action_input_terraform:
+    description: 'Folder to store Terraform files to be included during Terraform execution.'
+    required: false
+  gh_action_input_ansible:
+    description: 'Folder where a whole Ansible structure is expected. If missing bitops.config.yaml a default will be generated.'
+    required: false
+  gh_action_input_ansible_playbook:
+    description: 'Main playbook to be looked for.'
+    default: playbook.yml
     required: false
     
   # AWS Specific
@@ -288,15 +301,6 @@ runs:
         BITOPS_ENVIRONMENT: deployment
         BITOPS_FAST_FAIL: 'true'
 
-        # Deployment repo
-        GH_DEPLOYMENT_ANSIBLE_ACTION_EXTRA_VARS_FILE: ${{ inputs.gh_deployment_ansible_action_extra_vars_file }}
-
-        # Action repo
-        GH_ACTION_REPO: ${{ inputs.gh_action_repo }}
-        GH_ACTION_INPUT_TERRAFORM: ${{ inputs.gh_action_input_terraform }}
-        GH_ACTION_INPUT_ANSIBLE: ${{ inputs.gh_action_input_ansible }}
-        GH_ACTION_INPUT_ANSIBLE_PLAYBOOK: ${{ inputs.gh_action_input_ansible_playbook }}
-
         # Action main inputs
         BITOPS_CODE_ONLY: ${{ inputs.bitops_code_only }}
         BITOPS_EXTRA_ENV_VARS: ${{ inputs.bitops_extra_env_vars }}
@@ -307,6 +311,19 @@ runs:
         TF_STATE_BUCKET_PROVIDER: ${{ inputs.tf_state_bucket_provider }}
         TF_TARGETS: ${{ inputs.tf_targets }}
         ANSIBLE_SKIP: ${{ inputs.ansible_skip }}
+
+        # Deployment repo
+        GH_DEPLOYMENT_INPUT_TERRAFORM: ${{ inputs.gh_deployment_input_terraform }}
+        GH_DEPLOYMENT_INPUT_ANSIBLE: ${{ inputs.gh_deployment_input_ansible }}
+        GH_DEPLOYMENT_INPUT_ANSIBLE_PLAYBOOK: ${{ inputs.gh_deployment_input_ansible_playbook }}
+        GH_DEPLOYMENT_INPUT_ANSIBLE_EXTRA_VARS_FILE: ${{ inputs.gh_deployment_input_ansible_extra_vars_file }}
+        GH_DEPLOYMENT_ACTION_INPUT_ANSIBLE_EXTRA_VARS_FILE: ${{ inputs.gh_deployment_action_input_ansible_extra_vars_file }}
+        
+        # Action repo
+        GH_ACTION_REPO: ${{ inputs.gh_action_repo }}
+        GH_ACTION_INPUT_TERRAFORM: ${{ inputs.gh_action_input_terraform }}
+        GH_ACTION_INPUT_ANSIBLE: ${{ inputs.gh_action_input_ansible }}
+        GH_ACTION_INPUT_ANSIBLE_PLAYBOOK: ${{ inputs.gh_action_input_ansible_playbook }}
 
         # AWS Specific
         AWS_ACCESS_KEY_ID: ${{ inputs.aws_access_key_id }}
@@ -400,12 +417,17 @@ runs:
       run: |
         echo "## VM Created! :rocket:" >> $GITHUB_STEP_SUMMARY
         echo " ${{ steps.deploy.outputs.vm_url }}" >> $GITHUB_STEP_SUMMARY
-    - if: ${{ success() && steps.deploy.outputs.vm_url == '' && inputs.bitops_code_only == 'true' }}
+    - if: ${{ success() && steps.deploy.outputs.vm_url == '' && inputs.bitops_code_only == 'true' && inputs.bitops_code_store == 'true' }}
       name: Print code built
       shell: bash
       run: |
         echo "## BitOps Code generated. :tada: " >> $GITHUB_STEP_SUMMARY
         echo "Download the code artifact. Will be there for 5 days." >> $GITHUB_STEP_SUMMARY
+    - if: ${{ success() && steps.deploy.outputs.vm_url == '' && inputs.bitops_code_only == 'true' && inputs.bitops_code_store != 'true' }}
+      name: Print code built
+      shell: bash
+      run: |
+        echo "## BitOps Code generated. :tada: " >> $GITHUB_STEP_SUMMARY
     - if: ${{ success() && steps.deploy.outputs.vm_url == '' && inputs.tf_stack_destroy != 'true' && inputs.bitops_code_only != 'true' }}
       name: Print result destroyed
       shell: bash
