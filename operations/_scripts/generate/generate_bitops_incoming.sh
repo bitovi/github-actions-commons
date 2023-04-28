@@ -34,7 +34,7 @@ function move_content_append() {
 
   # Move files from source folder to destination folder
   find "$source_folder" -maxdepth 1 -type f -path "$source_folder/*" | while read file; do
-    mv "$file" "${GITHUB_ACTION_PATH}/operations/deployment/terraform/$prepend_$(basename "$file")"
+    mv "$file" "${GITHUB_ACTION_PATH}"/operations/deployment/terraform/"$prepend"_$(basename "$file")
   done
   # Move remaining folders (if they exist) and exclude the . folder
   find "$source_folder" -maxdepth 1 -type d -not -name "." -path "$source_folder/*" | while read folder; do
