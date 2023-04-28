@@ -78,25 +78,10 @@ if [ -n "$GH_ACTION_REPO" ]; then
   
   # TERRAFORM PART
   if [ -n "$GH_ACTION_INPUT_TERRAFORM" ]; then
-    echo "Action terra input"
     GH_ACTION_INPUT_TERRAFORM_PATH="$GH_ACTION_REPO/$GH_ACTION_INPUT_TERRAFORM"
 
-    ls -lah $GH_ACTION_INPUT_TERRAFORM_PATH
-
     merge_tf_vars "$GH_ACTION_INPUT_TERRAFORM_PATH"
-
     move_content_append "$GH_ACTION_INPUT_TERRAFORM_PATH" action
-
-    #cd "$GH_ACTION_INPUT_TERRAFORM_PATH"
-    #for file in $(find . -maxdepth 1 -type f ); do
-    #  mv "$file" "$GITHUB_ACTION_PATH/operations/deployment/terraform/action_${file##*/}"
-    #done
-    #ls -lah
-    #for folder in $(find . -maxdepth 1 -type d -not -name "."); do 
-    #  echo "${folder}"
-    #  mv "${folder}" "${GITHUB_ACTION_PATH}/operations/deployment/terraform/."
-    #done
-    #cd -
   fi
 fi
 
@@ -135,30 +120,10 @@ fi
 
 # TERRAFORM PART
 if [ -n "$GH_DEPLOYMENT_INPUT_TERRAFORM" ]; then
-  echo "Deploy terra input"
-
   GH_DEPLOYMENT_INPUT_TERRAFORM_PATH="$GITHUB_WORKSPACE/$GH_DEPLOYMENT_INPUT_TERRAFORM"
-  
-  ls -lah $GH_DEPLOYMENT_INPUT_TERRAFORM_PATH
 
   merge_tf_vars "$GH_DEPLOYMENT_INPUT_TERRAFORM_PATH"
-
   move_content_append "$GH_DEPLOYMENT_INPUT_TERRAFORM_PATH" deploy
-
-  #cd "$GH_DEPLOYMENT_INPUT_TERRAFORM_PATH"
-  #for file in $(find . -maxdepth 1 -type f ); do
-  #  mv "$file" "$GITHUB_ACTION_PATH/operations/deployment/terraform/deployment_${file##*/}"
-  #done
-  #for folder in $(find . -maxdepth 1 -type d -not -name "."); do 
-  #  mv "${folder}" "${GITHUB_ACTION_PATH}/operations/deployment/terraform/."
-  #done
-  #cd -
 fi
 
-    tail -n 20 "$GITHUB_ACTION_PATH/operations/deployment/terraform/variables.tf" 
-    tail -n 20 "$GITHUB_ACTION_PATH/operations/deployment/terraform/terraform.tfvars"
-
-ls -lah "${GITHUB_ACTION_PATH}"/operations/deployment/terraform
-
 echo "Done with generate_bitops_incoming.sh"
-exit 1

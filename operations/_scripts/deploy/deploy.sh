@@ -76,7 +76,6 @@ if [ -n "$GH_ACTION_REPO" ]; then
   fi
 fi
 
-exit 1
 # Generating GitHub Variables and Secrets files
 mkdir -p "${GITHUB_ACTION_PATH}/operations/deployment/env-files"
 echo "$ENV_GHV" > "${GITHUB_ACTION_PATH}/operations/deployment/env-files/ghv.env"
