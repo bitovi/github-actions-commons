@@ -72,11 +72,11 @@ if [ -n "$GH_ACTION_REPO" ]; then
     merge_tf_vars "$GH_ACTION_INPUT_TERRAFORM_PATH"
 
     cd "$GH_ACTION_INPUT_TERRAFORM_PATH"
-    for file in "$(find . -maxdepth 1 -type f )"; do
+    for file in $(find . -maxdepth 1 -type f ); do
       mv "$file" "$GITHUB_ACTION_PATH/operations/deployment/terraform/action_${file##*/}"
     done
     ls -lah
-    for folder in "$(find . -maxdepth 1 -type d -not -name ".")"; do 
+    for folder in $(find . -maxdepth 1 -type d -not -name "."); do 
       echo "${folder}"
       mv "${folder}" "${GITHUB_ACTION_PATH}/operations/deployment/terraform/."
     done
@@ -128,10 +128,10 @@ if [ -n "$GH_DEPLOYMENT_INPUT_TERRAFORM" ]; then
   merge_tf_vars "$GH_DEPLOYMENT_INPUT_TERRAFORM_PATH"
 
   cd "$GH_DEPLOYMENT_INPUT_TERRAFORM_PATH"
-  for file in "$(find . -maxdepth 1 -type f )"; do
+  for file in $(find . -maxdepth 1 -type f ); do
     mv "$file" "$GITHUB_ACTION_PATH/operations/deployment/terraform/deployment_${file##*/}"
   done
-  for folder in "$(find . -maxdepth 1 -type d -not -name ".")"; do 
+  for folder in $(find . -maxdepth 1 -type d -not -name "."); do 
     mv "${folder}" "${GITHUB_ACTION_PATH}/operations/deployment/terraform/."
   done
   cd -
