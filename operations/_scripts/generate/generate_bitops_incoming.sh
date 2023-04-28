@@ -28,6 +28,20 @@ function merge_tf_vars() {
   fi 
 }
 
+function move_content_append() {
+  source_folder="$1"
+  prepend="$2"
+
+  # Move files from source folder to destination folder
+  find "$source_folder" -maxdepth 1 -type f -path "$source_folder/*" | while read file; do
+    mv "$file" "${GITHUB_ACTION_PATH}/operations/deployment/terraform/$prepend_$(basename "$file")"
+  done
+  # Move remaining folders (if they exist) and exclude the . folder
+  find "$source_folder" -maxdepth 1 -type d -not -name "." -path "$source_folder/*" | while read folder; do
+    mv "$folder" "${GITHUB_ACTION_PATH}/operations/deployment/terraform/."
+  done
+}
+
 ### Generate incoming action repo's
 
 if [ -n "$GH_ACTION_REPO" ]; then
@@ -71,16 +85,18 @@ if [ -n "$GH_ACTION_REPO" ]; then
 
     merge_tf_vars "$GH_ACTION_INPUT_TERRAFORM_PATH"
 
-    cd "$GH_ACTION_INPUT_TERRAFORM_PATH"
-    for file in $(find . -maxdepth 1 -type f ); do
-      mv "$file" "$GITHUB_ACTION_PATH/operations/deployment/terraform/action_${file##*/}"
-    done
-    ls -lah
-    for folder in $(find . -maxdepth 1 -type d -not -name "."); do 
-      echo "${folder}"
-      mv "${folder}" "${GITHUB_ACTION_PATH}/operations/deployment/terraform/."
-    done
-    cd -
+    move_content_append "$GH_ACTION_INPUT_TERRAFORM_PATH" action
+
+    #cd "$GH_ACTION_INPUT_TERRAFORM_PATH"
+    #for file in $(find . -maxdepth 1 -type f ); do
+    #  mv "$file" "$GITHUB_ACTION_PATH/operations/deployment/terraform/action_${file##*/}"
+    #done
+    #ls -lah
+    #for folder in $(find . -maxdepth 1 -type d -not -name "."); do 
+    #  echo "${folder}"
+    #  mv "${folder}" "${GITHUB_ACTION_PATH}/operations/deployment/terraform/."
+    #done
+    #cd -
   fi
 fi
 
@@ -127,14 +143,16 @@ if [ -n "$GH_DEPLOYMENT_INPUT_TERRAFORM" ]; then
 
   merge_tf_vars "$GH_DEPLOYMENT_INPUT_TERRAFORM_PATH"
 
-  cd "$GH_DEPLOYMENT_INPUT_TERRAFORM_PATH"
-  for file in $(find . -maxdepth 1 -type f ); do
-    mv "$file" "$GITHUB_ACTION_PATH/operations/deployment/terraform/deployment_${file##*/}"
-  done
-  for folder in $(find . -maxdepth 1 -type d -not -name "."); do 
-    mv "${folder}" "${GITHUB_ACTION_PATH}/operations/deployment/terraform/."
-  done
-  cd -
+  move_content_append "$GH_DEPLOYMENT_INPUT_TERRAFORM_PATH" deploy
+
+  #cd "$GH_DEPLOYMENT_INPUT_TERRAFORM_PATH"
+  #for file in $(find . -maxdepth 1 -type f ); do
+  #  mv "$file" "$GITHUB_ACTION_PATH/operations/deployment/terraform/deployment_${file##*/}"
+  #done
+  #for folder in $(find . -maxdepth 1 -type d -not -name "."); do 
+  #  mv "${folder}" "${GITHUB_ACTION_PATH}/operations/deployment/terraform/."
+  #done
+  #cd -
 fi
 
     tail -n 20 "$GITHUB_ACTION_PATH/operations/deployment/terraform/variables.tf" 
