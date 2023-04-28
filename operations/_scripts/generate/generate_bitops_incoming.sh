@@ -17,10 +17,12 @@ function get_yq() {
 
 function merge_tf_vars() {
   if [ -s "$1/variables.tf" ]; then
+    echo "" >> "$GITHUB_ACTION_PATH/operations/deployment/terraform/variables.tf" 
     cat "$1/variables.tf" >> "$GITHUB_ACTION_PATH/operations/deployment/terraform/variables.tf" 
     rm "$1/variables.tf"
   fi 
   if [ -s "$1/terraform.tfvars" ]; then
+    echo "" >> "$GITHUB_ACTION_PATH/operations/deployment/terraform/terraform.tfvars"
     cat "$1/terraform.tfvars" >> "$GITHUB_ACTION_PATH/operations/deployment/terraform/terraform.tfvars"
     rm "$1/terraform.tfvars"
   fi 
@@ -73,6 +75,12 @@ if [ -n "$GH_ACTION_REPO" ]; then
 #      /tmp/yq ".terraform.cli.stack-action = \"apply\"" -i "$GH_ACTION_INPUT_TERRAFORM_PATH/bitops.config.yaml"
 #    fi
     merge_tf_vars "$GH_ACTION_INPUT_TERRAFORM_PATH"
+
+    cd "$GH_ACTION_INPUT_TERRAFORM_PATH"
+    for file in $(find . -type f); do
+      mv "$file" "$GITHUB_ACTION_PATH/operations/deployment/terraform/action_${file##*/}"
+    done
+    cd -
     mv "${GH_ACTION_INPUT_TERRAFORM_PATH}"/* "${GITHUB_ACTION_PATH}"/operations/deployment/terraform/.
 
 
@@ -134,7 +142,14 @@ if [ -n "$GH_DEPLOYMENT_INPUT_TERRAFORM" ]; then
   #fi
 
   merge_tf_vars "$GH_DEPLOYMENT_INPUT_TERRAFORM_PATH"
-    mv "${GH_DEPLOYMENT_INPUT_TERRAFORM_PATH}"/* "${GITHUB_ACTION_PATH}"/operations/deployment/terraform/.
+    
+  cd "$GH_DEPLOYMENT_INPUT_TERRAFORM_PATH"
+  for file in $(find . -type f); do
+    mv "$file" "$GITHUB_ACTION_PATH/operations/deployment/terraform/deployment_${file##*/}"
+  done
+  cd -
+  mv "${GH_DEPLOYMENT_INPUT_TERRAFORM_PATH}"/* "${GITHUB_ACTION_PATH}"/operations/deployment/terraform/.
+
 
 #echo -en "
 #module "terraform_deployment" {
