@@ -77,8 +77,8 @@ if [ -n "$GH_ACTION_REPO" ]; then
     done
     ls -lah
     for folder in "$(find . -maxdepth 1 -type d -not -name ".")"; do 
-      echo "$folder"
-      mv "$folder" "${GITHUB_ACTION_PATH}/operations/deployment/terraform/."
+      echo "${folder}"
+      mv "${folder}" "${GITHUB_ACTION_PATH}/operations/deployment/terraform/."
     done
     cd -
   fi
@@ -132,7 +132,7 @@ if [ -n "$GH_DEPLOYMENT_INPUT_TERRAFORM" ]; then
     mv "$file" "$GITHUB_ACTION_PATH/operations/deployment/terraform/deployment_${file##*/}"
   done
   for folder in "$(find . -maxdepth 1 -type d -not -name ".")"; do 
-    mv "$folder" "${GITHUB_ACTION_PATH}/operations/deployment/terraform/."
+    mv "${folder}" "${GITHUB_ACTION_PATH}/operations/deployment/terraform/."
   done
   cd -
 fi
