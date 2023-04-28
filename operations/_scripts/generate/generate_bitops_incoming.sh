@@ -69,11 +69,6 @@ if [ -n "$GH_ACTION_REPO" ]; then
 
     ls -lah $GH_ACTION_INPUT_TERRAFORM_PATH
 
-#    # Create a bitops.config.yaml for Ansible plugin if none provided with the Ansible code
-#    if ! [ -s "$GH_ACTION_INPUT_TERRAFORM_PATH/bitops.config.yaml" ]; then
-#      touch "$GH_ACTION_INPUT_TERRAFORM_PATH/bitops.config.yaml"
-#      /tmp/yq ".terraform.cli.stack-action = \"apply\"" -i "$GH_ACTION_INPUT_TERRAFORM_PATH/bitops.config.yaml"
-#    fi
     merge_tf_vars "$GH_ACTION_INPUT_TERRAFORM_PATH"
 
     cd "$GH_ACTION_INPUT_TERRAFORM_PATH"
@@ -84,16 +79,6 @@ if [ -n "$GH_ACTION_REPO" ]; then
       mv "$folder" "${GITHUB_ACTION_PATH}"/operations/deployment/terraform/.
     done
     cd -
-
-
-
-#echo -en "
-#module "terraform_action" {
-#  source = "./action/"
-#}
-#" > $GITHUB_ACTION_PATH/operations/deployment/terraform/action.tf
-
-
   fi
 fi
 
@@ -138,12 +123,6 @@ if [ -n "$GH_DEPLOYMENT_INPUT_TERRAFORM" ]; then
   
   ls -lah $GH_DEPLOYMENT_INPUT_TERRAFORM_PATH
 
-  # Create a bitops.config.yaml for Ansible plugin if none provided with the Ansible code
-  #if ! [ -s "$GH_DEPLOYMENT_INPUT_TERRAFORM_PATH/bitops.config.yaml" ]; then
-  #  touch "$GH_DEPLOYMENT_INPUT_TERRAFORM_PATH/bitops.config.yaml"
-  #  /tmp/yq ".terraform.cli.stack-action = \"apply\"" -i "$GH_DEPLOYMENT_INPUT_TERRAFORM_PATH/bitops.config.yaml"
-  #fi
-
   merge_tf_vars "$GH_DEPLOYMENT_INPUT_TERRAFORM_PATH"
 
   cd "$GH_DEPLOYMENT_INPUT_TERRAFORM_PATH"
@@ -154,17 +133,11 @@ if [ -n "$GH_DEPLOYMENT_INPUT_TERRAFORM" ]; then
     mv "$folder" "${GITHUB_ACTION_PATH}"/operations/deployment/terraform/.
   done
   cd -
-
-#echo -en "
-#module "terraform_deployment" {
-#  source = "./deployment/"
-#}
-#" > $GITHUB_ACTION_PATH/operations/deployment/terraform/deployment.tf
-
 fi
 
     tail -n 20 "$GITHUB_ACTION_PATH/operations/deployment/terraform/variables.tf" 
     tail -n 20 "$GITHUB_ACTION_PATH/operations/deployment/terraform/terraform.tfvars"
 
+ls -lah "${GITHUB_ACTION_PATH}"/operations/deployment/terraform
 
 echo "Done with generate_bitops_incoming.sh"
