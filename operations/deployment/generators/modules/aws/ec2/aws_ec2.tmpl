@@ -72,6 +72,7 @@ resource "aws_instance" "server" {
   }
   lifecycle {
     ignore_changes = [${lifecycle_content}]
+    delete_before_replace = true
   }
 }
 
