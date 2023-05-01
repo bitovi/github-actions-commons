@@ -1,0 +1,4 @@
+- name: "Wait 300 seconds, but only start checking after 60 seconds"
+  wait_for_connection:
+    delay: 10
+    timeout: 300
