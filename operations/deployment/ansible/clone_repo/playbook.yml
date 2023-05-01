@@ -8,4 +8,4 @@
   - name: Include fetch
     include_tasks: tasks/fetch.yml
   - name: EFS Cleanup
-    include_tasks: tasks/efs_check.ymlTypo
+    include_tasks: tasks/efs_check.yml
