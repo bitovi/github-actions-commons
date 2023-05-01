@@ -97,3 +97,5 @@ IFS=',' read -r -a options <<< "$order"
 for option in "${options[@]}"; do
   process "$option"
 done
+
+    echo "BITOPS_EC2_PUBLIC_IP $BITOPS_EC2_PUBLIC_IP"
