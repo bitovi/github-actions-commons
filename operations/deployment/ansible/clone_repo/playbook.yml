@@ -1,10 +1,11 @@
 - hosts: bitops_servers
   become: true
-  tasks: Test connection
+  tasks:
+  - name: Wait for it to come up
     include_tasks: tasks/wait_for_connection.yml
   - name: Include install system basics
     include_tasks: tasks/install.yml
   - name: Include fetch
     include_tasks: tasks/fetch.yml
   - name: EFS Cleanup
-    include_tasks: tasks/efs_check.yml
+    include_tasks: tasks/efs_check.ymlTypo
