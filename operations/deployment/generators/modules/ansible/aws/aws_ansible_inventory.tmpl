@@ -5,8 +5,9 @@ resource "local_sensitive_file" "private_key" {
 }
 
 resource "local_file" "ansible_inventory" {
+  depends_on = [aws_instance.server]
   lifecycle {
-    replace_triggered_by = [aws_instance.server.public_ip]
+    create_before_destroy = true
     ignore_changes = [content]
   }
   filename = format("%s/%s", abspath(path.root), "inventory.yaml")

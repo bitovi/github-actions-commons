@@ -1,6 +1,7 @@
 resource "local_file" "ec2-dotenv" {
+  depends_on = [aws_instance.server]
   lifecycle {
-    replace_triggered_by = [aws_instance.server.public_dns]
+    create_before_destroy = true
     ignore_changes = [content]
   }
   filename = format("%s/%s", abspath(path.root), "ec2.env")
