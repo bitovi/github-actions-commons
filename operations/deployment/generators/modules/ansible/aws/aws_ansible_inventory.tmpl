@@ -5,16 +5,11 @@ resource "local_sensitive_file" "private_key" {
 }
 
 resource "local_file" "ansible_inventory" {
-  depends_on = [aws_instance.server]
-  lifecycle {
-    create_before_destroy = true
-    ignore_changes = [content]
-  }
   filename = format("%s/%s", abspath(path.root), "inventory.yaml")
   content  = <<-EOT
 bitops_servers:
  hosts:
-   $${aws_instance.server.public_ip}
+   lookup('env', 'BITOPS_EC2_PUBLIC_IP')
  vars:
    ansible_ssh_user: ubuntu
    ansible_ssh_private_key_file: $${local_sensitive_file.private_key.filename}
@@ -24,3 +19,5 @@ bitops_servers:
 ${efs_lines}
 EOT
 }
+
+#   $${aws_instance.server.public_ip}
