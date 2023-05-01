@@ -17,8 +17,7 @@ echo "In afterhook - generate-outputs.sh"
 
 if [ "$BITOPS_TERRAFORM_COMMAND" != "destroy" ]; then
     # The sed command will make each variable be in it's line, and in case a list is present, will transform it into a line
-    #terraform output | sed -e ':a;/["\)]$/!N;s/\n//;ta' -e 's/ *= */=/g;s/[" ,]//g;s/,\([]]\)/\1/g'  > /opt/bitops_deployment/bo-out.env
-    terraform output | sed -e 's/\s*=\s*/=/g;s/^\s*//g;s/\s*$//g;s/ /,/g;s/:,/:/g;s/:/,/g' > /opt/bitops_deployment/bo-out.env
+    terraform output | sed -e ':a;/["\)]$/!N;s/\n//;ta' -e 's/ *= */=/g;s/[" ]//g;s/,\([]]\)/\1/g'  > /opt/bitops_deployment/bo-out.env
     echo "Catting bo-out.env"
     cat /opt/bitops_deployment/bo-out.env
     export BITOPS_EC2_PUBLIC_IP="$(cat /opt/bitops_deployment/bo-out.env| grep instance_public_ip | awk -F"=" '{print $2}')"
