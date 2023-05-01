@@ -7,6 +7,7 @@ resource "local_sensitive_file" "private_key" {
 resource "local_file" "ansible_inventory" {
   lifecycle {
     replace_triggered_by = [aws_instance.server.public_ip]
+    ignore_changes = [content]
   }
   filename = format("%s/%s", abspath(path.root), "inventory.yaml")
   content  = <<-EOT

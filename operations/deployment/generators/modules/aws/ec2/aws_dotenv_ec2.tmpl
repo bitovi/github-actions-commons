@@ -1,6 +1,7 @@
 resource "local_file" "ec2-dotenv" {
   lifecycle {
     replace_triggered_by = [aws_instance.server.public_dns]
+    ignore_changes = [content]
   }
   filename = format("%s/%s", abspath(path.root), "ec2.env")
   content  = <<-EOT
