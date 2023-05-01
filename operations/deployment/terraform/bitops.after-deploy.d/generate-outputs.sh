@@ -19,7 +19,7 @@ if [ "$BITOPS_TERRAFORM_COMMAND" != "destroy" ]; then
     # The sed command will make each variable be in it's line, and in case a list is present, will transform it into a line
     terraform output | sed -e ':a;/["\)]$/!N;s/\n//;ta' -e 's/ *= */=/g;s/[" ]//g;s/,\([]]\)/\1/g'  > /opt/bitops_deployment/bo-out.env
     # Generating ec2 terraform .env
-    if ! [ -n $BITOPS_EC2_PUBLIC_URL ]; then
+    if [ -n "$BITOPS_EC2_PUBLIC_URL" ]; then
 echo -en "
 #### EC2 values  deployments:
 AWS_INSTANCE_URL="$BITOPS_EC2_PUBLIC_URL"
