@@ -1,5 +1,7 @@
 resource "local_file" "ec2-dotenv" {
-  depends_on = [aws_instance.server]
+  lifecycle {
+    replace_triggered_by = [aws_instance.server.public_dns]
+  }
   filename = format("%s/%s", abspath(path.root), "ec2.env")
   content  = <<-EOT
 #### EC2 values
