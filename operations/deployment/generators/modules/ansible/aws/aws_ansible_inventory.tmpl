@@ -8,7 +8,7 @@ resource "local_file" "ansible_inventory" {
   filename = format("%s/%s", abspath(path.root), "inventory.yaml")
   content  = <<-EOT
 bitops_servers:
- hosts: '{{ lookup("env", "BITOPS_EC2_PUBLIC_IP") }}'
+ hosts: ansible_env.BITOPS_EC2_PUBLIC_IP
  vars:
    ansible_ssh_user: ubuntu
    ansible_ssh_private_key_file: $${local_sensitive_file.private_key.filename}
