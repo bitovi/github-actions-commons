@@ -76,6 +76,9 @@ if [ -n "$GH_ACTION_REPO" ]; then
   fi
 fi
 
+echo "Final BitOps config file"
+cat $GITHUB_ACTION_PATH/operations/deployment/bitops.config.yaml
+
 # Generating GitHub Variables and Secrets files
 mkdir -p "${GITHUB_ACTION_PATH}/operations/deployment/env-files"
 echo "$ENV_GHV" > "${GITHUB_ACTION_PATH}/operations/deployment/env-files/ghv.env"
