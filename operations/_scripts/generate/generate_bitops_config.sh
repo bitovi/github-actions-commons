@@ -53,7 +53,7 @@ if [[ "$(alpha_only $BITOPS_CODE_ONLY)" != "true" ]]; then
       plugin: terraform
 " >> $GITHUB_ACTION_PATH/operations/deployment/bitops.config.yaml
 
-  if [[ "$(alpha_only $ANSIBLE_SKIP)" != "true" ]]; then
+  if [[ "$(alpha_only $ANSIBLE_SKIP)" != "true" ]] && [[ "$(alpha_only $AWS_EC2_INSTANCE_CREATE)" == "true"]]; then
     # Ansible - Fetch repo
     echo -en "
     ansible/clone_repo:
