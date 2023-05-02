@@ -84,5 +84,6 @@ if [[ "$(alpha_only $BITOPS_CODE_ONLY)" != "true" ]]; then
     fi
   fi
 fi
+cat $GITHUB_ACTION_PATH/operations/deployment/bitops.config.yaml
 
 echo "Done with generate_bitops_config.sh"

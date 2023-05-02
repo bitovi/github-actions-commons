@@ -12,3 +12,6 @@ cp "${BITOPS_ENVROOT}"/generators/bitovi_aws_default* "${BITOPS_ENVROOT}"/terraf
 mv "${BITOPS_ENVROOT}"/generators/bitovi_*.tf "${BITOPS_ENVROOT}"/terraform/ec2/.
 rm -rf "${BITOPS_ENVROOT}/generators"
 cp -r "${BITOPS_ENVROOT}" /opt/bitops_deployment/generated_code
+
+cat "${BITOPS_ENVROOT}"/bitops.config.yaml
+ls -lah "${BITOPS_ENVROOT}"
