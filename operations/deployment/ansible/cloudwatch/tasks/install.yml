@@ -1,0 +1,12 @@
+# copy code to the VM
+- name: Install the aws ca bundle
+  get_url:
+    url: "https://s3.amazonaws.com/amazoncloudwatch-agent/ubuntu/arm64/latest/amazon-cloudwatch-agent.deb"
+    dest: "{{ app_install_root }}/amazon-cloudwatch-agent.deb"
+
+- name: Install cloudwatch agent
+  apt:
+    deb: "{{ app_install_root }}/amazon-cloudwatch-agent.deb"
+  become: yes
+
+#  https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/install-CloudWatch-Agent-commandline-fleet.html
