@@ -53,13 +53,14 @@ if [[ "$(alpha_only $BITOPS_CODE_ONLY)" != "true" ]]; then
     terraform/rds:
       plugin: terraform
 " >> $GITHUB_ACTION_PATH/operations/deployment/bitops.config.yaml
+  fi
   if [[ "$(alpha_only $AWS_EC2_INSTANCE_CREATE)" == "true"]]; then
   # Terraform - Generate infra
     echo -en "
     terraform/ec2:
       plugin: terraform
 " >> $GITHUB_ACTION_PATH/operations/deployment/bitops.config.yaml
-
+  fi
   if [[ "$(alpha_only $ANSIBLE_SKIP)" != "true" ]] && [[ "$(alpha_only $AWS_EC2_INSTANCE_CREATE)" == "true"]]; then
     # Ansible - Fetch repo
     echo -en "
