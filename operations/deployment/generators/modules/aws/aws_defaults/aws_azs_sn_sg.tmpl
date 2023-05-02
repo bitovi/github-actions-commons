@@ -2,6 +2,10 @@
 # Requires:
 #  - aws_ec2
 
+data "aws_vpc" "default" {
+  default = true
+}
+
 data "aws_subnets" "vpc_subnets" {
   filter {
     name   = "vpc-id"
