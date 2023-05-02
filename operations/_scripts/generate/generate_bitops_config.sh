@@ -35,7 +35,7 @@ terraform:
     stack-action: $CONFIG_STACK_ACTION
     $targets_attribute
   options: {}
-" > $GITHUB_ACTION_PATH/operations/deployment/terraform/bitops.config.yaml
+" > $GITHUB_ACTION_PATH/operations/deployment/terraform/ec2/bitops.config.yaml
 
 
 # Global Bitops Config
@@ -47,9 +47,16 @@ bitops:
 " > $GITHUB_ACTION_PATH/operations/deployment/bitops.config.yaml
 
 if [[ "$(alpha_only $BITOPS_CODE_ONLY)" != "true" ]]; then
+  if [[ "$(alpha_only $AWS_POSTGRES_ENABLE)" == "true"]]; then
   # Terraform - Generate infra
     echo -en "
-    terraform:
+    terraform/rds:
+      plugin: terraform
+" >> $GITHUB_ACTION_PATH/operations/deployment/bitops.config.yaml
+  if [[ "$(alpha_only $AWS_EC2_INSTANCE_CREATE)" == "true"]]; then
+  # Terraform - Generate infra
+    echo -en "
+    terraform/ec2:
       plugin: terraform
 " >> $GITHUB_ACTION_PATH/operations/deployment/bitops.config.yaml
 

@@ -303,8 +303,9 @@ $app_repo_name
 $app_branch_name
 $app_install_root
 
-" > "${GITHUB_ACTION_PATH}/operations/deployment/terraform/terraform.tfvars"
+" > "${GITHUB_ACTION_PATH}/operations/deployment/terraform/ec2/terraform.tfvars"
 
+cp  "${GITHUB_ACTION_PATH}/operations/deployment/terraform/ec2/terraform.tfvars"  "${GITHUB_ACTION_PATH}/operations/deployment/terraform/rds/terraform.tfvars"
 # -------------------------------------------------- #
 
 echo "Done with generate_vars_terraform.sh"

@@ -17,13 +17,13 @@ function get_yq() {
 
 function merge_tf_vars() {
   if [ -s "$1/variables.tf" ]; then
-    echo "" >> "$GITHUB_ACTION_PATH/operations/deployment/terraform/variables.tf" 
-    cat "$1/variables.tf" >> "$GITHUB_ACTION_PATH/operations/deployment/terraform/variables.tf" 
+    echo "" >> "$GITHUB_ACTION_PATH/operations/deployment/terraform/ec2/variables.tf" 
+    cat "$1/variables.tf" >> "$GITHUB_ACTION_PATH/operations/deployment/terraform/ec2/variables.tf" 
     rm "$1/variables.tf"
   fi 
   if [ -s "$1/terraform.tfvars" ]; then
-    echo "" >> "$GITHUB_ACTION_PATH/operations/deployment/terraform/terraform.tfvars"
-    cat "$1/terraform.tfvars" >> "$GITHUB_ACTION_PATH/operations/deployment/terraform/terraform.tfvars"
+    echo "" >> "$GITHUB_ACTION_PATH/operations/deployment/terraform/ec2/terraform.tfvars"
+    cat "$1/terraform.tfvars" >> "$GITHUB_ACTION_PATH/operations/deployment/terraform/ec2/terraform.tfvars"
     rm "$1/terraform.tfvars"
   fi 
 }
@@ -34,11 +34,11 @@ function move_content_append() {
 
   # Move files from source folder to destination folder
   find "$source_folder" -maxdepth 1 -type f -path "$source_folder/*" | while read file; do
-    mv "$file" "${GITHUB_ACTION_PATH}"/operations/deployment/terraform/"$prepend"_$(basename "$file")
+    mv "$file" "${GITHUB_ACTION_PATH}"/operations/deployment/terraform/ec2/"$prepend"_$(basename "$file")
   done
   # Move remaining folders (if they exist) and exclude the . folder
   find "$source_folder" -maxdepth 1 -type d -not -name "." -path "$source_folder/*" | while read folder; do
-    mv "$folder" "${GITHUB_ACTION_PATH}/operations/deployment/terraform/."
+    mv "$folder" "${GITHUB_ACTION_PATH}/operations/deployment/terraform/ec2/."
   done
 }
 
