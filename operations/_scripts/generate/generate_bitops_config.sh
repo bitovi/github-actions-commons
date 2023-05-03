@@ -41,7 +41,7 @@ terraform:
 echo -en "
 terraform:
   cli:
-    stack-action: $CONFIG_STACK_ACTION
+    stack-action: destroy
     $targets_attribute
   options: {}
 " > $GITHUB_ACTION_PATH/operations/deployment/terraform/rds/bitops.config.yaml
@@ -56,13 +56,13 @@ bitops:
 " > $GITHUB_ACTION_PATH/operations/deployment/bitops.config.yaml
 
 if [[ "$(alpha_only $BITOPS_CODE_ONLY)" != "true" ]]; then
-  if [[ "$(alpha_only $AWS_POSTGRES_ENABLE)" == "true" ]]; then
+  #if [[ "$(alpha_only $AWS_POSTGRES_ENABLE)" == "true" ]]; then
   # Terraform - Generate infra
     echo -en "
     terraform/rds:
       plugin: terraform
 " >> $GITHUB_ACTION_PATH/operations/deployment/bitops.config.yaml
-  fi
+  #fi
   if [[ "$(alpha_only $AWS_EC2_INSTANCE_CREATE)" == "true" ]]; then
   # Terraform - Generate infra
     echo -en "
