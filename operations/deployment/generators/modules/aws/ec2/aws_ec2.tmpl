@@ -78,7 +78,7 @@ resource "aws_instance" "server" {
 #data "aws_instance" "server" {
 #  filter {
 #    name   = "dns-name"
-#    values = [aws_instance.server.arn]
+#    values = [aws_instance.server.public_dns]
 #  }
 #}
 

@@ -8,9 +8,23 @@ function alpha_only() {
   echo "$1" | tr -cd '[:alpha:]' | tr '[:upper:]' '[:lower:]'
 }
 
-CONFIG_STACK_ACTION="apply"
+function create_bitops_terraform_config() {
+  if [[ $(alpha_only "$2") == true ]] && [[ $(alpha_only "TF_STACK_DESTROY") != "true" ]]; then
+    action="apply"
+  else
+    action="destroy"
+  fi
+  
+  echo -en "
+terraform:
+  cli:
+    stack-action: "$action"
+    $targets_attribute
+  options: {}
+" > $GITHUB_ACTION_PATH/operations/deployment/terraform/$1/bitops.config.yaml
+}
+
 if [ "$TF_STACK_DESTROY" == "true" ]; then
-  CONFIG_STACK_ACTION="destroy"
   ANSIBLE_SKIP=true
 fi
 
@@ -28,23 +42,29 @@ targets="$targets
     - random_integer.az_select"
 targets_attribute="$targets_attribute $targets"
 
+#Will create bitops.config.yaml for that terraform folder
+
+create_bitops_terraform_config rds $AWS_EC2_INSTANCE_CREATE
+create_bitops_terraform_config ec2 $AWS_EC2_INSTANCE_CREATE
+
+
 # EC2 Bitops Config
-echo -en "
-terraform:
-  cli:
-    stack-action: $CONFIG_STACK_ACTION
-    $targets_attribute
-  options: {}
-" > $GITHUB_ACTION_PATH/operations/deployment/terraform/ec2/bitops.config.yaml
+##echo -en "
+##terraform:
+##  cli:
+##    stack-action: $CONFIG_STACK_ACTION
+##    $targets_attribute
+##  options: {}
+##" > $GITHUB_ACTION_PATH/operations/deployment/terraform/ec2/bitops.config.yaml
 
 # RDS Bitops Config
-echo -en "
-terraform:
-  cli:
-    stack-action: destroy
-    $targets_attribute
-  options: {}
-" > $GITHUB_ACTION_PATH/operations/deployment/terraform/rds/bitops.config.yaml
+##echo -en "
+##terraform:
+##  cli:
+##    stack-action: destroy
+##    $targets_attribute
+##  options: {}
+##" > $GITHUB_ACTION_PATH/operations/deployment/terraform/rds/bitops.config.yaml
 
 
 # Global Bitops Config
