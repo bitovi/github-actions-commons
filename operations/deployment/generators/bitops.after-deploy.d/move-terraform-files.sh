@@ -1,7 +1,7 @@
 #!/bin/bash
 
 set -e
-
+echo ""
 echo "BitOps --> Moving Terraform generated files to be excecuted by Terraform..."
 
 rm "${BITOPS_ENVROOT}/generators/generator.tf"

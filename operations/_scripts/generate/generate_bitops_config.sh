@@ -15,8 +15,6 @@ function create_bitops_terraform_config() {
     action="destroy"
   fi
 
-  echo "In creating action -> $action for $1"
-  
   echo -en "
 terraform:
   cli:
@@ -49,26 +47,6 @@ targets_attribute="$targets_attribute $targets"
 create_bitops_terraform_config rds $AWS_POSTGRES_ENABLE
 create_bitops_terraform_config ec2 $AWS_EC2_INSTANCE_CREATE
 
-
-# EC2 Bitops Config
-##echo -en "
-##terraform:
-##  cli:
-##    stack-action: $CONFIG_STACK_ACTION
-##    $targets_attribute
-##  options: {}
-##" > $GITHUB_ACTION_PATH/operations/deployment/terraform/ec2/bitops.config.yaml
-
-# RDS Bitops Config
-##echo -en "
-##terraform:
-##  cli:
-##    stack-action: destroy
-##    $targets_attribute
-##  options: {}
-##" > $GITHUB_ACTION_PATH/operations/deployment/terraform/rds/bitops.config.yaml
-
-
 # Global Bitops Config
 echo -en "
 bitops:
@@ -78,14 +56,11 @@ bitops:
 " > $GITHUB_ACTION_PATH/operations/deployment/bitops.config.yaml
 
 if [[ "$(alpha_only $BITOPS_CODE_ONLY)" != "true" ]]; then
-  #if [[ "$(alpha_only $AWS_POSTGRES_ENABLE)" == "true" ]]; then
   # Terraform - Generate infra
     echo -en "
     terraform/rds:
       plugin: terraform
 " >> $GITHUB_ACTION_PATH/operations/deployment/bitops.config.yaml
-  #fi
-  if [[ "$(alpha_only $AWS_EC2_INSTANCE_CREATE)" == "true" ]]; then
   # Terraform - Generate infra
     echo -en "
     terraform/ec2:
