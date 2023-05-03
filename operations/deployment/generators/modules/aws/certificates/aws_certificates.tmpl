@@ -64,7 +64,7 @@ locals {
     (var.aws_r53_cert_arn != "" ? var.aws_r53_cert_arn :
       (!var.aws_r53_create_root_cert ?
         (!var.aws_r53_create_sub_cert ?
-          (local.fqdn_provided ? data.aws_acm_certificate.issued[0].arn : "")
+          (local.fqdn_provided ? local.aws_acm : "")
           : aws_acm_certificate.sub_domain[0].arn
         ) : aws_acm_certificate.root_domain[0].arn
       ) 
@@ -81,6 +81,7 @@ locals {
       )
     ) : false
   )
+  acm_arn = try(data.aws_acm_certificate.issued["domain"].arn, try(data.aws_acm_certificate.issued["wildcard"].arn, data.aws_acm_certificate.issued["sub"].arn, ""))
 }
 
 output "selected_arn" {
