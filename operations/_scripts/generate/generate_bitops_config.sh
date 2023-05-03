@@ -66,7 +66,7 @@ if [[ "$(alpha_only $BITOPS_CODE_ONLY)" != "true" ]]; then
     terraform/ec2:
       plugin: terraform
 " >> $GITHUB_ACTION_PATH/operations/deployment/bitops.config.yaml
-  fi
+
   if [[ "$(alpha_only $ANSIBLE_SKIP)" != "true" ]] && [[ "$(alpha_only $AWS_EC2_INSTANCE_CREATE)" == "true" ]] && [[ "$(alpha_only $AWS_EC2_INSTANCE_PUBLIC_IP)" == "true" ]]; then
     # Ansible - Fetch repo
     echo -en "
