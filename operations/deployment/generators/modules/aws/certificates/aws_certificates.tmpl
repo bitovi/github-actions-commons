@@ -64,7 +64,7 @@ locals {
     (var.aws_r53_cert_arn != "" ? var.aws_r53_cert_arn :
       (!var.aws_r53_create_root_cert ?
         (!var.aws_r53_create_sub_cert ?
-          (local.fqdn_provided ? local.aws_acm : "")
+          (local.fqdn_provided ? local.acm_arn : "")
           : aws_acm_certificate.sub_domain[0].arn
         ) : aws_acm_certificate.root_domain[0].arn
       ) 
