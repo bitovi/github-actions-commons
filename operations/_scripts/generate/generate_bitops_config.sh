@@ -44,7 +44,7 @@ terraform:
     stack-action: $CONFIG_STACK_ACTION
     $targets_attribute
   options: {}
-" > $GITHUB_ACTION_PATH/operations/deployment/terraform/ec2/bitops.config.yaml
+" > $GITHUB_ACTION_PATH/operations/deployment/terraform/rds/bitops.config.yaml
 
 
 # Global Bitops Config
