@@ -44,7 +44,7 @@ targets_attribute="$targets_attribute $targets"
 
 #Will create bitops.config.yaml for that terraform folder
 
-create_bitops_terraform_config rds $AWS_EC2_INSTANCE_CREATE
+create_bitops_terraform_config rds $AWS_POSTGRES_ENABLE
 create_bitops_terraform_config ec2 $AWS_EC2_INSTANCE_CREATE
 
 
