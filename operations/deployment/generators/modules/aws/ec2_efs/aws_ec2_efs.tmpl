@@ -51,7 +51,8 @@ locals {
   mount_target      = var.aws_efs_zone_mapping != null ? local.user_zone_mapping : (var.aws_efs_create_ha ? local.ha_zone_mapping : (length(local.ec2_zone_mapping) > 0 ? local.ec2_zone_mapping : local.no_zone_mapping))
   # mount_efs: Fall-Through variable that checks multiple layers of EFS creation and if any of them are active, sets creation to active.
   mount_efs         = var.aws_efs_mount_id != null ? true : (local.create_efs ? true : false)
-
+  # create_mount_targets: boolean on whether to create mount_targets
+  create_mount_targets = var.aws_efs_create || var.aws_efs_create_ha ? local.mount_target : {}
 }
 
 resource "aws_efs_mount_target" "efs_mount_target" {
