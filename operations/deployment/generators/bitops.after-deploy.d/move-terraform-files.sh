@@ -2,7 +2,10 @@
 
 set -e
 echo ""
+echo "###########################################################################"
 echo "BitOps --> Moving Terraform generated files to be excecuted by Terraform..."
+echo "###########################################################################"
+echo ""
 
 echo "Init"
 ls -lah ${BITOPS_ENVROOT}/generators/

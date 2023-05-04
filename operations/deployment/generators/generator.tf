@@ -1,5 +1,5 @@
 module "aws_defauts" {
-  count  = local.aws_in_usage
+  #count  = local.aws_in_usage
   source = "./modules/aws/aws_defaults"
 }
 
