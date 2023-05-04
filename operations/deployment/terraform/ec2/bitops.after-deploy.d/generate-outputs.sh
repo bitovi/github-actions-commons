@@ -29,3 +29,5 @@ AWS_INSTANCE_URL="$BITOPS_EC2_PUBLIC_URL"
     fi
 fi
 echo "end terraform output for bo-out"
+
+env
