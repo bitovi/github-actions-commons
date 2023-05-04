@@ -14,9 +14,9 @@ if [ -n "$DOCKER_REPO_APP_DIRECTORY" ]; then
     TARGET_PATH="${TARGET_PATH}/${DOCKER_REPO_APP_DIRECTORY}"
 fi
 
-if [ $(find "$TARGET_PATH/." -iname "*" | wc -l) -gt 0 ]; then 
+if [ $(find "$TARGET_PATH/." -iname "*"  -not -name "."| wc -l) -gt 0 ]; then 
   echo "Got in this find"
-  find "$TARGET_PATH/." -iname "*"
+  find "$TARGET_PATH/." -iname "*" -not -name "."
   ls -lah "$TARGET_PATH"
   cp -rf "$TARGET_PATH"/* "${GITHUB_ACTION_PATH}/operations/deployment/$1/app/${GITHUB_REPO_NAME}/"
   echo "Copied files"
