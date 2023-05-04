@@ -46,6 +46,12 @@ locals {
   user_zone_mapping = var.aws_efs_zone_mapping != null ? ({
     for k, val in var.aws_efs_zone_mapping : "${data.aws_region.current.name}${k}" => val
   }) : local.no_zone_mapping
+
+  # mount_target: Fall-Through variable that checks multiple layers of EFS zone map selection
+  mount_target      = var.aws_efs_zone_mapping != null ? local.user_zone_mapping : (var.aws_efs_create_ha ? local.ha_zone_mapping : (length(local.ec2_zone_mapping) > 0 ? local.ec2_zone_mapping : local.no_zone_mapping))
+  # mount_efs: Fall-Through variable that checks multiple layers of EFS creation and if any of them are active, sets creation to active.
+  mount_efs         = var.aws_efs_mount_id != null ? true : (local.create_efs ? true : false)
+
 }
 
 resource "aws_efs_mount_target" "efs_mount_target" {
@@ -118,4 +124,11 @@ resource "aws_security_group_rule" "mount_ingress_efs_to_ec2" {
   protocol                 = "all"
   source_security_group_id = data.aws_security_group.ec2_security_group.id
   security_group_id        = var.aws_efs_mount_security_group_id
+}
+
+
+locals {
+  create_efs_url = local.create_efs ? aws_efs_file_system.efs[0].dns_name : ""
+  mount_efs_url  = var.aws_efs_mount_id != null ? data.aws_efs_file_system.mount_efs[0].dns_name : ""
+  efs_url        = local.create_efs_url != "" ? local.create_efs_url : local.mount_efs_url
 }
