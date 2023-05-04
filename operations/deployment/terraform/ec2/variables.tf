@@ -361,8 +361,6 @@ variable "availability_zone" {
 # EC2 
 
 
-
-
 # POSTGRES
 
 
