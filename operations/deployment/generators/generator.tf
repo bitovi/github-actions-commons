@@ -9,7 +9,7 @@ module "certificates" {
 }
 
 module "ec2" {
-  count  = var.aws_ec2_instance_create ? 1 : 0
+  #count  = var.aws_ec2_instance_create ? 1 : 0
   source = "./modules/aws/ec2"
   aws_ec2_ami_update = var.aws_ec2_ami_update
 }
@@ -32,7 +32,7 @@ module "exports" {
 }
 
 module "rds" {
-  count  = var.aws_postgres_enable ? 1 : 0
+  #count  = var.aws_postgres_enable ? 1 : 0
   source = "./modules/aws/rds"
 }
 
