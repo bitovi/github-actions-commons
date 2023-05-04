@@ -42,6 +42,37 @@ provider \"aws\" {
 }
 " > "${GITHUB_ACTION_PATH}/operations/deployment/terraform/rds/bitovi_provider.tf"
 
+echo "
+terraform {
+  required_providers {
+    aws = {
+      source  = \"hashicorp/aws\"
+      version = \"~> 4.30\"
+    }
+    random = {
+      source  = \"hashicorp/random\"
+      version = \">= 2.2\"
+    }
+  }
+
+  backend \"s3\" {
+    region  = \"${AWS_DEFAULT_REGION}\"
+    bucket  = \"${TF_STATE_BUCKET}\"
+    key     = \"tf-state-efs\"
+    encrypt = true #AES-256encryption
+  }
+}
+
+provider \"aws\" {
+  region = \"${AWS_DEFAULT_REGION}\"
+  default_tags {
+    tags = merge(
+      local.aws_tags,
+      var.aws_additional_tags
+    )
+  }
+}
+" > "${GITHUB_ACTION_PATH}/operations/deployment/terraform/efs/bitovi_provider.tf"
 
 echo "
 terraform {

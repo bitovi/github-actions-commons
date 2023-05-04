@@ -14,8 +14,13 @@ module "ec2" {
   aws_ec2_ami_update = var.aws_ec2_ami_update
 }
 
+module "ec2_efs" {
+  #count  = local.enable_efs ? 1 : 0
+  source = "./modules/aws/ec2_efs"
+}
+
 module "efs" {
-  count  = local.enable_efs ? 1 : 0
+  #count  = local.enable_efs ? 1 : 0
   source = "./modules/aws/efs"
 }
 

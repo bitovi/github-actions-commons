@@ -33,7 +33,6 @@ else
   GITHUB_BRANCH_NAME=${GITHUB_REF_NAME}
 fi
 
-
 GITHUB_IDENTIFIER="$($GITHUB_ACTION_PATH/operations/_scripts/generate/generate_identifier.sh)"
 echo "GITHUB_IDENTIFIER: [$GITHUB_IDENTIFIER]"
 
@@ -306,6 +305,7 @@ $app_install_root
 " > "${GITHUB_ACTION_PATH}/operations/deployment/terraform/ec2/terraform.tfvars"
 
 cp  "${GITHUB_ACTION_PATH}/operations/deployment/terraform/ec2/terraform.tfvars"  "${GITHUB_ACTION_PATH}/operations/deployment/terraform/rds/terraform.tfvars"
+cp  "${GITHUB_ACTION_PATH}/operations/deployment/terraform/ec2/terraform.tfvars"  "${GITHUB_ACTION_PATH}/operations/deployment/terraform/efs/terraform.tfvars"
 # -------------------------------------------------- #
 
 echo "Done with generate_vars_terraform.sh"
