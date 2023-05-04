@@ -22,18 +22,9 @@ variable "aws_ec2_instance_public_ip" {
   default     = false
   description = "Attach public IP to the EC2 instance"
 }
-variable "aws_efs_create" {
+variable "aws_efs_enable" {
   type        = bool
   default     = "false"
-}
-variable "aws_efs_create_ha" {
-  type        = bool
-  default     = "false"
-}
-variable "aws_efs_mount_id" {
-  type        = string
-  description = "ID of existing EFS"
-  default     = ""
 }
 variable "aws_elb_create" {
   type        = bool
