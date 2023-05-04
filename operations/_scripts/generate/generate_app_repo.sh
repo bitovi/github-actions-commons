@@ -17,6 +17,7 @@ fi
 if [ $(find "$TARGET_PATH/." -iname "*" | wc -l) -gt 0 ]; then 
   echo "Got in this find"
   find "$TARGET_PATH/." -iname "*"
+  ls -lah "$TARGET_PATH"
   cp -rf "$TARGET_PATH"/* "${GITHUB_ACTION_PATH}/operations/deployment/$1/app/${GITHUB_REPO_NAME}/"
   echo "Copied files"
 fi
