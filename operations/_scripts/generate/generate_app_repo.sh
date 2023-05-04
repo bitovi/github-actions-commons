@@ -14,6 +14,8 @@ if [ -n "$DOCKER_REPO_APP_DIRECTORY" ]; then
     TARGET_PATH="${TARGET_PATH}/${DOCKER_REPO_APP_DIRECTORY}"
 fi
 
-cp -rf "$TARGET_PATH"/* "${GITHUB_ACTION_PATH}/operations/deployment/$1/app/${GITHUB_REPO_NAME}/"
-
+if [ $(find "$TARGET_PATH/." -iname "*" | wc -l) -gt 0 ]; then 
+  cp -rf "$TARGET_PATH"/* "${GITHUB_ACTION_PATH}/operations/deployment/$1/app/${GITHUB_REPO_NAME}/"
+  echo "Copied files"
+fi
 echo "Done with generate_app_repo.sh"
