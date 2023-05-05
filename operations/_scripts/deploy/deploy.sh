@@ -79,14 +79,32 @@ fi
 echo "Final BitOps config file"
 cat $GITHUB_ACTION_PATH/operations/deployment/bitops.config.yaml
 
+# Debugging states
+# Ensuring bucket get's destroyed only if everything is set to be destroyed
+echo "PRE CHECK"
+echo "$TF_STATE_BUCKET_DESTROY"
+echo "$AWS_POSTGRES_ENABLE"
+echo "$AWS_EFS_ENABLE"
+echo "$AWS_EC2_INSTANCE_CREATE"
+
 # Ensuring bucket get's destroyed only if everything is set to be destroyed
 if [[ $(alpha_only "$TF_STATE_BUCKET_DESTROY") == true ]]; then
+  echo "Got in the first if"
   if [[ $(alpha_only "$AWS_POSTGRES_ENABLE") == true ]] || 
      [[ $(alpha_only "$AWS_EFS_ENABLE") == true ]] || 
      [[ $(alpha_only "$AWS_EC2_INSTANCE_CREATE") == true ]]; then 
     TF_STATE_BUCKET_DESTROY="false"
+    echo "Bucket should be set to FALSE!"
   fi
 fi
+
+# Debugging states
+# Ensuring bucket get's destroyed only if everything is set to be destroyed
+echo "POST CHECK"
+echo "$TF_STATE_BUCKET_DESTROY"
+echo "$AWS_POSTGRES_ENABLE"
+echo "$AWS_EFS_ENABLE"
+echo "$AWS_EC2_INSTANCE_CREATE"
 
 # Generating GitHub Variables and Secrets files
 mkdir -p "${GITHUB_ACTION_PATH}/operations/deployment/env-files"
@@ -99,6 +117,8 @@ fi
 if [[ $SKIP_BITOPS_RUN == "true" ]]; then
   exit 1
 fi
+
+exit 0 
 
 echo "::group::BitOps Excecution"  
 echo "Running BitOps for env: $BITOPS_ENVIRONMENT"
