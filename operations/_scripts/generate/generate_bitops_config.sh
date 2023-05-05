@@ -78,7 +78,7 @@ bitops:
 
 # BitOps Config Temp file
   # If to add ec2 in the begginning or the end, depending on destruction or not. 
-  if [[ $(alpha_only "$AWS_EC2_INSTANCE_CREATE") == true ]] && ! [[ $(alpha_only "$TF_STACK_DESTROY") == true ]] ) && [[ $(alpha_only "$AWS_EFS_ENABLE") == true ]] ; then
+  if [[ $(alpha_only "$AWS_EC2_INSTANCE_CREATE") == true ]] && [[ $(alpha_only "$AWS_EFS_ENABLE") == true ]] && ! [[ $(alpha_only "$TF_STACK_DESTROY") == true ]] ; then
   # Terraform - Generate infra
     echo -en "
     terraform/rds:
