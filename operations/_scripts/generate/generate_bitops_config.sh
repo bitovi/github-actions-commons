@@ -10,7 +10,7 @@ function alpha_only() {
 
 function create_bitops_terraform_config() {
   if [[ $(alpha_only "$2") == true ]] && [[ $(alpha_only "TF_STACK_DESTROY") != "true" ]]; then
-    TF_STATE_BUCKET_DESTROY="false"  # Ensuring state-bucket doesn't get destroyed if any action applies
+    export TF_STATE_BUCKET_DESTROY="false"  # Ensuring state-bucket doesn't get destroyed if any action applies
     action="apply"
   else
     action="destroy"
