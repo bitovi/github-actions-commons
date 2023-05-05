@@ -54,7 +54,7 @@ create_bitops_terraform_config ec2 $AWS_EC2_INSTANCE_CREATE targets
 
 
 # Files Definitions
-
+mkdir -p "${GITHUB_ACTION_PATH}/operations/generated_code"
 # BitOps Deployment Config file
 BITOPS_DEPLOY_FILE="${GITHUB_ACTION_PATH}/operations/deployment/bitops.config.yaml"
 # BitOps Code Config File
@@ -77,6 +77,8 @@ bitops:
 " > $BITOPS_CODE_FILE
 
 # BitOps Config Temp file
+  # If to add ec2 in the begginning or the end, depending on destruction or not. 
+  #if [[ $(alpha_only "$AWS_EC2_INSTANCE_CREATE") == true ]] && ! [[ $(alpha_only "$TF_STACK_DESTROY") == true ]] ; then
   # Terraform - Generate infra
     echo -en "
     terraform/rds:
@@ -86,7 +88,16 @@ bitops:
     terraform/ec2:
       plugin: terraform
 " >> $BITOPS_CONFIG_TEMP
-
+#  else
+#    echo -en "
+#    terraform/ec2:
+#      plugin: terraform
+#    terraform/rds:
+#      plugin: terraform
+#    terraform/efs:
+#      plugin: terraform
+#" >> $BITOPS_CONFIG_TEMP
+#  fi
   # Ansible Code part
 
   if [[ "$(alpha_only $ANSIBLE_SKIP)" != "true" ]] && [[ "$(alpha_only $AWS_EC2_INSTANCE_CREATE)" == "true" ]] && [[ "$(alpha_only $AWS_EC2_INSTANCE_PUBLIC_IP)" == "true" ]]; then
