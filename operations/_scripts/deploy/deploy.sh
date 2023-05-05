@@ -86,13 +86,6 @@ fi
 echo "Final BitOps config file"
 cat $GITHUB_ACTION_PATH/operations/deployment/bitops.config.yaml
 
-echo "Pre"
-echo "$TF_STATE_BUCKET_DESTROY"
-echo "$TF_STACK_DESTROY"
-echo "$AWS_POSTGRES_ENABLE"
-echo "$AWS_EFS_ENABLE"
-echo "$AWS_EC2_INSTANCE_CREATE"
-
 ## Ensuring bucket get's destroyed only if everything is set to be destroyed
 if [[ $(alpha_only "$TF_STATE_BUCKET_DESTROY") == true ]] && ! [[ $(alpha_only "$TF_STACK_DESTROY") == true ]] ; then
   if [[ $(alpha_only "$AWS_POSTGRES_ENABLE") == true ]] || 
@@ -101,12 +94,6 @@ if [[ $(alpha_only "$TF_STATE_BUCKET_DESTROY") == true ]] && ! [[ $(alpha_only "
     export TF_STATE_BUCKET_DESTROY="false"
   fi
 fi
-echo "Post"
-echo "$TF_STATE_BUCKET_DESTROY"
-echo "$TF_STACK_DESTROY"
-echo "$AWS_POSTGRES_ENABLE"
-echo "$AWS_EFS_ENABLE"
-echo "$AWS_EC2_INSTANCE_CREATE"
 
 # Generating GitHub Variables and Secrets files
 mkdir -p "${GITHUB_ACTION_PATH}/operations/deployment/env-files"
@@ -120,7 +107,6 @@ if [[ $SKIP_BITOPS_RUN == "true" ]]; then
   exit 1
 fi
 
-exit 0
 echo "::group::BitOps Excecution"  
 echo "Running BitOps for env: $BITOPS_ENVIRONMENT"
 docker run --rm --name bitops \
