@@ -10,22 +10,21 @@ function alpha_only() {
 
 function create_bitops_terraform_config() {
   if [[ $(alpha_only "$2") == true ]] && [[ $(alpha_only "TF_STACK_DESTROY") != "true" ]]; then
-    TF_STATE_BUCKET_DESTROY="false"  # Ensuring state-bucket doesn't get destroyed if any action applies
     action="apply"
   else
     action="destroy"
   fi
- # if [[ $(alpha_only "$3") == targets ]]; then
- #   add_targets="$targets_attribute"
- # else
- #   add_targets=""
- # fi
+  if [[ $(alpha_only "$3") == targets ]]; then
+    add_targets="$targets_attribute"
+  else
+    add_targets=""
+  fi
 
   echo -en "
 terraform:
   cli:
     stack-action: "$action"
-    $targets_attribute
+    $add_targets
   options: {}
 " > $GITHUB_ACTION_PATH/operations/deployment/terraform/$1/bitops.config.yaml
 }
@@ -58,7 +57,7 @@ fi
 #Will create bitops.config.yaml for that terraform folder
 create_bitops_terraform_config rds $AWS_POSTGRES_ENABLE
 create_bitops_terraform_config efs $AWS_EFS_ENABLE
-create_bitops_terraform_config ec2 $AWS_EC2_INSTANCE_CREATE #targets
+create_bitops_terraform_config ec2 $AWS_EC2_INSTANCE_CREATE targets
 
 # Global Bitops Config
 echo -en "
