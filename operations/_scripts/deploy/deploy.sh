@@ -40,6 +40,13 @@ if [ "$(alpha_only $ANSIBLE_SKIP)" == "true" ]; then
   ANSIBLE_SKIP="true"
 fi
 
+# Check EFS 
+if [[ $(alpha_only "$AWS_EFS_CREATE") == true ]] || [[ $(alpha_only "$AWS_EFS_CREATE_HA") == true ]] || [ -n "$AWS_EFS_MOUNT_ID" ]; then 
+  AWS_EFS_ENABLE="true"
+else
+  AWS_EFS_ENABLE="false"
+fi
+
 # Generate buckets identifiers and check them agains AWS Rules 
 export TF_STATE_BUCKET="$(/bin/bash $GITHUB_ACTION_PATH/operations/_scripts/generate/generate_buckets_identifiers.sh tf | xargs)"
 /bin/bash $GITHUB_ACTION_PATH/operations/_scripts/deploy/check_bucket_name.sh $TF_STATE_BUCKET

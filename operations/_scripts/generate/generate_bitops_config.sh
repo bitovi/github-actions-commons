@@ -47,17 +47,12 @@ targets="$targets
     - random_integer.az_select"
 targets_attribute="$targets_attribute $targets"
 
-# Check EFS 
-if [[ $(alpha_only "$AWS_EFS_CREATE") == true ]] || [[ $(alpha_only "$AWS_EFS_CREATE_HA") == true ]] || [ -n "$AWS_EFS_MOUNT_ID" ]; then 
-  AWS_EFS_ENABLE="true"
-else
-  AWS_EFS_ENABLE="false"
-fi
-
 #Will create bitops.config.yaml for that terraform folder
 create_bitops_terraform_config rds $AWS_POSTGRES_ENABLE
 create_bitops_terraform_config efs $AWS_EFS_ENABLE
 create_bitops_terraform_config ec2 $AWS_EC2_INSTANCE_CREATE targets
+
+echo "DEBUG BITOPS CONFIG: $AWS_EFS_ENABLE"
 
 # Global Bitops Config
 echo -en "
