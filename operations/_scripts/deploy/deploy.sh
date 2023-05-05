@@ -93,17 +93,8 @@ if [[ $(alpha_only "$TF_STATE_BUCKET_DESTROY") == true ]]; then
      [[ $(alpha_only "$AWS_EFS_ENABLE") == true ]] || 
      [[ $(alpha_only "$AWS_EC2_INSTANCE_CREATE") == true ]]; then 
     export TF_STATE_BUCKET_DESTROY="false"
-    echo "Bucket should be set to FALSE!"
   fi
 fi
-
-# Debugging states
-# Ensuring bucket get's destroyed only if everything is set to be destroyed
-echo "POST CHECK"
-echo "$TF_STATE_BUCKET_DESTROY"
-echo "$AWS_POSTGRES_ENABLE"
-echo "$AWS_EFS_ENABLE"
-echo "$AWS_EC2_INSTANCE_CREATE"
 
 # Generating GitHub Variables and Secrets files
 mkdir -p "${GITHUB_ACTION_PATH}/operations/deployment/env-files"
