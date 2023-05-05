@@ -59,6 +59,13 @@ create_bitops_terraform_config rds $AWS_POSTGRES_ENABLE
 create_bitops_terraform_config efs $AWS_EFS_ENABLE
 create_bitops_terraform_config ec2 $AWS_EC2_INSTANCE_CREATE targets
 
+#Ensuring that the TF-STATE bucket doesn't get destroyed if any action is set to true
+if [[ $(alpha_only "$TF_STATE_BUCKET_DESTROY") == true ]]; then
+  if [[ $(alpha_only "$AWS_POSTGRES_ENABLE") == true ]] || [[ $(alpha_only "$AWS_EFS_ENABLE") == true ]] || [[ $(alpha_only "$AWS_EC2_INSTANCE_CREATE") == true ]]; then 
+    TF_STATE_BUCKET_DESTROY="false"
+  fi
+fi
+
 # Global Bitops Config
 echo -en "
 bitops:
