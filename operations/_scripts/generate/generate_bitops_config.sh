@@ -9,7 +9,7 @@ function alpha_only() {
 }
 
 function create_bitops_terraform_config() {
-  if [[ $(alpha_only "$2") == true ]] && [[ $(alpha_only "TF_STACK_DESTROY") != "true" ]]; then
+  if [[ $(alpha_only "$2") == true ]] && ! [[ $(alpha_only "$TF_STACK_DESTROY") == true ]] ; then
     action="apply"
   else
     action="destroy"
