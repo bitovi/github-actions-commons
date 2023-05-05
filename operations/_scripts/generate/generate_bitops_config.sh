@@ -14,12 +14,17 @@ function create_bitops_terraform_config() {
   else
     action="destroy"
   fi
+  if [ -n $3 ]; then
+    add_targets="$targets_attribute"
+  else
+    add_targets=""
+  fi
 
   echo -en "
 terraform:
   cli:
     stack-action: "$action"
-    $targets_attribute
+    $add_targets
   options: {}
 " > $GITHUB_ACTION_PATH/operations/deployment/terraform/$1/bitops.config.yaml
 }
@@ -49,10 +54,10 @@ else
   AWS_EFS_ENABLE="false"
 fi
 
-#Will create bitops.config.yaml for that terraform folder
+#Will create bitops.config.yaml for that terraform folder - Add anything after to generate the targets
 create_bitops_terraform_config rds $AWS_POSTGRES_ENABLE
 create_bitops_terraform_config efs $AWS_EFS_ENABLE
-create_bitops_terraform_config ec2 $AWS_EC2_INSTANCE_CREATE
+create_bitops_terraform_config ec2 $AWS_EC2_INSTANCE_CREATE targets
 
 # Global Bitops Config
 echo -en "
