@@ -423,6 +423,9 @@ runs:
       run: |
         echo "## BitOps Code generated. :tada: " >> $GITHUB_STEP_SUMMARY
         echo "Download the code artifact. Will be there for 5 days." >> $GITHUB_STEP_SUMMARY
+        echo "Keep in mind that for creation, EFS should be created before EC2."
+        echo "While destroying, EC2 should be destroyed before EFS. (Due to resources being in use)."
+        echo "You can change that in the bitops.config.yaml file, or regenerate the code with destroy set."
     - if: ${{ success() && steps.deploy.outputs.vm_url == '' && inputs.bitops_code_only == 'true' && inputs.bitops_code_store != 'true' }}
       name: Print code built
       shell: bash
