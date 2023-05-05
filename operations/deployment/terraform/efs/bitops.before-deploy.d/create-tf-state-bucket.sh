@@ -1,5 +1,6 @@
 #!/bin/bash
 
+echo ""
 if [[ ${#TF_STATE_BUCKET} > 63 ]]; then
   echo "Bucket name exceeds name limit"
   exit 63

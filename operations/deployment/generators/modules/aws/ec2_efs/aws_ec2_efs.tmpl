@@ -80,7 +80,7 @@ data "aws_security_group" "efs_security_group" {
   count  = local.create_ec2_efs ? 1 : 0
   filter {
     name   = "tag:Name"
-    values = ["SG for ${var.aws_resource_identifier} - EFS"]
+    values = ["${var.aws_resource_identifier}-efs-sg"]
   }
 }
 
