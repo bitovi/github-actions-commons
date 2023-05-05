@@ -4,10 +4,12 @@ set -e
 
 echo "In generate_bitops_incoming.sh"
 
+# Will clear the text for anything odd and lowercase everything. Ensuring True is true.
 function alpha_only() {
   echo "$1" | tr -cd '[:alpha:]' | tr '[:upper:]' '[:lower:]'
 }
 
+# Fetch the yq tool. To be used at appending some yaml code
 function get_yq() {
   if ! [ -f "/tmp/yq" ]; then
     wget -q https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64 -O /tmp/yq
@@ -15,19 +17,22 @@ function get_yq() {
   fi
 }
 
+# Will merge the incoming variables.tf and terraform.tfvars into the files of the selected folder. 
 function merge_tf_vars() {
+  terraform_destination="operations/deployment/terraform/$2"
   if [ -s "$1/variables.tf" ]; then
-    echo "" >> "$GITHUB_ACTION_PATH/operations/deployment/terraform/ec2/variables.tf" 
-    cat "$1/variables.tf" >> "$GITHUB_ACTION_PATH/operations/deployment/terraform/ec2/variables.tf" 
+    echo "" >> "$GITHUB_ACTION_PATH/$terraform_destination/variables.tf" 
+    cat "$1/variables.tf" >> "$GITHUB_ACTION_PATH/$terraform_destination/variables.tf" 
     rm "$1/variables.tf"
   fi 
   if [ -s "$1/terraform.tfvars" ]; then
-    echo "" >> "$GITHUB_ACTION_PATH/operations/deployment/terraform/ec2/terraform.tfvars"
-    cat "$1/terraform.tfvars" >> "$GITHUB_ACTION_PATH/operations/deployment/terraform/ec2/terraform.tfvars"
+    echo "" >> "$GITHUB_ACTION_PATH/$terraform_destination/terraform.tfvars"
+    cat "$1/terraform.tfvars" >> "$GITHUB_ACTION_PATH/$terraform_destination/terraform.tfvars"
     rm "$1/terraform.tfvars"
   fi 
 }
 
+# Ensure we are not overwriting any file by prepending some string in the filename
 function move_content_append() {
   source_folder="$1"
   prepend="$2"
@@ -67,10 +72,11 @@ if [ -n "$GH_ACTION_REPO" ]; then
       # Move incoming Ansible folder from action
       mv "$GH_ACTION_INPUT_ANSIBLE_PATH" "$GITHUB_ACTION_PATH/operations/deployment/ansible/action"
 
-      # Add Ansible - Incoming GH to main bitops.config.yaml
+      # Add Ansible - Incoming GH to main bitops.config.yaml and the generated code one
       if [[ "$(alpha_only $BITOPS_CODE_ONLY)" != "true" ]]; then
         /tmp/yq ".bitops.deployments.ansible/action.plugin = \"ansible\"" -i $GITHUB_ACTION_PATH/operations/deployment/bitops.config.yaml
       fi
+      /tmp/yq ".bitops.deployments.ansible/action.plugin = \"ansible\"" -i $GITHUB_ACTION_PATH/operations/generated_code/bitops.config.yaml
     else
       echo "::error::Couldn't find $GH_ACTION_INPUT_ANSIBLE_PLAYBOOK inside incoming Action Ansible folder."
     fi
@@ -80,7 +86,7 @@ if [ -n "$GH_ACTION_REPO" ]; then
   if [ -n "$GH_ACTION_INPUT_TERRAFORM" ]; then
     GH_ACTION_INPUT_TERRAFORM_PATH="$GH_ACTION_REPO/$GH_ACTION_INPUT_TERRAFORM"
 
-    merge_tf_vars "$GH_ACTION_INPUT_TERRAFORM_PATH"
+    merge_tf_vars "$GH_ACTION_INPUT_TERRAFORM_PATH" ec2
     move_content_append "$GH_ACTION_INPUT_TERRAFORM_PATH" action
   fi
 fi
@@ -109,10 +115,11 @@ if [ -n "$GH_DEPLOYMENT_INPUT_ANSIBLE" ] && [[ "$(alpha_only $ANSIBLE_SKIP)" != 
     # Move incoming Ansible folder from deployment
     mv "$GH_DEPLOYMENT_INPUT_ANSIBLE_PATH" "$GITHUB_ACTION_PATH/operations/deployment/ansible/deployment"
 
-    # Add Ansible - Incoming GH to main bitops.config.yaml
+    # Add Ansible - Incoming GH to main bitops.config.yaml and the generated code one
     if [[ "$(alpha_only $BITOPS_CODE_ONLY)" != "true" ]]; then
       /tmp/yq ".bitops.deployments.ansible/deployment.plugin = \"ansible\"" -i $GITHUB_ACTION_PATH/operations/deployment/bitops.config.yaml
     fi
+    /tmp/yq ".bitops.deployments.ansible/deployment.plugin = \"ansible\"" -i $GITHUB_ACTION_PATH/operations/generated_code/bitops.config.yaml
   else
     echo "::error::Couldn't find $GH_DEPLOYMENT_INPUT_ANSIBLE_PLAYBOOK inside incoming Deployment Ansible folder."
   fi
@@ -122,7 +129,7 @@ fi
 if [ -n "$GH_DEPLOYMENT_INPUT_TERRAFORM" ]; then
   GH_DEPLOYMENT_INPUT_TERRAFORM_PATH="$GITHUB_WORKSPACE/$GH_DEPLOYMENT_INPUT_TERRAFORM"
 
-  merge_tf_vars "$GH_DEPLOYMENT_INPUT_TERRAFORM_PATH"
+  merge_tf_vars "$GH_DEPLOYMENT_INPUT_TERRAFORM_PATH" ec2
   move_content_append "$GH_DEPLOYMENT_INPUT_TERRAFORM_PATH" deploy
 fi
 
