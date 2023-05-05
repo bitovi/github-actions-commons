@@ -41,11 +41,11 @@ if [ "$(alpha_only $ANSIBLE_SKIP)" == "true" ]; then
 fi
 
 # Check EFS 
-if [[ $(alpha_only "$AWS_EFS_CREATE") == true ]] || [[ $(alpha_only "$AWS_EFS_CREATE_HA") == true ]] || [ -n "$AWS_EFS_MOUNT_ID" ]; then 
-  AWS_EFS_ENABLE="true"
-else
-  AWS_EFS_ENABLE="false"
-fi
+#if [[ $(alpha_only "$AWS_EFS_CREATE") == true ]] || [[ $(alpha_only "$AWS_EFS_CREATE_HA") == true ]] || [ -n "$AWS_EFS_MOUNT_ID" ]; then 
+#  export AWS_EFS_ENABLE="true"
+#else
+#  export AWS_EFS_ENABLE="false"
+#fi
 
 # Generate buckets identifiers and check them agains AWS Rules 
 export TF_STATE_BUCKET="$(/bin/bash $GITHUB_ACTION_PATH/operations/_scripts/generate/generate_buckets_identifiers.sh tf | xargs)"
@@ -88,22 +88,22 @@ cat $GITHUB_ACTION_PATH/operations/deployment/bitops.config.yaml
 
 # Debugging states
 # Ensuring bucket get's destroyed only if everything is set to be destroyed
-echo "PRE CHECK"
-echo "$TF_STATE_BUCKET_DESTROY"
-echo "$AWS_POSTGRES_ENABLE"
-echo "$AWS_EFS_ENABLE"
-echo "$AWS_EC2_INSTANCE_CREATE"
+#echo "PRE CHECK"
+#echo "$TF_STATE_BUCKET_DESTROY"
+#echo "$AWS_POSTGRES_ENABLE"
+#echo "$AWS_EFS_ENABLE"
+#echo "$AWS_EC2_INSTANCE_CREATE"
 
-# Ensuring bucket get's destroyed only if everything is set to be destroyed
-if [[ $(alpha_only "$TF_STATE_BUCKET_DESTROY") == true ]]; then
-  echo "Got in the first if"
-  if [[ $(alpha_only "$AWS_POSTGRES_ENABLE") == true ]] || 
-     [[ $(alpha_only "$AWS_EFS_ENABLE") == true ]] || 
-     [[ $(alpha_only "$AWS_EC2_INSTANCE_CREATE") == true ]]; then 
-    TF_STATE_BUCKET_DESTROY="false"
-    echo "Bucket should be set to FALSE!"
-  fi
-fi
+## Ensuring bucket get's destroyed only if everything is set to be destroyed
+#if [[ $(alpha_only "$TF_STATE_BUCKET_DESTROY") == true ]]; then
+#  echo "Got in the first if"
+#  if [[ $(alpha_only "$AWS_POSTGRES_ENABLE") == true ]] || 
+#     [[ $(alpha_only "$AWS_EFS_ENABLE") == true ]] || 
+#     [[ $(alpha_only "$AWS_EC2_INSTANCE_CREATE") == true ]]; then 
+#    export TF_STATE_BUCKET_DESTROY="false"
+#    echo "Bucket should be set to FALSE!"
+#  fi
+#fi
 
 # Debugging states
 # Ensuring bucket get's destroyed only if everything is set to be destroyed
