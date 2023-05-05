@@ -9,6 +9,8 @@ if [ -n "$DOCKER_REPO_APP_DIRECTORY" ]; then
     TARGET_PATH="${TARGET_PATH}/${DOCKER_REPO_APP_DIRECTORY}"
 fi
 
+mkdir -p "${GITHUB_ACTION_PATH}/operations/deployment/$1/app"
+
 if [ $(find "$TARGET_PATH/." -iname "*"  -not -name "."| wc -l) -gt 0 ]; then 
   echo "Copying files from GITHUB_WORKSPACE ($GITHUB_WORKSPACE) to ops repo's Ansible $1 deployment (${GITHUB_ACTION_PATH}/operations/deployment/$1/app/${GITHUB_REPO_NAME})"
   mkdir -p "${GITHUB_ACTION_PATH}/operations/deployment/$1/app/${GITHUB_REPO_NAME}"
