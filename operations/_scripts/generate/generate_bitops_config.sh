@@ -14,7 +14,7 @@ function create_bitops_terraform_config() {
   else
     action="destroy"
   fi
-  if [ -n $3 ]; then
+  if [[ $(alpha_only "$3") == targets ]]; then
     add_targets="$targets_attribute"
   else
     add_targets=""
@@ -54,7 +54,7 @@ else
   AWS_EFS_ENABLE="false"
 fi
 
-#Will create bitops.config.yaml for that terraform folder - Add anything after to generate the targets
+#Will create bitops.config.yaml for that terraform folder
 create_bitops_terraform_config rds $AWS_POSTGRES_ENABLE
 create_bitops_terraform_config efs $AWS_EFS_ENABLE
 create_bitops_terraform_config ec2 $AWS_EC2_INSTANCE_CREATE targets
