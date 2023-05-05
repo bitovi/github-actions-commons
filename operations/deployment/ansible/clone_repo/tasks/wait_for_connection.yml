@@ -1,4 +1,0 @@
-- name: "Wait 600 seconds, but only start checking after 10 seconds"
-  wait_for_connection:
-    delay: 10
-    timeout: 600
