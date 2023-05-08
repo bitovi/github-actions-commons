@@ -75,9 +75,12 @@ if [[ $(alpha_only "$AWS_EC2_INSTANCE_CREATE") == true ]]; then
       echo "env"
       env
       echo "something"
+      cd /home/runner/work 
+      find . -iname echo.sh
       ls -lah /home/runner/work/_actions
       ls -lah /home/runner/work/_actions/bitovi/github-actions-commons/terraform_split
-
+      ls -lah "$GH_ACTION_REPO"
+      
    #   mv "$GITHUB_WORKSPACE/$AWS_EC2_USER_DATA_FILE" "$GITHUB_ACTION_PATH/operations/deployment/terraform/ec2/aws_ec2_incoming_user_data_script.sh"
   #fi
 fi
