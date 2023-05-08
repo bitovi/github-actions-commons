@@ -59,15 +59,15 @@ create_bitops_terraform_config ec2 $AWS_EC2_INSTANCE_CREATE targets
 
 if [[ $(alpha_only "$AWS_EC2_INSTANCE_CREATE") == true ]]; then
   echo "In first IF"
-  if [ -s "$GITHUB_WORKSPACE/$AWS_EC2_USER_DATA_FILE" ]; then
+  #if [ -s "$GITHUB_WORKSPACE/$AWS_EC2_USER_DATA_FILE" ]; then
       echo "In second IF"
       # Move incoming user_data file to folder from action repo
       echo "Cating user data file"
       cat "$GITHUB_WORKSPACE/$AWS_EC2_USER_DATA_FILE"
       echo "LS user data file"
       ls -lah $GITHUB_WORKSPACE
-      mv "$GITHUB_WORKSPACE/$AWS_EC2_USER_DATA_FILE" "$GITHUB_ACTION_PATH/operations/deployment/terraform/ec2/aws_ec2_incoming_user_data_script.sh"
-  fi
+   #   mv "$GITHUB_WORKSPACE/$AWS_EC2_USER_DATA_FILE" "$GITHUB_ACTION_PATH/operations/deployment/terraform/ec2/aws_ec2_incoming_user_data_script.sh"
+  #fi
 fi
 # Below we will be creating the config file, one for the action itself, other to store as an artifact after. 
 
