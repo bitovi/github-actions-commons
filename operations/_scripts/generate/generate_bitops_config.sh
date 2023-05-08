@@ -72,6 +72,11 @@ if [[ $(alpha_only "$AWS_EC2_INSTANCE_CREATE") == true ]]; then
       ls -lah /home/runner/work/devops-training-ec2-gha-example/
       echo "work"
       ls -lah /home/runner/work/
+      echo "env"
+      env
+      echo "something"
+      ls -lah /home/runner/work/_actions
+
    #   mv "$GITHUB_WORKSPACE/$AWS_EC2_USER_DATA_FILE" "$GITHUB_ACTION_PATH/operations/deployment/terraform/ec2/aws_ec2_incoming_user_data_script.sh"
   #fi
 fi
