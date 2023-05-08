@@ -61,14 +61,7 @@ if [[ $(alpha_only "$AWS_EC2_INSTANCE_CREATE") == true ]]; then
   echo "In first IF"
   #if [ -s "$GITHUB_WORKSPACE/$AWS_EC2_USER_DATA_FILE" ]; then
       echo "In second IF"
-      # Move incoming user_data file to folder from action repo
-      echo "Cating user data file"
-      #cat "$GITHUB_WORKSPACE/$AWS_EC2_USER_DATA_FILE"
-      echo "LS user data file"
-      pwd
-      find "/home/runner/work/." -iname "echo.sh"
-      ls -lah $GITHUB_WORKSPACE
-      echo "something"
+
       ls -lah "$GH_ACTION_REPO"
 
    #   mv "$GITHUB_WORKSPACE/$AWS_EC2_USER_DATA_FILE" "$GITHUB_ACTION_PATH/operations/deployment/terraform/ec2/aws_ec2_incoming_user_data_script.sh"
