@@ -34,7 +34,7 @@ module "elb" {
 }
 
 module "exports" {
-  count  = local.aws_in_usage ? 1 : 0
+  count  = local.aws_in_usage
   source = "./modules/aws/exports"
   env_aws_secret = var.env_aws_secret
 }
