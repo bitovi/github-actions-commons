@@ -62,7 +62,7 @@ resource "aws_instance" "server" {
   key_name                    = aws_key_pair.aws_key.key_name
   monitoring                  = true
   iam_instance_profile        = aws_iam_instance_profile.ec2_profile.name
-  user_data                   = base64encode(try(file("./aws_ec2_incoming_user_data_script.sh"), ""))
+  user_data_base64            = base64encode(try(file("./aws_ec2_incoming_user_data_script.sh"), ""))
   root_block_device {
     volume_size           = tonumber(var.aws_ec2_instance_root_vol_size)
     delete_on_termination = var.aws_ec2_instance_root_vol_preserve ? false : true
