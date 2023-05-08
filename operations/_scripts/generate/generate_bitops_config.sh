@@ -4,6 +4,7 @@ set -e
 
 echo "In generate_bitops_config.sh"
 
+### Functions
 function alpha_only() {
   echo "$1" | tr -cd '[:alpha:]' | tr '[:upper:]' '[:lower:]'
 }
@@ -52,6 +53,7 @@ create_bitops_terraform_config rds $AWS_POSTGRES_ENABLE
 create_bitops_terraform_config efs $AWS_EFS_ENABLE
 create_bitops_terraform_config ec2 $AWS_EC2_INSTANCE_CREATE targets
 
+# Below we will be creating the config file, one for the action itself, other to store as an artifact after. 
 
 # Files Definitions
 mkdir -p "${GITHUB_ACTION_PATH}/operations/generated_code"
@@ -77,7 +79,7 @@ bitops:
 " > $BITOPS_CODE_FILE
 
 # BitOps Config Temp file
-  # If to add ec2 in the begginning or the end, depending on destruction or not. 
+  # If to add ec2 in the begginning or the end, depending on aplly or destroy. 
   if [[ $(alpha_only "$AWS_EC2_INSTANCE_CREATE") == true ]] && [[ $(alpha_only "$AWS_EFS_ENABLE") == true ]] && ! [[ $(alpha_only "$TF_STACK_DESTROY") == true ]] ; then
   # Terraform - Generate infra
     echo -en "
@@ -129,42 +131,5 @@ if [[ "$(alpha_only $BITOPS_CODE_ONLY)" != "true" ]]; then
 fi
 cat $BITOPS_CONFIG_TEMP >> $BITOPS_CODE_FILE
 rm $BITOPS_CONFIG_TEMP
-###
-
-#if [[ "$(alpha_only $BITOPS_CODE_ONLY)" != "true" ]]; then
-#  # Terraform - Generate infra
-#    echo -en "
-#    terraform/rds:
-#      plugin: terraform
-#    terraform/efs:
-#      plugin: terraform
-#    terraform/ec2:
-#      plugin: terraform
-#" >> $GITHUB_ACTION_PATH/operations/deployment/bitops.config.yaml
-#
-#  if [[ "$(alpha_only $ANSIBLE_SKIP)" != "true" ]] && [[ "$(alpha_only $AWS_EC2_INSTANCE_CREATE)" == "true" ]] && [[ "$(alpha_only $AWS_EC2_INSTANCE_PUBLIC_IP)" == "true" ]]; then
-#    # Ansible - Fetch repo
-#    echo -en "
-#    ansible/clone_repo:
-#      plugin: ansible
-#" >> $GITHUB_ACTION_PATH/operations/deployment/bitops.config.yaml
-#    
-#    # Ansible - Install EFS
-#    if [[ $(alpha_only "$AWS_EFS_CREATE") == true ]] || [[ $(alpha_only "$AWS_EFS_CREATE_HA") == true ]] || [[ "$AWS_EFS_MOUNT_ID" != "" ]]; then
-#    echo -en "
-#    ansible/efs:
-#      plugin: ansible
-#" >> $GITHUB_ACTION_PATH/operations/deployment/bitops.config.yaml
-#    fi
-#    
-#    # Ansible - Install Docker
-#    if [[ $(alpha_only "$DOCKER_INSTALL") == true ]]; then
-#    echo -en "
-#    ansible/docker:
-#      plugin: ansible
-#" >> $GITHUB_ACTION_PATH/operations/deployment/bitops.config.yaml
-#    fi
-#  fi
-#fi
 
 echo "Done with generate_bitops_config.sh"

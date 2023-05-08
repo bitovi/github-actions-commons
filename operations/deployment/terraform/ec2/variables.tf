@@ -62,12 +62,6 @@ variable "aws_ec2_instance_type" {
   description = "Instance type for the EC2 instance"
 }
 
-variable "aws_ec2_instance_protect" {
-  type        = bool
-  description = "Set this to true to enable instance deletion protection"
-  default     = false
-}
-
 variable "aws_ec2_instance_root_vol_size" {
   type        = string
   default     = "8"
