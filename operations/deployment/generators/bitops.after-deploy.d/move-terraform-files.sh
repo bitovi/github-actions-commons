@@ -25,6 +25,3 @@ fi
 
 rm -rf "${BITOPS_ENVROOT}/generators"
 cp -r "${BITOPS_ENVROOT}" /opt/bitops_deployment/generated_code
-
-cat "${BITOPS_ENVROOT}"/bitops.config.yaml
-ls -lah "${BITOPS_ENVROOT}"

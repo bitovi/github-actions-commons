@@ -4,6 +4,8 @@ set -e
 
 echo "In generate_bitops_incoming.sh"
 
+### Functions
+
 # Will clear the text for anything odd and lowercase everything. Ensuring True is true.
 function alpha_only() {
   echo "$1" | tr -cd '[:alpha:]' | tr '[:upper:]' '[:lower:]'
@@ -46,6 +48,9 @@ function move_content_append() {
     mv "$folder" "${GITHUB_ACTION_PATH}/operations/deployment/terraform/ec2/."
   done
 }
+
+### End functions
+
 
 ### Generate incoming action repo's
 

@@ -30,6 +30,8 @@ terraform:
 " > $GITHUB_ACTION_PATH/operations/deployment/terraform/$1/bitops.config.yaml
 }
 
+### End functions
+
 if [[ "$(alpha_only $TF_STACK_DESTROY)" == "true" ]]; then
   ANSIBLE_SKIP=true
 fi
@@ -53,6 +55,14 @@ create_bitops_terraform_config rds $AWS_POSTGRES_ENABLE
 create_bitops_terraform_config efs $AWS_EFS_ENABLE
 create_bitops_terraform_config ec2 $AWS_EC2_INSTANCE_CREATE targets
 
+#Will add the user_data file into the EC2 Terraform folder
+
+if [[ $(alpha_only "$AWS_EC2_INSTANCE_CREATE") == true ]]; then
+  if [ -s "$GITHUB_WORKSPACE/$AWS_EC2_USER_DATA_FILE" ] 
+      # Move incoming user_data file to folder from action repo
+      mv "$GITHUB_WORKSPACE/$AWS_EC2_USER_DATA_FILE" "$GITHUB_ACTION_PATH/operations/deployment/terraform/ec2/aws_ec2_incoming_user_data_script.sh"
+  fi
+fi
 # Below we will be creating the config file, one for the action itself, other to store as an artifact after. 
 
 # Files Definitions

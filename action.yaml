@@ -153,6 +153,9 @@ inputs:
   aws_ec2_port_list:
     description: 'List of ports to be enabled as an ingress rule in the EC2 SG, in a [xx,yy] format - Not the ELB'
     required: false
+  aws_ec2_user_data_file:
+    description: 'Relative path in the repo for a user provided script to be executed with Terraform EC2 Instance creation.'
+    required: false
   
   # AWS Route53 Domains abd Certificates
   aws_r53_enable:
@@ -352,6 +355,7 @@ runs:
         AWS_EC2_CREATE_KEYPAIR_SM: ${{ inputs.aws_ec2_create_keypair_sm }}
         AWS_EC2_INSTANCE_PUBLIC_IP: ${{ inputs.aws_ec2_instance_public_ip }}
         AWS_EC2_PORT_LIST: ${{ inputs.aws_ec2_port_list }}
+        AWS_EC2_USER_DATA_FILE: ${{ inputs.aws_ec2_user_data_file }}
 
         # AWS Route53 Domains abd Certificates
         AWS_R53_ENABLE: ${{ inputs.aws_r53_enable }}
