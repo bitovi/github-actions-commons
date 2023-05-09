@@ -126,6 +126,7 @@ if [[ $(alpha_only "$AWS_EC2_INSTANCE_CREATE") == true ]]; then
   aws_ec2_create_keypair_sm=$(generate_var aws_ec2_create_keypair_sm $AWS_EC2_CREATE_KEYPAIR_SM)
   aws_ec2_instance_public_ip=$(generate_var aws_ec2_instance_public_ip $AWS_EC2_INSTANCE_PUBLIC_IP)
   aws_ec2_port_list=$(generate_var aws_ec2_port_list $AWS_EC2_PORT_LIST)
+  aws_ec2_user_data_replace_on_change=$(generate_var aws_ec2_user_data_replace_on_change $AWS_EC2_USER_DATA_REPLACE_ON_CHANGE)
 fi
 
 
@@ -247,6 +248,7 @@ $aws_ec2_instance_root_vol_preserve
 $aws_ec2_security_group_name
 $aws_ec2_create_keypair_sm
 $aws_ec2_instance_public_ip
+$aws_ec2_user_data_replace_on_change
 
 #-- R53 --#
 $aws_r53_domain_name

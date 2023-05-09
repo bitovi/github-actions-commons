@@ -156,6 +156,9 @@ inputs:
   aws_ec2_user_data_file:
     description: 'Relative path in the repo for a user provided script to be executed with Terraform EC2 Instance creation.'
     required: false
+  aws_ec2_user_data_replace_on_change:
+    description: 'If user_data file changes, instance will stop and start. Hence public IP will change. Defaults to true.'
+    required: false
   
   # AWS Route53 Domains abd Certificates
   aws_r53_enable:

@@ -97,6 +97,12 @@ variable "aws_ec2_port_list" {
   default = ""
 }
 
+variable "aws_ec2_user_data_replace_on_change"  {
+  type        = bool
+  default     = true
+  description = "Forces destruction of EC2 instance"
+}
+
 # AWS Route53 Domains abd Certificates
 
 variable "aws_r53_domain_name" {
@@ -353,8 +359,6 @@ variable "availability_zone" {
 }
 
 # EC2 
-
-
 
 
 # POSTGRES
