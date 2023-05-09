@@ -76,15 +76,18 @@ resource "aws_instance" "server" {
   }
 }
 
-data "aws_instance" "server" {
-  instance_id = aws_instance.server.id
-}
+#data "aws_instance" "server" {
+#  depends_on  = [aws_instance.server]
+#  instance_id = aws_instance.server.id
+#}
 
 output "instance_public_dns" {
+  depends_on  = [aws_instance.server]
   description = "Public DNS address of the EC2 instance"
-  value       = var.aws_ec2_instance_public_ip ? data.aws_instance.server.public_dns : "EC2 Instance doesn't have public IP address"
+  value       = var.aws_ec2_instance_public_ip ? aws_instance.server.public_dns : "EC2 Instance doesn't have public IP address"
 }
 output "instance_public_ip" {
+  depends_on  = [aws_instance.server]
   description = "Public IP address of the EC2 instance"
-  value       = var.aws_ec2_instance_public_ip ? data.aws_instance.server.public_ip : "EC2 Instance doesn't have public IP address"
+  value       = var.aws_ec2_instance_public_ip ? aws_instance.server.public_ip : "EC2 Instance doesn't have public IP address"
 }
