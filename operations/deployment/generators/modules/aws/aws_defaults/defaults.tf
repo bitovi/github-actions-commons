@@ -4,6 +4,6 @@ resource "local_file" "aws_default_tags" {
 }
 
 resource "local_file" "aws_azs_sn_sg" {
-    filename = format("%s/%s", abspath(path.root), "bitovi_aws_azs_sn_sg.tf")
-    content = file(format("%s/%s", abspath(path.module), "aws_azs_sn_sg.tmpl"))
+    filename = format("%s/%s", abspath(path.root), "bitovi_aws_default_vpc_subnet_sg.tf")
+    content = file(format("%s/%s", abspath(path.module), "aws_default_vpc_subnet_sg.tmpl"))
 }

@@ -10,34 +10,23 @@ function alpha_only() {
 echo "::group::In Deploy"
 GITHUB_REPO_NAME=$(echo $GITHUB_REPOSITORY | sed 's/^.*\///')
 
+# Ensuring variable is set to true
+if [ "$(alpha_only $ANSIBLE_SKIP)" == "true" ]; then
+  ANSIBLE_SKIP="true"
+fi
+
 # Validating if Terraform is set to destroy, and avoid Ansible
 TERRAFORM_COMMAND=""
 if [ "$(alpha_only $TF_STACK_DESTROY)" == "true" ]; then
   TERRAFORM_COMMAND="destroy"
   ANSIBLE_SKIP="true"
-  if [ "$(alpha_only $AWS_EC2_INSTANCE_PROTECT)" == "true" ] && [ "$(alpha_only $AWS_EC2_INSTANCE_CREATE)" == "true" ]; then
-    echo "::error::You need to set aws_ec2_instance_protect to false before before destroying infrastructure."
-    exit 1
-  fi
-  if [ "$(alpha_only $AWS_POSTGRES_DATABASE_PROTECTION)" == "true" ]; then
-    echo "::error::Database protection enabled. Disable it before destroying."
-    exit 1
-  fi
-  if [ "$(alpha_only $AWS_EFS_VOLUME_PRESERVE)" == "true" ]; then
-    echo "::notice::There is no real EFS protection to enable. Just a flag we created to avoid unintentional deletion."
-    echo "::notice::Please backup your volume before deletion."
-    echo "::error::EFS volume protection enabled. Disable it before destroying."
-    exit 1
-  fi
-else 
-  if [ "$(alpha_only $AWS_EFS_VOLUME_PRESERVE)" == "true" ]; then
-    echo "::notice::There is no real EFS protection to enable from AWS."
-    echo "::notice::This is just a flag we created to avoid unintentional deletion on destruction."
-  fi
 fi
 
-if [ "$(alpha_only $ANSIBLE_SKIP)" == "true" ]; then
-  ANSIBLE_SKIP="true"
+# Adding global EFS flag
+if [[ $(alpha_only "$AWS_EFS_CREATE") == true ]] || [[ $(alpha_only "$AWS_EFS_CREATE_HA") == true ]] || [ -n "$AWS_EFS_MOUNT_ID" ]; then 
+  export AWS_EFS_ENABLE="true"
+else
+  export AWS_EFS_ENABLE="false"
 fi
 
 # Generate buckets identifiers and check them agains AWS Rules 
@@ -79,6 +68,15 @@ fi
 echo "Final BitOps config file"
 cat $GITHUB_ACTION_PATH/operations/deployment/bitops.config.yaml
 
+## Ensuring bucket get's destroyed only if everything is set to be destroyed
+if [[ $(alpha_only "$TF_STATE_BUCKET_DESTROY") == true ]] && ! [[ $(alpha_only "$TF_STACK_DESTROY") == true ]] ; then
+  if [[ $(alpha_only "$AWS_POSTGRES_ENABLE") == true ]] || 
+     [[ $(alpha_only "$AWS_EFS_ENABLE") == true ]] || 
+     [[ $(alpha_only "$AWS_EC2_INSTANCE_CREATE") == true ]]; then 
+    export TF_STATE_BUCKET_DESTROY="false"
+  fi
+fi
+
 # Generating GitHub Variables and Secrets files
 mkdir -p "${GITHUB_ACTION_PATH}/operations/deployment/env-files"
 echo "$ENV_GHV" > "${GITHUB_ACTION_PATH}/operations/deployment/env-files/ghv.env"
@@ -87,8 +85,9 @@ if [ -s "$GITHUB_WORKSPACE/$ENV_REPO" ] && [ -n "$ENV_REPO" ]; then
   cp "$GITHUB_WORKSPACE/$ENV_REPO" "${GITHUB_ACTION_PATH}/operations/deployment/env-files/repo.env"
 fi
 
-if [[ $SKIP_BITOPS_RUN == "true" ]]; then
-  exit 1
+if [[ $(alpha_only "$BITOPS_SKIP_RUN") == true ]]; then
+  echo "BitOps skip run is set to true. Reached end of the line."
+  exit 0
 fi
 
 echo "::group::BitOps Excecution"  
@@ -113,12 +112,5 @@ ${BITOPS_EXTRA_ENV_VARS} \
 bitovi/bitops:2.5.0
 BITOPS_RESULT=$?
 echo "::endgroup::"
-
-if [[ "$(alpha_only $BITOPS_CODE_ONLY)" == "true" ]]; then
-  echo "::group::Generating BitOps code archive"  
-  echo "Generating bitops.config.yaml based on your definitions:"
-  /bin/bash $GITHUB_ACTION_PATH/operations/_scripts/generate/generate_bitops_config_code_only.sh
-  echo "::endgroup::"
-fi
 
 exit $BITOPS_RESULT

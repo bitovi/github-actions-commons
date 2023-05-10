@@ -26,9 +26,6 @@ echo -en "
 AWS_INSTANCE_URL="$BITOPS_EC2_PUBLIC_URL"
 
 " > $BITOPS_ENVROOT/terraform/ec2.env
-    echo "Cat ec2.env"
-    cat  $BITOPS_ENVROOT/terraform/ec2.env
     fi
-
 fi
 echo "end terraform output for bo-out"

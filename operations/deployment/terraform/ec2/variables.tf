@@ -62,12 +62,6 @@ variable "aws_ec2_instance_type" {
   description = "Instance type for the EC2 instance"
 }
 
-variable "aws_ec2_instance_protect" {
-  type        = bool
-  description = "Set this to true to enable instance deletion protection"
-  default     = false
-}
-
 variable "aws_ec2_instance_root_vol_size" {
   type        = string
   default     = "8"
@@ -101,6 +95,12 @@ variable "aws_ec2_instance_public_ip" {
 variable "aws_ec2_port_list" {
   type = string
   default = ""
+}
+
+variable "aws_ec2_user_data_replace_on_change"  {
+  type        = bool
+  default     = true
+  description = "Forces destruction of EC2 instance"
 }
 
 # AWS Route53 Domains abd Certificates
@@ -359,8 +359,6 @@ variable "availability_zone" {
 }
 
 # EC2 
-
-
 
 
 # POSTGRES

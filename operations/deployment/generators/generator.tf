@@ -1,22 +1,30 @@
+# MUST Exist Modules
+
 module "aws_defauts" {
-  count  = local.aws_in_usage
   source = "./modules/aws/aws_defaults"
 }
 
-module "certificates" {
-  count  = var.aws_r53_enable_cert ? 1 : 0
-  source = "./modules/aws/certificates"
-}
-
 module "ec2" {
-  count  = var.aws_ec2_instance_create ? 1 : 0
   source = "./modules/aws/ec2"
   aws_ec2_ami_update = var.aws_ec2_ami_update
 }
 
+module "ec2_efs" {
+  source = "./modules/aws/ec2_efs"
+}
+
 module "efs" {
-  count  = local.enable_efs ? 1 : 0
   source = "./modules/aws/efs"
+}
+
+module "rds" {
+  source = "./modules/aws/rds"
+}
+
+# Optional modules
+module "certificates" {
+  count  = var.aws_r53_enable_cert ? 1 : 0
+  source = "./modules/aws/certificates"
 }
 
 module "elb" {
@@ -29,11 +37,6 @@ module "exports" {
   count  = local.aws_in_usage
   source = "./modules/aws/exports"
   env_aws_secret = var.env_aws_secret
-}
-
-module "rds" {
-  count  = var.aws_postgres_enable ? 1 : 0
-  source = "./modules/aws/rds"
 }
 
 module "route53" {

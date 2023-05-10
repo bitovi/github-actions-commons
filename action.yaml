@@ -9,6 +9,10 @@ inputs:
     description: 'Specifies if this action should checkout the code'
     required: false
     default: 'true'
+  bitops_skip_run:
+    description: 'Will run the setup of the BitOps environment and exit. Only usefull to debug startup scripts.'
+    required: false
+    default: 'false'
   bitops_code_only:
     description: 'Will run only the generation phase of BitOps, where the Terraform and Ansible code is built.'
     required: false
@@ -131,9 +135,6 @@ inputs:
   aws_ec2_instance_type: 
     description: 'The AWS Instance type'
     required: false
-  aws_ec2_instance_protect:
-    description: 'Set this to true to enable API instance deletion protection.'
-    required: false
   aws_ec2_instance_root_vol_size:
     description: 'Define the volume size (in GiB) for the root volume on the AWS Instance.'
     required: false
@@ -151,6 +152,12 @@ inputs:
     required: false
   aws_ec2_port_list:
     description: 'List of ports to be enabled as an ingress rule in the EC2 SG, in a [xx,yy] format - Not the ELB'
+    required: false
+  aws_ec2_user_data_file:
+    description: 'Relative path in the repo for a user provided script to be executed with Terraform EC2 Instance creation.'
+    required: false
+  aws_ec2_user_data_replace_on_change:
+    description: 'If user_data file changes, instance will stop and start. Hence public IP will change. Defaults to true.'
     required: false
   
   # AWS Route53 Domains abd Certificates
@@ -210,9 +217,6 @@ inputs:
     required: false
   aws_efs_enable_backup_policy:
     description: 'Toggle to indiciate whether the EFS should have a backup policy, default is false'
-    required: false
-  aws_efs_volume_preserve:
-    description: 'Set this to true to avoid deletion of EFS volume on termination'
     required: false
   aws_efs_zone_mapping:
     description: 'Information on Zone Mapping can be found in the [README.md](README.md#efs-zone-mapping)'
@@ -302,6 +306,7 @@ runs:
         BITOPS_FAST_FAIL: 'true'
 
         # Action main inputs
+        BITOPS_SKIP_RUN: ${{ inputs.bitops_skip_run }}
         BITOPS_CODE_ONLY: ${{ inputs.bitops_code_only }}
         BITOPS_EXTRA_ENV_VARS: ${{ inputs.bitops_extra_env_vars }}
         BITOPS_EXTRA_ENV_VARS_FILE: ${{ inputs.bitops_extra_env_vars_file }}
@@ -347,13 +352,14 @@ runs:
         AWS_EC2_AMI_UPDATE: ${{ inputs. aws_ec2_ami_update }}
         AWS_EC2_IAM_INSTANCE_PROFILE: ${{ inputs.aws_ec2_iam_instance_profile }}
         AWS_EC2_INSTANCE_TYPE: ${{ inputs.aws_ec2_instance_type }} 
-        AWS_EC2_INSTANCE_PROTECT: ${{ inputs.aws_ec2_instance_protect }}
         AWS_EC2_INSTANCE_ROOT_VOL_SIZE: ${{ inputs.aws_ec2_instance_root_vol_size }}
         AWS_EC2_INSTANCE_ROOT_VOL_PRESERVE: ${{ inputs.aws_ec2_instance_root_vol_preserve }}
         AWS_EC2_SECURITY_GROUP_NAME: ${{ inputs.aws_ec2_security_group_name }}
         AWS_EC2_CREATE_KEYPAIR_SM: ${{ inputs.aws_ec2_create_keypair_sm }}
         AWS_EC2_INSTANCE_PUBLIC_IP: ${{ inputs.aws_ec2_instance_public_ip }}
         AWS_EC2_PORT_LIST: ${{ inputs.aws_ec2_port_list }}
+        AWS_EC2_USER_DATA_FILE: ${{ inputs.aws_ec2_user_data_file }}
+        AWS_EC2_USER_DATA_REPLACE_ON_CHANGE: ${{ inputs.aws_ec2_user_data_replace_on_change }}
 
         # AWS Route53 Domains abd Certificates
         AWS_R53_ENABLE: ${{ inputs.aws_r53_enable }}
@@ -378,7 +384,6 @@ runs:
         AWS_EFS_CREATE_HA: ${{ inputs.aws_efs_create_ha }}
         AWS_EFS_CREATE_REPLICA: ${{ inputs.aws_efs_create_replica }}
         AWS_EFS_ENABLE_BACKUP_POLICY: ${{ inputs.aws_efs_enable_backup_policy }}
-        AWS_EFS_VOLUME_PRESERVE: ${{ inputs.aws_efs_volume_preserve }}
         AWS_EFS_ZONE_MAPPING: ${{ inputs.aws_efs_zone_mapping }}
         AWS_EFS_TRANSITION_TO_INACTIVE: ${{ inputs.aws_efs_transition_to_inactive }}
         AWS_EFS_REPLICATION_DESTINATION: ${{ inputs.aws_efs_replication_destination }}
@@ -423,6 +428,9 @@ runs:
       run: |
         echo "## BitOps Code generated. :tada: " >> $GITHUB_STEP_SUMMARY
         echo "Download the code artifact. Will be there for 5 days." >> $GITHUB_STEP_SUMMARY
+        echo "Keep in mind that for creation, EFS should be created before EC2."
+        echo "While destroying, EC2 should be destroyed before EFS. (Due to resources being in use)."
+        echo "You can change that in the bitops.config.yaml file, or regenerate the code with destroy set."
     - if: ${{ success() && steps.deploy.outputs.vm_url == '' && inputs.bitops_code_only == 'true' && inputs.bitops_code_store != 'true' }}
       name: Print code built
       shell: bash

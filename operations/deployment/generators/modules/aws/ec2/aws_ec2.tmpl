@@ -62,7 +62,8 @@ resource "aws_instance" "server" {
   key_name                    = aws_key_pair.aws_key.key_name
   monitoring                  = true
   iam_instance_profile        = aws_iam_instance_profile.ec2_profile.name
-  disable_api_termination     = var.aws_ec2_instance_protect
+  user_data_base64            = base64encode(try(file("./aws_ec2_incoming_user_data_script.sh"), ""))
+  user_data_replace_on_change = var.aws_ec2_user_data_replace_on_change
   root_block_device {
     volume_size           = tonumber(var.aws_ec2_instance_root_vol_size)
     delete_on_termination = var.aws_ec2_instance_root_vol_preserve ? false : true
@@ -75,18 +76,12 @@ resource "aws_instance" "server" {
   }
 }
 
-data "aws_instance" "server" {
-  filter {
-    name   = "dns-name"
-    values = [aws_instance.server.public_dns]
-  }
-}
-
 output "instance_public_dns" {
   description = "Public DNS address of the EC2 instance"
   value       = var.aws_ec2_instance_public_ip ? aws_instance.server.public_dns : "EC2 Instance doesn't have public IP address"
 }
+
 output "instance_public_ip" {
   description = "Public IP address of the EC2 instance"
-  value       = var.aws_ec2_instance_public_ip ? aws_instance.server.public_ip : "EC2 Instance doesn't have public IP address"
+  value       = aws_instance.server.public_ip
 }

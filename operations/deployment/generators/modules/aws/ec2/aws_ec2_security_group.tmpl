@@ -2,10 +2,6 @@ data "aws_security_group" "ec2_security_group" {
   id = aws_security_group.ec2_security_group.id
 }
 
-data "aws_vpc" "default" {
-  default = true
-}
-
 resource "aws_security_group" "ec2_security_group" {
   name        = var.aws_ec2_security_group_name != "" ? var.aws_ec2_security_group_name : "SG for ${var.aws_resource_identifier} - EC2"
   description = "SG for ${var.aws_resource_identifier} - EC2"

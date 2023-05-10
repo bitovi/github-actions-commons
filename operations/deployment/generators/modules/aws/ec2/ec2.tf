@@ -1,3 +1,7 @@
+resource "local_file" "aws_ec2_azs_efs" {
+    filename = format("%s/%s", abspath(path.root), "bitovi_aws_ec2_azs_efs.tf")
+    content = file(format("%s/%s", abspath(path.module), "aws_ec2_azs_efs.tmpl"))
+}
 resource "local_file" "aws_ec2_iam_profile" {
     filename = format("%s/%s", abspath(path.root), "bitovi_aws_ec2_iam_profile.tf")
     content = file(format("%s/%s", abspath(path.module), "aws_ec2_iam_profile.tmpl"))
@@ -14,11 +18,6 @@ resource "local_file" "aws_ec2" {
       lifecycle_content = var.aws_ec2_ami_update ? "" : "ami"
     })
 }
-
-#resource "local_file" "aws_dotenv_ec2" {
-#    filename = format("%s/%s", abspath(path.root), "bitovi_aws_dotenv_ec2.tf")
-#    content  = file(format("%s/%s", abspath(path.module), "aws_dotenv_ec2.tmpl"))
-#}
 
 variable "aws_ec2_ami_update" {
   type        = bool
