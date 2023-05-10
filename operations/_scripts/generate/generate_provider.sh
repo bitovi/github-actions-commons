@@ -5,7 +5,7 @@ set -e
 echo "In generate_provider.sh"
 
 # Will print bitovi_provider.tf with the Terraform state file and path based on the first parameter. 
-function generate_provider () {
+function generate_provider_aws () {
 echo "
 terraform {
   required_providers {
@@ -39,8 +39,8 @@ provider \"aws\" {
 " > "${GITHUB_ACTION_PATH}/operations/deployment/terraform/$1/bitovi_provider.tf"
 }
 
-generate_provider rds
-generate_provider efs
-generate_provider ec2
+generate_provider_aws rds
+generate_provider_aws efs
+generate_provider_aws ec2
 
 echo "Done with generate_provider.sh"
