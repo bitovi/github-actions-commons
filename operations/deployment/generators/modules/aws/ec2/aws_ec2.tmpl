@@ -96,11 +96,11 @@ output "instance_public_dns" {
 
 resource "null_resource" "delay_output_evaluation" {
   triggers = {
-    instance_id = aws_instance.server
+    instance_id = aws_instance.server.id
   }
   lifecycle {
     replace_triggered_by = [
-      aws_instance.server
+      aws_instance.server.id
     ]
   }
 
