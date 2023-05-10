@@ -359,6 +359,7 @@ runs:
         AWS_EC2_INSTANCE_PUBLIC_IP: ${{ inputs.aws_ec2_instance_public_ip }}
         AWS_EC2_PORT_LIST: ${{ inputs.aws_ec2_port_list }}
         AWS_EC2_USER_DATA_FILE: ${{ inputs.aws_ec2_user_data_file }}
+        AWS_EC2_USER_DATA_REPLACE_ON_CHANGE: ${{ inputs.aws_ec2_user_data_replace_on_change }}
 
         # AWS Route53 Domains abd Certificates
         AWS_R53_ENABLE: ${{ inputs.aws_r53_enable }}

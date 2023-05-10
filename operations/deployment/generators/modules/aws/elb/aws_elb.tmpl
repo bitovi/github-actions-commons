@@ -70,7 +70,6 @@ resource "aws_elb" "${elb_resource_string}" {
   tags = {
     Name = "$${var.aws_resource_identifier_supershort}"
   }
-  depends_on  = [aws_instance.server]
 }
 
 output "lb_public_dns" {
