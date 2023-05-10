@@ -98,6 +98,11 @@ resource "null_resource" "delay_output_evaluation" {
   triggers = {
     instance_id = aws_instance.server.public_ip
   }
+  lifecycle {
+    replace_triggered_by = [
+      aws_instance.server.public_ip
+    ]
+  }
 
   #provisioner "local-exec" {
   #  command = "sleep 10"  # Adjust the sleep duration as needed
