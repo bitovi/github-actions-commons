@@ -148,16 +148,3 @@ locals {
   elb_listen_protocol     = length(local.aws_elb_listen_protocol) < local.aws_ports_ammount ? ( local.elb_ssl_available ? 
     [ for _ in range(local.aws_ports_ammount) : ssl ] : [ for _ in range(local.aws_ports_ammount) : tcp] ) : local.aws_elb_listen_protocol
 }
-
-
-###
-###        # AWS EC2
-###        AWS_EC2_PORT_LIST: ${{ inputs.aws_ec2_port_list }}
-###        # AWS ELB
-###        AWS_ELB_CREATE: ${{ inputs.aws_elb_create }}
-###        AWS_ELB_APP_PORT: ${{ inputs.aws_elb_app_port }}
-###        AWS_ELB_APP_PROTOCOL: ${{ inputs.aws_elb_app_protocol }}
-###        AWS_ELB_LISTEN_PORT: ${{ inputs.aws_elb_listen_port }}
-###        AWS_ELB_LISTEN_PROTOCOL: ${{ inputs.aws_elb_listen_protocol }}
-###        AWS_ELB_HEALTHCHECK: ${{ inputs.aws_elb_healthcheck }}
-###                
