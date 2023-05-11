@@ -375,6 +375,7 @@ variable "lb_access_bucket_name" {
 variable "aws_eks_foo" {
   type        = string
   description = "example input var"
+  default     = "foo"
 }
 
 # Need an empty line to append incoming variables. 

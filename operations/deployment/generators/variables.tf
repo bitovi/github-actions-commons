@@ -55,3 +55,10 @@ variable "docker_install" {
   type        = bool
   default     = "false"
 }
+
+# EKS
+variable "aws_eks_foo" {
+  type        = string
+  description = "example input var"
+  default     = "foo"
+}
