@@ -42,5 +42,6 @@ provider \"aws\" {
 generate_provider_aws rds
 generate_provider_aws efs
 generate_provider_aws ec2
+generate_provider_aws eks
 
 echo "Done with generate_provider.sh"

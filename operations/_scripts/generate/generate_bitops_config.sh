@@ -54,6 +54,7 @@ targets_attribute="$targets_attribute $targets"
 create_bitops_terraform_config rds $AWS_POSTGRES_ENABLE
 create_bitops_terraform_config efs $AWS_EFS_ENABLE
 create_bitops_terraform_config ec2 $AWS_EC2_INSTANCE_CREATE targets
+create_bitops_terraform_config eks $AWS_EKS_CREATE
 
 #Will add the user_data file into the EC2 Terraform folder
 
@@ -98,12 +99,16 @@ bitops:
       plugin: terraform
     terraform/efs:
       plugin: terraform
+    terraform/eks:
+      plugin: terraform
     terraform/ec2:
       plugin: terraform
 " >> $BITOPS_CONFIG_TEMP
   else
     echo -en "
     terraform/ec2:
+      plugin: terraform
+    terraform/eks:
       plugin: terraform
     terraform/rds:
       plugin: terraform

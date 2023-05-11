@@ -129,7 +129,6 @@ if [[ $(alpha_only "$AWS_EC2_INSTANCE_CREATE") == true ]]; then
   aws_ec2_user_data_replace_on_change=$(generate_var aws_ec2_user_data_replace_on_change $AWS_EC2_USER_DATA_REPLACE_ON_CHANGE)
 fi
 
-
 #-- AWS Route53 and certs --#
 if [[ $(alpha_only "$AWS_R53_ENABLE") == true ]]; then
   aws_r53_enable=$(generate_var aws_r53_enable $AWS_R53_ENABLE)
@@ -184,6 +183,11 @@ if [[ $(alpha_only "$AWS_POSTGRES_ENABLE") == true ]]; then
   # aws_postgres_database_final_snapshot=$(generate_var aws_postgres_database_final_snapshot $AWS_POSTGRES_DATABASE_FINAL_SNAPSHOT ) - Special case
 fi
 
+#-- EKS Cluster --#
+if [[ $(alpha_only "$AWS_EKS_CREATE") == true ]]; then
+  aws_eks_foo=$(generate_var aws_eks_foo $AWS_EKS_FOO)
+  
+fi
 
 #-- ANSIBLE --#
 if [[ "$(alpha_only $ANSIBLE_SKIP)" == "true" ]]; then
@@ -291,6 +295,9 @@ $aws_postgres_database_name
 $aws_postgres_database_port
 $aws_postgres_database_protection
 $aws_postgres_database_final_snapshot
+
+#-- EKS --#
+$aws_eks_foo
 
 $docker_efs_mount_target
 

@@ -73,6 +73,7 @@ if [[ $(alpha_only "$TF_STATE_BUCKET_DESTROY") == true ]] && ! [[ $(alpha_only "
   if [[ $(alpha_only "$AWS_POSTGRES_ENABLE") == true ]] || 
      [[ $(alpha_only "$AWS_EFS_ENABLE") == true ]] || 
      [[ $(alpha_only "$AWS_EC2_INSTANCE_CREATE") == true ]]; then 
+     [[ $(alpha_only "$AWS_EKS_CREATE") == true ]]; then 
     export TF_STATE_BUCKET_DESTROY="false"
   fi
 fi
