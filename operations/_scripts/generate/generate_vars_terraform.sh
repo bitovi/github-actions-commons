@@ -310,8 +310,10 @@ $app_install_root
 
 " > "${GITHUB_ACTION_PATH}/operations/deployment/terraform/ec2/terraform.tfvars"
 
+# TODO: templatize this
 cp  "${GITHUB_ACTION_PATH}/operations/deployment/terraform/ec2/terraform.tfvars"  "${GITHUB_ACTION_PATH}/operations/deployment/terraform/rds/terraform.tfvars"
 cp  "${GITHUB_ACTION_PATH}/operations/deployment/terraform/ec2/terraform.tfvars"  "${GITHUB_ACTION_PATH}/operations/deployment/terraform/efs/terraform.tfvars"
+cp  "${GITHUB_ACTION_PATH}/operations/deployment/terraform/ec2/terraform.tfvars"  "${GITHUB_ACTION_PATH}/operations/deployment/terraform/eks/terraform.tfvars"
 # -------------------------------------------------- #
 
 echo "Done with generate_vars_terraform.sh"
