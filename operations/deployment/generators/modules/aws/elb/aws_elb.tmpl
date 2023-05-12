@@ -61,8 +61,8 @@ resource "aws_security_group" "elb_security_group" {
 resource "aws_security_group_rule" "incoming_elb_ports" {
   count       = local.aws_ports_ammount
   type        = "ingress"
-  from_port   = local.aws_elb_listen_ports[count.index]
-  to_port     = local.aws_elb_listen_ports[count.index]
+  from_port   = local.aws_elb_listen_port[count.index]
+  to_port     = local.aws_elb_listen_port[count.index]
   protocol    = "tcp"
   cidr_blocks = ["0.0.0.0/0"]
   security_group_id = aws_security_group.elb_security_group.id
@@ -88,7 +88,7 @@ resource "aws_elb" "${tmpl_elb_resource_string}" {
     content {
       instance_port      = local.aws_elb_app_port[listener.key]
       instance_protocol  = local.elb_app_protocol[listener.key]
-      lb_port            = local.aws_elb_listen_ports[listener.key]
+      lb_port            = local.aws_elb_listen_port[listener.key]
       lb_protocol        = local.elb_listen_protocol[listener.key]
       ssl_certificate_id = local.aws_elb_arn
     }
