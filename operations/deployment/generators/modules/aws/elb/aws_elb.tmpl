@@ -59,7 +59,7 @@ resource "aws_security_group" "elb_security_group" {
 
 # Adding rules to accept incoming connections to the ELB
 resource "aws_security_group_rule" "incoming_elb_ports" {
-  count       = length(local.aws_ports_ammount)
+  count       = local.aws_ports_ammount
   type        = "ingress"
   from_port   = local.elb_listen_ports[count.index]
   to_port     = local.elb_listen_ports[count.index]
@@ -143,8 +143,8 @@ locals {
   #elb_listen_protocol     = length(local.aws_elb_listen_protocol) == 0 ? ( local.elb_ssl_available ? [ssl] : [tcp] ) : local.aws_elb_listen_protocol
 
   # If no protocols are defined for the app, set up the ammount of ports to be tcp.  
-  elb_app_protocol        = length(local.aws_elb_app_protocol) < local.aws_ports_ammount ? [ for _ in range(local.aws_ports_ammount) : tcp ] : local.aws_elb_app_protocol
+  elb_app_protocol        = length(local.aws_elb_app_protocol) < local.aws_ports_ammount ? [ for _ in range(local.aws_ports_ammount) : "tcp" ] : local.aws_elb_app_protocol
   # Same but for listen protocols 
   elb_listen_protocol     = length(local.aws_elb_listen_protocol) < local.aws_ports_ammount ? ( local.elb_ssl_available ? 
-    [ for _ in range(local.aws_ports_ammount) : ssl ] : [ for _ in range(local.aws_ports_ammount) : tcp] ) : local.aws_elb_listen_protocol
+    [ for _ in range(local.aws_ports_ammount) : "ssl" ] : [ for _ in range(local.aws_ports_ammount) : "tcp" ] ) : local.aws_elb_listen_protocol
 }
