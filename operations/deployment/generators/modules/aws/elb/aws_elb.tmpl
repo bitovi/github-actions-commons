@@ -134,7 +134,7 @@ locals {
 }
 
 locals {
-  # Transorm CSV values into arrays. ( Now variables will be called local.xx instead of var.xx )
+  # Transform CSV values into arrays. ( Now variables will be called local.xx instead of var.xx )
   aws_elb_listen_port     = var.aws_elb_listen_port     != "" ? [for n in split(",", var.aws_elb_listen_port)     : tonumber(n)] : []
   aws_elb_listen_protocol = var.aws_elb_listen_protocol != "" ? [for n in split(",", var.aws_elb_listen_protocol) : (n)] : []
   aws_elb_app_port        = var.aws_elb_app_port        != "" ? [for n in split(",", var.aws_elb_app_port)        : tonumber(n)] : []
@@ -160,4 +160,49 @@ locals {
   # Same but for listen protocols 
   elb_listen_protocol     = length(local.aws_elb_listen_protocol) < local.aws_ports_ammount ? ( local.elb_ssl_available ? 
     [ for _ in range(local.aws_ports_ammount) : "ssl" ] : [ for _ in range(local.aws_ports_ammount) : "tcp" ] ) : local.aws_elb_listen_protocol
+}
+
+output "aws_elb_listen_port" {
+  description = "Public DNS address of the LB"
+  value       = local.aws_elb_listen_port
+}
+output "aws_elb_listen_protocol" {
+  description = "Public DNS address of the LB"
+  value       = local.aws_elb_listen_protocol
+}
+output "aws_elb_app_port" {
+  description = "Public DNS address of the LB"
+  value       = local.aws_elb_app_port
+}
+output "aws_elb_app_protocol" {
+  description = "Public DNS address of the LB"
+  value       = local.aws_elb_app_protocol
+}
+output "aws_ports_ammount" {
+  description = "Public DNS address of the LB"
+  value       = local.aws_ports_ammount
+}
+output "listener_for_each" {
+  description = "Public DNS address of the LB"
+  value       = local.listener_for_each
+}
+output "aws_protos_ammount" {
+  description = "Public DNS address of the LB"
+  value       = local.aws_protos_ammount
+}
+output "elb_ssl_available" {
+  description = "Public DNS address of the LB"
+  value       = local.elb_ssl_available
+}
+output "elb_listen_ports" {
+  description = "Public DNS address of the LB"
+  value       = local.elb_listen_ports
+}
+output "elb_app_protocol" {
+  description = "Public DNS address of the LB"
+  value       = local.elb_app_protocol
+}
+output "elb_listen_protocol" {
+  description = "Public DNS address of the LB"
+  value       = local.elb_listen_protocol
 }
