@@ -136,9 +136,9 @@ locals {
 locals {
   # Transorm CSV values into arrays. ( Now variables will be called local.xx instead of var.xx )
   aws_elb_listen_port     = var.aws_elb_listen_port     != "" ? [for n in split(",", var.aws_elb_listen_port)     : tonumber(n)] : []
-  aws_elb_listen_protocol = var.aws_elb_listen_protocol != "" ? [for n in split(",", var.aws_elb_listen_protocol) : tonumber(n)] : []
+  aws_elb_listen_protocol = var.aws_elb_listen_protocol != "" ? [for n in split(",", var.aws_elb_listen_protocol) : (n)] : []
   aws_elb_app_port        = var.aws_elb_app_port        != "" ? [for n in split(",", var.aws_elb_app_port)        : tonumber(n)] : []
-  aws_elb_app_protocol    = var.aws_elb_app_protocol    != "" ? [for n in split(",", var.aws_elb_app_protocol)    : tonumber(n)] : []
+  aws_elb_app_protocol    = var.aws_elb_app_protocol    != "" ? [for n in split(",", var.aws_elb_app_protocol)    : (n)] : []
   
   # If the ammount of ELB ports equals 0, will create one. If not, will store the lowest array length. (aws_elb_app_port will be at least 3000)
   aws_ports_ammount       = length(local.aws_elb_listen_port) == 0 ? 1 : (
