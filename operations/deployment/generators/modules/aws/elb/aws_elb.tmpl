@@ -144,7 +144,7 @@ locals {
   aws_ports_ammount       = length(local.aws_elb_listen_port) == 0 ? 1 : (
     length(local.aws_elb_listen_port) < length(local.aws_elb_app_port) ? length(local.aws_elb_listen_port) : length(local.aws_elb_app_port)
   )
-  listener_for_each       = length(local.aws_elb_listen_port) < length(local.aws_elb_app_port) ? local.aws_elb_listen_port : local.aws_elb_app_port
+  listener_for_each       = length(local.elb_listen_ports) < length(local.aws_elb_app_port) ? local.elb_listen_ports : local.aws_elb_app_port
   # Check protocols ammounts
   aws_protos_ammount      = length(local.aws_elb_listen_protocol) == 0 ? 1 : (
     length(local.aws_elb_listen_protocol) < length(local.aws_elb_app_protocol) ? length(local.aws_elb_listen_protocol) : length(local.aws_elb_app_protocol)
