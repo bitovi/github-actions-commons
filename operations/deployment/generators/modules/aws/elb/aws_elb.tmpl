@@ -82,15 +82,27 @@ resource "aws_elb" "${tmpl_elb_resource_string}" {
     interval = 60
   }
 
-  listener {
-    count              = local.aws_ports_ammount
-    #instance_port      = var.aws_elb_app_port
-    instance_port      = local.aws_elb_app_port[count.index]
-    instance_protocol  = local.elb_app_protocol[count.index]
-    #lb_port            = var.aws_elb_listen_port != "" ? var.aws_elb_listen_port : local.aws_elb_arn != "" ? 443 : 80
-    lb_port            = local.elb_listen_ports[count.index]
-    lb_protocol        = local.elb_listen_protocol[count.index]
-    ssl_certificate_id = local.aws_elb_arn
+  #listener {
+  #  count              = local.aws_ports_ammount
+  #  #instance_port      = var.aws_elb_app_port
+  #  instance_port      = local.aws_elb_app_port[count.index]
+  #  instance_protocol  = local.elb_app_protocol[count.index]
+  #  #lb_port            = var.aws_elb_listen_port != "" ? var.aws_elb_listen_port : local.aws_elb_arn != "" ? 443 : 80
+  #  lb_port            = local.elb_listen_ports[count.index]
+  #  lb_protocol        = local.elb_listen_protocol[count.index]
+  #  ssl_certificate_id = local.aws_elb_arn
+  #}
+
+  dynamic "listener" {
+    for_each = local.listener_for_each 
+
+    content {
+      instance_port      = local.aws_elb_app_port[listener.key]
+      instance_protocol  = local.elb_app_protocol[listener.key]
+      lb_port            = local.elb_listen_ports[listener.key]
+      lb_protocol        = local.elb_listen_protocol[listener.key]
+      ssl_certificate_id = local.aws_elb_arn
+    }
   }
 
   health_check {
@@ -132,6 +144,7 @@ locals {
   aws_ports_ammount       = length(local.aws_elb_listen_port) == 0 ? 1 : (
     length(local.aws_elb_listen_port) < length(local.aws_elb_app_port) ? length(local.aws_elb_listen_port) : length(local.aws_elb_app_port)
   )
+  listener_for_each       = length(local.aws_elb_listen_port) < length(local.aws_elb_app_port) ? local.aws_elb_listen_port : local.aws_elb_app_port
   # Check protocols ammounts
   aws_protos_ammount      = length(local.aws_elb_listen_protocol) == 0 ? 1 : (
     length(local.aws_elb_listen_protocol) < length(local.aws_elb_app_protocol) ? length(local.aws_elb_listen_protocol) : length(local.aws_elb_app_protocol)
