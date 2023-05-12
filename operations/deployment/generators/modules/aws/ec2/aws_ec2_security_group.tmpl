@@ -40,6 +40,5 @@ resource "aws_security_group_rule" "incoming_ports" {
 
 locals {
   aws_ec2_port_list = var.aws_ec2_port_list != "" ? [for n in split(",", var.aws_ec2_port_list) : tonumber(n)] : []
-  aws_elb_app_port = var.aws_elb_app_port != "" ? [for n in split(",", var.aws_elb_app_port) : tonumber(n)] : []
   incoming_ports = length(local.aws_ec2_port_list) != 0 ? local.aws_ec2_port_list : local.aws_elb_app_port
 }
