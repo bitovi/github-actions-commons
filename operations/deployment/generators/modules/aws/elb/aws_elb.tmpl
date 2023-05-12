@@ -82,24 +82,13 @@ resource "aws_elb" "${tmpl_elb_resource_string}" {
     interval = 60
   }
 
-  #listener {
-  #  count              = local.aws_ports_ammount
-  #  #instance_port      = var.aws_elb_app_port
-  #  instance_port      = local.aws_elb_app_port[count.index]
-  #  instance_protocol  = local.elb_app_protocol[count.index]
-  #  #lb_port            = var.aws_elb_listen_port != "" ? var.aws_elb_listen_port : local.aws_elb_arn != "" ? 443 : 80
-  #  lb_port            = local.elb_listen_ports[count.index]
-  #  lb_protocol        = local.elb_listen_protocol[count.index]
-  #  ssl_certificate_id = local.aws_elb_arn
-  #}
-
   dynamic "listener" {
     for_each = local.listener_for_each 
 
     content {
       instance_port      = local.aws_elb_app_port[listener.key]
       instance_protocol  = local.elb_app_protocol[listener.key]
-      lb_port            = local.elb_listen_ports[listener.key]
+      lb_port            = local.aws_elb_listen_ports[listener.key]
       lb_protocol        = local.elb_listen_protocol[listener.key]
       ssl_certificate_id = local.aws_elb_arn
     }
@@ -130,79 +119,33 @@ output "lb_public_dns" {
 }
 
 locals {
-  aws_elb_arn = "${tmpl_cert_string}"
+
 }
 
+# The main idea of the next block is to get what should be opened, mapped, and with which protocol.
 locals {
-  # Transform CSV values into arrays. ( Now variables will be called local.xx instead of var.xx )
-  aws_elb_listen_port     = var.aws_elb_listen_port     != "" ? [for n in split(",", var.aws_elb_listen_port)     : tonumber(n)] : []
-  aws_elb_listen_protocol = var.aws_elb_listen_protocol != "" ? [for n in split(",", var.aws_elb_listen_protocol) : (n)] : []
-  aws_elb_app_port        = var.aws_elb_app_port        != "" ? [for n in split(",", var.aws_elb_app_port)        : tonumber(n)] : []
-  aws_elb_app_protocol    = var.aws_elb_app_protocol    != "" ? [for n in split(",", var.aws_elb_app_protocol)    : (n)] : []
-  
-  # If the ammount of ELB ports equals 0, will create one. If not, will store the lowest array length. (aws_elb_app_port will be at least 3000)
-  aws_ports_ammount       = length(local.aws_elb_listen_port) == 0 ? 1 : (
-    length(local.aws_elb_listen_port) < length(local.aws_elb_app_port) ? length(local.aws_elb_listen_port) : length(local.aws_elb_app_port)
-  )
-  listener_for_each       = length(local.elb_listen_ports) < length(local.aws_elb_app_port) ? local.elb_listen_ports : local.aws_elb_app_port
-  # Check protocols ammounts
-  aws_protos_ammount      = length(local.aws_elb_listen_protocol) == 0 ? 1 : (
-    length(local.aws_elb_listen_protocol) < length(local.aws_elb_app_protocol) ? length(local.aws_elb_listen_protocol) : length(local.aws_elb_app_protocol)
-  )
+  aws_elb_arn = "${tmpl_cert_string}"
+
   # Check if there is a cert available
   elb_ssl_available       = local.aws_elb_arn != "" ? true : false
-  # If no ports are defined for the ELB, define if 443/SSL or 80/TCP if cert is or not available.
-  elb_listen_ports        = length(local.aws_elb_listen_port)     == 0 ? ( local.elb_ssl_available ? [443] : [80] ) : local.aws_elb_listen_port
-  #elb_listen_protocol     = length(local.aws_elb_listen_protocol) == 0 ? ( local.elb_ssl_available ? [ssl] : [tcp] ) : local.aws_elb_listen_protocol
+
+  # Transform CSV values into arrays. ( Now variables will be called local.xx instead of var.xx )
+  aws_elb_listen_port     = var.aws_elb_listen_port     != "" ? [for n in split(",", var.aws_elb_listen_port)     : tonumber(n)] : ( local.elb_ssl_available ? [443] : [80] )
+  aws_elb_listen_protocol = var.aws_elb_listen_protocol != "" ? [for n in split(",", var.aws_elb_listen_protocol) : (n)] : ( local.elb_ssl_available ? [ssl] : [tcp] )
+  aws_elb_app_port        = var.aws_elb_app_port        != "" ? [for n in split(",", var.aws_elb_app_port)        : tonumber(n)] : []
+  aws_elb_app_protocol    = var.aws_elb_app_protocol    != "" ? [for n in split(",", var.aws_elb_app_protocol)    : (n)] : []
+
+  # Store the lowest array length. (aws_elb_app_port will be at least 3000)
+  aws_ports_ammount       = length(local.aws_elb_listen_port) < length(local.aws_elb_app_port) ? length(local.aws_elb_listen_port) : length(local.aws_elb_app_port)
+
+  # Store the shortest array, and use that to generate ELB listeners. 
+  listener_for_each       = length(local.aws_elb_listen_port) < length(local.aws_elb_app_port) ? local.aws_elb_listen_port : local.aws_elb_app_port
+  # Check protocols ammounts
+  aws_protos_ammount      = length(local.aws_elb_listen_protocol) < length(local.aws_elb_app_protocol) ? length(local.aws_elb_listen_protocol) : length(local.aws_elb_app_protocol)
 
   # If no protocols are defined for the app, set up the ammount of ports to be tcp.  
   elb_app_protocol        = length(local.aws_elb_app_protocol) < local.aws_ports_ammount ? [ for _ in range(local.aws_ports_ammount) : "tcp" ] : local.aws_elb_app_protocol
-  # Same but for listen protocols 
+  # Same but for listen protocols, and if a cert is available, make them SSL
   elb_listen_protocol     = length(local.aws_elb_listen_protocol) < local.aws_ports_ammount ? ( local.elb_ssl_available ? 
     [ for _ in range(local.aws_ports_ammount) : "ssl" ] : [ for _ in range(local.aws_ports_ammount) : "tcp" ] ) : local.aws_elb_listen_protocol
-}
-
-output "aws_elb_listen_port" {
-  description = "aws_elb_listen_port"
-  value       = local.aws_elb_listen_port
-}
-output "aws_elb_listen_protocol" {
-  description = "aws_elb_listen_protocol"
-  value       = local.aws_elb_listen_protocol
-}
-output "aws_elb_app_port" {
-  description = "aws_elb_app_port"
-  value       = local.aws_elb_app_port
-}
-output "aws_elb_app_protocol" {
-  description = "aws_elb_app_protocol"
-  value       = local.aws_elb_app_protocol
-}
-output "aws_ports_ammount" {
-  description = "aws_ports_ammount"
-  value       = local.aws_ports_ammount
-}
-output "listener_for_each" {
-  description = "listener_for_each"
-  value       = local.listener_for_each
-}
-output "aws_protos_ammount" {
-  description = "aws_protos_ammount"
-  value       = local.aws_protos_ammount
-}
-output "elb_ssl_available" {
-  description = "elb_ssl_available"
-  value       = local.elb_ssl_available
-}
-output "elb_listen_ports" {
-  description = "elb_listen_ports"
-  value       = local.elb_listen_ports
-}
-output "elb_app_protocol" {
-  description = "elb_app_protocol"
-  value       = local.elb_app_protocol
-}
-output "elb_listen_protocol" {
-  description = "elb_listen_protocol"
-  value       = local.elb_listen_protocol
 }
