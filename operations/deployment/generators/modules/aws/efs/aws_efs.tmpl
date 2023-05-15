@@ -27,7 +27,7 @@ resource "aws_efs_file_system" "efs" {
 
 resource "aws_security_group" "efs_security_group" {
   count  = local.create_efs ? 1 : 0
-  name   = "SG for ${var.aws_resource_identifier} - EFS"
+  name   = var.aws_efs_security_group_name != "" ? var.aws_efs_security_group_name : "SG for ${var.aws_resource_identifier} - EFS"
   description = "SG for ${var.aws_resource_identifier} - EFS"
   vpc_id      = data.aws_vpc.default.id
   egress {

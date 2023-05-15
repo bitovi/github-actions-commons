@@ -150,7 +150,11 @@ variable "aws_r53_create_sub_cert" {
 
 
 # AWS ELB
-
+variable "aws_elb_security_group_name" {
+  type        = string
+  default     = ""
+  description = "Name of the security group to use"
+}
 
 variable "aws_elb_app_port" {
   type        = string
@@ -178,8 +182,8 @@ variable "aws_elb_listen_protocol" {
 
 variable "aws_elb_healthcheck" {
   type        = string
-  default     = ""
-  description = "Load balancer health check string. Defaults to HTTP:aws_elb_app_port"
+  default     = "TCP:22"
+  description = "Load balancer health check string. Defaults to TCP:22"
 }
 
 # AWS EFS
@@ -194,6 +198,24 @@ variable "aws_efs_create_ha" {
   type        = bool
   description = "Toggle to indicate whether the EFS resource should be highly available (target mounts in all available zones within region)."
   default     = false
+}
+
+variable "aws_efs_mount_id" {
+  type        = string
+  description = "ID of existing EFS"
+  default     = null
+}
+
+variable "aws_efs_mount_security_group_id" {
+  type        = string
+  description = "ID of the primary security group used by the existing EFS"
+  default     = null
+}
+
+variable "aws_efs_security_group_name" {
+  type        = string
+  default     = ""
+  description = "Name of the security group to use"
 }
 
 variable "aws_efs_create_replica" {
@@ -228,18 +250,6 @@ variable "aws_efs_replication_destination" {
   type        = string
   default     = null
   description = "AWS Region to target for replication"
-}
-
-variable "aws_efs_mount_id" {
-  type        = string
-  description = "ID of existing EFS"
-  default     = null
-}
-
-variable "aws_efs_mount_security_group_id" {
-  type        = string
-  description = "ID of the primary security group used by the existing EFS"
-  default     = null
 }
 
 variable "aws_efs_mount_target" {

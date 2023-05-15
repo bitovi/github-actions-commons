@@ -15,7 +15,7 @@ resource "local_file" "aws_ec2_security_group" {
 resource "local_file" "aws_ec2" {
     filename = format("%s/%s", abspath(path.root), "bitovi_aws_ec2.tf")
     content  = templatefile(format("%s/%s", abspath(path.module), "aws_ec2.tmpl"), {
-      lifecycle_content = var.aws_ec2_ami_update ? "" : "ami"
+      tmpl_lifecycle_content = var.aws_ec2_ami_update ? "" : "ami"
     })
 }
 

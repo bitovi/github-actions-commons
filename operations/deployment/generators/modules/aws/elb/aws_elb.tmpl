@@ -32,9 +32,46 @@ resource "aws_s3_bucket_policy" "allow_access_from_another_account" {
 POLICY
 }
 
-resource "aws_elb" "${elb_resource_string}" {
+# Adding an allow all from ELB to EC2
+resource "aws_security_group_rule" "incoming_elb" {
+  type                     = "ingress"
+  from_port                = 0
+  to_port                  = 0
+  protocol                 = -1
+  source_security_group_id = aws_security_group.elb_security_group.id
+  security_group_id        = aws_security_group.ec2_security_group.id
+}
+
+# Adding ELB security group with full out
+resource "aws_security_group" "elb_security_group" {
+  name        = var.aws_elb_security_group_name != "" ? var.aws_elb_security_group_name : "SG for $${var.aws_resource_identifier} - ELB"
+  description = "SG for $${var.aws_resource_identifier} - ELB"
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+  tags = {
+    Name = "$${var.aws_resource_identifier}-elb"
+  }
+}
+
+# Adding rules to accept incoming connections to the ELB
+resource "aws_security_group_rule" "incoming_elb_ports" {
+  count       = local.aws_ports_ammount
+  type        = "ingress"
+  from_port   = local.aws_elb_listen_port[count.index]
+  to_port     = local.aws_elb_listen_port[count.index]
+  protocol    = "tcp"
+  cidr_blocks = ["0.0.0.0/0"]
+  security_group_id = aws_security_group.elb_security_group.id
+}
+
+# Creating ELB with port mappings
+resource "aws_elb" "${tmpl_elb_resource_string}" {
   name               = var.aws_resource_identifier_supershort
-  security_groups    = [aws_security_group.ec2_security_group.id]
+  security_groups    = [aws_security_group.elb_security_group.id]
   availability_zones = [aws_instance.server.availability_zone]
   # TODO - ADD VPC Handling
   # availability_zones = var.create_vpc == "true" ? null : [aws_instance.server.availability_zone]
@@ -45,19 +82,23 @@ resource "aws_elb" "${elb_resource_string}" {
     interval = 60
   }
 
-  listener {
-    instance_port     = var.aws_elb_app_port
-    instance_protocol = var.aws_elb_app_protocol
-    lb_port            = var.aws_elb_listen_port != "" ? var.aws_elb_listen_port : local.aws_elb_arn != "" ? 443 : 80
-    lb_protocol        = var.aws_elb_listen_protocol != "" ? var.aws_elb_listen_protocol : local.aws_elb_arn != "" ? "ssl": "tcp"
-    ssl_certificate_id = local.aws_elb_arn
+  dynamic "listener" {
+    for_each = local.listener_for_each 
+
+    content {
+      instance_port      = local.aws_elb_app_port[listener.key]
+      instance_protocol  = local.elb_app_protocol[listener.key]
+      lb_port            = local.aws_elb_listen_port[listener.key]
+      lb_protocol        = local.elb_listen_protocol[listener.key]
+      ssl_certificate_id = local.aws_elb_arn
+    }
   }
 
   health_check {
     healthy_threshold   = 2
     unhealthy_threshold = 2
     timeout             = 3
-    target              = var.aws_elb_healthcheck != "" ? var.aws_elb_healthcheck : "HTTP:$${var.aws_elb_app_port}/"
+    target              = var.aws_elb_healthcheck
     interval            = 30
   }
 
@@ -74,9 +115,37 @@ resource "aws_elb" "${elb_resource_string}" {
 
 output "lb_public_dns" {
   description = "Public DNS address of the LB"
-  value       = aws_elb.${elb_resource_string}.dns_name
+  value       = aws_elb.${tmpl_elb_resource_string}.dns_name
 }
 
 locals {
-  aws_elb_arn = "${cert_string}"
+
+}
+
+# The main idea of the next block is to get what should be opened, mapped, and with which protocol.
+locals {
+  aws_elb_arn = "${tmpl_cert_string}"
+
+  # Check if there is a cert available
+  elb_ssl_available       = local.aws_elb_arn != "" ? true : false
+
+  # Transform CSV values into arrays. ( Now variables will be called local.xx instead of var.xx )
+  aws_elb_listen_port     = var.aws_elb_listen_port     != "" ? [for n in split(",", var.aws_elb_listen_port)     : tonumber(n)] : ( local.elb_ssl_available ? [443] : [80] )
+  aws_elb_listen_protocol = var.aws_elb_listen_protocol != "" ? [for n in split(",", var.aws_elb_listen_protocol) : (n)] : ( local.elb_ssl_available ? ["ssl"] : ["tcp"] )
+  aws_elb_app_port        = var.aws_elb_app_port        != "" ? [for n in split(",", var.aws_elb_app_port)        : tonumber(n)] : []
+  aws_elb_app_protocol    = var.aws_elb_app_protocol    != "" ? [for n in split(",", var.aws_elb_app_protocol)    : (n)] : []
+
+  # Store the lowest array length. (aws_elb_app_port will be at least 3000)
+  aws_ports_ammount       = length(local.aws_elb_listen_port) < length(local.aws_elb_app_port) ? length(local.aws_elb_listen_port) : length(local.aws_elb_app_port)
+
+  # Store the shortest array, and use that to generate ELB listeners. 
+  listener_for_each       = length(local.aws_elb_listen_port) < length(local.aws_elb_app_port) ? local.aws_elb_listen_port : local.aws_elb_app_port
+  # Check protocols ammounts
+  aws_protos_ammount      = length(local.aws_elb_listen_protocol) < length(local.aws_elb_app_protocol) ? length(local.aws_elb_listen_protocol) : length(local.aws_elb_app_protocol)
+
+  # If no protocols are defined for the app, set up the ammount of ports to be tcp.  
+  elb_app_protocol        = length(local.aws_elb_app_protocol) < local.aws_ports_ammount ? [ for _ in range(local.aws_ports_ammount) : "tcp" ] : local.aws_elb_app_protocol
+  # Same but for listen protocols, and if a cert is available, make them SSL
+  elb_listen_protocol     = length(local.aws_elb_listen_protocol) < local.aws_ports_ammount ? ( local.elb_ssl_available ? 
+    [ for _ in range(local.aws_ports_ammount) : "ssl" ] : [ for _ in range(local.aws_ports_ammount) : "tcp" ] ) : local.aws_elb_listen_protocol
 }

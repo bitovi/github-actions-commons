@@ -162,11 +162,13 @@ The following inputs can be used as `step.with` keys
 #### **Load Balancer Inputs**
 | Name             | Type    | Description                        |
 |------------------|---------|------------------------------------|
-| `aws_elb_app_port` | String | Port to be expose for the container. Default is `3000` | 
+| `aws_elb_create` | Boolean | Set this to true to create a load balancer and map ports to the EC2 instance.'|
+| `aws_elb_security_group_name` | String | The name of the ELB security group. Defaults to `SG for ${aws_resource_identifier} - ELB`. |
+| `aws_elb_app_port` | String | Port in the EC2 instance to be redirected to. Default is `3000` | 
 | `aws_elb_app_protocol` | String | Protocol to enable. Could be HTTP, HTTPS, TCP or SSL. Defaults to TCP. |
 | `aws_elb_listen_port` | String | Load balancer listening port. Default is `80` if NO FQDN provided, `443` if FQDN provided. |
-| `aws_elb_listen_protocol` | String | Protocol to enable. Could be HTTP, HTTPS, TCP or SSL. Defaults to TCP if NO FQDN provided, SSL if FQDN provided. |
-| `aws_elb_healthcheck` | String | Load balancer health check string. Default is `HTTP:aws_elb_app_port`. |
+| `aws_elb_listen_protocol` | String | Protocol to enable. Could be HTTP, HTTPS, TCP or SSL. Defaults to `TCP` if NO FQDN provided, `SSL` if FQDN provided. |
+| `aws_elb_healthcheck` | String | Load balancer health check string. Default is `TCP:22`. |
 <hr/>
 <br/>
 
@@ -175,13 +177,14 @@ The following inputs can be used as `step.with` keys
 |------------------|---------|------------------------------------|
 | `aws_efs_create` | Boolean | Toggle to indicate whether to create and EFS and mount it to the ec2 as a part of the provisioning. Note: The EFS will be managed by the stack and will be destroyed along with the stack |
 | `aws_efs_create_ha` | Boolean | Toggle to indicate whether the EFS resource should be highly available (target mounts in all available zones within region) |
+| `aws_efs_mount_id` | String | ID of existing EFS. |
+| `aws_efs_mount_security_group_id` | String | ID of the primary security group used by the existing EFS. |
+| `aws_efs_security_group_name` | String | The name of the EFS security group. Defaults to `SG for ${aws_resource_identifier} - EFS`. |
 | `aws_efs_create_replica` | Boolean | Toggle to indiciate whether a read-only replica should be created for the EFS primary file system |
 | `aws_efs_enable_backup_policy` | Boolean | Toggle to indiciate whether the EFS should have a backup policy |
 | `aws_efs_zone_mapping` | JSON | Zone Mapping in the form of `{\"<availabillity zone>\":{\"subnet_id\":\"subnet-abc123\", \"security_groups\":\[\"sg-abc123\"\]} }` |
 | `aws_efs_transition_to_inactive` | String | Indicates how long it takes to transition files to the IA storage class. |
 | `aws_efs_replication_destination` | String | AWS Region to target for replication. |
-| `aws_efs_mount_id` | String | ID of existing EFS. |
-| `aws_efs_mount_security_group_id` | String | ID of the primary security group used by the existing EFS. |
 | `aws_efs_mount_target` | String | Directory path in efs to mount directory to. Default is `/`. |
 | `aws_efs_ec2_mount_point` | String | The aws_efs_ec2_mount_point input represents the folder path within the EC2 instance to the data directory. Default is `/user/ubuntu/<application_repo>/data`. Additionally this value is loaded into the docker-compose `.env` file as `HOST_DIR`. |
 <hr/>
