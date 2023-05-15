@@ -98,7 +98,7 @@ resource "aws_elb" "${tmpl_elb_resource_string}" {
     healthy_threshold   = 2
     unhealthy_threshold = 2
     timeout             = 3
-    target              = var.aws_elb_healthcheck != "" ? var.aws_elb_healthcheck : "HTTP:$${local.aws_elb_app_port[0]}/"
+    target              = var.aws_elb_healthcheck != "" ? var.aws_elb_healthcheck : "TCP:22"
     interval            = 30
   }
 
