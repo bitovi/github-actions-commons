@@ -66,17 +66,17 @@ module "rds_cluster" {
   db_cluster_parameter_group_name        = var.aws_resource_identifier
   db_cluster_parameter_group_family      = var.aws_postgres_group_family
   db_cluster_parameter_group_description = "${var.aws_resource_identifier}  cluster parameter group"
-  db_cluster_parameter_group_parameters = [
-    {
-      name         = "log_min_duration_statement"
-      value        = 4000
-      apply_method = "immediate"
-      }, {
-      name         = "rds.force_ssl"
-      value        = 1
-      apply_method = "immediate"
-    }
-  ]
+ # db_cluster_parameter_group_parameters = [
+ #   {
+ #     name         = "log_min_duration_statement"
+ #     value        = 4000
+ #     apply_method = "immediate"
+ #     }, {
+ #     name         = "rds.force_ssl"
+ #     value        = 1
+ #     apply_method = "immediate"
+ #   }
+ # ]
   create_db_parameter_group      = true
   db_parameter_group_name        = var.aws_resource_identifier
   db_parameter_group_family      = var.aws_postgres_group_family
