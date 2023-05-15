@@ -182,8 +182,8 @@ variable "aws_elb_listen_protocol" {
 
 variable "aws_elb_healthcheck" {
   type        = string
-  default     = ""
-  description = "Load balancer health check string. Defaults to HTTP:aws_elb_app_port"
+  default     = "TCP:22"
+  description = "Load balancer health check string. Defaults to TCP:22"
 }
 
 # AWS EFS

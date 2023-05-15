@@ -205,7 +205,7 @@ inputs:
     description: 'Protocol to enable. Could be HTTP, HTTPS, TCP or SSL. Defaults to TCP if NO FQDN provided, SSL if FQDN provided'
     required: false
   aws_elb_healthcheck: 
-    description: 'Load balancer health check string. Defaults to HTTP:aws_elb_app_port'
+    description: 'Load balancer health check string. Defaults to TCP:22'
     required: false
   
   # AWS EFS
