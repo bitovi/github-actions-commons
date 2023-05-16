@@ -11,7 +11,7 @@
 #   The bo-out.env file is used by Ansible to populate variables passed on by Terraform
 # """
 
-#set -x
+set -x
 
 echo "In afterhook - generate-outputs.sh"
 
