@@ -82,11 +82,11 @@ module "rds_cluster" {
   db_parameter_group_family      = var.aws_postgres_group_family
   db_parameter_group_description = "${var.aws_resource_identifier} example DB parameter group"
   db_parameter_group_parameters = [
-  #  {
-  #    name         = "log_min_duration_statement"
-  #    value        = 4000
-  #    apply_method = "immediate"
-  #  }
+    {
+      name         = "log_min_duration_statement"
+      value        = 4000
+      apply_method = "immediate"
+    }
   ]
   enabled_cloudwatch_logs_exports = var.aws_postgres_engine == "aurora-postgresql" ? ["postgresql"] : ["audit","error","general","slowquery"]
   tags = {
