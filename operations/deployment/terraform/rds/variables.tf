@@ -281,7 +281,7 @@ variable "aws_postgres_engine_version" {
   description = "The version of the engine to use for postgres.  Defaults to `11.13`."
   default     = "11.13"
 }
-variable "aws_postgres_group_family" {
+variable "aws_postgres_database_group_family" {
   type        = string
   default     = "aurora-postgresql11"
   description = "postgres group family"

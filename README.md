@@ -196,7 +196,7 @@ The following inputs can be used as `step.with` keys
 | `aws_postgres_enable` | Boolean | Set to "true" to enable a postgres database. |
 | `aws_postgres_engine` | String |  Which Database engine to use. Default is `aurora-postgresql`.|
 | `aws_postgres_engine_version` | String |  Specify Postgres version.  More information [here](https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/AuroraPostgreSQL.Updates.20180305.html). Default is `11.13`. |
-| `aws_postgres_group_family` | String | Specify aws postgres group family. Default is `aurora-postgresql11`. See [this](https://awscli.amazonaws.com/v2/documentation/api/latest/reference/rds/create-db-parameter-group.html).|
+| `aws_postgres_database_group_family` | String | Specify aws database group family. Default is `aurora-postgresql11`. See [this](https://awscli.amazonaws.com/v2/documentation/api/latest/reference/rds/create-db-parameter-group.html).|
 | `aws_postgres_instance_class` | String | Define the size of the instances in the DB cluster. Default is `db.t3.medium`. | 
 | `aws_postgres_security_group_name` | String | The name of the Postgres security group. Defaults to `SG for ${aws_resource_identifier} - PG`. |
 | `aws_postgres_subnets` | String | Specify which subnets to use as a list of strings.  Example: `i-1234,i-5678,i-9101`. |

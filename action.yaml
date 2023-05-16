@@ -256,7 +256,7 @@ inputs:
   aws_postgres_engine_version:
     description: 'Specify Postgres version'
     required: false
-  aws_postgres_group_family:
+  aws_postgres_database_group_family:
     description: 'Postgres database group family'
     required: false 
   aws_postgres_instance_class:
@@ -407,7 +407,7 @@ runs:
         AWS_POSTGRES_ENABLE: ${{ inputs.aws_postgres_enable }}
         AWS_POSTGRES_ENGINE:  ${{ inputs.aws_postgres_engine }}
         AWS_POSTGRES_ENGINE_VERSION:  ${{ inputs.aws_postgres_engine_version }}
-        AWS_POSTGRES_GROUP_FAMILY:  ${{ inputs.aws_postgres_group_family }}
+        AWS_POSTGRES_DATABASE_GROUP_FAMILY:  ${{ inputs.aws_postgres_database_group_family }}
         AWS_POSTGRES_INSTANCE_CLASS: ${{ inputs.aws_postgres_instance_class }}
         AWS_POSTGRES_SECURITY_GROUP_NAME: ${{ inputs.aws_postgres_security_group_name }}
         AWS_POSTGRES_SUBNETS: ${{ inputs.aws_postgres_subnets }}
