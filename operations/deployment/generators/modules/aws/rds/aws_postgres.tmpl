@@ -29,7 +29,7 @@ module "rds_cluster" {
   count = var.aws_postgres_enable ? 1 : 0
   depends_on     = [data.aws_subnets.vpc_subnets]
   source         = "terraform-aws-modules/rds-aurora/aws"
-  version        = "v8.1.1"
+  version        = "v7.7.1"
   name           = var.aws_resource_identifier
   engine         = var.aws_postgres_engine
   engine_version = var.aws_postgres_engine_version
