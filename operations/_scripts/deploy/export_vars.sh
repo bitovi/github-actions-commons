@@ -1,6 +1,11 @@
 #!/bin/bash
 # Export variables to GHA
 
+echo "GAP"
+ls -lah "$GITHUB_ACTION_PATH"
+echo "GAP/ops/"
+ls -lah "$GITHUB_ACTION_PATH/operations/"
+
 if [ "$TF_STACK_DESTROY" != "true" ]; then
   BO_OUT="$GITHUB_ACTION_PATH/operations/bo-out.env"
   
