@@ -88,7 +88,7 @@ module "rds_cluster" {
   #    apply_method = "immediate"
   #  }
   ]
-  enabled_cloudwatch_logs_exports = ["*"]
+  enabled_cloudwatch_logs_exports = var.aws_postgres_engine == "aurora-postgresql" ? [postgresql] : [audit,error,general,slowquery]
   tags = {
     Name = "${var.aws_resource_identifier}-RDS"
   }
