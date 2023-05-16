@@ -289,7 +289,7 @@ $aws_efs_ec2_mount_point
 $aws_postgres_enable
 $aws_postgres_engine
 $aws_postgres_engine_version
-$aws_postgres_group_family
+$aws_postgres_database_group_family
 $aws_postgres_instance_class
 $aws_postgres_security_group_name
 $aws_postgres_subnets
