@@ -3,6 +3,6 @@
 set -e
 echo ""
 echo "###########################################################################"
-echo "              BitOps --> Executing Ansible Cloudwatch tasks"
+echo "              BitOps --> Executing Ansible Docker tasks"
 echo "###########################################################################"
 echo ""
