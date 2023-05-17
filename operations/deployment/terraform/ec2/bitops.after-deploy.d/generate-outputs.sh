@@ -14,6 +14,8 @@
 set -x
 
 echo "In afterhook - generate-outputs.sh"
+echo "ENV After Terra"
+env
 
 ls -lah ${BITOPS_ENVROOT}/env-files/
 ls -lah ${BITOPS_ENVROOT}
@@ -42,3 +44,4 @@ fi
 echo "GAP -> $GITHUB_ACTION_PATH" 
 ls -lah $GITHUB_ACTION_PATH
 echo "end terraform output for bo-out"
+cat ${BITOPS_ENVROOT}/env-files/bo-out.env
