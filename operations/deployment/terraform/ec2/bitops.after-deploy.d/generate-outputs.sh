@@ -17,10 +17,10 @@ echo "In afterhook - generate-outputs.sh"
 
 if [ "$BITOPS_TERRAFORM_COMMAND" != "destroy" ]; then
   # The sed command will make each variable be in it's line, and in case a list is present, will transform it into a line
-  terraform output | sed -e ':a;/["\)]$/!N;s/\n//;ta' -e 's/ *= */=/g;s/[" ]//g;s/,\([]]\)/\1/g' > /opt/bitops_deployment/bo-out.env
+  terraform output | sed -e ':a;/["\)]$/!N;s/\n//;ta' -e 's/ *= */=/g;s/[" ]//g;s/,\([]]\)/\1/g' > ${BITOPS_ENVROOT}/env-files/bo-out.env
   # Generating ec2 terraform .env
-  export BITOPS_EC2_PUBLIC_IP="$(cat /opt/bitops_deployment/bo-out.env| grep instance_public_ip | awk -F"=" '{print $2}')"
-  export BITOPS_EC2_PUBLIC_URL="$(cat /opt/bitops_deployment/bo-out.env| grep instance_public_dns | awk -F"=" '{print $2}')"
+  export BITOPS_EC2_PUBLIC_IP="$(cat ${BITOPS_ENVROOT}/env-files/bo-out.env| grep instance_public_ip | awk -F"=" '{print $2}')"
+  export BITOPS_EC2_PUBLIC_URL="$(cat ${BITOPS_ENVROOT}/env-files/bo-out.env| grep instance_public_dns | awk -F"=" '{print $2}')"
   if [ -n "$BITOPS_EC2_PUBLIC_URL" ]; then
     echo -en "
 #### EC2 values  deployments:
