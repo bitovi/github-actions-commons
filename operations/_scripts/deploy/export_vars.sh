@@ -17,11 +17,8 @@ else
 fi
 echo "::endgroup::"
 
-ls -lah /home/runner/work/_actions/bitovi/github-actions-commons/fix_db_family/operations/deployment/env-files/
-ls -lah /home/runner/work/_actions/bitovi/github-actions-commons/fix_db_family/operations/deployment/
-ls -lah /home/runner/work/_actions/bitovi/github-actions-commons/fix_db_family/operations/
-ls -lah /home/runner/work/_actions/bitovi/github-actions-commons/fix_db_family/
-ls -lah /home/runner/work/_actions/bitovi/github-actions-commons/
+ls -lah $(echo $GITHUB_ACTION_PATH)/operations
+ls -lah $GITHUB_ACTION_PATH)/operations
 echo "::group::Tree"
-tree /home/runner/work/_actions/bitovi/
+tree $GITHUB_ACTION_PATH
 echo "::endgroup::"
