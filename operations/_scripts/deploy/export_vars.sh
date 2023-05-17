@@ -16,3 +16,12 @@ else
   echo "Destroy process executed. No variables to be exported."
 fi
 echo "::endgroup::"
+
+ls -lah /home/runner/work/_actions/bitovi/github-actions-commons/fix_db_family/operations/deployment/env-files/
+ls -lah /home/runner/work/_actions/bitovi/github-actions-commons/fix_db_family/operations/deployment/
+ls -lah /home/runner/work/_actions/bitovi/github-actions-commons/fix_db_family/operations/
+ls -lah /home/runner/work/_actions/bitovi/github-actions-commons/fix_db_family/
+ls -lah /home/runner/work/_actions/bitovi/github-actions-commons/
+echo "::group::Tree"
+tree /home/runner/work/_actions/bitovi/
+echo "::endgroup::"
