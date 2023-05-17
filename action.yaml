@@ -293,10 +293,10 @@ inputs:
     description: 'Directory path within docker env to mount directory to, default is `/data`'
     required: false
 
-outputs:
-  vm_url:
-    description: "The URL of the generated app"
-    value: ${{ steps.deploy.outputs.vm_url }}
+#outputs:
+#  vm_url:
+#    description: "The URL of the generated app"
+#    value: ${{ steps.deploy.outputs.vm_url }}
 
 runs:
   using: 'composite'
@@ -424,8 +424,8 @@ runs:
       run: |
         echo "running operations/_scripts/deploy/deploy.sh"
         $GITHUB_ACTION_PATH/operations/_scripts/deploy/deploy.sh
-        echo "running operations/_scripts/deploy/export_vars.sh"
-        $GITHUB_ACTION_PATH/operations/_scripts/deploy/export_vars.sh
+    #    echo "running operations/_scripts/deploy/export_vars.sh"
+    #    $GITHUB_ACTION_PATH/operations/_scripts/deploy/export_vars.sh
 
     # output results to GitHub
     - if: ${{ success() && steps.deploy.outputs.vm_url != '' }}
