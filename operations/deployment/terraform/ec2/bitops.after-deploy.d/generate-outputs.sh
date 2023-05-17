@@ -15,6 +15,12 @@ set -x
 
 echo "In afterhook - generate-outputs.sh"
 
+ls -lah ${BITOPS_ENVROOT}/env-files/
+ls -lah ${BITOPS_ENVROOT}
+ls -lah $GITHUB_ACTION_PATH/operations/
+ls -lah $GITHUB_ACTION_PATH
+ls -lah $BITOPS_ENVROOT/terraform/
+
 if [ "$BITOPS_TERRAFORM_COMMAND" != "destroy" ]; then
   # The sed command will make each variable be in it's line, and in case a list is present, will transform it into a line
   terraform output | sed -e ':a;/["\)]$/!N;s/\n//;ta' -e 's/ *= */=/g;s/[" ]//g;s/,\([]]\)/\1/g' > ${BITOPS_ENVROOT}/env-files/bo-out.env
