@@ -10,6 +10,14 @@ echo "GAP/ops/"
 ls -lah "$GITHUB_ACTION_PATH/operations/"
 echo "GAP/ops/"
 ls -lah "$GITHUB_ACTION_PATH/operations/deployment"
+ls -lah "$GITHUB_ACTION_PATH/operations/deployment/ansible"
+ls -lah "$GITHUB_ACTION_PATH/operations/deployment/env-files"
+ls -lah "$GITHUB_ACTION_PATH/operations/deployment/generators"
+ls -lah "$GITHUB_ACTION_PATH/operations/deployment/terraform"
+ls -lah "$GITHUB_ACTION_PATH/operations/deployment/terraform/ec2"
+
+
+find "bo-out.env" -maxdepth 1 -type f -path "$GITHUB_ACTION_PATH/*" 
 
 echo "Last env's"
 env
