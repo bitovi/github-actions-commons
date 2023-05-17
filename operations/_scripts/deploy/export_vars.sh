@@ -1,10 +1,18 @@
 #!/bin/bash
 # Export variables to GHA
 
+set -ex 
+echo "::group::Passing vars to GH"
+
 echo "GAP"
 ls -lah "$GITHUB_ACTION_PATH"
 echo "GAP/ops/"
 ls -lah "$GITHUB_ACTION_PATH/operations/"
+
+echo "Last env's"
+env
+echo "That's it env's"
+
 
 if [ "$TF_STACK_DESTROY" != "true" ]; then
   BO_OUT="$GITHUB_ACTION_PATH/operations/bo-out.env"
@@ -19,3 +27,4 @@ if [ "$TF_STACK_DESTROY" != "true" ]; then
 else
   echo "Destroy process executed. No variables to be exported."
 fi
+echo "::endgroup::"
