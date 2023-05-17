@@ -9,6 +9,7 @@ function alpha_only() {
 
 echo "::group::In Deploy"
 GITHUB_REPO_NAME=$(echo $GITHUB_REPOSITORY | sed 's/^.*\///')
+ANSIBLE_SKIP="true"
 
 # Ensuring variable is set to true
 if [ "$(alpha_only $ANSIBLE_SKIP)" == "true" ]; then
