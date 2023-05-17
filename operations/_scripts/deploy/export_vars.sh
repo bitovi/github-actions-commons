@@ -8,6 +8,8 @@ echo "GAP"
 ls -lah "$GITHUB_ACTION_PATH"
 echo "GAP/ops/"
 ls -lah "$GITHUB_ACTION_PATH/operations/"
+echo "GAP/ops/"
+ls -lah "$GITHUB_ACTION_PATH/operations/deployment"
 
 echo "Last env's"
 env
