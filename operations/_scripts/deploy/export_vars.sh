@@ -17,8 +17,7 @@ else
 fi
 echo "::endgroup::"
 
-ls -lah $(echo $GITHUB_ACTION_PATH)/operations
-ls -lah $GITHUB_ACTION_PATH)/operations
+ls -lah $GITHUB_ACTION_PATH/operations
 echo "::group::Tree"
 tree $GITHUB_ACTION_PATH
 echo "::endgroup::"
