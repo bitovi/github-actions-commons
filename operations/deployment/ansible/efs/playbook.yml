@@ -1,4 +1,5 @@
-- hosts: bitops_servers
+- name: EFS tasks
+  hosts: bitops_servers
   become: true
   tasks:
   - name: Include fetch
