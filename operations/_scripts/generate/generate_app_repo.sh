@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -x
+set -e
 
 echo "In generate_app_repo.sh"
 GITHUB_REPO_NAME=$(echo $GITHUB_REPOSITORY | sed 's/^.*\///')
