@@ -271,7 +271,6 @@ inputs:
   aws_postgres_database_name:
     description: 'Specify a database name. Will be created if it does not exist'
     required: false
-    # TODO: create another user and point to that instead
   aws_postgres_database_port:
     description: 'Postgres database port'
     required: false
@@ -293,10 +292,10 @@ inputs:
     description: 'Directory path within docker env to mount directory to, default is `/data`'
     required: false
 
-#outputs:
-#  vm_url:
-#    description: "The URL of the generated app"
-#    value: ${{ steps.deploy.outputs.vm_url }}
+outputs:
+  vm_url:
+    description: "The URL of the generated app"
+    value: ${{ steps.deploy.outputs.vm_url }}
 
 runs:
   using: 'composite'
@@ -424,62 +423,62 @@ runs:
       run: |
         echo "running operations/_scripts/deploy/deploy.sh"
         $GITHUB_ACTION_PATH/operations/_scripts/deploy/deploy.sh
-    #    echo "running operations/_scripts/deploy/export_vars.sh"
-    #    $GITHUB_ACTION_PATH/operations/_scripts/deploy/export_vars.sh
+        echo "running operations/_scripts/deploy/export_vars.sh"
+        $GITHUB_ACTION_PATH/operations/_scripts/deploy/export_vars.sh
 
     # output results to GitHub
-   # - if: ${{ success() && steps.deploy.outputs.vm_url != '' }}
-   #   name: Print result created
-   #   shell: bash
-   #   run: |
-   #     echo "## VM Created! :rocket:" >> $GITHUB_STEP_SUMMARY
-   #     echo " ${{ steps.deploy.outputs.vm_url }}" >> $GITHUB_STEP_SUMMARY
-   # - if: ${{ success() && steps.deploy.outputs.vm_url == '' && inputs.bitops_code_only == 'true' && inputs.bitops_code_store == 'true' }}
-   #   name: Print code built
-   #   shell: bash
-   #   run: |
-   #     echo "## BitOps Code generated. :tada: " >> $GITHUB_STEP_SUMMARY
-   #     echo "Download the code artifact. Will be there for 5 days." >> $GITHUB_STEP_SUMMARY
-   #     echo "Keep in mind that for creation, EFS should be created before EC2."
-   #     echo "While destroying, EC2 should be destroyed before EFS. (Due to resources being in use)."
-   #     echo "You can change that in the bitops.config.yaml file, or regenerate the code with destroy set."
-   # - if: ${{ success() && steps.deploy.outputs.vm_url == '' && inputs.bitops_code_only == 'true' && inputs.bitops_code_store != 'true' }}
-   #   name: Print code built
-   #   shell: bash
-   #   run: |
-   #     echo "## BitOps Code generated. :tada: " >> $GITHUB_STEP_SUMMARY
-   # - if: ${{ success() && steps.deploy.outputs.vm_url == '' && inputs.tf_stack_destroy != 'true' && inputs.bitops_code_only != 'true' }}
-   #   name: Print result destroyed
-   #   shell: bash
-   #   run: |
-   #     echo "## Deploy finished! But no URL found. :thinking: " >> $GITHUB_STEP_SUMMARY
-   #     echo "If expecting an URL, please check the logs for possible  errors." >> $GITHUB_STEP_SUMMARY
-   #     echo "If you consider this is a bug in the Github Action, please submit an issue to our repo." >> $GITHUB_STEP_SUMMARY
-   # - if: ${{ success() && steps.deploy.outputs.vm_url == '' && inputs.tf_stack_destroy == 'true' && inputs.tf_state_bucket_destroy != 'true' }}
-   #   name: Print result destroyed
-   #   shell: bash
-   #   run: |
-   #     echo "## VM Destroyed! :boom:" >> $GITHUB_STEP_SUMMARY
-   #     echo "Infrastructure should be gone now!" >> $GITHUB_STEP_SUMMARY
-   # - if: ${{ success() && steps.deploy.outputs.vm_url == '' && inputs.tf_stack_destroy == 'true' && inputs.tf_state_bucket_destroy == 'true' }}
-   #   name: Print result destroyed
-   #   shell: bash
-   #   run: |
-   #     echo "## VM Destroyed! :boom:" >> $GITHUB_STEP_SUMMARY
-   #     echo "Buckets and infrastructure should be gone now!" >> $GITHUB_STEP_SUMMARY
-   # - if: ${{ failure() }} 
-   #   name: Print error result
-   #   shell: bash
-   #   run: |
-   #     echo "## Workflow failed to run :fire:" >> $GITHUB_STEP_SUMMARY
-   #     echo "Please check the logs for possible errors." >> $GITHUB_STEP_SUMMARY
-   #     echo "If you consider this is a bug in the Github Action, please submit an issue to our repo." >> $GITHUB_STEP_SUMMARY
-    #- if: ${{ inputs.bitops_code_store == 'true' }}
-    #  name: Archive production artifacts
-    #  uses: actions/upload-artifact@v3
-    #  with:
-    #    name: Storing code - Terraform
-    #    retention-days: 5
-    #    path: |
-    #      ${{ github.action_path }}/operations/generated_code
-    #      !${{ github.action_path }}/operations/generated_code/**/ghs.env
+    - if: ${{ success() && steps.deploy.outputs.vm_url != '' }}
+      name: Print result created
+      shell: bash
+      run: |
+        echo "## VM Created! :rocket:" >> $GITHUB_STEP_SUMMARY
+        echo " ${{ steps.deploy.outputs.vm_url }}" >> $GITHUB_STEP_SUMMARY
+    - if: ${{ success() && steps.deploy.outputs.vm_url == '' && inputs.bitops_code_only == 'true' && inputs.bitops_code_store == 'true' }}
+      name: Print code built
+      shell: bash
+      run: |
+        echo "## BitOps Code generated. :tada: " >> $GITHUB_STEP_SUMMARY
+        echo "Download the code artifact. Will be there for 5 days." >> $GITHUB_STEP_SUMMARY
+        echo "Keep in mind that for creation, EFS should be created before EC2."
+        echo "While destroying, EC2 should be destroyed before EFS. (Due to resources being in use)."
+        echo "You can change that in the bitops.config.yaml file, or regenerate the code with destroy set."
+    - if: ${{ success() && steps.deploy.outputs.vm_url == '' && inputs.bitops_code_only == 'true' && inputs.bitops_code_store != 'true' }}
+      name: Print code built
+      shell: bash
+      run: |
+        echo "## BitOps Code generated. :tada: " >> $GITHUB_STEP_SUMMARY
+    - if: ${{ success() && steps.deploy.outputs.vm_url == '' && inputs.tf_stack_destroy != 'true' && inputs.bitops_code_only != 'true' }}
+      name: Print result destroyed
+      shell: bash
+      run: |
+        echo "## Deploy finished! But no URL found. :thinking: " >> $GITHUB_STEP_SUMMARY
+        echo "If expecting an URL, please check the logs for possible  errors." >> $GITHUB_STEP_SUMMARY
+        echo "If you consider this is a bug in the Github Action, please submit an issue to our repo." >> $GITHUB_STEP_SUMMARY
+    - if: ${{ success() && steps.deploy.outputs.vm_url == '' && inputs.tf_stack_destroy == 'true' && inputs.tf_state_bucket_destroy != 'true' }}
+      name: Print result destroyed
+      shell: bash
+      run: |
+        echo "## VM Destroyed! :boom:" >> $GITHUB_STEP_SUMMARY
+        echo "Infrastructure should be gone now!" >> $GITHUB_STEP_SUMMARY
+    - if: ${{ success() && steps.deploy.outputs.vm_url == '' && inputs.tf_stack_destroy == 'true' && inputs.tf_state_bucket_destroy == 'true' }}
+      name: Print result destroyed
+      shell: bash
+      run: |
+        echo "## VM Destroyed! :boom:" >> $GITHUB_STEP_SUMMARY
+        echo "Buckets and infrastructure should be gone now!" >> $GITHUB_STEP_SUMMARY
+    - if: ${{ failure() }} 
+      name: Print error result
+      shell: bash
+      run: |
+        echo "## Workflow failed to run :fire:" >> $GITHUB_STEP_SUMMARY
+        echo "Please check the logs for possible errors." >> $GITHUB_STEP_SUMMARY
+        echo "If you consider this is a bug in the Github Action, please submit an issue to our repo." >> $GITHUB_STEP_SUMMARY
+    - if: ${{ inputs.bitops_code_store == 'true' }}
+      name: Archive production artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: Storing code - Terraform
+        retention-days: 5
+        path: |
+          ${{ github.action_path }}/operations/generated_code
+          !${{ github.action_path }}/operations/generated_code/**/ghs.env
