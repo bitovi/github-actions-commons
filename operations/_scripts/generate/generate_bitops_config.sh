@@ -59,6 +59,7 @@ create_bitops_terraform_config ec2 $AWS_EC2_INSTANCE_CREATE targets
 
 if [[ $(alpha_only "$AWS_EC2_INSTANCE_CREATE") == true ]]; then
   if [ -s "$GITHUB_WORKSPACE/$AWS_EC2_USER_DATA_FILE" ] && [ -f "$GITHUB_WORKSPACE/$AWS_EC2_USER_DATA_FILE" ]; then
+      echo "Moving $AWS_EC2_USER_DATA_FILE to be used by Terraform during EC2 creation"
       mv "$GITHUB_WORKSPACE/$AWS_EC2_USER_DATA_FILE" "$GITHUB_ACTION_PATH/operations/deployment/terraform/ec2/aws_ec2_incoming_user_data_script.sh"
   fi
 fi
