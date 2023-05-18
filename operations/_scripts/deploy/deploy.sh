@@ -9,7 +9,6 @@ function alpha_only() {
 
 echo "::group::In Deploy"
 GITHUB_REPO_NAME=$(echo $GITHUB_REPOSITORY | sed 's/^.*\///')
-tree /home/runner/work/devops-training-ec2-gha-example
 
 # Ensuring variable is set to true
 if [ "$(alpha_only $ANSIBLE_SKIP)" == "true" ]; then
@@ -38,21 +37,17 @@ export LB_LOGS_BUCKET="$(/bin/bash $GITHUB_ACTION_PATH/operations/_scripts/gener
 
 # Generate the provider.tf file
 /bin/bash $GITHUB_ACTION_PATH/operations/_scripts/generate/generate_provider.sh
-tree /home/runner/work/devops-training-ec2-gha-example
 
 # Generate terraform variables
 /bin/bash $GITHUB_ACTION_PATH/operations/_scripts/generate/generate_vars_terraform.sh
-tree /home/runner/work/devops-training-ec2-gha-example
 
 # Generate app repo
 /bin/bash $GITHUB_ACTION_PATH/operations/_scripts/generate/generate_app_repo.sh ansible/clone_repo
 #/bin/bash $GITHUB_ACTION_PATH/operations/_scripts/generate/generate_app_repo.sh ansible/docker
 #/bin/bash $GITHUB_ACTION_PATH/operations/_scripts/generate/generate_app_repo.sh ansible/efs
-tree /home/runner/work/devops-training-ec2-gha-example
 
 # Generate bitops config
 /bin/bash $GITHUB_ACTION_PATH/operations/_scripts/generate/generate_bitops_config.sh
-tree /home/runner/work/devops-training-ec2-gha-example
 
 # Generate bitops incoming repos config
 if [ -n "$GH_ACTION_REPO" ]; then
@@ -69,7 +64,6 @@ if [ -n "$GH_ACTION_REPO" ]; then
     fi
   fi
 fi
-tree /home/runner/work/devops-training-ec2-gha-example
 
 echo "Final BitOps config file"
 cat $GITHUB_ACTION_PATH/operations/deployment/bitops.config.yaml
@@ -82,7 +76,6 @@ if [[ $(alpha_only "$TF_STATE_BUCKET_DESTROY") == true ]] && ! [[ $(alpha_only "
     export TF_STATE_BUCKET_DESTROY="false"
   fi
 fi
-tree /home/runner/work/devops-training-ec2-gha-example
 
 # Generating GitHub Variables and Secrets files
 mkdir -p "${GITHUB_ACTION_PATH}/operations/deployment/env-files"
@@ -96,7 +89,6 @@ if [[ $(alpha_only "$BITOPS_SKIP_RUN") == true ]]; then
   echo "BitOps skip run is set to true. Reached end of the line."
   exit 0
 fi
-tree /home/runner/work/devops-training-ec2-gha-example
 
 echo "::group::BitOps Excecution"  
 echo "Running BitOps for env: $BITOPS_ENVIRONMENT"
@@ -122,4 +114,3 @@ BITOPS_RESULT=$?
 echo "::endgroup::"
 
 exit $BITOPS_RESULT
-tree /home/runner/work/devops-training-ec2-gha-example

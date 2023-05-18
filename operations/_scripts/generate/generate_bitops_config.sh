@@ -35,7 +35,6 @@ terraform:
 if [[ "$(alpha_only $TF_STACK_DESTROY)" == "true" ]]; then
   ANSIBLE_SKIP=true
 fi
-tree /home/runner/work/devops-training-ec2-gha-example
 
 targets_attribute="targets:"
 if [ -n "$TF_TARGETS" ]; then
@@ -50,7 +49,6 @@ fi
 targets="$targets
     - random_integer.az_select"
 targets_attribute="$targets_attribute $targets"
-tree /home/runner/work/devops-training-ec2-gha-example
 
 #Will create bitops.config.yaml for that terraform folder
 create_bitops_terraform_config rds $AWS_POSTGRES_ENABLE
@@ -58,20 +56,13 @@ create_bitops_terraform_config efs $AWS_EFS_ENABLE
 create_bitops_terraform_config ec2 $AWS_EC2_INSTANCE_CREATE targets
 
 #Will add the user_data file into the EC2 Terraform folder
-tree /home/runner/work/devops-training-ec2-gha-example
 
 if [[ $(alpha_only "$AWS_EC2_INSTANCE_CREATE") == true ]]; then
-  echo "Got 1"
-  if [ -s "$GITHUB_WORKSPACE/$AWS_EC2_USER_DATA_FILE" ]; then
-      echo "Got 2"
-      tree /home/runner/work/devops-training-ec2-gha-example
+  if [ -s "$GITHUB_WORKSPACE/$AWS_EC2_USER_DATA_FILE" ] && [ -f "$GITHUB_WORKSPACE/$AWS_EC2_USER_DATA_FILE" ]; then
       mv "$GITHUB_WORKSPACE/$AWS_EC2_USER_DATA_FILE" "$GITHUB_ACTION_PATH/operations/deployment/terraform/ec2/aws_ec2_incoming_user_data_script.sh"
-      tree /home/runner/work/devops-training-ec2-gha-example
-      echo $AWS_EC2_USER_DATA_FILE
   fi
 fi
 # Below we will be creating the config file, one for the action itself, other to store as an artifact after. 
-tree /home/runner/work/devops-training-ec2-gha-example
 
 # Files Definitions
 mkdir -p "${GITHUB_ACTION_PATH}/operations/generated_code"
@@ -144,8 +135,6 @@ bitops:
     fi
   fi
 
-      tree /home/runner/work/devops-training-ec2-gha-example
-
 if [[ "$(alpha_only $BITOPS_CODE_ONLY)" != "true" ]]; then
   cat $BITOPS_CONFIG_TEMP >> $BITOPS_DEPLOY_FILE
 fi
@@ -153,4 +142,3 @@ cat $BITOPS_CONFIG_TEMP >> $BITOPS_CODE_FILE
 rm $BITOPS_CONFIG_TEMP
 
 echo "Done with generate_bitops_config.sh"
-      tree /home/runner/work/devops-training-ec2-gha-example
