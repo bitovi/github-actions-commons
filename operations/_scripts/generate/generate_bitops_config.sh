@@ -112,6 +112,22 @@ bitops:
   # Ansible Code part
 
   if [[ "$(alpha_only $ANSIBLE_SKIP)" != "true" ]] && [[ "$(alpha_only $AWS_EC2_INSTANCE_CREATE)" == "true" ]] && [[ "$(alpha_only $AWS_EC2_INSTANCE_PUBLIC_IP)" == "true" ]]; then
+    # Ansible - Docker cleanup
+    if [[ $(alpha_only "$DOCKER_FULL_CLEANUP") == true ]]; then
+        echo -en "
+    ansible/docker_cleanup:
+      plugin: ansible
+" >> $BITOPS_CONFIG_TEMP
+    fi
+
+    # Ansible - Instance cleanup
+    if [[ $(alpha_only "$DOCKER_REPO_APP_DIRECTORY_CLEANUP") == true ]]; then
+        echo -en "
+    ansible/ec2_cleanup:
+      plugin: ansible
+" >> $BITOPS_CONFIG_TEMP
+    fi
+
     # Ansible - Fetch repo
     echo -en "
     ansible/clone_repo:

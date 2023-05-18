@@ -193,7 +193,7 @@ The following inputs can be used as `step.with` keys
 #### **RDS Inputs**
 | Name             | Type    | Description                        |
 |------------------|---------|------------------------------------|
-| `aws_postgres_enable` | Boolean | Set to "true" to enable a postgres database. |
+| `aws_postgres_enable` | Boolean | Set to `true` to enable a postgres database. |
 | `aws_postgres_engine` | String |  Which Database engine to use. Default is `aurora-postgresql`.|
 | `aws_postgres_engine_version` | String |  Specify Postgres version.  More information [here](https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/AuroraPostgreSQL.Updates.20180305.html). Default is `11.13`. |
 | `aws_postgres_database_group_family` | String | Specify aws database group family. Default is `aurora-postgresql11`. See [this](https://awscli.amazonaws.com/v2/documentation/api/latest/reference/rds/create-db-parameter-group.html).|
@@ -210,8 +210,10 @@ The following inputs can be used as `step.with` keys
 #### **Docker Inputs**
 | Name             | Type    | Description                        |
 |------------------|---------|------------------------------------|
-| `docker_install` | Boolean | Set to "true" to enable docker installation through Ansible. docker-compose up will be excecuted after. |
+| `docker_install` | Boolean | Set to `true` to enable docker installation through Ansible. `docker-compose up` will be excecuted after. |
+| `docker_full_cleanup` | Boolean | Set to `true` to run `docker-compose down` and `docker system prune --all --force --volumes` after. Runs before `docker_install`. WARNING: docker volumes will be destroyed. |
 | `docker_repo_app_directory` | String | Relative path for the directory of the app. (i.e. where the `docker-compose.yaml` file is located). This is the directory that is copied into the EC2 instance. Default is `/`, the root of the repository. |
+| `docker_repo_app_directory_cleanup` | Boolean | Will generate a timestamped compressed file and delete the app repo directory. Runs before `docker_install` and after `docker_full_cleanup`. |
 | `docker_efs_mount_target` | String | Directory path within docker env to mount directory to. Default is `/data`|
 <hr/>
 <br/>

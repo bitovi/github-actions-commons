@@ -285,8 +285,14 @@ inputs:
   docker_install: 
     description: 'Define if docker should be installed. After this, docker-compose up will be excecuted.'
     required: false
+  docker_full_cleanup: 
+    description: 'Set to true to run docker-compose down and docker system prune --all --force --volumes after.'
+    required: false
   docker_repo_app_directory:
     description: 'Relative path for the directory of the app (i.e. where `Dockerfile` and `docker-compose.yaml` files are located). This is the directory that is copied to the compute instance (EC2).  Default is the root of the repo.'
+    required: false
+  docker_repo_app_directory_cleanup:
+    description: 'Will generate a timestamped compressed file and delete the app repo directory.'
     required: false
   docker_efs_mount_target:
     description: 'Directory path within docker env to mount directory to, default is `/data`'
@@ -417,7 +423,9 @@ runs:
 
         # Docker
         DOCKER_INSTALL: ${{ inputs.docker_install }}
+        DOCKER_FULL_CLEANUP: ${{ inputs.docker_full_cleanup }}
         DOCKER_REPO_APP_DIRECTORY: ${{ inputs.docker_repo_app_directory }}
+        DOCKER_REPO_APP_DIRECTORY_CLEANUP: ${{ inputs.docker_repo_app_directory_cleanup }}
         DOCKER_EFS_MOUNT_TARGET: ${{ inputs.docker_efs_mount_target }}
 
       run: |
