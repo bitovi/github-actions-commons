@@ -57,26 +57,6 @@ create_bitops_terraform_config ec2 $AWS_EC2_INSTANCE_CREATE targets
 
 #Will add the user_data file into the EC2 Terraform folder
 
-### DEBUG BLOCK
-echo "DEBUG BLOCK"
-
-if [[ $(alpha_only "$AWS_EC2_INSTANCE_CREATE") == true ]]; then
-  if [ -s "$GITHUB_WORKSPACE/$AWS_EC2_USER_DATA_FILE" ]; then
-  echo "Passed first if" 
-  fi
-  if [ -f "$GITHUB_WORKSPACE/$AWS_EC2_USER_DATA_FILE" ]; then
-  echo "Passed second if"
-  fi
-  if [ -s "$GITHUB_WORKSPACE/$AWS_EC2_USER_DATA_FILE" ] && [ -f "$GITHUB_WORKSPACE/$AWS_EC2_USER_DATA_FILE" ]; then
-  echo "Passing mixed if"
-  fi
-  if [ -n "$AWS_EC2_USER_DATA_FILE" ]; then 
-  echo "If n"
-  fi
-fi
-
-### END DEBUG
-
 if [[ $(alpha_only "$AWS_EC2_INSTANCE_CREATE") == true ]]; then
   if [ -s "$GITHUB_WORKSPACE/$AWS_EC2_USER_DATA_FILE" ] && [ -f "$GITHUB_WORKSPACE/$AWS_EC2_USER_DATA_FILE" ]; then
       echo "Moving $AWS_EC2_USER_DATA_FILE to be used by Terraform during EC2 creation"
