@@ -281,6 +281,11 @@ variable "aws_postgres_engine_version" {
   description = "The version of the engine to use for postgres.  Defaults to `11.13`."
   default     = "11.13"
 }
+variable "aws_postgres_database_group_family" {
+  type        = string
+  default     = "aurora-postgresql11"
+  description = "postgres group family"
+}
 variable "aws_postgres_instance_class" {
   type        = string
   description = "The size of the db instances.  For more details, see: https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Concepts.DBInstanceClass.html, https://registry.terraform.io/modules/terraform-aws-modules/rds-aurora/aws/latest?tab=inputs"

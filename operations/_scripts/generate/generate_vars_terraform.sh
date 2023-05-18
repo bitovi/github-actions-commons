@@ -177,6 +177,7 @@ if [[ $(alpha_only "$AWS_POSTGRES_ENABLE") == true ]]; then
   aws_postgres_enable=$(generate_var aws_postgres_enable $AWS_POSTGRES_ENABLE)
   aws_postgres_engine=$(generate_var aws_postgres_engine $AWS_POSTGRES_ENGINE)
   aws_postgres_engine_version=$(generate_var aws_postgres_engine_version $AWS_POSTGRES_ENGINE_VERSION)
+  aws_postgres_database_group_family=$(generate_var aws_postgres_database_group_family $AWS_POSTGRES_DATABASE_GROUP_FAMILY)
   aws_postgres_instance_class=$(generate_var aws_postgres_instance_class $AWS_POSTGRES_INSTANCE_CLASS)
   aws_postgres_security_group_name=$(generate_var aws_postgres_security_group_name $AWS_POSTGRES_SECURITY_GROUP_NAME )
   # aws_postgres_subnets=$(generate_var aws_postgres_subnets $AWS_POSTGRES_SUBNETS) - Special case
@@ -288,6 +289,7 @@ $aws_efs_ec2_mount_point
 $aws_postgres_enable
 $aws_postgres_engine
 $aws_postgres_engine_version
+$aws_postgres_database_group_family
 $aws_postgres_instance_class
 $aws_postgres_security_group_name
 $aws_postgres_subnets

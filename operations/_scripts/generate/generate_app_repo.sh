@@ -9,6 +9,7 @@ if [ -n "$DOCKER_REPO_APP_DIRECTORY" ]; then
     TARGET_PATH="${TARGET_PATH}/${DOCKER_REPO_APP_DIRECTORY}"
 fi
 
+
 mkdir -p "${GITHUB_ACTION_PATH}/operations/deployment/$1/app/${GITHUB_REPO_NAME}"
 
 if [ $(find "$TARGET_PATH/." -iname "*"  -not -name "."| wc -l) -gt 0 ]; then 

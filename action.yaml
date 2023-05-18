@@ -256,6 +256,9 @@ inputs:
   aws_postgres_engine_version:
     description: 'Specify Postgres version'
     required: false
+  aws_postgres_database_group_family:
+    description: 'Postgres database group family'
+    required: false 
   aws_postgres_instance_class:
     description: 'Define the size of the instances in the DB cluster'
     required: false
@@ -268,7 +271,6 @@ inputs:
   aws_postgres_database_name:
     description: 'Specify a database name. Will be created if it does not exist'
     required: false
-    # TODO: create another user and point to that instead
   aws_postgres_database_port:
     description: 'Postgres database port'
     required: false
@@ -404,6 +406,7 @@ runs:
         AWS_POSTGRES_ENABLE: ${{ inputs.aws_postgres_enable }}
         AWS_POSTGRES_ENGINE:  ${{ inputs.aws_postgres_engine }}
         AWS_POSTGRES_ENGINE_VERSION:  ${{ inputs.aws_postgres_engine_version }}
+        AWS_POSTGRES_DATABASE_GROUP_FAMILY:  ${{ inputs.aws_postgres_database_group_family }}
         AWS_POSTGRES_INSTANCE_CLASS: ${{ inputs.aws_postgres_instance_class }}
         AWS_POSTGRES_SECURITY_GROUP_NAME: ${{ inputs.aws_postgres_security_group_name }}
         AWS_POSTGRES_SUBNETS: ${{ inputs.aws_postgres_subnets }}
@@ -418,10 +421,11 @@ runs:
         DOCKER_EFS_MOUNT_TARGET: ${{ inputs.docker_efs_mount_target }}
 
       run: |
-        echo "running operations/_scripts/deploy/deploy.sh"
+        echo "Running operations/_scripts/deploy/deploy.sh"
         $GITHUB_ACTION_PATH/operations/_scripts/deploy/deploy.sh
-        echo "running operations/_scripts/deploy/export_vars.sh"
+        echo "Running operations/_scripts/deploy/export_vars.sh"
         $GITHUB_ACTION_PATH/operations/_scripts/deploy/export_vars.sh
+        echo "Finished executions - Now to print results"
 
     # output results to GitHub
     - if: ${{ success() && steps.deploy.outputs.vm_url != '' }}
@@ -431,7 +435,7 @@ runs:
         echo "## VM Created! :rocket:" >> $GITHUB_STEP_SUMMARY
         echo " ${{ steps.deploy.outputs.vm_url }}" >> $GITHUB_STEP_SUMMARY
     - if: ${{ success() && steps.deploy.outputs.vm_url == '' && inputs.bitops_code_only == 'true' && inputs.bitops_code_store == 'true' }}
-      name: Print code built
+      name: Print code generated and archived
       shell: bash
       run: |
         echo "## BitOps Code generated. :tada: " >> $GITHUB_STEP_SUMMARY
@@ -440,25 +444,25 @@ runs:
         echo "While destroying, EC2 should be destroyed before EFS. (Due to resources being in use)."
         echo "You can change that in the bitops.config.yaml file, or regenerate the code with destroy set."
     - if: ${{ success() && steps.deploy.outputs.vm_url == '' && inputs.bitops_code_only == 'true' && inputs.bitops_code_store != 'true' }}
-      name: Print code built
+      name: Print code built not archived
       shell: bash
       run: |
         echo "## BitOps Code generated. :tada: " >> $GITHUB_STEP_SUMMARY
     - if: ${{ success() && steps.deploy.outputs.vm_url == '' && inputs.tf_stack_destroy != 'true' && inputs.bitops_code_only != 'true' }}
-      name: Print result destroyed
+      name: Print result deploy finished but no URL.
       shell: bash
       run: |
         echo "## Deploy finished! But no URL found. :thinking: " >> $GITHUB_STEP_SUMMARY
         echo "If expecting an URL, please check the logs for possible  errors." >> $GITHUB_STEP_SUMMARY
         echo "If you consider this is a bug in the Github Action, please submit an issue to our repo." >> $GITHUB_STEP_SUMMARY
     - if: ${{ success() && steps.deploy.outputs.vm_url == '' && inputs.tf_stack_destroy == 'true' && inputs.tf_state_bucket_destroy != 'true' }}
-      name: Print result destroyed
+      name: Print result destroyed no bucket
       shell: bash
       run: |
         echo "## VM Destroyed! :boom:" >> $GITHUB_STEP_SUMMARY
         echo "Infrastructure should be gone now!" >> $GITHUB_STEP_SUMMARY
     - if: ${{ success() && steps.deploy.outputs.vm_url == '' && inputs.tf_stack_destroy == 'true' && inputs.tf_state_bucket_destroy == 'true' }}
-      name: Print result destroyed
+      name: Print result destroyed with bucket
       shell: bash
       run: |
         echo "## VM Destroyed! :boom:" >> $GITHUB_STEP_SUMMARY
