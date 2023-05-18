@@ -33,20 +33,3 @@ AWS_INSTANCE_URL="$BITOPS_EC2_PUBLIC_URL"
 fi
 
 echo "end terraform output for bo-out"
-
-
-##echo "In afterhook - generate-outputs.sh"
-##
-##if [ "$BITOPS_TERRAFORM_COMMAND" != "destroy" ]; then
-##    # The sed command will make each variable be in it's line, and in case a list is present, will transform it into a line
-##    terraform output | sed -e ':a;/["\)]$/!N;s/\n//;ta' -e 's/ *= */=/g;s/[" ]//g;s/,\([]]\)/\1/g'  > /opt/bitops_deployment/bo-out.env
-##    # Generating ec2 terraform .env
-##    export BITOPS_EC2_PUBLIC_URL="$(cat /opt/bitops_deployment/bo-out.env| grep instance_public_dns | awk -F"=" '{print $2}')"
-##    if [ -n "$BITOPS_EC2_PUBLIC_URL" ]; then
-##echo -en "
-###### EC2 values  deployments:
-##AWS_INSTANCE_URL="$BITOPS_EC2_PUBLIC_URL"
-##" > $BITOPS_ENVROOT/terraform/ec2.env
-##    fi
-##fi
-##echo "end terraform output for bo-out"

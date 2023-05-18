@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -x
+set -e
 
 echo "In generate_bitops_config.sh"
 
