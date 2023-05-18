@@ -1,7 +1,5 @@
 #!/bin/bash
 # Export variables to GHA
-tree /home/runner/work/devops-training-ec2-gha-example
-
 
 echo "::group::Passing vars to GH"
 if [ "$TF_STACK_DESTROY" != "true" ]; then
@@ -18,6 +16,3 @@ else
   echo "Destroy process executed. No variables to be exported."
 fi
 echo "::endgroup::"
-
-mkdir -p $GITHUB_WORKSPACE
-tree /home/runner/work/devops-training-ec2-gha-example
