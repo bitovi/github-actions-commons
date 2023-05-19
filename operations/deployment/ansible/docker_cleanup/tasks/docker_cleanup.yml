@@ -3,7 +3,7 @@
     project_src: "{{ app_install_root }}/{{ app_repo_name }}"
     absent: true
     remove_orphans: true
-    remove_images: true
+    remove_images: all
     remove_volumes: true
   register: output
 
