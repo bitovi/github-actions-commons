@@ -1,10 +1,10 @@
 - name: Generate timestamp
   set_fact:
-  timestamp: "{{ ansible_date_time.date | regex_replace('[^0-9]','') }}-{{ ansible_date_time.hour }}{{ ansible_date_time.minute }}"
+    timestamp: "{{ ansible_date_time.date | regex_replace('[^0-9]','') }}-{{ ansible_date_time.hour }}{{ ansible_date_time.minute }}"
 
 - name: Check if folder exists
   stat:
-  path: "{{ app_install_root }}/{{ app_repo_name }}"
+    path: "{{ app_install_root }}/{{ app_repo_name }}"
   register: folder_stat
 
 - name: Find the NFS volume in fstab
