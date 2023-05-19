@@ -277,8 +277,50 @@ inputs:
   aws_eks_create:
     description: 'Define if an EKS cluster should be created'
     required: false
-  aws_eks_foo:
-    description: 'example variable'
+  aws_eks_region:
+    description: 'Define the region where EKS cluster should be created'
+    required: false
+  aws_eks_environment:
+    description: 'Specify the eks environment name. ex: dev or test'
+    required: false
+  aws_eks_stackname:
+    description: 'Specify the eks stack name for your environment. Ex: eks-test'
+    required: false  
+  aws_eks_cidr_block:
+    description: 'Define Base CIDR block which is divided into subnet CIDR blocks (e.g. `10.0.0.0/16`)'
+    required: false  
+  aws_eks_workstation_cidr:
+    description: 'Enter your local workstation public IP to add it to Worker nodes security groups' 
+    required: true 
+  aws_eks_availability_zones:
+    description: "List of Availability Zones, Ex: `['us-east-1a', 'us-east-1b', 'us-east-1c']`"
+    required: false 
+  aws_eks_private_subnets:
+    description:  "List of private subnets (e.g. `['10.0.1.0/24', '10.0.2.0/24']`)"
+    required: false 
+  aws_eks_public_subnets:
+    description:  "List of public subnets (e.g. `['10.0.101.0/24', '10.0.102.0/24']`)"
+    required: false 
+  aws_eks_cluster_version:
+    description: 'Specify the k8s cluster version'
+    required: false 
+  aws_eks_image_id:
+    description: 'enter the aws ami related to kubernetes version'
+    required: false 
+  aws_eks_instance_type:
+    description: 'enter the aws instance type'
+    required: false 
+  aws_eks_ec2_key_pair:
+    description: 'Enter the existing ec2 key pair for worker nodes'
+    required: true 
+  aws_eks_desired_capacity:
+    description: 'Enter the desired capacity for the worker nodes' 
+    required: false
+  aws_eks_max_size:
+    description: 'Enter the max_size for the worker nodes' 
+    required: false
+  aws_eks_min_size:
+    description: 'Enter the min_size for the worker nodes'
     required: false
 
   # Docker 
