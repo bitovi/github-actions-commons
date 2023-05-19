@@ -1,7 +1,7 @@
 - name: Stop and cleanup Docker
   docker_compose:
     project_src: "{{ app_install_root }}/{{ app_repo_name }}"
-    absent: true
+    state: absent
     remove_orphans: true
     remove_images: all
     remove_volumes: true
