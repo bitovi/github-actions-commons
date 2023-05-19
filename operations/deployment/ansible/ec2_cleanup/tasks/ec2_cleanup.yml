@@ -35,7 +35,7 @@
 - name: Compress folder without mounted EFS
   archive:
     path: "{{ app_install_root }}/{{ app_repo_name }}"
-    dest: "{{ app_install_root }}/{{ folder_stat.stat.path }}-{{ timestamp }}.tar.gz"
+    dest: "{{ app_install_root }}/{{ fapp_repo_name }}-{{ timestamp }}.tar.gz"
     format: gz
     force_archive: true
     remove: true
