@@ -456,7 +456,22 @@ runs:
 
         # AWS EKS
         AWS_EKS_CREATE: ${{ inputs.aws_eks_create }}
-        AWS_EKS_FOO: ${{ inputs.aws_eks_foo }}
+        AWS_EKS_REGION: ${{ inputs.aws_eks_region }}
+        AWS_EKS_ENVIRONMENT: ${{ inputs.aws_eks_environment }}
+        AWS_EKS_STACKNAME: ${{ inputs.aws_eks_stackname }}
+        AWS_EKS_CIDR_BLOCK: ${{ inputs.aws_eks_cidr_block }}
+        AWS_EKS_WORKSTATION_CIDR: ${{ inputs.aws_eks_workstation_cidr }}
+        AWS_EKS_AVAILABILITY_ZONES: ${{ inputs.aws_eks_availability_zones }}
+        AWS_EKS_PRIVATE_SUBNETS: ${{ inputs.aws_eks_private_subnets }}
+        AWS_EKS_PUBLIC_SUBNETS: ${{ inputs.aws_eks_public_subnets }}
+        AWS_EKS_CLUSTER_VERSION: ${{ inputs.aws_eks_cluster_version }}
+        AWS_EKS_IMAGE_ID: ${{ inputs.aws_eks_image_id }}
+        AWS_EKS_INSTANCE_TYPE: ${{ inputs.aws_eks_instance_type }}
+        AWS_EKS_EC2_KEY_PAIR: ${{ inputs.aws_eks_ec2_key_pair }}
+        AWS_EKS_DESIRED_CAPACITY: ${{ inputs.aws_eks_desired_capacity}}
+        AWS_EKS_MAX_SIZE: ${{ inputs.aws_eks_max_size }}
+        AWS_EKS_MIN_SIZE: ${{ inputs.aws_eks_min_size }}
+
 
         # Docker
         DOCKER_INSTALL: ${{ inputs.docker_install }}
