@@ -14,7 +14,6 @@
   register: output
   when: docker_check.rc == 0
 
-
 - name: Prune Docker system
   command: docker system prune --all --force --volumes
   when: docker_check.rc == 0
