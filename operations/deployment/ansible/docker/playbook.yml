@@ -1,4 +1,5 @@
-- hosts: bitops_servers
+- name: Docker tasks
+  hosts: bitops_servers
   become: true
   tasks:
   - name: Include install docker

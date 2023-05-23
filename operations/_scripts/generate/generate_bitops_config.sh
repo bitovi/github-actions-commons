@@ -59,9 +59,8 @@ create_bitops_terraform_config eks $AWS_EKS_CREATE
 #Will add the user_data file into the EC2 Terraform folder
 
 if [[ $(alpha_only "$AWS_EC2_INSTANCE_CREATE") == true ]]; then
-  echo "In first IF"
-  if [ -s "$GITHUB_WORKSPACE/$AWS_EC2_USER_DATA_FILE" ]; then
-      echo "In second IF"
+  if [ -s "$GITHUB_WORKSPACE/$AWS_EC2_USER_DATA_FILE" ] && [ -f "$GITHUB_WORKSPACE/$AWS_EC2_USER_DATA_FILE" ]; then
+      echo "Moving $AWS_EC2_USER_DATA_FILE to be used by Terraform during EC2 creation"
       mv "$GITHUB_WORKSPACE/$AWS_EC2_USER_DATA_FILE" "$GITHUB_ACTION_PATH/operations/deployment/terraform/ec2/aws_ec2_incoming_user_data_script.sh"
   fi
 fi
@@ -119,6 +118,22 @@ bitops:
   # Ansible Code part
 
   if [[ "$(alpha_only $ANSIBLE_SKIP)" != "true" ]] && [[ "$(alpha_only $AWS_EC2_INSTANCE_CREATE)" == "true" ]] && [[ "$(alpha_only $AWS_EC2_INSTANCE_PUBLIC_IP)" == "true" ]]; then
+    # Ansible - Docker cleanup
+    if [[ $(alpha_only "$DOCKER_FULL_CLEANUP") == true ]]; then
+        echo -en "
+    ansible/docker_cleanup:
+      plugin: ansible
+" >> $BITOPS_CONFIG_TEMP
+    fi
+
+    # Ansible - Instance cleanup
+    if [[ $(alpha_only "$DOCKER_REPO_APP_DIRECTORY_CLEANUP") == true ]]; then
+        echo -en "
+    ansible/ec2_cleanup:
+      plugin: ansible
+" >> $BITOPS_CONFIG_TEMP
+    fi
+
     # Ansible - Fetch repo
     echo -en "
     ansible/clone_repo:

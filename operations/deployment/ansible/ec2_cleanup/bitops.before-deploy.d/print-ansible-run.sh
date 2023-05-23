@@ -3,6 +3,6 @@
 set -e
 echo ""
 echo "###########################################################################"
-echo "              BitOps --> Executing Ansible Docker tasks"
+echo "              BitOps --> Executing Ansible EC2 Cleanup"
 echo "###########################################################################"
 echo ""

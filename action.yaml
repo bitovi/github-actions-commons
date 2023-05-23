@@ -189,6 +189,9 @@ inputs:
   aws_elb_create:
     description: 'Create a load balancer and map ports to the EC2 instance.'
     required: false
+  aws_elb_security_group_name:
+    description:  'The name of the ELB security group'
+    required: false
   aws_elb_app_port:
     description: 'Port to expose for the app'
     required: false
@@ -202,7 +205,7 @@ inputs:
     description: 'Protocol to enable. Could be HTTP, HTTPS, TCP or SSL. Defaults to TCP if NO FQDN provided, SSL if FQDN provided'
     required: false
   aws_elb_healthcheck: 
-    description: 'Load balancer health check string. Defaults to HTTP:aws_elb_app_port'
+    description: 'Load balancer health check string. Defaults to TCP:22'
     required: false
   
   # AWS EFS
@@ -211,6 +214,15 @@ inputs:
     required: false
   aws_efs_create_ha:
     description: 'Toggle to indicate whether the EFS resource should be highly available (target mounts in all available zones within region)'
+    required: false
+  aws_efs_mount_id:
+    description: 'ID of existing EFS'
+    required: false
+  aws_efs_mount_security_group_id:
+    description: 'ID of the primary security group used by the existing EFS'
+    required: false
+  aws_efs_security_group_name:
+    description:  'The name of the EFS security group'
     required: false
   aws_efs_create_replica:
     description: 'Toggle to indiciate whether a read-only replica should be created for the EFS primary file system'
@@ -226,12 +238,6 @@ inputs:
     required: false
   aws_efs_replication_destination:
     description: 'AWS Region to target for replication'
-    required: false
-  aws_efs_mount_id:
-    description: 'ID of existing EFS'
-    required: false
-  aws_efs_mount_security_group_id:
-    description: 'ID of the primary security group used by the existing EFS'
     required: false
   aws_efs_mount_target: 
     description: 'Directory path in the EFS volume to mount directory to. Default is /.'
@@ -250,6 +256,9 @@ inputs:
   aws_postgres_engine_version:
     description: 'Specify Postgres version'
     required: false
+  aws_postgres_database_group_family:
+    description: 'Postgres database group family'
+    required: false 
   aws_postgres_instance_class:
     description: 'Define the size of the instances in the DB cluster'
     required: false
@@ -262,7 +271,6 @@ inputs:
   aws_postgres_database_name:
     description: 'Specify a database name. Will be created if it does not exist'
     required: false
-    # TODO: create another user and point to that instead
   aws_postgres_database_port:
     description: 'Postgres database port'
     required: false
@@ -327,8 +335,14 @@ inputs:
   docker_install: 
     description: 'Define if docker should be installed. After this, docker-compose up will be excecuted.'
     required: false
+  docker_full_cleanup: 
+    description: 'Set to true to run docker-compose down and docker system prune --all --force --volumes after.'
+    required: false
   docker_repo_app_directory:
-    description: 'Relative path for the directory of the app (i.e. where `Dockerfile` and `docker-compose.yaml` files are located). This is the directory that is copied to the compute instance (EC2).  Default is the root of the repo.'
+    description: 'Relative path for the directory of the app (i.e. where `Dockerfile` and `docker-compose.yaml` files are located). This is the directory that is copied to the compute instance (EC2).  Default is the root of the repo. Add a .gha-ignore file with a list of files to be exluded. '
+    required: false
+  docker_repo_app_directory_cleanup:
+    description: 'Will generate a timestamped compressed file and delete the app repo directory.'
     required: false
   docker_efs_mount_target:
     description: 'Directory path within docker env to mount directory to, default is `/data`'
@@ -423,6 +437,7 @@ runs:
 
         # AWS ELB
         AWS_ELB_CREATE: ${{ inputs.aws_elb_create }}
+        AWS_ELB_SECURITY_GROUP_NAME: ${{ inputs.aws_elb_security_group_name }}
         AWS_ELB_APP_PORT: ${{ inputs.aws_elb_app_port }}
         AWS_ELB_APP_PROTOCOL: ${{ inputs.aws_elb_app_protocol }}
         AWS_ELB_LISTEN_PORT: ${{ inputs.aws_elb_listen_port }}
@@ -432,13 +447,14 @@ runs:
         # AWS EFS
         AWS_EFS_CREATE: ${{ inputs.aws_efs_create }}
         AWS_EFS_CREATE_HA: ${{ inputs.aws_efs_create_ha }}
+        AWS_EFS_MOUNT_ID: ${{ inputs.aws_efs_mount_id }}
+        AWS_EFS_MOUNT_SECURITY_GROUP_ID: ${{ inputs.aws_efs_mount_security_group_id }}
+        AWS_EFS_SECURITY_GROUP_NAME: ${{ inputs.aws_efs_security_group_name }}
         AWS_EFS_CREATE_REPLICA: ${{ inputs.aws_efs_create_replica }}
         AWS_EFS_ENABLE_BACKUP_POLICY: ${{ inputs.aws_efs_enable_backup_policy }}
         AWS_EFS_ZONE_MAPPING: ${{ inputs.aws_efs_zone_mapping }}
         AWS_EFS_TRANSITION_TO_INACTIVE: ${{ inputs.aws_efs_transition_to_inactive }}
         AWS_EFS_REPLICATION_DESTINATION: ${{ inputs.aws_efs_replication_destination }}
-        AWS_EFS_MOUNT_ID: ${{ inputs.aws_efs_mount_id }}
-        AWS_EFS_MOUNT_SECURITY_GROUP_ID: ${{ inputs.aws_efs_mount_security_group_id }}
         AWS_EFS_MOUNT_TARGET: ${{ inputs.aws_efs_mount_target }}
         AWS_EFS_EC2_MOUNT_POINT: ${{ inputs.aws_efs_ec2_mount_point }}
 
@@ -446,6 +462,7 @@ runs:
         AWS_POSTGRES_ENABLE: ${{ inputs.aws_postgres_enable }}
         AWS_POSTGRES_ENGINE:  ${{ inputs.aws_postgres_engine }}
         AWS_POSTGRES_ENGINE_VERSION:  ${{ inputs.aws_postgres_engine_version }}
+        AWS_POSTGRES_DATABASE_GROUP_FAMILY:  ${{ inputs.aws_postgres_database_group_family }}
         AWS_POSTGRES_INSTANCE_CLASS: ${{ inputs.aws_postgres_instance_class }}
         AWS_POSTGRES_SECURITY_GROUP_NAME: ${{ inputs.aws_postgres_security_group_name }}
         AWS_POSTGRES_SUBNETS: ${{ inputs.aws_postgres_subnets }}
@@ -475,14 +492,17 @@ runs:
 
         # Docker
         DOCKER_INSTALL: ${{ inputs.docker_install }}
+        DOCKER_FULL_CLEANUP: ${{ inputs.docker_full_cleanup }}
         DOCKER_REPO_APP_DIRECTORY: ${{ inputs.docker_repo_app_directory }}
+        DOCKER_REPO_APP_DIRECTORY_CLEANUP: ${{ inputs.docker_repo_app_directory_cleanup }}
         DOCKER_EFS_MOUNT_TARGET: ${{ inputs.docker_efs_mount_target }}
 
       run: |
-        echo "running operations/_scripts/deploy/deploy.sh"
+        echo "Running operations/_scripts/deploy/deploy.sh"
         $GITHUB_ACTION_PATH/operations/_scripts/deploy/deploy.sh
-        echo "running operations/_scripts/deploy/export_vars.sh"
+        echo "Running operations/_scripts/deploy/export_vars.sh"
         $GITHUB_ACTION_PATH/operations/_scripts/deploy/export_vars.sh
+        echo "Finished executions - Now to print results"
 
     # output results to GitHub
     - if: ${{ success() && steps.deploy.outputs.vm_url != '' }}
@@ -492,7 +512,7 @@ runs:
         echo "## VM Created! :rocket:" >> $GITHUB_STEP_SUMMARY
         echo " ${{ steps.deploy.outputs.vm_url }}" >> $GITHUB_STEP_SUMMARY
     - if: ${{ success() && steps.deploy.outputs.vm_url == '' && inputs.bitops_code_only == 'true' && inputs.bitops_code_store == 'true' }}
-      name: Print code built
+      name: Print code generated and archived
       shell: bash
       run: |
         echo "## BitOps Code generated. :tada: " >> $GITHUB_STEP_SUMMARY
@@ -501,25 +521,25 @@ runs:
         echo "While destroying, EC2 should be destroyed before EFS. (Due to resources being in use)."
         echo "You can change that in the bitops.config.yaml file, or regenerate the code with destroy set."
     - if: ${{ success() && steps.deploy.outputs.vm_url == '' && inputs.bitops_code_only == 'true' && inputs.bitops_code_store != 'true' }}
-      name: Print code built
+      name: Print code built not archived
       shell: bash
       run: |
         echo "## BitOps Code generated. :tada: " >> $GITHUB_STEP_SUMMARY
     - if: ${{ success() && steps.deploy.outputs.vm_url == '' && inputs.tf_stack_destroy != 'true' && inputs.bitops_code_only != 'true' }}
-      name: Print result destroyed
+      name: Print result deploy finished but no URL.
       shell: bash
       run: |
         echo "## Deploy finished! But no URL found. :thinking: " >> $GITHUB_STEP_SUMMARY
         echo "If expecting an URL, please check the logs for possible  errors." >> $GITHUB_STEP_SUMMARY
         echo "If you consider this is a bug in the Github Action, please submit an issue to our repo." >> $GITHUB_STEP_SUMMARY
     - if: ${{ success() && steps.deploy.outputs.vm_url == '' && inputs.tf_stack_destroy == 'true' && inputs.tf_state_bucket_destroy != 'true' }}
-      name: Print result destroyed
+      name: Print result destroyed no bucket
       shell: bash
       run: |
         echo "## VM Destroyed! :boom:" >> $GITHUB_STEP_SUMMARY
         echo "Infrastructure should be gone now!" >> $GITHUB_STEP_SUMMARY
     - if: ${{ success() && steps.deploy.outputs.vm_url == '' && inputs.tf_stack_destroy == 'true' && inputs.tf_state_bucket_destroy == 'true' }}
-      name: Print result destroyed
+      name: Print result destroyed with bucket
       shell: bash
       run: |
         echo "## VM Destroyed! :boom:" >> $GITHUB_STEP_SUMMARY

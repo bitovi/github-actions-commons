@@ -9,11 +9,16 @@ if [ -n "$DOCKER_REPO_APP_DIRECTORY" ]; then
     TARGET_PATH="${TARGET_PATH}/${DOCKER_REPO_APP_DIRECTORY}"
 fi
 
+
 mkdir -p "${GITHUB_ACTION_PATH}/operations/deployment/$1/app/${GITHUB_REPO_NAME}"
 
 if [ $(find "$TARGET_PATH/." -iname "*"  -not -name "."| wc -l) -gt 0 ]; then 
   echo "Copying files from $TARGET_PATH to ops repo's Ansible $1 deployment (${GITHUB_ACTION_PATH}/operations/deployment/$1/app/${GITHUB_REPO_NAME})"
-  cp -rf "$TARGET_PATH"/* "${GITHUB_ACTION_PATH}/operations/deployment/$1/app/${GITHUB_REPO_NAME}/"
+  if [ -f "$TARGET_PATH/.gha-ignore" ]; then
+    rsync -a --exclude-from="$TARGET_PATH/.gha-ignore" "$TARGET_PATH"/ "${GITHUB_ACTION_PATH}/operations/deployment/$1/app/${GITHUB_REPO_NAME}/"
+  else
+    rsync -a "$TARGET_PATH"/ "${GITHUB_ACTION_PATH}/operations/deployment/$1/app/${GITHUB_REPO_NAME}/"
+  fi
 else 
   echo "Nothing to copy from repo"
 fi

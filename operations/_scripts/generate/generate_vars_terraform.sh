@@ -147,6 +147,7 @@ fi
 #-- AWS ELB --#
 if [[ $(alpha_only "$AWS_ELB_CREATE") == true ]]; then
   aws_elb_create=$(generate_var aws_elb_create $AWS_ELB_CREATE)
+  aws_elb_security_group_name=$(generate_var aws_elb_security_group_name $AWS_ELB_SECURITY_GROUP_NAME)
   aws_elb_app_port=$(generate_var aws_elb_app_port $AWS_ELB_APP_PORT)
   aws_elb_app_protocol=$(generate_var aws_elb_app_protocol $AWS_ELB_APP_PROTOCOL)
   aws_elb_listen_port=$(generate_var aws_elb_listen_port $AWS_ELB_LISTEN_PORT)
@@ -158,13 +159,14 @@ fi
 if [[ $(alpha_only "$AWS_EFS_CREATE") == true ]] || [[ $(alpha_only "$AWS_EFS_CREATE_HA") == true ]] || [[ $AWS_EFS_MOUNT_ID != "" ]]; then
   aws_efs_create=$(generate_var aws_efs_create $AWS_EFS_CREATE)
   aws_efs_create_ha=$(generate_var aws_efs_create_ha $AWS_EFS_CREATE_HA)
+  aws_efs_mount_id=$(generate_var aws_efs_mount_id $AWS_EFS_MOUNT_ID)
+  aws_efs_mount_security_group_id=$(generate_var aws_efs_mount_security_group_id $AWS_EFS_MOUNT_SECURITY_GROUP_ID)
+  aws_efs_security_group_name=$(generate_var aws_efs_security_group_name $AWS_EFS_SECURITY_GROUP_NAME)
   aws_efs_create_replica=$(generate_var aws_efs_create_replica $AWS_EFS_CREATE_REPLICA)
   aws_efs_enable_backup_policy=$(generate_var aws_efs_enable_backup_policy $AWS_EFS_ENABLE_BACKUP_POLICY)
   aws_efs_zone_mapping=$(generate_var aws_efs_zone_mapping $AWS_EFS_ZONE_MAPPING)
   aws_efs_transition_to_inactive=$(generate_var aws_efs_transition_to_inactive $AWS_EFS_TRANSITION_TO_INACTIVE)
   aws_efs_replication_destination=$(generate_var aws_efs_replication_destination $AWS_EFS_REPLICATION_DESTINATION)
-  aws_efs_mount_id=$(generate_var aws_efs_mount_id $AWS_EFS_MOUNT_ID)
-  aws_efs_mount_security_group_id=$(generate_var aws_efs_mount_security_group_id $AWS_EFS_MOUNT_SECURITY_GROUP_ID)
   aws_efs_mount_target=$(generate_var aws_efs_mount_target $AWS_EFS_MOUNT_TARGET)
   aws_efs_ec2_mount_point=$(generate_var aws_efs_ec2_mount_point $AWS_EFS_EC2_MOUNT_POINT)
 fi
@@ -174,6 +176,7 @@ if [[ $(alpha_only "$AWS_POSTGRES_ENABLE") == true ]]; then
   aws_postgres_enable=$(generate_var aws_postgres_enable $AWS_POSTGRES_ENABLE)
   aws_postgres_engine=$(generate_var aws_postgres_engine $AWS_POSTGRES_ENGINE)
   aws_postgres_engine_version=$(generate_var aws_postgres_engine_version $AWS_POSTGRES_ENGINE_VERSION)
+  aws_postgres_database_group_family=$(generate_var aws_postgres_database_group_family $AWS_POSTGRES_DATABASE_GROUP_FAMILY)
   aws_postgres_instance_class=$(generate_var aws_postgres_instance_class $AWS_POSTGRES_INSTANCE_CLASS)
   aws_postgres_security_group_name=$(generate_var aws_postgres_security_group_name $AWS_POSTGRES_SECURITY_GROUP_NAME )
   # aws_postgres_subnets=$(generate_var aws_postgres_subnets $AWS_POSTGRES_SUBNETS) - Special case
@@ -277,6 +280,7 @@ $aws_r53_create_root_cert
 $aws_r53_create_sub_cert
 
 #-- ELB --#
+$aws_elb_security_group_name
 $aws_elb_app_port
 $aws_elb_app_protocol
 $aws_elb_listen_port
@@ -287,13 +291,14 @@ $lb_access_bucket_name
 #-- EFS --#
 $aws_efs_create
 $aws_efs_create_ha
+$aws_efs_mount_id
+$aws_efs_mount_security_group_id
+$aws_efs_security_group_name
 $aws_efs_create_replica
 $aws_efs_enable_backup_policy
 $aws_efs_zone_mapping
 $aws_efs_transition_to_inactive
 $aws_efs_replication_destination
-$aws_efs_mount_id
-$aws_efs_mount_security_group_id
 $aws_efs_mount_target
 $aws_efs_ec2_mount_point
 
@@ -301,6 +306,7 @@ $aws_efs_ec2_mount_point
 $aws_postgres_enable
 $aws_postgres_engine
 $aws_postgres_engine_version
+$aws_postgres_database_group_family
 $aws_postgres_instance_class
 $aws_postgres_security_group_name
 $aws_postgres_subnets

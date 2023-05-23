@@ -162,11 +162,13 @@ The following inputs can be used as `step.with` keys
 #### **Load Balancer Inputs**
 | Name             | Type    | Description                        |
 |------------------|---------|------------------------------------|
-| `aws_elb_app_port` | String | Port to be expose for the container. Default is `3000` | 
+| `aws_elb_create` | Boolean | Set this to true to create a load balancer and map ports to the EC2 instance.'|
+| `aws_elb_security_group_name` | String | The name of the ELB security group. Defaults to `SG for ${aws_resource_identifier} - ELB`. |
+| `aws_elb_app_port` | String | Port in the EC2 instance to be redirected to. Default is `3000` | 
 | `aws_elb_app_protocol` | String | Protocol to enable. Could be HTTP, HTTPS, TCP or SSL. Defaults to TCP. |
 | `aws_elb_listen_port` | String | Load balancer listening port. Default is `80` if NO FQDN provided, `443` if FQDN provided. |
-| `aws_elb_listen_protocol` | String | Protocol to enable. Could be HTTP, HTTPS, TCP or SSL. Defaults to TCP if NO FQDN provided, SSL if FQDN provided. |
-| `aws_elb_healthcheck` | String | Load balancer health check string. Default is `HTTP:aws_elb_app_port`. |
+| `aws_elb_listen_protocol` | String | Protocol to enable. Could be HTTP, HTTPS, TCP or SSL. Defaults to `TCP` if NO FQDN provided, `SSL` if FQDN provided. |
+| `aws_elb_healthcheck` | String | Load balancer health check string. Default is `TCP:22`. |
 <hr/>
 <br/>
 
@@ -175,13 +177,14 @@ The following inputs can be used as `step.with` keys
 |------------------|---------|------------------------------------|
 | `aws_efs_create` | Boolean | Toggle to indicate whether to create and EFS and mount it to the ec2 as a part of the provisioning. Note: The EFS will be managed by the stack and will be destroyed along with the stack |
 | `aws_efs_create_ha` | Boolean | Toggle to indicate whether the EFS resource should be highly available (target mounts in all available zones within region) |
+| `aws_efs_mount_id` | String | ID of existing EFS. |
+| `aws_efs_mount_security_group_id` | String | ID of the primary security group used by the existing EFS. |
+| `aws_efs_security_group_name` | String | The name of the EFS security group. Defaults to `SG for ${aws_resource_identifier} - EFS`. |
 | `aws_efs_create_replica` | Boolean | Toggle to indiciate whether a read-only replica should be created for the EFS primary file system |
 | `aws_efs_enable_backup_policy` | Boolean | Toggle to indiciate whether the EFS should have a backup policy |
 | `aws_efs_zone_mapping` | JSON | Zone Mapping in the form of `{\"<availabillity zone>\":{\"subnet_id\":\"subnet-abc123\", \"security_groups\":\[\"sg-abc123\"\]} }` |
 | `aws_efs_transition_to_inactive` | String | Indicates how long it takes to transition files to the IA storage class. |
 | `aws_efs_replication_destination` | String | AWS Region to target for replication. |
-| `aws_efs_mount_id` | String | ID of existing EFS. |
-| `aws_efs_mount_security_group_id` | String | ID of the primary security group used by the existing EFS. |
 | `aws_efs_mount_target` | String | Directory path in efs to mount directory to. Default is `/`. |
 | `aws_efs_ec2_mount_point` | String | The aws_efs_ec2_mount_point input represents the folder path within the EC2 instance to the data directory. Default is `/user/ubuntu/<application_repo>/data`. Additionally this value is loaded into the docker-compose `.env` file as `HOST_DIR`. |
 <hr/>
@@ -190,9 +193,10 @@ The following inputs can be used as `step.with` keys
 #### **RDS Inputs**
 | Name             | Type    | Description                        |
 |------------------|---------|------------------------------------|
-| `aws_postgres_enable` | Boolean | Set to "true" to enable a postgres database. |
+| `aws_postgres_enable` | Boolean | Set to `true` to enable a postgres database. |
 | `aws_postgres_engine` | String |  Which Database engine to use. Default is `aurora-postgresql`.|
 | `aws_postgres_engine_version` | String |  Specify Postgres version.  More information [here](https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/AuroraPostgreSQL.Updates.20180305.html). Default is `11.13`. |
+| `aws_postgres_database_group_family` | String | Specify aws database group family. Default is `aurora-postgresql11`. See [this](https://awscli.amazonaws.com/v2/documentation/api/latest/reference/rds/create-db-parameter-group.html).|
 | `aws_postgres_instance_class` | String | Define the size of the instances in the DB cluster. Default is `db.t3.medium`. | 
 | `aws_postgres_security_group_name` | String | The name of the Postgres security group. Defaults to `SG for ${aws_resource_identifier} - PG`. |
 | `aws_postgres_subnets` | String | Specify which subnets to use as a list of strings.  Example: `i-1234,i-5678,i-9101`. |
@@ -206,8 +210,10 @@ The following inputs can be used as `step.with` keys
 #### **Docker Inputs**
 | Name             | Type    | Description                        |
 |------------------|---------|------------------------------------|
-| `docker_install` | Boolean | Set to "true" to enable docker installation through Ansible. docker-compose up will be excecuted after. |
-| `docker_repo_app_directory` | String | Relative path for the directory of the app. (i.e. where the `docker-compose.yaml` file is located). This is the directory that is copied into the EC2 instance. Default is `/`, the root of the repository. |
+| `docker_install` | Boolean | Set to `true` to enable docker installation through Ansible. `docker-compose up` will be excecuted after. |
+| `docker_full_cleanup` | Boolean | Set to `true` to run `docker-compose down` and `docker system prune --all --force --volumes` after. Runs before `docker_install`. WARNING: docker volumes will be destroyed. |
+| `docker_repo_app_directory` | String | Relative path for the directory of the app. (i.e. where the `docker-compose.yaml` file is located). This is the directory that is copied into the EC2 instance. Default is `/`, the root of the repository. Add a `.gha-ignore` file with a list of files to be exluded. |
+| `docker_repo_app_directory_cleanup` | Boolean | Will generate a timestamped compressed file (in the home directory of the instance) and delete the app repo directory. Runs before `docker_install` and after `docker_full_cleanup`. |
 | `docker_efs_mount_target` | String | Directory path within docker env to mount directory to. Default is `/data`|
 <hr/>
 <br/>
