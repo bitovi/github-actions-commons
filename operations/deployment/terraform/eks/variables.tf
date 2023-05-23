@@ -441,6 +441,7 @@ variable "aws_eks_instance_type" {
 variable "aws_eks_ec2_key_pair" {
   description = "Enter the existing ec2 key pair for worker nodes"
   type        = string
+  default     = "bitovi-devops-deploy-eks"
 }
 
 variable "aws_eks_desired_capacity" {
