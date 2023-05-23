@@ -291,7 +291,7 @@ inputs:
     required: false  
   aws_eks_workstation_cidr:
     description: 'Enter your local workstation public IP to add it to Worker nodes security groups' 
-    required: true 
+    required: false 
   aws_eks_availability_zones:
     description: "List of Availability Zones, Ex: `['us-east-1a', 'us-east-1b', 'us-east-1c']`"
     required: false 
@@ -312,7 +312,7 @@ inputs:
     required: false 
   aws_eks_ec2_key_pair:
     description: 'Enter the existing ec2 key pair for worker nodes'
-    required: true 
+    required: false 
   aws_eks_desired_capacity:
     description: 'Enter the desired capacity for the worker nodes' 
     required: false
