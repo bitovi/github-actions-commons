@@ -5,6 +5,7 @@
     build: yes
     recreate: always
     nocache: yes
+    pull: true
   register: output
 
 - ansible.builtin.debug:
