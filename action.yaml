@@ -313,10 +313,10 @@ inputs:
     description:  "SG for ${var.aws_resource_identifier} - ${var.aws_eks_environment} - EKS Worker"
     required: false
   aws_eks_environment:
-    description: 'Specify the eks environment name. ex: dev or test'
+    description: 'Specify the eks environment name. Defaults to env'
     required: false
   aws_eks_stackname:
-    description: 'Specify the eks stack name for your environment. Ex: eks-test --> eks-$aws_eks_environment'
+    description: 'Specify the eks stack name for your environment. Defaults to eks-stack'
     required: false  
   aws_eks_cidr_block:
     description: 'Define Base CIDR block which is divided into subnet CIDR blocks (e.g. `10.0.0.0/16`)'
@@ -334,7 +334,7 @@ inputs:
     description:  "List of public subnets (e.g. `['10.0.101.0/24', '10.0.102.0/24']`)"
     required: false 
   aws_eks_cluster_name:
-    description: "- Defaults to $env-eks-cluster"
+    description: "EKS Cluster name. Defaults to eks-cluster"
     required: false
   aws_eks_cluster_log_types:
     description: "EKS Log types, csv list"
