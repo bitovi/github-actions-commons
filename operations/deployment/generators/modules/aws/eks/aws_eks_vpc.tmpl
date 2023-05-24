@@ -1,6 +1,6 @@
 module "eks_vpc" {
   source             = "terraform-aws-modules/vpc/aws"
-  name               = var.aws_eks_vpc_name != "" ? var.aws_eks_vpc_name : "VPC for ${var.eks_cluster_name} - EKS"
+  name               = var.aws_eks_vpc_name != "" ? var.aws_eks_vpc_name : "VPC for ${var.aws_eks_cluster_name} - EKS"
   cidr               = var.aws_eks_cidr_block
   azs                = var.aws_eks_availability_zones
   private_subnets    = var.aws_eks_private_subnets
