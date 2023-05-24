@@ -351,6 +351,11 @@ variable "aws_eks_security_group_name_worker" {
   default     = ""
 }
 
+variable "aws_eks_vpc_name" {
+  description = "aws aws_eks_security_group_name_worker name"
+  type        = string
+  default     = ""
+}
 
 variable "aws_eks_environment" {
   description = "eks environment name"
