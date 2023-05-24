@@ -7,6 +7,8 @@ echo "BitOps --> Moving Terraform generated files to be excecuted by Terraform..
 echo "###########################################################################"
 echo ""
 
+## TODO: Rewrite this to a function
+
 rm "${BITOPS_ENVROOT}/generators/generator.tf"
 rm "${BITOPS_ENVROOT}/generators/variables.tf"
 rm "${BITOPS_ENVROOT}/generators/terraform.tfvars"

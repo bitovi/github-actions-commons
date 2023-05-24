@@ -150,7 +150,11 @@ variable "aws_r53_create_sub_cert" {
 
 
 # AWS ELB
-
+variable "aws_elb_security_group_name" {
+  type        = string
+  default     = ""
+  description = "Name of the security group to use"
+}
 
 variable "aws_elb_app_port" {
   type        = string
@@ -178,8 +182,8 @@ variable "aws_elb_listen_protocol" {
 
 variable "aws_elb_healthcheck" {
   type        = string
-  default     = ""
-  description = "Load balancer health check string. Defaults to HTTP:aws_elb_app_port"
+  default     = "TCP:22"
+  description = "Load balancer health check string. Defaults to TCP:22"
 }
 
 # AWS EFS
@@ -194,6 +198,24 @@ variable "aws_efs_create_ha" {
   type        = bool
   description = "Toggle to indicate whether the EFS resource should be highly available (target mounts in all available zones within region)."
   default     = false
+}
+
+variable "aws_efs_mount_id" {
+  type        = string
+  description = "ID of existing EFS"
+  default     = null
+}
+
+variable "aws_efs_mount_security_group_id" {
+  type        = string
+  description = "ID of the primary security group used by the existing EFS"
+  default     = null
+}
+
+variable "aws_efs_security_group_name" {
+  type        = string
+  default     = ""
+  description = "Name of the security group to use"
 }
 
 variable "aws_efs_create_replica" {
@@ -230,18 +252,6 @@ variable "aws_efs_replication_destination" {
   description = "AWS Region to target for replication"
 }
 
-variable "aws_efs_mount_id" {
-  type        = string
-  description = "ID of existing EFS"
-  default     = null
-}
-
-variable "aws_efs_mount_security_group_id" {
-  type        = string
-  description = "ID of the primary security group used by the existing EFS"
-  default     = null
-}
-
 variable "aws_efs_mount_target" {
   type        = string
   description = "Directory path in efs to mount to"
@@ -270,6 +280,11 @@ variable "aws_postgres_engine_version" {
   type        = string
   description = "The version of the engine to use for postgres.  Defaults to `11.13`."
   default     = "11.13"
+}
+variable "aws_postgres_database_group_family" {
+  type        = string
+  default     = "aurora-postgresql11"
+  description = "postgres group family"
 }
 variable "aws_postgres_instance_class" {
   type        = string
@@ -317,66 +332,25 @@ variable "docker_efs_mount_target" {
   default     = "/data"
 }
 
-
-#### END OF ACTION VARIABLES INPUTS
-
-variable "app_repo_name" {
-  type        = string
-  description = "GitHub Repo Name"
-}
-variable "app_org_name" {
-  type        = string
-  description = "GitHub Org Name"
-}
-variable "app_branch_name" {
-  type        = string
-  description = "GitHub Branch Name"
-}
-
-variable "app_install_root" {
-  type        = string
-  description = "Path on the instance where the app will be cloned (do not include app_repo_name)."
-  default     = "/home/ubuntu"
-}
-
-variable "os_system_user" {
-  type        = string
-  description = "User for the OS"
-  default     = "ubuntu"
-}
-
-variable "ops_repo_environment" {
-  type        = string
-  description = "Ops Repo Environment (i.e. directory name)"
-}
-
-# AWS Common
-
-variable "availability_zone" {
-  type        = string
-  default     = null
-  description = "The AZ zone to deploy resources to"
-}
-
-# EC2 
-
-
-# POSTGRES
-
-
-# ELB
-variable "lb_access_bucket_name" {
-  type        = string
-  description = "s3 bucket for the lb access logs"
-}
-
-
 # EKS
 variable "aws_eks_region" {
   description = "aws region name"
   type        = string
   default = "us-east-1"
 }
+
+variable "aws_eks_security_group_name_master" {
+  description = "aws aws_eks_security_group_name_master name"
+  type        = string
+  default     = ""
+}
+
+variable "aws_eks_security_group_name_worker" {
+  description = "aws aws_eks_security_group_name_worker name"
+  type        = string
+  default     = ""
+}
+
 
 variable "aws_eks_environment" {
   description = "eks environment name"
@@ -418,6 +392,18 @@ variable "aws_eks_public_subnets" {
   type        = list(string)
   description = "List of public subnets (e.g. `['10.0.101.0/24', '10.0.102.0/24']`)"
   default = [ "10.0.101.0/24","10.0.102.0/24" ]
+}
+
+variable "aws_eks_cluster_name" {
+  description = "kubernetes cluster name"
+  type        = string
+  default     = ""
+}
+
+variable "aws_eks_cluster_log_types" {
+  description = "enter the kubernetes version"
+  type        = list(string)
+  default     = []
 }
 
 variable "aws_eks_cluster_version" {
@@ -462,5 +448,51 @@ variable "aws_eks_min_size" {
   default     = "2"
 }
 
-# Need an empty line to append incoming variables. 
+#### END OF ACTION VARIABLES INPUTS
+#### The following are not being exposed directly to the end user
 
+variable "app_repo_name" {
+  type        = string
+  description = "GitHub Repo Name"
+}
+variable "app_org_name" {
+  type        = string
+  description = "GitHub Org Name"
+}
+variable "app_branch_name" {
+  type        = string
+  description = "GitHub Branch Name"
+}
+
+variable "app_install_root" {
+  type        = string
+  description = "Path on the instance where the app will be cloned (do not include app_repo_name)."
+  default     = "/home/ubuntu"
+}
+
+variable "os_system_user" {
+  type        = string
+  description = "User for the OS"
+  default     = "ubuntu"
+}
+
+variable "ops_repo_environment" {
+  type        = string
+  description = "Ops Repo Environment (i.e. directory name)"
+}
+
+# AWS Common
+
+variable "availability_zone" {
+  type        = string
+  default     = null
+  description = "The AZ zone to deploy resources to"
+}
+
+# ELB
+variable "lb_access_bucket_name" {
+  type        = string
+  description = "s3 bucket for the lb access logs"
+}
+
+# Need an empty line to append incoming variables. 
