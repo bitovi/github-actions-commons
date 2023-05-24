@@ -21,9 +21,9 @@ module "rds" {
   source = "./modules/aws/rds"
 }
 
-#module "eks" {
-#  source = "./modules/aws/eks"
-#}
+module "eks" {
+  source = "./modules/aws/eks"
+}
 
 # Optional modules
 module "certificates" {
