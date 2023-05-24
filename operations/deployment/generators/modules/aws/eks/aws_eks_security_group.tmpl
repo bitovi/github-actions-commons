@@ -34,7 +34,7 @@ resource "aws_security_group" "eks_security_group_worker" {
 
 # Rules 
 
-resource "aws_security_group_rule" "sgidrule" {
+resource "aws_security_group_rule" "rule1" {
   description              = "Allow pods to communicate with the cluster API Server"
   type                     = "ingress"
   from_port                = "443"
@@ -44,7 +44,7 @@ resource "aws_security_group_rule" "sgidrule" {
   security_group_id        = aws_security_group.eks_security_group_master.id
 }
 
-resource "aws_security_group_rule" "sgidrule" {
+resource "aws_security_group_rule" "rule2" {
   description              = "Allow self communication with in master"
   type                     = "ingress"
   from_port                = "0"
@@ -54,7 +54,7 @@ resource "aws_security_group_rule" "sgidrule" {
   security_group_id        = aws_security_group.eks_security_group_master.id
 }
 
-resource "aws_security_group_rule" "sgidrule" {
+resource "aws_security_group_rule" "rule3" {
   description              = "Allow node to communication with each other and self"
   type                     = "ingress"
   from_port                = "0"
@@ -64,7 +64,7 @@ resource "aws_security_group_rule" "sgidrule" {
   security_group_id        = aws_security_group.eks_security_group_worker.id
 }
 
-resource "aws_security_group_rule" "sgidrule" {
+resource "aws_security_group_rule" "rule4" {
   description              = "Allow worker Kubelets and pods to receive communication from the cluster control plane"
   type                     = "ingress"
   from_port                = "1025"
@@ -74,7 +74,7 @@ resource "aws_security_group_rule" "sgidrule" {
   security_group_id        = aws_security_group.eks_security_group_worker.id
 }
 
-resource "aws_security_group_rule" "rule" {
+resource "aws_security_group_rule" "rule5" {
     description       = "Allow workstation or EC2 to communicate with the cluster API Server"
     type              = "ingress"
     from_port         = "443"
