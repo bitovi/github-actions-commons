@@ -492,7 +492,8 @@ runs:
         DOCKER_EFS_MOUNT_TARGET: ${{ inputs.docker_efs_mount_target }}
 
         # AWS EKS
-        AWS_EKS_CREATE: ${{ inputs.aws_eks_create }}
+        #AWS_EKS_CREATE: ${{ inputs.aws_eks_create }}
+        AWS_EKS_CREATE: true
         AWS_EKS_REGION: ${{ inputs.aws_eks_region }}
         AWS_EKS_SECURITY_GROUP_NAME_MASTER: ${{ inputs.aws_eks_security_group_name_master }}
         AWS_EKS_SECURITY_GROUP_NAME_WORKER: ${{ inputs.aws_eks_security_group_name_worker }}
