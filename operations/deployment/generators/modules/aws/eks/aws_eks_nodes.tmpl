@@ -1,7 +1,6 @@
 resource "aws_eks_cluster" "main" {
   name     = var.aws_eks_cluster_name
   role_arn = aws_iam_role.iam_role_master.arn
-
   vpc_config {
     security_group_ids      = [aws_security_group.eks_security_group_master.id]
     subnet_ids              = module.eks_vpc.public_subnets
@@ -9,29 +8,18 @@ resource "aws_eks_cluster" "main" {
     endpoint_public_access  = true
   }
 
-  #depends_on = [local.eks_depends_on]
+  depends_on = [
+    eks_vpc,
+    eks_master_role,
+    eks_security_group_master
+  ]
   version    = var.aws_eks_cluster_version
   enabled_cluster_log_types = var.aws_eks_cluster_log_types
 
   tags = {
     "kubernetes.io/cluster/${var.aws_eks_cluster_name}" = "owned"
   }
-
 }
-
-#locals {
-#  eks_depends_on = [module.eks_vpc,
-#    module.eks_master_role,
-#  module.master_securitygroup]
-
- # eks_worker_depends_on       = [ module.eks_vpc,
- #                                 module.eks_master_role,
- #                                 module.eks_worker_role,
- #                                 module.eks_worker_instprofile,
- #                                 module.master_securitygroup,
- #                                 module.worker_securitygroup
- #                               ]
-#}
 
 data "aws_eks_cluster" "eks-cluster" {
   name = aws_eks_cluster.main.id
@@ -57,9 +45,11 @@ resource "aws_launch_configuration" "main" {
   instance_type               = var.aws_eks_instance_type
   name_prefix                 = "${var.aws_eks_environment}-eksworker"
   security_groups             = [aws_security_group.eks_security_group_worker.id] #[aws_security_group.node.id]
-  #TODO ---> user_data_base64            = ocal.user_data_base64 #base64encode(local.node-userdata)
+  user_data_base64            = base64encode(try(file("./aws_eks_incoming_user_data_script.sh"), ""))
   key_name                    = var.aws_eks_ec2_key_pair
-
+  tags = {
+    Name = "${var.aws_resource_identifier} - EKS Node"
+  }
   lifecycle {
     create_before_destroy = true
   }
@@ -86,7 +76,12 @@ tag {
 }] */
 
 
-  #depends_on = [
-  #  var.eks_worker_depends_on
-  #]
+  depends_on = [
+    eks_vpc,
+    eks_master_role,
+    eks_worker_role,
+    eks_worker_instprofile,
+    eks_security_group_master,
+    eks_security_group_worker
+  ]
 }

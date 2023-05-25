@@ -57,11 +57,17 @@ create_bitops_terraform_config ec2 $AWS_EC2_INSTANCE_CREATE targets
 create_bitops_terraform_config eks $AWS_EKS_CREATE
 
 #Will add the user_data file into the EC2 Terraform folder
-
 if [[ $(alpha_only "$AWS_EC2_INSTANCE_CREATE") == true ]]; then
   if [ -s "$GITHUB_WORKSPACE/$AWS_EC2_USER_DATA_FILE" ] && [ -f "$GITHUB_WORKSPACE/$AWS_EC2_USER_DATA_FILE" ]; then
       echo "Moving $AWS_EC2_USER_DATA_FILE to be used by Terraform during EC2 creation"
       mv "$GITHUB_WORKSPACE/$AWS_EC2_USER_DATA_FILE" "$GITHUB_ACTION_PATH/operations/deployment/terraform/ec2/aws_ec2_incoming_user_data_script.sh"
+  fi
+fi
+#Will add the user_data file into the EKS Terraform folder
+if [[ $(alpha_only "$AWS_EKS_CREATE") == true ]]; then
+  if [ -s "$GITHUB_WORKSPACE/$AWS_EKS_USER_DATA_FILE" ] && [ -f "$GITHUB_WORKSPACE/$AWS_EKS_USER_DATA_FILE" ]; then
+      echo "Moving $AWS_EKS_USER_DATA_FILE to be used by Terraform during EKS Nodes creation"
+      mv "$GITHUB_WORKSPACE/$AWS_EKS_USER_DATA_FILE" "$GITHUB_ACTION_PATH/operations/deployment/terraform/eks/aws_eks_incoming_user_data_script.sh"
   fi
 fi
 # Below we will be creating the config file, one for the action itself, other to store as an artifact after. 
