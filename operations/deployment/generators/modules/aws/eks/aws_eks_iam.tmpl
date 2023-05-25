@@ -2,8 +2,8 @@ resource "aws_iam_instance_profile" "eks_inst_profile" {
   name = "${var.aws_eks_environment}-eks-inst-profile"
   path = "/"
   role = "${var.aws_eks_environment}-eksworker"
-  depends_on  = [aws_security_group.eks_worker_role]
-}
+  depends_on  = [aws_iam_role.iam_role_worker]
+  }
 
 resource "aws_iam_role" "iam_role_master" {
   name               = "${var.aws_eks_environment}-eksmaster"

@@ -9,9 +9,9 @@ resource "aws_eks_cluster" "main" {
   }
 
   depends_on = [
-    eks_vpc,
-    eks_master_role,
-    eks_security_group_master
+    module.eks_vpc,
+    aws_security_group.eks_master_role,
+    aws_security_group.eks_worker_role
   ]
   version    = var.aws_eks_cluster_version
   enabled_cluster_log_types = var.aws_eks_cluster_log_types
