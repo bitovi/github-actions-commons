@@ -77,11 +77,9 @@ tag {
 
 
   depends_on = [
-    eks_vpc,
-    eks_master_role,
-    eks_worker_role,
-    eks_worker_instprofile,
-    eks_security_group_master,
-    eks_security_group_worker
+    modules.eks_vpc,
+    aws_security_group.eks_master_role,
+    aws_security_group.eks_worker_role,
+    aws_security_group.eks_worker_instprofile
   ]
 }
