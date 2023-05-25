@@ -9,7 +9,7 @@ resource "aws_eks_cluster" "main" {
   }
 
   depends_on = [
-    modules.eks_vpc,
+    module.eks_vpc,
     aws_iam_role.iam_role_master,
     aws_security_group.eks_security_group_master
   ]
@@ -74,7 +74,7 @@ tag {
 
 
   depends_on = [
-    modules.eks_vpc,
+    module.eks_vpc,
     aws_iam_role.iam_role_master,
     aws_iam_role.iam_role_worker,
     aws_security_group.eks_security_group_master,
