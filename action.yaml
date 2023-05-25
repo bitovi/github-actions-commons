@@ -348,6 +348,9 @@ inputs:
   aws_eks_instance_type:
     description: 'enter the aws instance type'
     required: false 
+  aws_eks_user_data_file:
+    description: 'Relative path in the repo for a user provided script to be executed with Terraform EKS Node creation.'
+    required: false
   aws_eks_ec2_key_pair:
     description: 'Enter the existing ec2 key pair for worker nodes'
     required: false 
@@ -492,8 +495,7 @@ runs:
         DOCKER_EFS_MOUNT_TARGET: ${{ inputs.docker_efs_mount_target }}
 
         # AWS EKS
-        #AWS_EKS_CREATE: ${{ inputs.aws_eks_create }}
-        AWS_EKS_CREATE: true
+        AWS_EKS_CREATE: ${{ inputs.aws_eks_create }}
         AWS_EKS_REGION: ${{ inputs.aws_eks_region }}
         AWS_EKS_SECURITY_GROUP_NAME_MASTER: ${{ inputs.aws_eks_security_group_name_master }}
         AWS_EKS_SECURITY_GROUP_NAME_WORKER: ${{ inputs.aws_eks_security_group_name_worker }}
@@ -509,6 +511,7 @@ runs:
         AWS_EKS_CLUSTER_VERSION: ${{ inputs.aws_eks_cluster_version }}
         AWS_EKS_IMAGE_ID: ${{ inputs.aws_eks_image_id }}
         AWS_EKS_INSTANCE_TYPE: ${{ inputs.aws_eks_instance_type }}
+        AWS_EKS_USER_DATA_FILE: ${{ inputs.aws_eks_user_data_file }}
         AWS_EKS_EC2_KEY_PAIR: ${{ inputs.aws_eks_ec2_key_pair }}
         AWS_EKS_DESIRED_CAPACITY: ${{ inputs.aws_eks_desired_capacity}}
         AWS_EKS_MAX_SIZE: ${{ inputs.aws_eks_max_size }}
