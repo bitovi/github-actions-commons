@@ -21,13 +21,13 @@ function install_charts (){
     if [ $(find ${source_folder} -maxdepth 1 -type f -iname "*.tgz" | wc -l) -gt 0 ]; then
       for chart in $(find ${source_folder} -maxdepth 1 -type f -iname "*.tgz"); do
         chart=$(basename $chart)
-        echo "Installing chart: $chart"
+        echo "Installing chart: $chart - FILE"
         echo "$helm_command $(remove_extension $chart) $source_folder/$chart"
       done
     fi
-    for chart in $(find ${source_folder} -maxdepth 1 -type d); do
+    for chart in $(find ${source_folder} -maxdepth 1 -type d -not -name ${source_folder}); do
       chart=$(basename $chart)
-      echo "Installing chart: $chart"
+      echo "Installing chart: $chart - DIR"
       echo "$helm_command $chart $source_folder/$chart"
     done
   fi
