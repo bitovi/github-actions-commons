@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -e
+set -ex
 echo ""
 echo "###########################################################################"
 echo "BitOps --> Running Helm charts installation checks ...."
@@ -26,5 +26,16 @@ function install_charts (){
   fi
 }
 
+# DEBUG CODE
+echo "ls - ${BITOPS_ENVROOT}/eks/"
+ls - ${BITOPS_ENVROOT}/eks/
+echo "ls - ${BITOPS_ENVROOT}/eks/helm-charts"
+ls - ${BITOPS_ENVROOT}/eks/helm-charts
+echo "ls - ${BITOPS_ENVROOT}/eks/helm-charts/deployment-charts"
+ls - ${BITOPS_ENVROOT}/eks/helm-charts/deployment-charts
+echo "ls - ${BITOPS_ENVROOT}/eks/helm-charts/action-charts"
+ls - ${BITOPS_ENVROOT}/eks/helm-charts/action-charts
+
+# 
 install_charts "${BITOPS_ENVROOT}/eks/helm-charts/deployment-charts"
 install_charts "${BITOPS_ENVROOT}/eks/helm-charts/action-charts"
