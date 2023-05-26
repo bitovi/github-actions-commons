@@ -37,6 +37,6 @@ function remove_extension() {
 #}
 
 aws eks update-kubeconfig --name eks-cluster
-helm helm upgrade --install --create-namespace aws-auth ${BITOPS_ENVROOT}/terraform/eks/helm-charts/action-charts/aws-auth
+helm upgrade --install --create-namespace aws-auth ${BITOPS_ENVROOT}/terraform/eks/helm-charts/action-charts/aws-auth
 #install_charts "${BITOPS_ENVROOT}/terraform/eks/helm-charts/deployment-charts/"
 #install_charts "${BITOPS_ENVROOT}/terraform/eks/helm-charts/action-charts/"
