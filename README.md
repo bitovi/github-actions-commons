@@ -71,6 +71,7 @@ The following inputs can be used as `step.with` keys
 | `gh_deployment_input_ansible_playbook` | String | Main playbook to be looked for. Defaults to `playbook.yml`.|
 | `gh_deployment_input_ansible_extra_vars_file` | String | Relative path to Ansible extra-vars file. |
 | `gh_deployment_action_input_ansible_extra_vars_file` | String | Relative path to Ansible extra-vars file from deployment to be set up into the action Ansible code. |
+| `gh_deployment_input_helm_charts` | String | Relative path to the folder from project containing Helm charts to be installed. Could be uncompressed or compressed (.tgz) files. |
 <hr/>
 <br/>
 
@@ -81,6 +82,7 @@ The following inputs can be used as `step.with` keys
 | `gh_action_input_terraform` | String | Folder to store Terraform files to be included during Terraform execution. |
 | `gh_action_input_ansible` | String | Folder where a whole Ansible structure is expected. If missing bitops.config.yaml a default will be generated. |
 | `gh_action_input_ansible_playbook` | String | Main playbook to be looked for. Defaults to `playbook.yml`.|
+| `gh_action_input_helm_charts` | String | Relative path to the folder from action containing Helm charts to be installed. Could be uncompressed or compressed (.tgz) files. |
 <hr/>
 <br/>
 

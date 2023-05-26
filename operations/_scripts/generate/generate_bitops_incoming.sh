@@ -94,6 +94,13 @@ if [ -n "$GH_ACTION_REPO" ]; then
     merge_tf_vars "$GH_ACTION_INPUT_TERRAFORM_PATH" ec2
     move_content_append "$GH_ACTION_INPUT_TERRAFORM_PATH" action
   fi
+
+  # HELM CHARTS PART
+  if [ -n "$GH_ACTION_INPUT_HELM_CHARTS" ]; then
+    GH_ACTION_INPUT_HELM_CHARTS_PATH="$GH_ACTION_REPO/$GH_ACTION_INPUT_HELM_CHARTS"
+    mkdir -p ${GITHUB_ACTION_PATH}/operations/deployment/eks/helm-charts
+    mv $GH_ACTION_INPUT_HELM_CHARTS_PATH ${GITHUB_ACTION_PATH}/operations/deployment/eks/helm-charts/action-charts
+  fi
 fi
 
 ### Generate incoming deployment repo's
@@ -136,6 +143,13 @@ if [ -n "$GH_DEPLOYMENT_INPUT_TERRAFORM" ]; then
 
   merge_tf_vars "$GH_DEPLOYMENT_INPUT_TERRAFORM_PATH" ec2
   move_content_append "$GH_DEPLOYMENT_INPUT_TERRAFORM_PATH" deploy
+fi
+
+# HELM CHARTS PART
+if [ -n "$GH_DEPLOYMENT_INPUT_HELM_CHARTS" ]; then
+  GH_DEPLOYMENT_INPUT_HELM_CHARTS_PATH="$GITHUB_WORKSPACE/$GH_DEPLOYMENT_INPUT_HELM_CHARTS"
+  mkdir -p ${GITHUB_ACTION_PATH}/operations/deployment/eks/helm-charts
+  mv $GH_DEPLOYMENT_INPUT_HELM_CHARTS_PATH ${GITHUB_ACTION_PATH}/operations/deployment/eks/helm-charts/deployment-charts
 fi
 
 echo "Done with generate_bitops_incoming.sh"
