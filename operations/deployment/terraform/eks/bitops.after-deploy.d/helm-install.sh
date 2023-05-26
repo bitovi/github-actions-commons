@@ -27,15 +27,19 @@ function install_charts (){
 }
 
 # DEBUG CODE
-echo "ls - ${BITOPS_ENVROOT}/eks/"
-ls -l ${BITOPS_ENVROOT}/eks/
-echo "ls - ${BITOPS_ENVROOT}/eks/helm-charts"
-ls -l ${BITOPS_ENVROOT}/eks/helm-charts
-echo "ls - ${BITOPS_ENVROOT}/eks/helm-charts/deployment-charts"
-ls -l ${BITOPS_ENVROOT}/eks/helm-charts/deployment-charts
-echo "ls - ${BITOPS_ENVROOT}/eks/helm-charts/action-charts"
-ls -l ${BITOPS_ENVROOT}/eks/helm-charts/action-charts
+echo "ls - ${BITOPS_ENVROOT}"
+ls -l ${BITOPS_ENVROOT}
+echo "ls - ${BITOPS_ENVROOT}/terraform"
+ls -l ${BITOPS_ENVROOT}/terraform
+echo "ls - ${BITOPS_ENVROOT}/terraform/eks"
+ls -l ${BITOPS_ENVROOT}/terraform/eks
+echo "ls - ${BITOPS_ENVROOT}/terraform/eks/helm-charts"
+ls -l ${BITOPS_ENVROOT}/terraform/eks/helm-charts
+echo "ls - ${BITOPS_ENVROOT}/terraform/eks/helm-charts/deployment-charts"
+ls -l ${BITOPS_ENVROOT}/terraform/eks/helm-charts/deployment-charts
+echo "ls - ${BITOPS_ENVROOT}/terraform/eks/helm-charts/action-charts"
+ls -l ${BITOPS_ENVROOT}/terraform/eks/helm-charts/action-charts
 
 # 
-install_charts "${BITOPS_ENVROOT}/eks/helm-charts/deployment-charts"
-install_charts "${BITOPS_ENVROOT}/eks/helm-charts/action-charts"
+install_charts "${BITOPS_ENVROOT}/terraform/eks/helm-charts/deployment-charts"
+install_charts "${BITOPS_ENVROOT}/terraform/eks/helm-charts/action-charts"

@@ -98,8 +98,8 @@ if [ -n "$GH_ACTION_REPO" ]; then
   # HELM CHARTS PART
   if [ -n "$GH_ACTION_INPUT_HELM_CHARTS" ]; then
     GH_ACTION_INPUT_HELM_CHARTS_PATH="$GH_ACTION_REPO/$GH_ACTION_INPUT_HELM_CHARTS"
-    mkdir -p ${GITHUB_ACTION_PATH}/operations/deployment/eks/helm-charts
-    mv $GH_ACTION_INPUT_HELM_CHARTS_PATH ${GITHUB_ACTION_PATH}/operations/deployment/eks/helm-charts/action-charts
+    mkdir -p ${GITHUB_ACTION_PATH}/operations/deployment/terraform/eks/helm-charts
+    mv $GH_ACTION_INPUT_HELM_CHARTS_PATH ${GITHUB_ACTION_PATH}/operations/deployment/terraform/eks/helm-charts/action-charts
   fi
 fi
 
@@ -148,8 +148,8 @@ fi
 # HELM CHARTS PART
 if [ -n "$GH_DEPLOYMENT_INPUT_HELM_CHARTS" ]; then
   GH_DEPLOYMENT_INPUT_HELM_CHARTS_PATH="$GITHUB_WORKSPACE/$GH_DEPLOYMENT_INPUT_HELM_CHARTS"
-  mkdir -p ${GITHUB_ACTION_PATH}/operations/deployment/eks/helm-charts
-  mv $GH_DEPLOYMENT_INPUT_HELM_CHARTS_PATH ${GITHUB_ACTION_PATH}/operations/deployment/eks/helm-charts/deployment-charts
+  mkdir -p ${GITHUB_ACTION_PATH}/operations/deployment/terraform/eks/helm-charts
+  mv $GH_DEPLOYMENT_INPUT_HELM_CHARTS_PATH ${GITHUB_ACTION_PATH}/operations/deployment/terraform/eks/helm-charts/deployment-charts
 fi
 
 echo "Done with generate_bitops_incoming.sh"
