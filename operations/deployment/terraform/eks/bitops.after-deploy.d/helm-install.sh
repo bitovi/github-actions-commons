@@ -7,14 +7,14 @@ echo "BitOps --> Running Helm charts installation checks ...."
 echo "###########################################################################"
 echo ""
 
-##function remove_extension() {
-##  local filename="${1##*/}"     # Extract the file name from the provided path
-##  echo "${filename%.*}"         # Remove the file extension
-##}
-##
-##function install_charts (){
-##  source_folder="$1"
-##  if [ -d $source_folder ]; then
+function remove_extension() {
+  local filename="${1##*/}"     # Extract the file name from the provided path
+  echo "${filename%.*}"         # Remove the file extension
+}
+
+function install_charts (){
+  source_folder="$1"
+  if [ -d $source_folder ]; then
 ##    # Move files from source folder to destination folder
 ##    for chart in $($source_folder" -maxdepth 1 -type f -path ); do
 ##      echo "Installing chart: $chart"
@@ -33,10 +33,10 @@ echo ""
 ##    #  echo "Installing $folder"
 ##    #  helm install $folder $source_folder/$folder
 ##    #done
-##  fi
-##}
+  fi
+}
 
 aws eks update-kubeconfig --name eks-cluster
-helm install aws-auth ${BITOPS_ENVROOT}/terraform/eks/helm-charts/action-charts/aws-auth
+helm update aws-auth ${BITOPS_ENVROOT}/terraform/eks/helm-charts/action-charts/aws-auth
 #install_charts "${BITOPS_ENVROOT}/terraform/eks/helm-charts/deployment-charts/"
 #install_charts "${BITOPS_ENVROOT}/terraform/eks/helm-charts/action-charts/"
