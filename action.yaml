@@ -65,7 +65,6 @@ inputs:
   gh_deployment_input_helm_charts: 
     description: 'Relative path to the folder from project containing Helm charts to be installed. Could be uncompressed or compressed (.tgz) files.'
     required: false
-    default: helm
 
   # GitHub Action repo inputs
   gh_action_repo:
@@ -84,6 +83,7 @@ inputs:
   gh_action_input_helm_charts:
     description: 'Relative path to the folder from action containing Helm charts to be installed. Could be uncompressed or compressed (.tgz) files.'
     required: false
+    default: helm
 
   # AWS Specific
   aws_access_key_id:
