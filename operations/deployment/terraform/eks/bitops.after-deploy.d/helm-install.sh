@@ -37,6 +37,6 @@ echo ""
 ##}
 
 aws eks update-kubeconfig --name eks-cluster
-helm install aws-auth /tmp/tmpylfqjnea/deployment/terraform/eks/helm-charts/action-charts/aws-auth
+helm install aws-auth ${BITOPS_ENVROOT}/terraform/eks/helm-charts/action-charts/aws-auth
 #install_charts "${BITOPS_ENVROOT}/terraform/eks/helm-charts/deployment-charts/"
 #install_charts "${BITOPS_ENVROOT}/terraform/eks/helm-charts/action-charts/"
