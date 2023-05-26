@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -ex
+set -e
 echo ""
 echo "###########################################################################"
 echo "BitOps --> Running Helm charts installation checks ...."
@@ -16,7 +16,7 @@ function install_charts (){
   source_folder="$1"
   if [ -d $source_folder ]; then
     # Move files from source folder to destination folder
-    for chart in $source_folder/*.tgz; do
+    for chart in $(ls -l $source_folder/*.tgz); do
       echo "Installing chart: $chart"
       echo "helm install $(remove_extension $chart) $source_folder/$chart"
     done
@@ -38,5 +38,5 @@ function install_charts (){
 
 aws eks update-kubeconfig --name eks-cluster
 
-install_charts "${BITOPS_ENVROOT}/terraform/eks/helm-charts/deployment-charts"
-install_charts "${BITOPS_ENVROOT}/terraform/eks/helm-charts/action-charts"
+install_charts "${BITOPS_ENVROOT}/terraform/eks/helm-charts/deployment-charts/"
+install_charts "${BITOPS_ENVROOT}/terraform/eks/helm-charts/action-charts/"
