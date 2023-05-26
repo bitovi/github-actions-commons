@@ -28,13 +28,13 @@ function install_charts (){
 
 # DEBUG CODE
 echo "ls - ${BITOPS_ENVROOT}/eks/"
-ls - ${BITOPS_ENVROOT}/eks/
+ls -l ${BITOPS_ENVROOT}/eks/
 echo "ls - ${BITOPS_ENVROOT}/eks/helm-charts"
-ls - ${BITOPS_ENVROOT}/eks/helm-charts
+ls -l ${BITOPS_ENVROOT}/eks/helm-charts
 echo "ls - ${BITOPS_ENVROOT}/eks/helm-charts/deployment-charts"
-ls - ${BITOPS_ENVROOT}/eks/helm-charts/deployment-charts
+ls -l ${BITOPS_ENVROOT}/eks/helm-charts/deployment-charts
 echo "ls - ${BITOPS_ENVROOT}/eks/helm-charts/action-charts"
-ls - ${BITOPS_ENVROOT}/eks/helm-charts/action-charts
+ls -l ${BITOPS_ENVROOT}/eks/helm-charts/action-charts
 
 # 
 install_charts "${BITOPS_ENVROOT}/eks/helm-charts/deployment-charts"
