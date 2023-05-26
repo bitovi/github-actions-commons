@@ -18,7 +18,7 @@ function install_charts (){
   source_folder="$1"
   if [ -d $source_folder ]; then
     # Move files from source folder to destination folder
-    if [ $(find ${source_folder} -maxdepth 1 -type f -iname "*.tgz") -gt 0 ]; then
+    if [ $(find ${source_folder} -maxdepth 1 -type f -iname "*.tgz" | wc -l) -gt 0 ]; then
       for chart in $(find ${source_folder} -maxdepth 1 -type f -iname "*.tgz"); do
         chart=$(basename $chart)
         echo "Installing chart: $chart"
