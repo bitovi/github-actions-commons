@@ -25,7 +25,7 @@ function install_charts (){
         echo "$helm_command $(remove_extension $chart) $source_folder/$chart"
       done
     fi
-    for chart in $(find ${source_folder} -maxdepth 1 -type d -not -name ${source_folder}); do
+    for chart in $(find ${source_folder} -maxdepth 1 -type d -not -name $(basename $source_folder)); do
       chart=$(basename $chart)
       echo "Installing chart: $chart - DIR"
       echo "$helm_command $chart $source_folder/$chart"
