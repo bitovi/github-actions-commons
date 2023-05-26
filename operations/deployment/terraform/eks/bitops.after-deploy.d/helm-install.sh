@@ -17,29 +17,18 @@ function install_charts (){
   if [ -d $source_folder ]; then
     # Move files from source folder to destination folder
     find "$source_folder" -maxdepth 1 -type f -path "$source_folder/*.tgz" | while read file; do
+      echo "Installing $file"
       helm install $(remove_extension "$file") $source_folder/$file
     done
     # Move remaining folders (if they exist) and exclude the . folder
     find "$source_folder" -maxdepth 1 -type d -not -name "." -path "$source_folder/*" | while read folder; do
+      echo "Installing $folder"
       helm install $folder $source_folder/$folder
     done
   fi
 }
 
-# DEBUG CODE
-echo "ls - ${BITOPS_ENVROOT}"
-ls -l ${BITOPS_ENVROOT}
-echo "ls - ${BITOPS_ENVROOT}/terraform"
-ls -l ${BITOPS_ENVROOT}/terraform
-echo "ls - ${BITOPS_ENVROOT}/terraform/eks"
-ls -l ${BITOPS_ENVROOT}/terraform/eks
-echo "ls - ${BITOPS_ENVROOT}/terraform/eks/helm-charts"
-ls -l ${BITOPS_ENVROOT}/terraform/eks/helm-charts
-echo "ls - ${BITOPS_ENVROOT}/terraform/eks/helm-charts/deployment-charts"
-ls -l ${BITOPS_ENVROOT}/terraform/eks/helm-charts/deployment-charts
-echo "ls - ${BITOPS_ENVROOT}/terraform/eks/helm-charts/action-charts"
-ls -l ${BITOPS_ENVROOT}/terraform/eks/helm-charts/action-charts
+aws eks update-kubeconfig --name eks-cluster
 
-# 
 install_charts "${BITOPS_ENVROOT}/terraform/eks/helm-charts/deployment-charts"
 install_charts "${BITOPS_ENVROOT}/terraform/eks/helm-charts/action-charts"
