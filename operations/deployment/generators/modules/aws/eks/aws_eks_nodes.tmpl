@@ -56,6 +56,7 @@ provider "kubernetes" {
 resource "aws_launch_template" "main" {
   network_interfaces {
     associate_public_ip_address = true
+    security_groups             = [aws_security_group.eks_security_group_worker.id]
   }
   iam_instance_profile {
     name = aws_iam_instance_profile.eks_inst_profile.name
@@ -64,7 +65,7 @@ resource "aws_launch_template" "main" {
   instance_type               = var.aws_eks_instance_type
   name_prefix                 = "${var.aws_eks_environment}-eksworker"
   #security_group_names        = [aws_security_group.eks_security_group_worker.name]
-  vpc_security_group_ids      = [aws_security_group.eks_security_group_worker.id]
+  #vpc_security_group_ids      = [aws_security_group.eks_security_group_worker.id]
   user_data                   = base64encode(try(file("./aws_eks_incoming_user_data_script.sh"), ""))
   key_name                    = var.aws_eks_ec2_key_pair
   lifecycle {
