@@ -53,13 +53,17 @@ provider "kubernetes" {
 #}
 
 resource "aws_launch_template" "main" {
-  associate_public_ip_address = true
-  iam_instance_profile        = aws_iam_instance_profile.eks_inst_profile.name
+  network_interfaces {
+    associate_public_ip_address = true
+  }
+  iam_instance_profile {
+    name = aws_iam_instance_profile.eks_inst_profile.name
+  }
   image_id                    = var.aws_eks_image_id
   instance_type               = var.aws_eks_instance_type
   name_prefix                 = "${var.aws_eks_environment}-eksworker"
-  security_groups             = [aws_security_group.eks_security_group_worker.id] #[aws_security_group.node.id]
-  user_data                   = filebase64(try(file("./aws_eks_incoming_user_data_script.sh"), ""))
+  security_group_names        = [aws_security_group.eks_security_group_worker.name]
+  user_data                   = base64encode(try(file("./aws_eks_incoming_user_data_script.sh"), ""))
   key_name                    = var.aws_eks_ec2_key_pair
   lifecycle {
     create_before_destroy = true
@@ -69,7 +73,9 @@ resource "aws_launch_template" "main" {
 resource "aws_autoscaling_group" "main" {
   desired_capacity     = var.aws_eks_desired_capacity
   #launch_configuration = aws_launch_configuration.main.id
-  launch_template      = aws_launch_template.main.id
+  launch_template {
+    id      = aws_launch_template.main.id
+  }
   max_size             = var.aws_eks_max_size
   min_size             = var.aws_eks_min_size
   name                 = "${var.aws_eks_environment}-eksworker-asg"
