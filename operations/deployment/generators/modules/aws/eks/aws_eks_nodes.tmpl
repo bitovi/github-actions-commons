@@ -65,12 +65,13 @@ resource "aws_launch_template" "main" {
   instance_type               = var.aws_eks_instance_type
   name_prefix                 = "${var.aws_eks_environment}-eksworker"
   #security_group_names        = [aws_security_group.eks_security_group_worker.name]
-  vpc_security_group_ids      = [aws_security_group.eks_security_group_worker.id]
+  #vpc_security_group_ids      = [aws_security_group.eks_security_group_worker.id]
   user_data                   = base64encode(try(file("./aws_eks_incoming_user_data_script.sh"), ""))
   key_name                    = var.aws_eks_ec2_key_pair
   lifecycle {
     create_before_destroy = true
   }
+  version = "${aws_launch_template.main.latest_version}"
 }
 
 #data "aws_subnets" "eks_subnets" {
