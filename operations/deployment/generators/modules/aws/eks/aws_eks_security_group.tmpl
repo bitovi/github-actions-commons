@@ -17,7 +17,7 @@ resource "aws_security_group" "eks_security_group_master" {
 }
 
 resource "aws_security_group" "eks_security_group_worker" {
-  name        = ${var.aws_resource_identifier}-eks-sg-wrkr
+  name        = "${var.aws_resource_identifier}-eks-sg-wrkr"
   description = "SG for ${var.aws_resource_identifier} - EKS Worker"
   vpc_id      = module.eks_vpc.vpc_id
   egress {
