@@ -73,18 +73,6 @@ resource "aws_launch_template" "main" {
   }
 }
 
-#data "aws_subnets" "eks_subnets" {
-#  filter {
-#    name   = "vpc-id"
-#    values = [module.eks_vpc.vpc_id]
-#  }
-#}
-#
-#data "aws_subnet" "eks_subnet_values" {
-#  for_each = toset(data.aws_subnets.eks_subnets.ids)
-#  id       = each.value
-#}
-
 resource "aws_autoscaling_group" "main" {
   desired_capacity     = var.aws_eks_desired_capacity
   #launch_configuration = aws_launch_configuration.main.id
@@ -97,7 +85,6 @@ resource "aws_autoscaling_group" "main" {
   name                 = "${var.aws_eks_environment}-eksworker-asg"
   #vpc_zone_identifier = [for s in data.aws_subnet.eks_subnet_values: s.id]
   vpc_zone_identifier  = module.eks_vpc.private_subnets
-  #vpc_zone_identifier  = module.eks_vpc.id
   health_check_type    = "EC2"
 
 
