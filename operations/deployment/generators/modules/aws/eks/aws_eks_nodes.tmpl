@@ -73,7 +73,7 @@ resource "aws_launch_template" "main" {
 }
 
 data "aws_subnet_ids" "eks_subnets" {
-  vpc_id = module.eks_vpc.id
+  vpc_id = module.eks_vpc.vpc_id
 }
  
 data "aws_subnet" "eks_subnet_values" {
