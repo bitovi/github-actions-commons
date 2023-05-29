@@ -85,6 +85,9 @@ data "aws_subnets" "eks_subnets" {
 data "aws_subnet" "eks_subnet_values" {
   for_each = toset(data.aws_subnets.eks_subnets.ids)
   id       = each.value
+  depends_on = [
+    module.eks_vpc
+  ]
 }
 
 resource "aws_autoscaling_group" "main" {
