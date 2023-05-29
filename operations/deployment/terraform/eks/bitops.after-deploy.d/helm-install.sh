@@ -22,18 +22,18 @@ function install_charts (){
       for chart in $(find ${source_folder} -maxdepth 1 -type f -iname "*.tgz"); do
         chart=$(basename $chart)
         echo "Installing chart: $chart - FILE"
-        echo "$helm_command $(remove_extension $chart) $source_folder/$chart"
+        $helm_command $(remove_extension $chart) "$source_folder/$chart"
       done
     fi
     for chart in $(find ${source_folder} -maxdepth 1 -type d -not -name $(basename $source_folder)); do
       chart=$(basename $chart)
       echo "Installing chart: $chart - DIR"
-      echo "$helm_command $chart $source_folder/$chart"
+      "$helm_command $chart "$source_folder/$chart"
     done
   fi
 }
 
 aws eks update-kubeconfig --name eks-cluster
-helm upgrade --install --create-namespace aws-auth ${BITOPS_ENVROOT}/terraform/eks/helm-charts/action-charts/aws-auth
+
 install_charts "${BITOPS_ENVROOT}/terraform/eks/helm-charts/deployment-charts"
 install_charts "${BITOPS_ENVROOT}/terraform/eks/helm-charts/action-charts"
