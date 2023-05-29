@@ -72,12 +72,15 @@ resource "aws_launch_template" "main" {
   }
 }
 
-data "aws_subnet_ids" "eks_subnets" {
-  vpc_id = module.eks_vpc.vpc_id
+data "aws_subnets" "eks_subnets" {
+  filter {
+    name   = "vpc-id"
+    values = [module.eks_vpc.vpc_id]
+  }
 }
- 
+
 data "aws_subnet" "eks_subnet_values" {
-  for_each = data.aws_subnet_ids.eks_subnets.ids
+  for_each = toset(data.aws_subnets.eks_subnets.ids)
   id       = each.value
 }
 
