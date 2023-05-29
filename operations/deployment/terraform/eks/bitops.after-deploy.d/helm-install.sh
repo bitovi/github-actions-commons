@@ -28,12 +28,13 @@ function install_charts (){
     for chart in $(find ${source_folder} -maxdepth 1 -type d -not -name $(basename $source_folder)); do
       chart=$(basename $chart)
       echo "Installing chart: $chart - DIR"
-      "$helm_command $chart "$source_folder/$chart"
+      $helm_command $chart "$source_folder/$chart"
     done
   fi
 }
 
-aws eks update-kubeconfig --name eks-cluster
-
-install_charts "${BITOPS_ENVROOT}/terraform/eks/helm-charts/deployment-charts"
-install_charts "${BITOPS_ENVROOT}/terraform/eks/helm-charts/action-charts"
+if [[ "$AWS_EKS_CREATE" == "true" ]]; then 
+  aws eks update-kubeconfig --name eks-cluster
+  install_charts "${BITOPS_ENVROOT}/terraform/eks/helm-charts/deployment-charts"
+  install_charts "${BITOPS_ENVROOT}/terraform/eks/helm-charts/action-charts"
+fi
