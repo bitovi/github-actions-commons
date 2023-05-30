@@ -40,11 +40,11 @@ resource "aws_eks_cluster" "main" {
 #}
 
 data "aws_eks_cluster" "eks-cluster" {
-  name = aws_eks_cluster.main.id
+  name = aws_eks_cluster.main.cluster_id
 }
 
 data "aws_eks_cluster_auth" "cluster_auth" {
-  name = aws_eks_cluster.main.id
+  name = aws_eks_cluster.main.cluster_id
 }
 
 provider "kubernetes" {
