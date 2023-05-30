@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -e
+set -ex
 echo ""
 echo "###########################################################################"
 echo "BitOps --> Running Helm charts installation checks ...."
@@ -33,7 +33,9 @@ function install_charts (){
   fi
 }
 
-if [[ "$AWS_EKS_CREATE" == "true" ]]; then 
+echo "AWS_EKS_CREATE -> $AWS_EKS_CREATE"
+
+if [[ $AWS_EKS_CREATE == "true" ]]; then 
   aws eks update-kubeconfig --name eks-cluster
   install_charts "${BITOPS_ENVROOT}/terraform/eks/helm-charts/deployment-charts"
   install_charts "${BITOPS_ENVROOT}/terraform/eks/helm-charts/action-charts"
