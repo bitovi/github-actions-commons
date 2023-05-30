@@ -1,7 +1,8 @@
 resource "aws_iam_instance_profile" "eks_inst_profile" {
   name = "${var.aws_eks_environment}-eks-inst-profile"
   path = "/"
-  role = "${var.aws_eks_environment}-eksworker"
+  #role = "${var.aws_eks_environment}-eksworker"
+  role = aws_iam_role.iam_role_worker.id
   depends_on  = [aws_iam_role.iam_role_worker]
   }
 
@@ -50,13 +51,13 @@ locals {
 resource "aws_iam_role_policy_attachment" "managed_policies_master" {
   count      = length(local.master_policies)
   policy_arn = element(local.master_policies, count.index)
-  role       = aws_iam_role.iam_role_master.name
+  role       = aws_iam_role.iam_role_master.id
 }
 
 resource "aws_iam_role_policy_attachment" "managed_policies_worker" {
   count      = length(local.worker_policies)
   policy_arn = element(local.worker_policies, count.index)
-  role       = aws_iam_role.iam_role_worker.name
+  role       = aws_iam_role.iam_role_worker.id
 }
 
 
