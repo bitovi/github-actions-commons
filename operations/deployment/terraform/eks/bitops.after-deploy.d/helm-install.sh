@@ -33,10 +33,7 @@ function install_charts (){
   fi
 }
 
-echo "AWS_EKS_CREATE -> $AWS_EKS_CREATE"
-env
-
-if [[ $AWS_EKS_CREATE == "true" ]]; then 
+if [ "$BITOPS_TERRAFORM_COMMAND" != "destroy" ]; then
   aws eks update-kubeconfig --name eks-cluster
   install_charts "${BITOPS_ENVROOT}/terraform/eks/helm-charts/deployment-charts"
   install_charts "${BITOPS_ENVROOT}/terraform/eks/helm-charts/action-charts"
