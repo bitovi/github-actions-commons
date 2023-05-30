@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -ex
+set -e
 echo ""
 echo "###########################################################################"
 echo "BitOps --> Running Helm charts installation checks ...."
@@ -34,6 +34,7 @@ function install_charts (){
 }
 
 echo "AWS_EKS_CREATE -> $AWS_EKS_CREATE"
+env
 
 if [[ $AWS_EKS_CREATE == "true" ]]; then 
   aws eks update-kubeconfig --name eks-cluster
