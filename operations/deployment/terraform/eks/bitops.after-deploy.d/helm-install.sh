@@ -42,8 +42,8 @@ if [ "$BITOPS_TERRAFORM_COMMAND" != "destroy" ]; then
   kubectl get configmaps --all-namespaces
   echo "kubectl get namespaces"
   kubectl get namespaces
-  echo "kubectl get helmcharts --all-namespaces"
-  kubectl get helmcharts --all-namespaces
   echo "kubectl get deployments --all-namespaces"
   kubectl get deployments --all-namespaces
+  echo "kubectl get configmaps --all-namespaces"
+  kubectl get configmap aws-auth -n default -o yaml
 fi
