@@ -38,5 +38,12 @@ if [ "$BITOPS_TERRAFORM_COMMAND" != "destroy" ]; then
   install_charts "${BITOPS_ENVROOT}/terraform/eks/helm-charts/deployment-charts"
   install_charts "${BITOPS_ENVROOT}/terraform/eks/helm-charts/action-charts"
   echo "kubectl describe after charts installation"
-  kubectl describe configmap aws-auth --namespace kube-system
+  echo "kubectl get configmaps --all-namespaces"
+  kubectl get configmaps --all-namespaces
+  echo "kubectl get namespaces"
+  kubectl get namespaces
+  echo "kubectl get helmcharts --all-namespaces"
+  kubectl get helmcharts --all-namespaces
+  echo "kubectl get deployments --all-namespaces"
+  kubectl get deployments --all-namespaces
 fi
