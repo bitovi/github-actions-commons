@@ -159,6 +159,7 @@ if [ -n "$GH_DEPLOYMENT_INPUT_HELM_CHARTS" ]; then
   mkdir -p ${GITHUB_ACTION_PATH}/operations/deployment/terraform/eks/helm-charts
   echo "Moving $GH_DEPLOYMENT_INPUT_HELM_CHARTS_PATH to ${GITHUB_ACTION_PATH}/operations/deployment/terraform/eks/helm-charts/deployment-charts"
   mv $GH_DEPLOYMENT_INPUT_HELM_CHARTS_PATH ${GITHUB_ACTION_PATH}/operations/deployment/terraform/eks/helm-charts/deployment-charts
+  tree ${GITHUB_ACTION_PATH}/operations/deployment/terraform/eks/helm-charts/deployment-charts
   #echo "Moving $GH_DEPLOYMENT_INPUT_HELM_CHARTS_PATH to ${GITHUB_ACTION_PATH}/operations/deployment/helm"
   #mv $GH_DEPLOYMENT_INPUT_HELM_CHARTS_PATH ${GITHUB_ACTION_PATH}/operations/deployment/helm
 fi
