@@ -7,7 +7,7 @@ echo "BitOps --> Running Helm charts installation checks ...."
 echo "###########################################################################"
 echo ""
 
-helm_command="helm upgrade --install --create-namespace "
+helm_command="helm upgrade --install --create-namespace -n kube-system"
 
 function remove_extension() {
   local filename="${1##*/}"     # Extract the file name from the provided path
