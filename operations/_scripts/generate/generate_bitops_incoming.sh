@@ -94,17 +94,20 @@ if [ -n "$GH_ACTION_REPO" ]; then
     merge_tf_vars "$GH_ACTION_INPUT_TERRAFORM_PATH" ec2
     move_content_append "$GH_ACTION_INPUT_TERRAFORM_PATH" action
   fi
-fi #### THIS SHOULD GO OUTSIDE THIS, BUT IT'S MISSING FROM THE CALLING ACTION
+
   # HELM CHARTS PART
   echo "GH_ACTION_INPUT_HELM_CHARTS $GH_ACTION_INPUT_HELM_CHARTS"
   if [ -n "$GH_ACTION_INPUT_HELM_CHARTS" ]; then
     GH_ACTION_INPUT_HELM_CHARTS_PATH="$GH_ACTION_REPO/$GH_ACTION_INPUT_HELM_CHARTS"
+    tree ${GH_ACTION_REPO}
     echo "GH_ACTION_INPUT_HELM_CHARTS_PATH $GH_ACTION_INPUT_HELM_CHARTS_PATH"
     mkdir -p ${GITHUB_ACTION_PATH}/operations/deployment/terraform/eks/helm-charts
     echo "Moving $GH_ACTION_INPUT_HELM_CHARTS_PATH to ${GITHUB_ACTION_PATH}/operations/deployment/terraform/eks/helm-charts/action-charts"
     mv $GH_ACTION_INPUT_HELM_CHARTS_PATH ${GITHUB_ACTION_PATH}/operations/deployment/terraform/eks/helm-charts/action-charts
+    #echo "Moving $GH_ACTION_INPUT_HELM_CHARTS_PATH to ${GITHUB_ACTION_PATH}/operations/deployment/helm"
+    #mv $GH_ACTION_INPUT_HELM_CHARTS_PATH ${GITHUB_ACTION_PATH}/operations/deployment/helm
   fi
-#fi
+fi
 
 ### Generate incoming deployment repo's
 
