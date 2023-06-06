@@ -37,6 +37,8 @@ if [ "$BITOPS_TERRAFORM_COMMAND" != "destroy" ]; then
   aws eks update-kubeconfig --name eks-cluster
   install_charts "${BITOPS_ENVROOT}/terraform/eks/helm-charts/deployment-charts"
   install_charts "${BITOPS_ENVROOT}/terraform/eks/helm-charts/action-charts"
+  
+  ## DEBUG
   echo "kubectl describe after charts installation"
   echo "kubectl get configmaps --all-namespaces"
   kubectl get configmaps --all-namespaces
