@@ -154,8 +154,13 @@ fi
 # HELM CHARTS PART
 if [ -n "$GH_DEPLOYMENT_INPUT_HELM_CHARTS" ]; then
   GH_DEPLOYMENT_INPUT_HELM_CHARTS_PATH="$GITHUB_WORKSPACE/$GH_DEPLOYMENT_INPUT_HELM_CHARTS"
+  tree ${GITHUB_WORKSPACE}
+  echo "GH_DEPLOYMENT_INPUT_HELM_CHARTS_PATH $GH_DEPLOYMENT_INPUT_HELM_CHARTS"
   mkdir -p ${GITHUB_ACTION_PATH}/operations/deployment/terraform/eks/helm-charts
+  echo "Moving $GH_DEPLOYMENT_INPUT_HELM_CHARTS_PATH to ${GITHUB_ACTION_PATH}/operations/deployment/terraform/eks/helm-charts/deployment-charts"
   mv $GH_DEPLOYMENT_INPUT_HELM_CHARTS_PATH ${GITHUB_ACTION_PATH}/operations/deployment/terraform/eks/helm-charts/deployment-charts
+  #echo "Moving $GH_DEPLOYMENT_INPUT_HELM_CHARTS_PATH to ${GITHUB_ACTION_PATH}/operations/deployment/helm"
+  #mv $GH_DEPLOYMENT_INPUT_HELM_CHARTS_PATH ${GITHUB_ACTION_PATH}/operations/deployment/helm
 fi
 
 echo "Done with generate_bitops_incoming.sh"
