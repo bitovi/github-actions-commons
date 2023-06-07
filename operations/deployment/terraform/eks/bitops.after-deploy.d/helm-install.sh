@@ -50,11 +50,11 @@ if [ "$BITOPS_TERRAFORM_COMMAND" != "destroy" ]; then
   kubectl describe configmap -n kube-system aws-auth
 
   curl -O https://s3.us-west-2.amazonaws.com/amazon-eks/eks-connector/manifests/eks-connector-console-roles/eks-connector-clusterrole.yaml
-  sed -i.bak -e 's|%IAM_ARN%|arn:aws:iam::755521597925:role/AWSReservedSSO_AdministratorAccess_402f22a297379e03|' eks-connector-clusterrole.yaml
+  sed -i.bak -e 's|"%IAM_ARN%"|arn:aws:iam::755521597925:role/AWSReservedSSO_AdministratorAccess_402f22a297379e03|' eks-connector-clusterrole.yaml
   kubectl apply -f eks-connector-clusterrole.yaml
   cat eks-connector-clusterrole.yaml
   curl -O https://s3.us-west-2.amazonaws.com/amazon-eks/eks-connector/manifests/eks-connector-console-roles/eks-connector-console-dashboard-full-access-group.yaml
-  sed -i.bak -e 's|%IAM_ARN%|arn:aws:iam::755521597925:role/AWSReservedSSO_AdministratorAccess_402f22a297379e03|' eks-connector-console-dashboard-full-access-group.yaml
+  sed -i.bak -e 's|"%IAM_ARN%"|arn:aws:iam::755521597925:role/AWSReservedSSO_AdministratorAccess_402f22a297379e03|' eks-connector-console-dashboard-full-access-group.yaml
   kubectl apply -f eks-connector-console-dashboard-full-access-group.yaml
   cat eks-connector-console-dashboard-full-access-group.yaml
   ## echo "kubectl get configmaps --all-namespaces"
