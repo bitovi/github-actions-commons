@@ -60,12 +60,12 @@ if [ "$BITOPS_TERRAFORM_COMMAND" != "destroy" ]; then
   # echo "###############"
   # echo "kubectl describe -n default configmap/aws-auth"
   # kubectl describe -n default configmap/aws-auth
-  # echo "kubectl get roles -A"
-  # kubectl get roles -A
-  # echo "kubectl get clusterroles"
-  # kubectl get clusterroles
-  # echo "kubectl get rolebindings -A"
-  # kubectl get rolebindings -A
-  # echo "kubectl get clusterrolebindings"
-  # kubectl get clusterrolebindings
+  echo "kubectl get roles -A"
+  kubectl get roles -A
+  echo "kubectl get clusterroles"
+  kubectl get clusterroles
+  echo "kubectl get rolebindings -A"
+  kubectl get rolebindings -A
+  echo "kubectl get clusterrolebindings"
+  kubectl get clusterrolebindings
 fi
