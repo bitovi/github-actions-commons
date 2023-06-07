@@ -36,13 +36,18 @@ function install_charts (){
 
 if [ "$BITOPS_TERRAFORM_COMMAND" != "destroy" ]; then
   aws eks update-kubeconfig --name eks-cluster
-  install_charts "${BITOPS_ENVROOT}/terraform/eks/helm-charts/deployment-charts"
-  ls -l "${BITOPS_ENVROOT}/terraform/eks/helm-charts/deployment-charts"
-  install_charts "${BITOPS_ENVROOT}/terraform/eks/helm-charts/action-charts"
-  ls -l "${BITOPS_ENVROOT}/terraform/eks/helm-charts/action-charts"
+  #install_charts "${BITOPS_ENVROOT}/terraform/eks/helm-charts/deployment-charts"
+  #ls -l "${BITOPS_ENVROOT}/terraform/eks/helm-charts/deployment-charts"
+  #install_charts "${BITOPS_ENVROOT}/terraform/eks/helm-charts/action-charts"
+  #ls -l "${BITOPS_ENVROOT}/terraform/eks/helm-charts/action-charts"
 
   ## DEBUG
   echo "kubectl describe after charts installation"
+  kubectl describe configmap -n kube-system aws-auth
+  curl -O https://s3.us-west-2.amazonaws.com/amazon-eks/cloudformation/2020-10-29/aws-auth-cm.yaml
+  sed -i.bak -e 's|<ARN of instance role (not instance profile)>|arn:aws:iam::755521597925:role/env-eksworker|' aws-auth-cm.yaml
+  kubectl apply -f aws-auth-cm.yaml
+  kubectl describe configmap -n kube-system aws-auth
   # echo "kubectl get configmaps --all-namespaces"
   # kubectl get configmaps --all-namespaces
   # echo "kubectl get namespaces"
