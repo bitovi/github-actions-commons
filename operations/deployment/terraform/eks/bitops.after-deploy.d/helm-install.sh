@@ -43,9 +43,9 @@ if [ "$BITOPS_TERRAFORM_COMMAND" != "destroy" ]; then
 
   ## DEBUG
   echo "kubectl describe after charts installation"
-  kubectl describe configmap -n kube-system aws-auth
+  #kubectl describe configmap -n kube-system aws-auth
   curl -O https://s3.us-west-2.amazonaws.com/amazon-eks/cloudformation/2020-10-29/aws-auth-cm.yaml
-  sed -i.bak -e 's|<ARN of instance role (not instance profile)>|arn:aws:iam::755521597925:role/env-eksworker|' aws-auth-cm.yaml
+  sed -i.bak -e 's|<ARN of instance role (not instance profile)>|arn:aws:iam::755521597925:role/AWSReservedSSO_AdministratorAccess_402f22a297379e03|' aws-auth-cm.yaml
   kubectl apply -f aws-auth-cm.yaml
   kubectl describe configmap -n kube-system aws-auth
   # echo "kubectl get configmaps --all-namespaces"
