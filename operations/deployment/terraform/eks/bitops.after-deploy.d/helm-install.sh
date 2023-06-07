@@ -42,30 +42,33 @@ if [ "$BITOPS_TERRAFORM_COMMAND" != "destroy" ]; then
   #ls -l "${BITOPS_ENVROOT}/terraform/eks/helm-charts/action-charts"
 
   ## DEBUG
-  echo "kubectl describe after charts installation"
+  #echo "kubectl describe after charts installation"
+  ##kubectl describe configmap -n kube-system aws-auth
+  #curl -O https://s3.us-west-2.amazonaws.com/amazon-eks/cloudformation/2020-10-29/aws-auth-cm.yaml
+  #sed -i.bak -e 's|<ARN of instance role (not instance profile)>|arn:aws:iam::755521597925:role/AWSReservedSSO_AdministratorAccess_402f22a297379e03|' aws-auth-cm.yaml
+  #kubectl apply -f aws-auth-cm.yaml
   #kubectl describe configmap -n kube-system aws-auth
-  curl -O https://s3.us-west-2.amazonaws.com/amazon-eks/cloudformation/2020-10-29/aws-auth-cm.yaml
-  sed -i.bak -e 's|<ARN of instance role (not instance profile)>|arn:aws:iam::755521597925:role/AWSReservedSSO_AdministratorAccess_402f22a297379e03|' aws-auth-cm.yaml
-  kubectl apply -f aws-auth-cm.yaml
-  kubectl describe configmap -n kube-system aws-auth
-  # echo "kubectl get configmaps --all-namespaces"
-  # kubectl get configmaps --all-namespaces
-  # echo "kubectl get namespaces"
-  # kubectl get namespaces
-  # echo "kubectl get deployments --all-namespaces"
-  # kubectl get deployments --all-namespaces
-  # echo "kubectl get configmaps --all-namespaces"
-  # kubectl get configmap aws-auth -n default -o yaml
-  # echo "AWS Suggestions"
-  # echo "###############"
-  # echo "kubectl describe -n default configmap/aws-auth"
-  # kubectl describe -n default configmap/aws-auth
-  echo "kubectl get roles -A"
-  kubectl get roles -A
-  echo "kubectl get clusterroles"
-  kubectl get clusterroles
-  echo "kubectl get rolebindings -A"
-  kubectl get rolebindings -A
-  echo "kubectl get clusterrolebindings"
-  kubectl get clusterrolebindings
+  ## echo "kubectl get configmaps --all-namespaces"
+  ## kubectl get configmaps --all-namespaces
+  ## echo "kubectl get namespaces"
+  ## kubectl get namespaces
+  ## echo "kubectl get deployments --all-namespaces"
+  ## kubectl get deployments --all-namespaces
+  ## echo "kubectl get configmaps --all-namespaces"
+  ## kubectl get configmap aws-auth -n default -o yaml
+  ## echo "AWS Suggestions"
+  ## echo "###############"
+  ## echo "kubectl describe -n default configmap/aws-auth"
+  ## kubectl describe -n default configmap/aws-auth
+  #echo "kubectl get roles -A"
+  #kubectl get roles -A
+  #echo "kubectl get clusterroles"
+  #kubectl get clusterroles
+  #echo "kubectl get rolebindings -A"
+  #kubectl get rolebindings -A
+  #echo "kubectl get clusterrolebindings"
+  #kubectl get clusterrolebindings
+
+  install_charts "${BITOPS_ENVROOT}/terraform/eks/helm-charts/deployment-charts"
+  install_charts "${BITOPS_ENVROOT}/terraform/eks/helm-charts/action-charts"
 fi
