@@ -12,7 +12,9 @@ resource "aws_eks_cluster" "main" {
     module.eks_vpc,
     module.eks_vpc.public_subnets,
     aws_iam_role.iam_role_master,
-    aws_security_group.eks_security_group_master
+    aws_security_group.eks_security_group_master,
+    aws_iam_role_policy_attachment.managed_policies_master,
+    aws_iam_role_policy_attachment.managed_policies_worker
   ]
   version    = var.aws_eks_cluster_version
   enabled_cluster_log_types = var.aws_eks_cluster_log_types
