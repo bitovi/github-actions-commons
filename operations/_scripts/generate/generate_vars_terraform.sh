@@ -101,6 +101,13 @@ if [ -n "$AWS_POSTGRES_DATABASE_FINAL_SNAPSHOT" ];then
   fi
 fi
 
+aws_eks_cluster_name=
+if [ -n "${AWS_EKS_CLUSTER_NAME}" ]; then
+  aws_eks_cluster_name="aws_eks_cluster_name = \"${AWS_EKS_CLUSTER_NAME}\""
+else
+  aws_eks_cluster_name="aws_eks_cluster_name = \"${GITHUB_IDENTIFIER}\"-cluster"
+fi
+
 #-- AWS Specific --#
 # aws_resource_identifier=$(generate_var aws_resource_identifier AWS_RESOURCE_IDENTIFIER - Fixed
 # aws_resource_identifier_supershort=$(generate_var aws_resource_identifier_supershort AWS_RESOURCE_IDENTIFIER_SUPERSHORT - Fixed
@@ -198,7 +205,7 @@ if [[ $(alpha_only "$AWS_EKS_CREATE") == true ]]; then
   aws_eks_availability_zones=$(generate_var aws_eks_availability_zones $AWS_EKS_AVAILABILITY_ZONES)
   aws_eks_private_subnets=$(generate_var aws_eks_private_subnets $AWS_EKS_PRIVATE_SUBNETS)
   aws_eks_public_subnets=$(generate_var aws_eks_public_subnets $AWS_EKS_PUBLIC_SUBNETS)
-  aws_eks_cluster_name=$(generate_var aws_eks_cluster_name $AWS_EKS_CLUSTER_NAME)
+  #aws_eks_cluster_name=$(generate_var aws_eks_cluster_name $AWS_EKS_CLUSTER_NAME)
   aws_eks_cluster_log_types=$(generate_var aws_eks_cluster_log_types $AWS_EKS_CLUSTER_LOG_TYPES)
   aws_eks_cluster_version=$(generate_var aws_eks_cluster_version $AWS_EKS_CLUSTER_VERSION)
   aws_eks_image_id=$(generate_var aws_eks_image_id $AWS_EKS_IMAGE_ID)

@@ -402,7 +402,7 @@ variable "aws_eks_public_subnets" {
 variable "aws_eks_cluster_name" {
   description = "kubernetes cluster name"
   type        = string
-  default     = "eks-cluster"
+  default     = ""
 }
 
 variable "aws_eks_cluster_log_types" {

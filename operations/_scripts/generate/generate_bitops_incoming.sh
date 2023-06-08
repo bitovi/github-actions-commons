@@ -94,19 +94,6 @@ if [ -n "$GH_ACTION_REPO" ]; then
     merge_tf_vars "$GH_ACTION_INPUT_TERRAFORM_PATH" ec2
     move_content_append "$GH_ACTION_INPUT_TERRAFORM_PATH" action
   fi
-
-  # HELM CHARTS PART
-  echo "GH_ACTION_INPUT_HELM_CHARTS $GH_ACTION_INPUT_HELM_CHARTS"
-  if [ -n "$GH_ACTION_INPUT_HELM_CHARTS" ]; then
-    GH_ACTION_INPUT_HELM_CHARTS_PATH="$GH_ACTION_REPO/$GH_ACTION_INPUT_HELM_CHARTS"
-    tree ${GH_ACTION_REPO}
-    echo "GH_ACTION_INPUT_HELM_CHARTS_PATH $GH_ACTION_INPUT_HELM_CHARTS_PATH"
-    mkdir -p ${GITHUB_ACTION_PATH}/operations/deployment/terraform/eks/helm-charts
-    echo "Moving $GH_ACTION_INPUT_HELM_CHARTS_PATH to ${GITHUB_ACTION_PATH}/operations/deployment/terraform/eks/helm-charts/action-charts"
-    mv $GH_ACTION_INPUT_HELM_CHARTS_PATH ${GITHUB_ACTION_PATH}/operations/deployment/terraform/eks/helm-charts/action-charts
-    #echo "Moving $GH_ACTION_INPUT_HELM_CHARTS_PATH to ${GITHUB_ACTION_PATH}/operations/deployment/helm"
-    #mv $GH_ACTION_INPUT_HELM_CHARTS_PATH ${GITHUB_ACTION_PATH}/operations/deployment/helm
-  fi
 fi
 
 ### Generate incoming deployment repo's
@@ -151,17 +138,61 @@ if [ -n "$GH_DEPLOYMENT_INPUT_TERRAFORM" ]; then
   move_content_append "$GH_DEPLOYMENT_INPUT_TERRAFORM_PATH" deploy
 fi
 
-# HELM CHARTS PART
-if [ -n "$GH_DEPLOYMENT_INPUT_HELM_CHARTS" ]; then
-  GH_DEPLOYMENT_INPUT_HELM_CHARTS_PATH="$GITHUB_WORKSPACE/$GH_DEPLOYMENT_INPUT_HELM_CHARTS"
-  tree ${GITHUB_WORKSPACE}
-  echo "GH_DEPLOYMENT_INPUT_HELM_CHARTS_PATH $GH_DEPLOYMENT_INPUT_HELM_CHARTS"
-  mkdir -p ${GITHUB_ACTION_PATH}/operations/deployment/terraform/eks/helm-charts
-  echo "Moving $GH_DEPLOYMENT_INPUT_HELM_CHARTS_PATH to ${GITHUB_ACTION_PATH}/operations/deployment/terraform/eks/helm-charts/deployment-charts"
-  mv $GH_DEPLOYMENT_INPUT_HELM_CHARTS_PATH ${GITHUB_ACTION_PATH}/operations/deployment/terraform/eks/helm-charts/deployment-charts
-  tree ${GITHUB_ACTION_PATH}/operations/deployment/terraform/eks/helm-charts/deployment-charts
-  #echo "Moving $GH_DEPLOYMENT_INPUT_HELM_CHARTS_PATH to ${GITHUB_ACTION_PATH}/operations/deployment/helm"
-  #mv $GH_DEPLOYMENT_INPUT_HELM_CHARTS_PATH ${GITHUB_ACTION_PATH}/operations/deployment/helm
+
+
+### HELM Merger
+
+if [ -n "${AWS_EKS_CLUSTER_NAME}" ]; then
+  aws_eks_cluster_name="$AWS_EKS_CLUSTER_NAME"
+else
+  aws_eks_cluster_name="$GITHUB_IDENTIFIER-cluster"
 fi
+
+function helm_move_content_prepend() {
+  source_folder="$1"
+  destination_folder="$2"
+  number="$3"
+  find "$source_folder" -maxdepth 1 -type d -not -name "." -path "$source_folder/*" | while read chart_folder; do
+  # Move files from source folder to destination folder
+    mkdir -p $destination_folder/$chart_folder
+    find "$source_folder/$chart_folder" -maxdepth 1 -type f -path "$source_folder/$chart_folder/*" | while read file; do
+      prepend=""
+      if [[ $file == "values.yaml" ]]; then 
+        preprend="$3_"
+      fi
+      mv "$file" "$destination_folder/$chart_folder/$prepend"$(basename "$file")
+      touch "$destination_folder/$chart_folder/bitops.config.yaml"
+      /tmp/yq ".helm.options.k8s.fetch.cluster-name = \"$aws_eks_cluster_name\"" -i "$destination_folder/$chart_folder/bitops.config.yaml"
+    done
+    # Move remaining folders (if they exist) and exclude the . folder
+    find "$source_folder/$chart_folder" -maxdepth 1 -type d -not -name "." -path "$source_folder/$chart_folder/*" | while read folder; do
+      mv "$folder" "$destination_folder/$chart_folder/."
+    done
+  done
+}
+
+# Action charts inputs
+
+if [ -n "$GH_ACTION_REPO" ]; then
+  # HELM CHARTS PART
+  if [ -n "$GH_ACTION_INPUT_HELM_CHARTS" ]; then
+    GH_ACTION_INPUT_HELM_CHARTS_PATH="$GH_ACTION_REPO/$GH_ACTION_INPUT_HELM_CHARTS"
+    echo "GH_ACTION_INPUT_HELM_CHARTS_PATH $GH_ACTION_INPUT_HELM_CHARTS_PATH"
+    helm_move_content_prepend $GH_ACTION_INPUT_HELM_CHARTS_PATH ${GITHUB_ACTION_PATH}/operations/deployment/helm 0
+  fi
+fi
+
+# Deployment charts inputs
+if [ -n "$GH_DEPLOYMENT_INPUT_HELM_CHARTS" ]; then
+    GH_DEPLOYMENT_INPUT_HELM_CHARTS_PATH="$GITHUB_WORKSPACE/$GH_DEPLOYMENT_INPUT_HELM_CHARTS"
+    echo "GH_DEPLOYMENT_INPUT_HELM_CHARTS_PATH $GH_DEPLOYMENT_INPUT_HELM_CHARTS_PATH"
+    helm_move_content_prepend $GH_DEPLOYMENT_INPUT_HELM_CHARTS_PATH ${GITHUB_ACTION_PATH}/operations/deployment/helm 1
+  fi
+fi
+
+if [[ "$(alpha_only $BITOPS_CODE_ONLY)" != "true" ]]; then
+  /tmp/yq ".bitops.deployments.helm.plugin = \"helm\"" -i $GITHUB_ACTION_PATH/operations/deployment/bitops.config.yaml
+fi
+/tmp/yq ".bitops.deployments.helm.plugin = \"helm\"" -i $GITHUB_ACTION_PATH/operations/generated_code/bitops.config.yaml
 
 echo "Done with generate_bitops_incoming.sh"

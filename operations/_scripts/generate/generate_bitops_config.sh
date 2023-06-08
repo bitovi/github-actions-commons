@@ -163,6 +163,10 @@ bitops:
     fi
   fi
 
+# Helm part
+
+
+#
 if [[ "$(alpha_only $BITOPS_CODE_ONLY)" != "true" ]]; then
   cat $BITOPS_CONFIG_TEMP >> $BITOPS_DEPLOY_FILE
 fi
