@@ -154,20 +154,21 @@ function helm_move_content_prepend() {
   number="$3"
   find "$source_folder" -maxdepth 1 -type d -not -name "." -path "$source_folder/*" | while read chart_folder; do
   # Move files from source folder to destination folder
-    mkdir -p $destination_folder/$chart_folder
-    find "$source_folder/$chart_folder" -maxdepth 1 -type f -path "$source_folder/$chart_folder/*" | while read file; do
-      prepend=""
-      if [[ $file == "values.yaml" ]]; then 
+    chart_name=$(basename "$chart_folder")
+    mkdir -p "$destination_folder/$chart_name"
+    find "$chart_folder" -maxdepth 1 -type f -path "$chart_folder/*" | while read file; do
+      file_name=$(basename "$file")
+      if [[ $file_name == "values.yaml" ]]; then 
         preprend="$3_"
       fi
-      mv "$file" "$destination_folder/$chart_folder/$prepend"$(basename "$file")
-      touch "$destination_folder/$chart_folder/bitops.config.yaml"
-      /tmp/yq ".helm.options.release-name = \"$chart_folder\"" -i "$destination_folder/$chart_folder/bitops.config.yaml"
-      /tmp/yq ".helm.options.k8s.fetch.cluster-name = \"$aws_eks_cluster_name\"" -i "$destination_folder/$chart_folder/bitops.config.yaml"
+      mv "$file" "$destination_folder/$chart_name/$prepend_$file_name"
+      touch "$destination_folder/$chart_name/bitops.config.yaml"
+      /tmp/yq ".helm.options.release-name = \"$chart_name\"" -i "$destination_folder/$chart_name/bitops.config.yaml"
+      /tmp/yq ".helm.options.k8s.fetch.cluster-name = \"$aws_eks_cluster_name\"" -i "$destination_folder/$chart_name/bitops.config.yaml"
     done
     # Move remaining folders (if they exist) and exclude the . folder
-    find "$source_folder/$chart_folder" -maxdepth 1 -type d -not -name "." -path "$source_folder/$chart_folder/*" | while read folder; do
-      mv "$folder" "$destination_folder/$chart_folder/."
+    find "$chart_folder" -maxdepth 1 -type d -not -name "." -path "$chart_folder/*" | while read folder; do
+      mv "$folder" "$destination_folder/$chart_name/."
     done
   done
 }
@@ -188,12 +189,13 @@ if [ -n "$GH_DEPLOYMENT_INPUT_HELM_CHARTS" ]; then
     GH_DEPLOYMENT_INPUT_HELM_CHARTS_PATH="$GITHUB_WORKSPACE/$GH_DEPLOYMENT_INPUT_HELM_CHARTS"
     echo "GH_DEPLOYMENT_INPUT_HELM_CHARTS_PATH $GH_DEPLOYMENT_INPUT_HELM_CHARTS_PATH"
     helm_move_content_prepend $GH_DEPLOYMENT_INPUT_HELM_CHARTS_PATH ${GITHUB_ACTION_PATH}/operations/deployment/helm 1
-  fi
 fi
 
 if [[ "$(alpha_only $BITOPS_CODE_ONLY)" != "true" ]]; then
   /tmp/yq ".bitops.deployments.helm.plugin = \"helm\"" -i $GITHUB_ACTION_PATH/operations/deployment/bitops.config.yaml
 fi
 /tmp/yq ".bitops.deployments.helm.plugin = \"helm\"" -i $GITHUB_ACTION_PATH/operations/generated_code/bitops.config.yaml
+
+tree ${GITHUB_ACTION_PATH}/operations/deployment/helm
 
 echo "Done with generate_bitops_incoming.sh"
