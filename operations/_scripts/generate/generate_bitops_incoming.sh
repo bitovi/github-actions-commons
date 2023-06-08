@@ -162,6 +162,7 @@ function helm_move_content_prepend() {
       fi
       mv "$file" "$destination_folder/$chart_folder/$prepend"$(basename "$file")
       touch "$destination_folder/$chart_folder/bitops.config.yaml"
+      /tmp/yq ".helm.options.release-name = \"$chart_folder\"" -i "$destination_folder/$chart_folder/bitops.config.yaml"
       /tmp/yq ".helm.options.k8s.fetch.cluster-name = \"$aws_eks_cluster_name\"" -i "$destination_folder/$chart_folder/bitops.config.yaml"
     done
     # Move remaining folders (if they exist) and exclude the . folder
