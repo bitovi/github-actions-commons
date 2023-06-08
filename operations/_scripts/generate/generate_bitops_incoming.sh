@@ -160,9 +160,10 @@ function helm_move_content_prepend() {
       file_name=$(basename "$file")
       echo "Filename = $file_name"
       if [[ "$file_name" == "values.yaml" ]]; then
-        echo "Is equal!" 
+        echo "mv $file $destination_folder/$chart_name/$3_$file_name"
         mv "$file" "$destination_folder/$chart_name/$3_$file_name"
       else
+        echo "mv $file $destination_folder/$chart_name/$file_name"
         mv "$file" "$destination_folder/$chart_name/$file_name"
       fi
       touch "$destination_folder/$chart_name/bitops.config.yaml"
@@ -171,8 +172,12 @@ function helm_move_content_prepend() {
     done
     # Move remaining folders (if they exist) and exclude the . folder
     find "$chart_folder" -maxdepth 1 -type d -not -name "." -path "$chart_folder/*" | while read folder; do
+      echo "mv $folder $destination_folder/$chart_name/."
       mv "$folder" "$destination_folder/$chart_name/."
     done
+    echo "Printing chart result"
+    tree "$destination_folder/$chart_name"
+    cat "$destination_folder/$chart_name/bitops.config.yaml"
   done
 }
 
@@ -202,5 +207,4 @@ if [[ "$(alpha_only $AWS_EKS_CREATE)" == "true" ]]; then
   
   tree ${GITHUB_ACTION_PATH}/operations/deployment/helm
 fi
-  
 echo "Done with generate_bitops_incoming.sh"
