@@ -35,7 +35,7 @@ function install_charts (){
 }
 
 if [ "$BITOPS_TERRAFORM_COMMAND" != "destroy" ]; then
-  aws eks update-kubeconfig --name eks-cluster
+  #aws eks update-kubeconfig --name eks-cluster
   #install_charts "${BITOPS_ENVROOT}/terraform/eks/helm-charts/deployment-charts"
   #ls -l "${BITOPS_ENVROOT}/terraform/eks/helm-charts/deployment-charts"
   #install_charts "${BITOPS_ENVROOT}/terraform/eks/helm-charts/action-charts"
@@ -45,13 +45,13 @@ if [ "$BITOPS_TERRAFORM_COMMAND" != "destroy" ]; then
   ## DEBUG
   #echo "kubectl describe after charts installation"
   ##kubectl describe configmap -n kube-system aws-auth
-  curl -O https://s3.us-west-2.amazonaws.com/amazon-eks/cloudformation/2020-10-29/aws-auth-cm.yaml
+  #curl -O https://s3.us-west-2.amazonaws.com/amazon-eks/cloudformation/2020-10-29/aws-auth-cm.yaml
   #sed -i.bak -e 's|<ARN of instance role (not instance profile)>|arn:aws:iam::755521597925:role/AWSReservedSSO_AdministratorAccess_402f22a297379e03|' aws-auth-cm.yaml
-  sed -i.bak -e 's|<ARN of instance role (not instance profile)>|arn:aws:iam::755521597925:role/AWSReservedSSO_AdministratorAccess_402f22a297379e03|' aws-auth-cm.yaml
-  sed -i.bak -e 's|system:nodes|system:masters|' aws-auth-cm.yaml
-  kubectl apply -f aws-auth-cm.yaml
-  kubectl describe configmap -n kube-system aws-auth
-  cat aws-auth-cm.yaml
+  #sed -i.bak -e 's|<ARN of instance role (not instance profile)>|arn:aws:iam::755521597925:role/AWSReservedSSO_AdministratorAccess_402f22a297379e03|' aws-auth-cm.yaml
+  #sed -i.bak -e 's|system:nodes|system:masters|' aws-auth-cm.yaml
+  #kubectl apply -f aws-auth-cm.yaml
+  #kubectl describe configmap -n kube-system aws-auth
+  #cat aws-auth-cm.yaml
 
   #curl -O https://s3.us-west-2.amazonaws.com/amazon-eks/eks-connector/manifests/eks-connector-console-roles/eks-connector-clusterrole.yaml
   #sed -i.bak -e 's|"%IAM_ARN%"|arn:aws:iam::755521597925:role/KubeAdmin|' eks-connector-clusterrole.yaml
