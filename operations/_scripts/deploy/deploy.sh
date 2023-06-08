@@ -96,9 +96,6 @@ done
 
 echo "BITOPS_EXTRA_ENV_VARS: $BITOPS_EXTRA_ENV_VARS"
 
-# Fixing executable flags for helm
-for file in $(find /opt/bitops/scripts/installed_plugins/helm -iname "*.sh"); do chmod 755 $file; done
-
 echo "::group::BitOps Excecution"  
 echo "Running BitOps for env: $BITOPS_ENVIRONMENT"
 docker run --rm --name bitops \
