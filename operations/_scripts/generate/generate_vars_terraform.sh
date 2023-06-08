@@ -105,7 +105,7 @@ aws_eks_cluster_name=
 if [ -n "${AWS_EKS_CLUSTER_NAME}" ]; then
   aws_eks_cluster_name="aws_eks_cluster_name = \"${AWS_EKS_CLUSTER_NAME}\""
 else
-  aws_eks_cluster_name="aws_eks_cluster_name = \"${GITHUB_IDENTIFIER}\"-cluster"
+  aws_eks_cluster_name="aws_eks_cluster_name = \"${GITHUB_IDENTIFIER}-cluster\""
 fi
 
 #-- AWS Specific --#
