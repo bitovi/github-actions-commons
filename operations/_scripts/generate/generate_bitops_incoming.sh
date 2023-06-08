@@ -158,10 +158,13 @@ function helm_move_content_prepend() {
     mkdir -p "$destination_folder/$chart_name"
     find "$chart_folder" -maxdepth 1 -type f -path "$chart_folder/*" | while read file; do
       file_name=$(basename "$file")
-      if [[ $file_name == "values.yaml" ]]; then 
-        preprend="$3_"
+      echo "Filename = $file_name"
+      if [[ "$file_name" == "values.yaml" ]]; then
+        echo "Is equal!" 
+        mv "$file" "$destination_folder/$chart_name/$3_$file_name"
+      else
+        mv "$file" "$destination_folder/$chart_name/$file_name"
       fi
-      mv "$file" "$destination_folder/$chart_name/$prepend_$file_name"
       touch "$destination_folder/$chart_name/bitops.config.yaml"
       /tmp/yq ".helm.options.release-name = \"$chart_name\"" -i "$destination_folder/$chart_name/bitops.config.yaml"
       /tmp/yq ".helm.options.k8s.fetch.cluster-name = \"$aws_eks_cluster_name\"" -i "$destination_folder/$chart_name/bitops.config.yaml"
