@@ -174,28 +174,30 @@ function helm_move_content_prepend() {
 }
 
 # Action charts inputs
-
-if [ -n "$GH_ACTION_REPO" ]; then
-  # HELM CHARTS PART
-  if [ -n "$GH_ACTION_INPUT_HELM_CHARTS" ]; then
-    GH_ACTION_INPUT_HELM_CHARTS_PATH="$GH_ACTION_REPO/$GH_ACTION_INPUT_HELM_CHARTS"
-    echo "GH_ACTION_INPUT_HELM_CHARTS_PATH $GH_ACTION_INPUT_HELM_CHARTS_PATH"
-    helm_move_content_prepend $GH_ACTION_INPUT_HELM_CHARTS_PATH ${GITHUB_ACTION_PATH}/operations/deployment/helm 0
+  if [[ "$(alpha_only $AWS_EKS_CREATE)" != "true" ]]; then
+  get_yq
+  if [ -n "$GH_ACTION_REPO" ]; then
+    # HELM CHARTS PART
+    if [ -n "$GH_ACTION_INPUT_HELM_CHARTS" ]; then
+      GH_ACTION_INPUT_HELM_CHARTS_PATH="$GH_ACTION_REPO/$GH_ACTION_INPUT_HELM_CHARTS"
+      echo "GH_ACTION_INPUT_HELM_CHARTS_PATH $GH_ACTION_INPUT_HELM_CHARTS_PATH"
+      helm_move_content_prepend $GH_ACTION_INPUT_HELM_CHARTS_PATH ${GITHUB_ACTION_PATH}/operations/deployment/helm 0
+    fi
   fi
+  
+  # Deployment charts inputs
+  if [ -n "$GH_DEPLOYMENT_INPUT_HELM_CHARTS" ]; then
+      GH_DEPLOYMENT_INPUT_HELM_CHARTS_PATH="$GITHUB_WORKSPACE/$GH_DEPLOYMENT_INPUT_HELM_CHARTS"
+      echo "GH_DEPLOYMENT_INPUT_HELM_CHARTS_PATH $GH_DEPLOYMENT_INPUT_HELM_CHARTS_PATH"
+      helm_move_content_prepend $GH_DEPLOYMENT_INPUT_HELM_CHARTS_PATH ${GITHUB_ACTION_PATH}/operations/deployment/helm 1
+  fi
+  
+  if [[ "$(alpha_only $BITOPS_CODE_ONLY)" != "true" ]]; then
+    /tmp/yq ".bitops.deployments.helm.plugin = \"helm\"" -i $GITHUB_ACTION_PATH/operations/deployment/bitops.config.yaml
+  fi
+  /tmp/yq ".bitops.deployments.helm.plugin = \"helm\"" -i $GITHUB_ACTION_PATH/operations/generated_code/bitops.config.yaml
+  
+  tree ${GITHUB_ACTION_PATH}/operations/deployment/helm
 fi
-
-# Deployment charts inputs
-if [ -n "$GH_DEPLOYMENT_INPUT_HELM_CHARTS" ]; then
-    GH_DEPLOYMENT_INPUT_HELM_CHARTS_PATH="$GITHUB_WORKSPACE/$GH_DEPLOYMENT_INPUT_HELM_CHARTS"
-    echo "GH_DEPLOYMENT_INPUT_HELM_CHARTS_PATH $GH_DEPLOYMENT_INPUT_HELM_CHARTS_PATH"
-    helm_move_content_prepend $GH_DEPLOYMENT_INPUT_HELM_CHARTS_PATH ${GITHUB_ACTION_PATH}/operations/deployment/helm 1
-fi
-
-if [[ "$(alpha_only $BITOPS_CODE_ONLY)" != "true" ]]; then
-  /tmp/yq ".bitops.deployments.helm.plugin = \"helm\"" -i $GITHUB_ACTION_PATH/operations/deployment/bitops.config.yaml
-fi
-/tmp/yq ".bitops.deployments.helm.plugin = \"helm\"" -i $GITHUB_ACTION_PATH/operations/generated_code/bitops.config.yaml
-
-tree ${GITHUB_ACTION_PATH}/operations/deployment/helm
-
+  
 echo "Done with generate_bitops_incoming.sh"
