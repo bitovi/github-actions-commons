@@ -174,7 +174,7 @@ function helm_move_content_prepend() {
 }
 
 # Action charts inputs
-  if [[ "$(alpha_only $AWS_EKS_CREATE)" != "true" ]]; then
+if [[ "$(alpha_only $AWS_EKS_CREATE)" == "true" ]]; then
   get_yq
   if [ -n "$GH_ACTION_REPO" ]; then
     # HELM CHARTS PART
