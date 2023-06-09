@@ -184,14 +184,14 @@ function helm_move_content_prepend() {
 # Action charts inputs
 if [[ "$(alpha_only $AWS_EKS_CREATE)" == "true" ]]; then
   get_yq
-  #if [ -n "$GH_ACTION_REPO" ]; then
+  if [ -n "$GH_ACTION_REPO" ]; then
     # HELM CHARTS PART
     if [ -n "$GH_ACTION_INPUT_HELM_CHARTS" ]; then
       GH_ACTION_INPUT_HELM_CHARTS_PATH="$GH_ACTION_REPO/$GH_ACTION_INPUT_HELM_CHARTS"
       echo "GH_ACTION_INPUT_HELM_CHARTS_PATH $GH_ACTION_INPUT_HELM_CHARTS_PATH"
       helm_move_content_prepend $GH_ACTION_INPUT_HELM_CHARTS_PATH ${GITHUB_ACTION_PATH}/operations/deployment/helm 0
     fi
- # fi
+  fi
   
   # Deployment charts inputs
   if [ -n "$GH_DEPLOYMENT_INPUT_HELM_CHARTS" ]; then
@@ -207,4 +207,7 @@ if [[ "$(alpha_only $AWS_EKS_CREATE)" == "true" ]]; then
   
   tree ${GITHUB_ACTION_PATH}/operations/deployment/helm
 fi
+
+cat "$destination_folder/$chart_name/bitops.config.yaml"
+
 echo "Done with generate_bitops_incoming.sh"
