@@ -33,13 +33,6 @@ else
   GITHUB_BRANCH_NAME=${GITHUB_REF_NAME}
 fi
 
-GITHUB_IDENTIFIER="$($GITHUB_ACTION_PATH/operations/_scripts/generate/generate_identifier.sh)"
-echo "GITHUB_IDENTIFIER: [$GITHUB_IDENTIFIER]"
-
-GITHUB_IDENTIFIER_SS="$($GITHUB_ACTION_PATH/operations/_scripts/generate/generate_identifier.sh 30)"
-echo "GITHUB_IDENTIFIER SS: [$GITHUB_IDENTIFIER_SS]"
-
-
 # -------------------------------------------------- #
 # Generator # 
 # Function to generate the variable content based on the fact that it could be empty. 
@@ -59,7 +52,6 @@ function generate_var () {
     fi
   fi
 }
-
 
 # Fixed values - Values that are hardcoded or come from other variables.
 
