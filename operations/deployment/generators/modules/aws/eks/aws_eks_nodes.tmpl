@@ -81,7 +81,7 @@ tag {
 }
 tag {
   key                 = "Name"
-  value               = "${var.aws_eks_environment}-eksworker-node-${aws_autoscaling_group.main.id}/${aws_autoscaling_group.main.launch_template[0].id}"
+  value               = "${var.aws_eks_environment}-eksworker-node
   propagate_at_launch = true
 }
 
