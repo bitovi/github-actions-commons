@@ -155,19 +155,21 @@ function helm_move_content_prepend() {
   find "$source_folder" -maxdepth 1 -type d -not -name "." -path "$source_folder/*" | while read chart_folder; do
   # Move files from source folder to destination folder
     chart_name=$(basename "$chart_folder")
-    mkdir -p "$destination_folder/$chart_name"
+    mkdir -p "$destination_folder/$chart_name/values-files"
     find "$chart_folder" -maxdepth 1 -type f -path "$chart_folder/*" | while read file; do
       file_name=$(basename "$file")
       echo "Filename = $file_name"
       if [[ "$file_name" == "values.yaml" ]]; then
-        echo "mv $file $destination_folder/$chart_name/$3_$file_name"
-        mv "$file" "$destination_folder/$chart_name/$3_$file_name"
+        echo "mv $file $destination_folder/$chart_name/values-files/$3_$file_name"
+        mv "$file" "$destination_folder/$chart_name/values-files/$3_$file_name"
       else
         echo "mv $file $destination_folder/$chart_name/$file_name"
         mv "$file" "$destination_folder/$chart_name/$file_name"
       fi
       touch "$destination_folder/$chart_name/bitops.config.yaml"
-      /tmp/yq ".helm.options.release-name = \"$chart_name\"" -i "$destination_folder/$chart_name/bitops.config.yaml"
+      if [ $(yq eval ".helm.options.release-name" "$destination_folder/$chart_name/bitops.config.yaml") == null ]; then
+              /tmp/yq ".helm.options.release-name = \"$chart_name\"" -i "$destination_folder/$chart_name/bitops.config.yaml"
+      fi
       /tmp/yq ".helm.options.k8s.fetch.cluster-name = \"$aws_eks_cluster_name\"" -i "$destination_folder/$chart_name/bitops.config.yaml"
     done
     # Move remaining folders (if they exist) and exclude the . folder
