@@ -79,6 +79,11 @@ tag {
   value               = "owned"
   propagate_at_launch = true
 }
+tag {
+  key                 = "Name"
+  value               = "${var.aws_eks_environment}-eksworker-node-${count.index + 1}"
+  propagate_at_launch = true
+}
 
 /* [tag for tag_key, tag_value in var.common_tags: {
   key                 = tag_key

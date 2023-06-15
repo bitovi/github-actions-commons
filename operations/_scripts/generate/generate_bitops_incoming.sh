@@ -168,7 +168,7 @@ function helm_move_content_prepend() {
       fi
       touch "$destination_folder/$chart_name/bitops.config.yaml"
       if [ $(yq eval ".helm.options.release-name" "$destination_folder/$chart_name/bitops.config.yaml") == null ]; then
-              /tmp/yq ".helm.options.release-name = \"$chart_name\"" -i "$destination_folder/$chart_name/bitops.config.yaml"
+          /tmp/yq ".helm.options.release-name = \"$chart_name\"" -i "$destination_folder/$chart_name/bitops.config.yaml"
       fi
       /tmp/yq ".helm.options.k8s.fetch.cluster-name = \"$aws_eks_cluster_name\"" -i "$destination_folder/$chart_name/bitops.config.yaml"
     done
@@ -209,7 +209,5 @@ if [[ "$(alpha_only $AWS_EKS_CREATE)" == "true" ]]; then
   
   tree ${GITHUB_ACTION_PATH}/operations/deployment/helm
 fi
-
-cat "$destination_folder/$chart_name/bitops.config.yaml"
 
 echo "Done with generate_bitops_incoming.sh"
