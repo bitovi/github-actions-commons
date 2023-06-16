@@ -28,12 +28,12 @@ resource "aws_eks_cluster" "main" {
 
 data "aws_ami" "image_selected" {
   most_recent = true
+  owners = ["amazon"]
+
   filter {
     name   = "name"
-    #values = ["${var.aws_ec2_ami_filter}"]
-    values = ["amazon-eks-node-${var.aws_eks_cluster_version}"]
+    values = ["amazon-eks-node-${var.aws_eks_cluster_version}*"]
   }
-  owners = ["602401143452"]
 }
 
 data "aws_eks_cluster" "eks_cluster" {
