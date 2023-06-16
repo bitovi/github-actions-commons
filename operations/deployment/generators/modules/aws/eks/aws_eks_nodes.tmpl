@@ -24,6 +24,18 @@ resource "aws_eks_cluster" "main" {
   }
 }
 
+# Adding this block to pick up the latest image available on creation
+
+data "aws_ami" "image_selected" {
+  most_recent = true
+  filter {
+    name   = "name"
+    #values = ["${var.aws_ec2_ami_filter}"]
+    values = ["amazon-eks-node-${var.aws_eks_cluster_version}"]
+  }
+  owners = ["602401143452"]
+}
+
 data "aws_eks_cluster" "eks_cluster" {
   name = aws_eks_cluster.main.id
 }
@@ -47,7 +59,8 @@ resource "aws_launch_template" "main" {
   iam_instance_profile {
     name = aws_iam_instance_profile.eks_inst_profile.name
   }
-  image_id                    = var.aws_eks_image_id
+  #image_id                    = var.aws_eks_image_id
+  image_id                    = data.aws_ami.image_selected.id
   instance_type               = var.aws_eks_instance_type
   name_prefix                 = "${var.aws_eks_environment}-eksworker"
   #security_group_names        = [aws_security_group.eks_security_group_worker.name]
