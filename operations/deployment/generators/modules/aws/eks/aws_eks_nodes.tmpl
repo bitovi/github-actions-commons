@@ -52,11 +52,29 @@ resource "aws_launch_template" "main" {
   name_prefix                 = "${var.aws_eks_environment}-eksworker"
   #security_group_names        = [aws_security_group.eks_security_group_worker.name]
   #vpc_security_group_ids      = [aws_security_group.eks_security_group_worker.id]
-  user_data                   = base64encode(try(file("./aws_eks_incoming_user_data_script.sh"), ""))
+  user_data                   = base64encode(local.node-userdata)
   key_name                    = var.aws_eks_ec2_key_pair
   lifecycle {
     create_before_destroy = true
   }
+}
+
+locals {
+  #Userdata for nodes
+  node-userdata = <<USERDATA
+  #!/bin/bash
+  set -o xtrace
+  # These are used to install SSM Agent to SSH into the EKS nodes.
+  sudo yum install -y https://s3.amazonaws.com/ec2-downloads-windows/SSMAgent/latest/linux_amd64/amazon-ssm-agent.rpm
+  systemctl enable amazon-ssm-agent
+  systemctl restart amazon-ssm-agent
+  /etc/eks/bootstrap.sh --apiserver-endpoint '${resource.eks_master.eks_master_endpoint}' --b64-cluster-ca '${resource.eks_master.cluster_certificate_authority_data}' '${resource.aws_eks_cluster.main.name}'
+  # Retrieve the necessary packages for `mount` to work properly with NFSv4.1
+  sudo yum update -y
+  sudo yum install -y amazon-efs-utils nfs-utils nfs-utils-lib
+  # after the eks bootstrap and necessary packages installation - restart kubelet
+  systemctl restart kubelet.service
+  USERDATA
 }
 
 resource "aws_autoscaling_group" "main" {

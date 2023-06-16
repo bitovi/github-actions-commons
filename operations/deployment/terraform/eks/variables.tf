@@ -414,13 +414,13 @@ variable "aws_eks_cluster_log_types" {
 variable "aws_eks_cluster_version" {
   description = "enter the kubernetes version"
   type        = number
-  default     = "1.26"
+  default     = "1.27"
 }
 
 variable "aws_eks_image_id" {
   description = "enter the aws ami related to kubernetes version"
   type        = string
-  default     = "ami-0b0d79012c6bfa493"
+  default     = "ami-0f30ede0d49b940f6"
 }
 
 variable "aws_eks_instance_type" {
