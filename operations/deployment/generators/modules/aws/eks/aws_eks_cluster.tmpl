@@ -61,6 +61,12 @@ resource "aws_autoscaling_group" "main" {
     propagate_at_launch = true
   }
 
+  /* [tag for tag_key, tag_value in var.common_tags: {
+  key                 = tag_key
+  value               = tag_value
+  propagate_at_launch = true
+  }] */
+
   depends_on = [
     module.eks_vpc,
     module.eks_vpc.private_subnets,
