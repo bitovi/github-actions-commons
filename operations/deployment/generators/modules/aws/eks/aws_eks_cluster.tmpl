@@ -126,12 +126,12 @@ locals {
   sudo yum install -y amazon-efs-utils nfs-utils nfs-utils-lib
   # after the eks bootstrap and necessary packages installation - restart kubelet
   systemctl restart kubelet.service
-  # Take care of instance name by adding the launch order  
-  INSTANCE_NAME_TAG=$$(curl -s http://169.254.169.254/latest/meta-data/tags/instance/Name)
-  LAUNCH_INDEX=$$(curl -s http://169.254.169.254/latest/meta-data/ami-launch-index)
-  # Get Instance MetaData
-  REGION=$$(curl -s http://169.254.169.254/latest/meta-data/placement/region)
-  INSTANCE_ID=$$(curl -s http://169.254.169.254/latest/meta-data/instance-id)
-  aws ec2 create-tags --region $$REGION --resources $$INSTANCE_ID --tags Key=Name,Value=$$INSTANCE_NAME_TAG-$$LAUNCH_INDEX
+  ## Take care of instance name by adding the launch order  
+  #INSTANCE_NAME_TAG=$$(curl -s http://169.254.169.254/latest/meta-data/tags/instance/Name)
+  #LAUNCH_INDEX=$$(curl -s http://169.254.169.254/latest/meta-data/ami-launch-index)
+  ## Get Instance MetaData
+  #REGION=$$(curl -s http://169.254.169.254/latest/meta-data/placement/region)
+  #INSTANCE_ID=$$(curl -s http://169.254.169.254/latest/meta-data/instance-id)
+  #aws ec2 create-tags --region $$REGION --resources $$INSTANCE_ID --tags Key=Name,Value=$$INSTANCE_NAME_TAG-$$LAUNCH_INDEX
   USERDATA
 }
