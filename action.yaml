@@ -348,9 +348,6 @@ inputs:
   aws_eks_cluster_version:
     description: 'Specify the k8s cluster version'
     required: false 
-  aws_eks_image_id:
-    description: 'enter the aws ami related to kubernetes version'
-    required: false 
   aws_eks_instance_type:
     description: 'enter the aws instance type'
     required: false 
@@ -358,7 +355,10 @@ inputs:
     description: 'Relative path in the repo for a user provided script to be executed with Terraform EKS Node creation.'
     required: false
   aws_eks_ec2_key_pair:
-    description: 'Enter the existing ec2 key pair for worker nodes'
+    description: 'Enter the existing ec2 key pair for worker nodes. If none, one will be created.'
+    required: false 
+  aws_eks_store_keypair_sm:
+    description: 'If true, will store the newly created keys in Secret Manager'
     required: false 
   aws_eks_desired_capacity:
     description: 'Enter the desired capacity for the worker nodes' 
@@ -517,10 +517,10 @@ runs:
         AWS_EKS_CLUSTER_NAME: ${{ inputs.aws_eks_cluster_name }}
         AWS_EKS_CLUSTER_LOG_TYPES: ${{ inputs.aws_eks_cluster_log_types }}
         AWS_EKS_CLUSTER_VERSION: ${{ inputs.aws_eks_cluster_version }}
-        AWS_EKS_IMAGE_ID: ${{ inputs.aws_eks_image_id }}
         AWS_EKS_INSTANCE_TYPE: ${{ inputs.aws_eks_instance_type }}
         AWS_EKS_USER_DATA_FILE: ${{ inputs.aws_eks_user_data_file }}
         AWS_EKS_EC2_KEY_PAIR: ${{ inputs.aws_eks_ec2_key_pair }}
+        AWS_EKS_STORE_KEYPAIR_SM: ${{ inputs.aws_eks_store_keypair_sm }}
         AWS_EKS_DESIRED_CAPACITY: ${{ inputs.aws_eks_desired_capacity}}
         AWS_EKS_MAX_SIZE: ${{ inputs.aws_eks_max_size }}
         AWS_EKS_MIN_SIZE: ${{ inputs.aws_eks_min_size }}
