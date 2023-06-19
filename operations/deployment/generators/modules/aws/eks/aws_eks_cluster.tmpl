@@ -121,7 +121,7 @@ locals {
   # after the eks bootstrap and necessary packages installation - restart kubelet
   systemctl restart kubelet.service
   # Take care of instance name by adding the launch order  
-  INSTANCE_NAME_TAG=$$(curl -s http://169.254.169.254/latest/meta-data/meta-data/tags/instance/Name)
+  INSTANCE_NAME_TAG=$$(curl -s http://169.254.169.254/latest/meta-data/tags/instance/Name)
   LAUNCH_INDEX=$$(curl -s http://169.254.169.254/latest/meta-data/ami-launch-index)
   # Get Instance MetaData
   REGION=$$(curl -s http://169.254.169.254/latest/meta-data/placement/region)
