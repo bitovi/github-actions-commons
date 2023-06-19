@@ -3,9 +3,14 @@ resource "local_file" "aws_eks_iam" {
     content = file(format("%s/%s", abspath(path.module), "aws_eks_iam.tmpl"))
 }
 
-resource "local_file" "aws_eks_nodes" {
-    filename = format("%s/%s", abspath(path.root), "bitovi_aws_eks_nodes.tf")
-    content = file(format("%s/%s", abspath(path.module), "aws_eks_nodes.tmpl"))
+resource "local_file" "aws_eks_cluster" {
+    filename = format("%s/%s", abspath(path.root), "bitovi_aws_eks_cluster.tf")
+    content = file(format("%s/%s", abspath(path.module), "aws_eks_cluster.tmpl"))
+}
+
+resource "local_file" "aws_eks_ec2_keypair" {
+    filename = format("%s/%s", abspath(path.root), "bitovi_aws_eks_ec2_keypair.tf")
+    content = file(format("%s/%s", abspath(path.module), "aws_eks_ec2_keypair.tmpl"))
 }
 
 resource "local_file" "aws_eks_security_group" {

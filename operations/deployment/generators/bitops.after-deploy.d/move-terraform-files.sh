@@ -29,5 +29,9 @@ if [ $(find "$BITOPS_ENVROOT/generators/." -iname "bitovi_*.tf" | wc -l) -gt 0 ]
   mv "${BITOPS_ENVROOT}"/generators/bitovi_*.tf "${BITOPS_ENVROOT}"/terraform/ec2/.
 fi 
 
+find "${BITOPS_ENVROOT}/terraform" -maxdepth 1 -type d -not -name "."  -path "${BITOPS_ENVROOT}/terraform/*" | while read terraform_folder; do
+  cat "${BITOPS_ENVROOT}/generators/aws_variables.tf" >> $terraform_folder/variables.tf
+done
+
 rm -rf "${BITOPS_ENVROOT}/generators"
 cp -r "${BITOPS_ENVROOT}" /opt/bitops_deployment/generated_code

@@ -417,12 +417,6 @@ variable "aws_eks_cluster_version" {
   default     = "1.27"
 }
 
-variable "aws_eks_image_id" {
-  description = "enter the aws ami related to kubernetes version"
-  type        = string
-  default     = "ami-0f30ede0d49b940f6"
-}
-
 variable "aws_eks_instance_type" {
   description = "enter the aws instance type"
   type        = string
@@ -433,6 +427,12 @@ variable "aws_eks_ec2_key_pair" {
   description = "Enter the existing ec2 key pair for worker nodes"
   type        = string
   default     = "bitovi-devops-deploy-eks"
+}
+
+variable "aws_eks_store_keypair_sm" {
+  description = "y/n create sm entry for ec2 keypair"
+  type        = bool
+  default     = false
 }
 
 variable "aws_eks_desired_capacity" {
