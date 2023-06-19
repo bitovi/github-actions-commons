@@ -50,21 +50,16 @@ resource "aws_autoscaling_group" "main" {
   vpc_zone_identifier  = module.eks_vpc.private_subnets
   health_check_type    = "EC2"
 
-  tags = {
-    "kubernetes.io/cluster/${var.aws_eks_cluster_name}" = "owned"
-    "Name" = "${var.aws_eks_environment}-eksworker-node"
+  tag {
+    key                 = "kubernetes.io/cluster/${var.aws_eks_cluster_name}"
+    value               = "owned"
+    propagate_at_launch = true
   }
-
-#  tag {
-#    key                 = "kubernetes.io/cluster/${var.aws_eks_cluster_name}"
-#    value               = "owned"
-#    propagate_at_launch = true
-#  }
-#  tag {
-#    key                 = "Name"
-#    value               = "${var.aws_eks_environment}-eksworker-node"
-#    propagate_at_launch = true
-#  }
+  tag {
+    key                 = "Name"
+    value               = "${var.aws_eks_environment}-eksworker-node"
+    propagate_at_launch = true
+  }
 #
 #  /* [tag for tag_key, tag_value in var.common_tags: {
 #  key                 = tag_key
