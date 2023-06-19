@@ -108,19 +108,19 @@ locals {
   sudo yum install -y https://s3.amazonaws.com/ec2-downloads-windows/SSMAgent/latest/linux_amd64/amazon-ssm-agent.rpm
   systemctl enable amazon-ssm-agent
   systemctl restart amazon-ssm-agent
-  /etc/eks/bootstrap.sh --apiserver-endpoint '${resource.aws_eks_cluster.main.endpoint}' --b64-cluster-ca '${resource.aws_eks_cluster.main.certificate_authority.0.data}' '${resource.aws_eks_cluster.main.name}'
+  /etc/eks/bootstrap.sh --apiserver-endpoint '${local.variable1}' --b64-cluster-ca '${local.variable2}'
   # Retrieve the necessary packages for `mount` to work properly with NFSv4.1
   sudo yum update -y
   sudo yum install -y amazon-efs-utils nfs-utils nfs-utils-lib
   # after the eks bootstrap and necessary packages installation - restart kubelet
   systemctl restart kubelet.service
   # Take care of instance name by adding the launch order
-  INSTANCE_NAME_TAG="$(curl -s http://169.254.169.254/latest/meta-data/meta-data/tags/instance/Name)"
-  LAUNCH_INDEX="$(curl -s http://169.254.169.254/latest/meta-data/ami-launch-index)"
+  INSTANCE_NAME_TAG=$$(curl -s http://169.254.169.254/latest/meta-data/meta-data/tags/instance/Name)
+  LAUNCH_INDEX=$$(curl -s http://169.254.169.254/latest/meta-data/ami-launch-index)
   # Get Instance MetaData
-  AVAILABILITY_ZONE="$(curl -s http://169.254.169.254/latest/meta-data/placement/availability-zone)"
-  REGION="$${AVAILABILITY_ZONE::-1}"
-  INSTANCE_ID="$(curl -s http://169.254.169.254/latest/meta-data/instance-id)"
-  aws ec2 create-tags --region "$REGION" --resources "$INSTANCE_ID" --tags Key=Name,Value="$INSTANCE_NAME_TAG-$LAUNCH_INDEX"
+  AVAILABILITY_ZONE=$$(curl -s http://169.254.169.254/latest/meta-data/placement/availability-zone)
+  REGION=$${AVAILABILITY_ZONE::-1}
+  INSTANCE_ID=$$(curl -s http://169.254.169.254/latest/meta-data/instance-id)
+  aws ec2 create-tags --region $$REGION --resources $$INSTANCE_ID --tags Key=Name,Value=$$INSTANCE_NAME_TAG-$$LAUNCH_INDEX
   USERDATA
 }
