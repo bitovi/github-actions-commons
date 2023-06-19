@@ -87,6 +87,12 @@ resource "aws_launch_template" "main" {
   lifecycle {
     create_before_destroy = true
   }
+  metadata_options {
+    http_endpoint               = "enabled"
+    http_tokens                 = "optional"
+    http_put_response_hop_limit = 1
+    instance_metadata_tags      = "enabled"
+  }
 }
 
 data "aws_ami" "image_selected" {
@@ -114,12 +120,11 @@ locals {
   sudo yum install -y amazon-efs-utils nfs-utils nfs-utils-lib
   # after the eks bootstrap and necessary packages installation - restart kubelet
   systemctl restart kubelet.service
-  # Take care of instance name by adding the launch order
+  # Take care of instance name by adding the launch order  
   INSTANCE_NAME_TAG=$$(curl -s http://169.254.169.254/latest/meta-data/meta-data/tags/instance/Name)
   LAUNCH_INDEX=$$(curl -s http://169.254.169.254/latest/meta-data/ami-launch-index)
   # Get Instance MetaData
-  AVAILABILITY_ZONE=$$(curl -s http://169.254.169.254/latest/meta-data/placement/availability-zone)
-  REGION=$${AVAILABILITY_ZONE::-1}
+  REGION=$$(curl -s http://169.254.169.254/latest/meta-data/placement/region)
   INSTANCE_ID=$$(curl -s http://169.254.169.254/latest/meta-data/instance-id)
   aws ec2 create-tags --region $$REGION --resources $$INSTANCE_ID --tags Key=Name,Value=$$INSTANCE_NAME_TAG-$$LAUNCH_INDEX
   USERDATA
