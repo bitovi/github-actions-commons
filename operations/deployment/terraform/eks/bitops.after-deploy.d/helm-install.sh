@@ -85,4 +85,4 @@ echo ""
   #install_charts "${BITOPS_ENVROOT}/terraform/eks/helm-charts/deployment-charts"
   #install_charts "${BITOPS_ENVROOT}/terraform/eks/helm-charts/action-charts"
 #fi
-for file in $(find /opt/bitops/scripts/installed_plugins/helm -iname "*.sh"); do chmod 755 $file; done
+#for file in $(find /opt/bitops/scripts/installed_plugins/helm -iname "*.sh"); do chmod 755 $file; done

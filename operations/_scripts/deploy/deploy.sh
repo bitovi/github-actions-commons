@@ -115,13 +115,8 @@ docker run --rm --name bitops \
 ${BITOPS_EXTRA_ENV_VARS_FILE} \
 ${BITOPS_EXTRA_ENV_VARS} \
 -v $(echo $GITHUB_ACTION_PATH)/operations:/opt/bitops_deployment \
-bitovi/bitops:2.5.0
+bitovi/bitops:2.6.0
 BITOPS_RESULT=$?
 echo "::endgroup::"
 
 exit $BITOPS_RESULT
-
-#-e BITOPS_TERRAFORM_COMMAND="${TERRAFORM_COMMAND}" \
-#-e BITOPS_ANSIBLE_SKIP_DEPLOY="${ANSIBLE_SKIP}" \
-#-e BITOPS_ENVIRONMENT="${BITOPS_ENVIRONMENT}" \
-#-e BITOPS_FAST_FAIL="${BITOPS_FAST_FAIL}" \
