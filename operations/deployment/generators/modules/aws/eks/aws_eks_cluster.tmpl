@@ -96,6 +96,7 @@ locals {
   REGION=$(curl -s http://169.254.169.254/latest/meta-data/placement/region)
   INSTANCE_ID=$(curl -s http://169.254.169.254/latest/meta-data/instance-id)
   aws ec2 create-tags --region $REGION --resources $INSTANCE_ID --tags Key=Name,Value=$INSTANCE_NAME_TAG-$LAUNCH_INDEX
+  aws ec2 create-tags --region $REGION --resources $INSTANCE_ID --tags Key="kubernetes.io/cluster/${var.aws_eks_cluster_name}",Value="owned"
   USERDATA
 }
 
@@ -111,11 +112,11 @@ resource "aws_autoscaling_group" "main" {
   vpc_zone_identifier  = module.eks_vpc.private_subnets
   health_check_type    = "EC2"
 
-tag {
-  key                 = "kubernetes.io/cluster/${var.aws_eks_cluster_name}"
-  value               = "owned"
-  propagate_at_launch = true
-}
+#tag {
+#  key                 = "kubernetes.io/cluster/${var.aws_eks_cluster_name}"
+#  value               = "owned"
+#  propagate_at_launch = true
+#}
 tag {
   key                 = "Name"
   value               = "${var.aws_eks_environment}-eksworker-node"
