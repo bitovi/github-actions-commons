@@ -160,7 +160,6 @@ resource "aws_eks_cluster" "main" {
     aws_iam_role_policy_attachment.managed_policies_master,
     aws_iam_role_policy_attachment.managed_policies_worker
   ]
-  version    = var.aws_eks_cluster_version
   enabled_cluster_log_types = var.aws_eks_cluster_log_types
 
   tags = {
