@@ -46,10 +46,10 @@ resource "aws_launch_template" "main" {
   iam_instance_profile {
     name = aws_iam_instance_profile.eks_inst_profile.name
   }
-  image_id                    = data.aws_ami.image_selected.id
+  image_id                    = var.aws_eks_instance_ami_id != "" ? var.aws_eks_instance_ami_id : data.aws_ami.image_selected.id
   instance_type               = var.aws_eks_instance_type
   name_prefix                 = "${var.aws_eks_environment}-eksworker"
-  user_data                   = base64encode(local.node-userdata)
+  user_data                   = base64encode(try(file("./aws_ec2_incoming_user_data_script.sh"), (var.aws_eks_instance_ami_id != "" ? local.node-userdata : "" )))
   key_name                    = var.aws_eks_ec2_key_pair
   update_default_version = true
   lifecycle {

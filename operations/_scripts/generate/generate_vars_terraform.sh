@@ -201,7 +201,8 @@ if [[ $(alpha_only "$AWS_EKS_CREATE") == true ]]; then
   aws_eks_cluster_log_types=$(generate_var aws_eks_cluster_log_types $AWS_EKS_CLUSTER_LOG_TYPES)
   aws_eks_cluster_version=$(generate_var aws_eks_cluster_version $AWS_EKS_CLUSTER_VERSION)
   aws_eks_instance_type=$(generate_var aws_eks_instance_type $AWS_EKS_INSTANCE_TYPE)
-  aws_eks_user_data_file=$(generate_var aws_eks_user_data_file $AWS_EKS_USER_DATA_FILE)
+  aws_eks_instance_ami_id=$(generate_var aws_eks_instance_ami_id $AWS_EKS_INSTANCE_AMI_ID)
+  aws_eks_instance_user_data_file=$(generate_var aws_eks_instance_user_data_file $AWS_EKS_INSTANCE_USER_DATA_FILE)
   aws_eks_ec2_key_pair=$(generate_var aws_eks_ec2_key_pair $AWS_EKS_EC2_KEY_PAIR)
   aws_eks_store_keypair_sm=$(generate_var aws_eks_store_keypair_sm $AWS_EKS_STORE_KEYPAIR_SM)
   aws_eks_desired_capacity=$(generate_var aws_eks_desired_capacity $AWS_EKS_DESIRED_CAPACITY)
@@ -334,6 +335,8 @@ $aws_eks_cluster_name
 $aws_eks_cluster_log_types
 $aws_eks_cluster_version
 $aws_eks_instance_type
+$aws_eks_instance_ami_id
+$aws_eks_instance_user_data_file
 $aws_eks_ec2_key_pair
 $aws_eks_store_keypair_sm
 $aws_eks_desired_capacity

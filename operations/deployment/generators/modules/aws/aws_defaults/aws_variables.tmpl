@@ -376,9 +376,9 @@ variable "aws_eks_cidr_block" {
 }
 
 variable "aws_eks_workstation_cidr" {
-  type        = list(string)
+  type        = string
   description = "your local workstation public IP"
-  default     = ["17.168.95.114/32"]
+  default     = ""
 }
 
 variable "aws_eks_availability_zones" {
@@ -423,10 +423,22 @@ variable "aws_eks_instance_type" {
   default     = "t3a.medium"
 }
 
+variable "aws_eks_instance_ami_id" {
+  description = "AWS AMI ID"
+  type        = string
+  default     = ""
+}
+
+variable "aws_eks_instance_user_data_file" {
+  description = "enter the aws instance user data file"
+  type        = string
+  default     = ""
+}
+
 variable "aws_eks_ec2_key_pair" {
   description = "Enter the existing ec2 key pair for worker nodes"
   type        = string
-  default     = "bitovi-devops-deploy-eks"
+  default     = ""
 }
 
 variable "aws_eks_store_keypair_sm" {

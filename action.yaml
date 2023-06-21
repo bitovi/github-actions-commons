@@ -305,7 +305,6 @@ inputs:
     required: false
 
   # AWS EKS
-  # VPC?
   aws_eks_create:
     description: 'Define if an EKS cluster should be created'
     required: false
@@ -351,7 +350,8 @@ inputs:
   aws_eks_instance_type:
     description: 'enter the aws instance type'
     required: false 
-  aws_eks_user_data_file:
+  aws_eks_instance_ami_id
+  aws_eks_instance_user_data_file:
     description: 'Relative path in the repo for a user provided script to be executed with Terraform EKS Node creation.'
     required: false
   aws_eks_ec2_key_pair:
@@ -518,7 +518,8 @@ runs:
         AWS_EKS_CLUSTER_LOG_TYPES: ${{ inputs.aws_eks_cluster_log_types }}
         AWS_EKS_CLUSTER_VERSION: ${{ inputs.aws_eks_cluster_version }}
         AWS_EKS_INSTANCE_TYPE: ${{ inputs.aws_eks_instance_type }}
-        AWS_EKS_USER_DATA_FILE: ${{ inputs.aws_eks_user_data_file }}
+        AWS_EKS_INSTANCE_AMI_ID: ${{ inputs.aws_eks_instance_ami_id }}
+        AWS_EKS_INSTANCE_USER_DATA_FILE: ${{ inputs.aws_eks_instance_user_data_file }}
         AWS_EKS_EC2_KEY_PAIR: ${{ inputs.aws_eks_ec2_key_pair }}
         AWS_EKS_STORE_KEYPAIR_SM: ${{ inputs.aws_eks_store_keypair_sm }}
         AWS_EKS_DESIRED_CAPACITY: ${{ inputs.aws_eks_desired_capacity}}

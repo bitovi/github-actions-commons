@@ -65,9 +65,9 @@ if [[ $(alpha_only "$AWS_EC2_INSTANCE_CREATE") == true ]]; then
 fi
 #Will add the user_data file into the EKS Terraform folder
 if [[ $(alpha_only "$AWS_EKS_CREATE") == true ]]; then
-  if [ -s "$GITHUB_WORKSPACE/$AWS_EKS_USER_DATA_FILE" ] && [ -f "$GITHUB_WORKSPACE/$AWS_EKS_USER_DATA_FILE" ]; then
-      echo "Moving $AWS_EKS_USER_DATA_FILE to be used by Terraform during EKS Nodes creation"
-      mv "$GITHUB_WORKSPACE/$AWS_EKS_USER_DATA_FILE" "$GITHUB_ACTION_PATH/operations/deployment/terraform/eks/aws_eks_incoming_user_data_script.sh"
+  if [ -s "$GITHUB_WORKSPACE/$AWS_EKS_INSTANCE_USER_DATA_FILE" ] && [ -f "$GITHUB_WORKSPACE/$AWS_EKS_INSTANCE_USER_DATA_FILE" ]; then
+      echo "Moving $AWS_EKS_INSTANCE_USER_DATA_FILE to be used by Terraform during EKS Nodes creation"
+      mv "$GITHUB_WORKSPACE/$AWS_EKS_INSTANCE_USER_DATA_FILE" "$GITHUB_ACTION_PATH/operations/deployment/terraform/eks/aws_eks_incoming_user_data_script.sh"
   fi
 fi
 # Below we will be creating the config file, one for the action itself, other to store as an artifact after. 

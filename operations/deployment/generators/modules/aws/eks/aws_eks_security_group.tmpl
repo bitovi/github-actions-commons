@@ -75,11 +75,16 @@ resource "aws_security_group_rule" "rule4" {
 }
 
 resource "aws_security_group_rule" "rule5" {
+    count             = length(local.aws_eks_workstation_cidr) > 0 ? 1 : 0
     description       = "Allow workstation or EC2 to communicate with the cluster API Server"
     type              = "ingress"
     from_port         = "443"
     to_port           = "443"
     protocol          = "tcp"
-    cidr_blocks       = var.aws_eks_workstation_cidr
+    cidr_blocks       = local.aws_eks_workstation_cidr
     security_group_id = aws_security_group.eks_security_group_master.id
+}
+
+locals {
+  aws_eks_workstation_cidr = var.aws_eks_workstation_cidr != "" ? [for n in split(",", var.aws_eks_workstation_cidr) : (n)] : []
 }
