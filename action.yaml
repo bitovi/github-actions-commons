@@ -350,7 +350,9 @@ inputs:
   aws_eks_instance_type:
     description: 'enter the aws instance type'
     required: false 
-  aws_eks_instance_ami_id
+  aws_eks_instance_ami_id:
+    description: 'AWS AMI ID. Will default to the latest Amazon EKS Node image for the cluster version.'
+    required: false
   aws_eks_instance_user_data_file:
     description: 'Relative path in the repo for a user provided script to be executed with Terraform EKS Node creation.'
     required: false
