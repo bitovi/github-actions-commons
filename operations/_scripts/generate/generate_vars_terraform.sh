@@ -33,13 +33,6 @@ else
   GITHUB_BRANCH_NAME=${GITHUB_REF_NAME}
 fi
 
-GITHUB_IDENTIFIER="$($GITHUB_ACTION_PATH/operations/_scripts/generate/generate_identifier.sh)"
-echo "GITHUB_IDENTIFIER: [$GITHUB_IDENTIFIER]"
-
-GITHUB_IDENTIFIER_SS="$($GITHUB_ACTION_PATH/operations/_scripts/generate/generate_identifier.sh 30)"
-echo "GITHUB_IDENTIFIER SS: [$GITHUB_IDENTIFIER_SS]"
-
-
 # -------------------------------------------------- #
 # Generator # 
 # Function to generate the variable content based on the fact that it could be empty. 
@@ -59,7 +52,6 @@ function generate_var () {
     fi
   fi
 }
-
 
 # Fixed values - Values that are hardcoded or come from other variables.
 
@@ -101,6 +93,13 @@ if [ -n "$AWS_POSTGRES_DATABASE_FINAL_SNAPSHOT" ];then
   fi
 fi
 
+aws_eks_cluster_name=
+if [ -n "${AWS_EKS_CLUSTER_NAME}" ]; then
+  aws_eks_cluster_name="aws_eks_cluster_name = \"${AWS_EKS_CLUSTER_NAME}\""
+else
+  aws_eks_cluster_name="aws_eks_cluster_name = \"${GITHUB_IDENTIFIER}-cluster\""
+fi
+
 #-- AWS Specific --#
 # aws_resource_identifier=$(generate_var aws_resource_identifier AWS_RESOURCE_IDENTIFIER - Fixed
 # aws_resource_identifier_supershort=$(generate_var aws_resource_identifier_supershort AWS_RESOURCE_IDENTIFIER_SUPERSHORT - Fixed
@@ -128,7 +127,6 @@ if [[ $(alpha_only "$AWS_EC2_INSTANCE_CREATE") == true ]]; then
   aws_ec2_port_list=$(generate_var aws_ec2_port_list $AWS_EC2_PORT_LIST)
   aws_ec2_user_data_replace_on_change=$(generate_var aws_ec2_user_data_replace_on_change $AWS_EC2_USER_DATA_REPLACE_ON_CHANGE)
 fi
-
 
 #-- AWS Route53 and certs --#
 if [[ $(alpha_only "$AWS_R53_ENABLE") == true ]]; then
@@ -187,6 +185,30 @@ if [[ $(alpha_only "$AWS_POSTGRES_ENABLE") == true ]]; then
   # aws_postgres_database_final_snapshot=$(generate_var aws_postgres_database_final_snapshot $AWS_POSTGRES_DATABASE_FINAL_SNAPSHOT ) - Special case
 fi
 
+#-- EKS Cluster --#
+if [[ $(alpha_only "$AWS_EKS_CREATE") == true ]]; then
+  aws_eks_region=$(generate_var aws_eks_region $AWS_EKS_REGION)
+  aws_eks_security_group_name_master=$(generate_var aws_eks_security_group_name_master $AWS_EKS_SECURITY_GROUP_NAME_MASTER)
+  aws_eks_security_group_name_worker=$(generate_var aws_eks_security_group_name_worker $AWS_EKS_SECURITY_GROUP_NAME_WORKER)
+  aws_eks_environment=$(generate_var aws_eks_environment $AWS_EKS_ENVIRONMENT)
+  aws_eks_stackname=$(generate_var aws_eks_stackname $AWS_EKS_STACKNAME)
+  aws_eks_cidr_block=$(generate_var aws_eks_cidr_block $AWS_EKS_CIDR_BLOCK)
+  aws_eks_workstation_cidr=$(generate_var aws_eks_workstation_cidr $AWS_EKS_WORKSTATION_CIDR)
+  aws_eks_availability_zones=$(generate_var aws_eks_availability_zones $AWS_EKS_AVAILABILITY_ZONES)
+  aws_eks_private_subnets=$(generate_var aws_eks_private_subnets $AWS_EKS_PRIVATE_SUBNETS)
+  aws_eks_public_subnets=$(generate_var aws_eks_public_subnets $AWS_EKS_PUBLIC_SUBNETS)
+  #aws_eks_cluster_name=$(generate_var aws_eks_cluster_name $AWS_EKS_CLUSTER_NAME)
+  aws_eks_cluster_log_types=$(generate_var aws_eks_cluster_log_types $AWS_EKS_CLUSTER_LOG_TYPES)
+  aws_eks_cluster_version=$(generate_var aws_eks_cluster_version $AWS_EKS_CLUSTER_VERSION)
+  aws_eks_instance_type=$(generate_var aws_eks_instance_type $AWS_EKS_INSTANCE_TYPE)
+  aws_eks_instance_ami_id=$(generate_var aws_eks_instance_ami_id $AWS_EKS_INSTANCE_AMI_ID)
+  aws_eks_instance_user_data_file=$(generate_var aws_eks_instance_user_data_file $AWS_EKS_INSTANCE_USER_DATA_FILE)
+  aws_eks_ec2_key_pair=$(generate_var aws_eks_ec2_key_pair $AWS_EKS_EC2_KEY_PAIR)
+  aws_eks_store_keypair_sm=$(generate_var aws_eks_store_keypair_sm $AWS_EKS_STORE_KEYPAIR_SM)
+  aws_eks_desired_capacity=$(generate_var aws_eks_desired_capacity $AWS_EKS_DESIRED_CAPACITY)
+  aws_eks_max_size=$(generate_var aws_eks_max_size $AWS_EKS_MAX_SIZE)
+  aws_eks_min_size=$(generate_var aws_eks_min_size $AWS_EKS_MIN_SIZE)
+fi
 
 #-- ANSIBLE --#
 if [[ "$(alpha_only $ANSIBLE_SKIP)" == "true" ]]; then
@@ -298,6 +320,29 @@ $aws_postgres_database_port
 $aws_postgres_database_protection
 $aws_postgres_database_final_snapshot
 
+#-- EKS --#
+$aws_eks_region
+$aws_eks_security_group_name_master
+$aws_eks_security_group_name_worker
+$aws_eks_environment
+$aws_eks_stackname
+$aws_eks_cidr_block
+$aws_eks_workstation_cidr
+$aws_eks_availability_zones
+$aws_eks_private_subnets
+$aws_eks_public_subnets
+$aws_eks_cluster_name
+$aws_eks_cluster_log_types
+$aws_eks_cluster_version
+$aws_eks_instance_type
+$aws_eks_instance_ami_id
+$aws_eks_instance_user_data_file
+$aws_eks_ec2_key_pair
+$aws_eks_store_keypair_sm
+$aws_eks_desired_capacity
+$aws_eks_max_size
+$aws_eks_min_size
+
 $docker_efs_mount_target
 
 #-- Application --#
@@ -309,8 +354,10 @@ $app_install_root
 
 " > "${GITHUB_ACTION_PATH}/operations/deployment/terraform/ec2/terraform.tfvars"
 
+# TODO: templatize this
 cp  "${GITHUB_ACTION_PATH}/operations/deployment/terraform/ec2/terraform.tfvars"  "${GITHUB_ACTION_PATH}/operations/deployment/terraform/rds/terraform.tfvars"
 cp  "${GITHUB_ACTION_PATH}/operations/deployment/terraform/ec2/terraform.tfvars"  "${GITHUB_ACTION_PATH}/operations/deployment/terraform/efs/terraform.tfvars"
+cp  "${GITHUB_ACTION_PATH}/operations/deployment/terraform/ec2/terraform.tfvars"  "${GITHUB_ACTION_PATH}/operations/deployment/terraform/eks/terraform.tfvars"
 # -------------------------------------------------- #
 
 echo "Done with generate_vars_terraform.sh"

@@ -29,6 +29,10 @@ else
   export AWS_EFS_ENABLE="false"
 fi
 
+# Generate Github identifiers vars
+export GITHUB_IDENTIFIER="$($GITHUB_ACTION_PATH/operations/_scripts/generate/generate_identifier.sh)"
+export GITHUB_IDENTIFIER_SS="$($GITHUB_ACTION_PATH/operations/_scripts/generate/generate_identifier.sh 30)"
+
 # Generate buckets identifiers and check them agains AWS Rules 
 export TF_STATE_BUCKET="$(/bin/bash $GITHUB_ACTION_PATH/operations/_scripts/generate/generate_buckets_identifiers.sh tf | xargs)"
 /bin/bash $GITHUB_ACTION_PATH/operations/_scripts/deploy/check_bucket_name.sh $TF_STATE_BUCKET
@@ -49,19 +53,16 @@ export LB_LOGS_BUCKET="$(/bin/bash $GITHUB_ACTION_PATH/operations/_scripts/gener
 # Generate bitops config
 /bin/bash $GITHUB_ACTION_PATH/operations/_scripts/generate/generate_bitops_config.sh
 
+# Generate bitops incoming repos config if any
+/bin/bash $GITHUB_ACTION_PATH/operations/_scripts/generate/generate_bitops_incoming.sh
+
 # Generate bitops incoming repos config
-if [ -n "$GH_ACTION_REPO" ]; then
-  if [ -n "$GH_ACTION_INPUT_TERRAFORM" ] || [ -n "$GH_ACTION_INPUT_ANSIBLE" ]; then
-    /bin/bash $GITHUB_ACTION_PATH/operations/_scripts/generate/generate_bitops_incoming.sh
-  fi
-  # Generating incoming extra_vars_file if it exists
-  if [ -n "$BITOPS_EXTRA_ENV_VARS_FILE" ]; then
-    if [ -s $GH_ACTION_REPO/$BITOPS_EXTRA_ENV_VARS_FILE ]; then
-      BITOPS_EXTRA_ENV_VARS_FILE="--env-file $GH_ACTION_REPO/$BITOPS_EXTRA_ENV_VARS_FILE"
-      cat $GH_ACTION_REPO/$BITOPS_EXTRA_ENV_VARS_FILE
-    else
-      echo "File $BITOPS_EXTRA_ENV_VARS_FILE missing or empty"
-    fi
+if [ -n "$GH_ACTION_REPO" ] && [ -n "$BITOPS_EXTRA_ENV_VARS_FILE" ]; then
+  if [ -s $GH_ACTION_REPO/$BITOPS_EXTRA_ENV_VARS_FILE ]; then
+    BITOPS_EXTRA_ENV_VARS_FILE="--env-file $GH_ACTION_REPO/$BITOPS_EXTRA_ENV_VARS_FILE"
+    cat $GH_ACTION_REPO/$BITOPS_EXTRA_ENV_VARS_FILE
+  else
+    echo "File $BITOPS_EXTRA_ENV_VARS_FILE missing or empty"
   fi
 fi
 
@@ -72,7 +73,8 @@ cat $GITHUB_ACTION_PATH/operations/deployment/bitops.config.yaml
 if [[ $(alpha_only "$TF_STATE_BUCKET_DESTROY") == true ]] && ! [[ $(alpha_only "$TF_STACK_DESTROY") == true ]] ; then
   if [[ $(alpha_only "$AWS_POSTGRES_ENABLE") == true ]] || 
      [[ $(alpha_only "$AWS_EFS_ENABLE") == true ]] || 
-     [[ $(alpha_only "$AWS_EC2_INSTANCE_CREATE") == true ]]; then 
+     [[ $(alpha_only "$AWS_EC2_INSTANCE_CREATE") == true ]] ||
+     [[ $(alpha_only "$AWS_EKS_CREATE") == true ]]; then 
     export TF_STATE_BUCKET_DESTROY="false"
   fi
 fi
@@ -90,6 +92,14 @@ if [[ $(alpha_only "$BITOPS_SKIP_RUN") == true ]]; then
   exit 0
 fi
 
+# Bypass all the 'BITOPS_' ENV vars to docker
+BITOPS_EXTRA_ENV_VARS=""
+for i in $(env | grep BITOPS_); do
+  BITOPS_EXTRA_ENV_VARS="${BITOPS_EXTRA_ENV_VARS} -e ${i}"
+done
+
+echo "BITOPS_EXTRA_ENV_VARS: $BITOPS_EXTRA_ENV_VARS"
+
 echo "::group::BitOps Excecution"  
 echo "Running BitOps for env: $BITOPS_ENVIRONMENT"
 docker run --rm --name bitops \
@@ -97,19 +107,15 @@ docker run --rm --name bitops \
 -e AWS_SECRET_ACCESS_KEY="${AWS_SECRET_ACCESS_KEY}" \
 -e AWS_SESSION_TOKEN="${AWS_SESSION_TOKEN}" \
 -e AWS_DEFAULT_REGION="${AWS_DEFAULT_REGION}" \
--e BITOPS_ENVIRONMENT="${BITOPS_ENVIRONMENT}" \
 -e SKIP_DEPLOY_TERRAFORM="${SKIP_DEPLOY_TERRAFORM}" \
 -e SKIP_DEPLOY_HELM="${SKIP_DEPLOY_HELM}" \
--e BITOPS_TERRAFORM_COMMAND="${TERRAFORM_COMMAND}" \
--e BITOPS_ANSIBLE_SKIP_DEPLOY="${ANSIBLE_SKIP}" \
 -e TF_STATE_BUCKET="${TF_STATE_BUCKET}" \
 -e TF_STATE_BUCKET_DESTROY="${TF_STATE_BUCKET_DESTROY}" \
 -e DEFAULT_FOLDER_NAME="_default" \
--e BITOPS_FAST_FAIL="${BITOPS_FAST_FAIL}" \
 ${BITOPS_EXTRA_ENV_VARS_FILE} \
 ${BITOPS_EXTRA_ENV_VARS} \
 -v $(echo $GITHUB_ACTION_PATH)/operations:/opt/bitops_deployment \
-bitovi/bitops:2.5.0
+bitovi/bitops:2.6.0
 BITOPS_RESULT=$?
 echo "::endgroup::"
 

@@ -57,10 +57,13 @@ inputs:
     default: playbook.yml
     required: false
   gh_deployment_input_ansible_extra_vars_file:
-    description: "Relative path to file from project root to Ansible vars file to be applied. "
+    description: 'Relative path to file from project root to Ansible vars file to be applied. '
     required: false
   gh_deployment_action_input_ansible_extra_vars_file:
-    description: "Relative path to file from project root to Ansible vars file to be applied into the Action Ansible execution. "
+    description: 'Relative path to file from project root to Ansible vars file to be applied into the Action Ansible execution. '
+    required: false
+  gh_deployment_input_helm_charts: 
+    description: 'Relative path to the folder from project containing Helm charts to be installed. Could be uncompressed or compressed (.tgz) files.'
     required: false
 
   # GitHub Action repo inputs
@@ -77,7 +80,10 @@ inputs:
     description: 'Main playbook to be looked for.'
     default: playbook.yml
     required: false
-    
+  gh_action_input_helm_charts:
+    description: 'Relative path to the folder from action containing Helm charts to be installed. Could be uncompressed or compressed (.tgz) files.'
+    required: false
+
   # AWS Specific
   aws_access_key_id:
     description: 'AWS access key ID'
@@ -298,6 +304,74 @@ inputs:
     description: 'Directory path within docker env to mount directory to, default is `/data`'
     required: false
 
+  # AWS EKS
+  aws_eks_create:
+    description: 'Define if an EKS cluster should be created'
+    required: false
+  aws_eks_region:
+    description: 'Define the region where EKS cluster should be created'
+    required: false
+  aws_eks_security_group_name_master:
+    description:  "SG for ${var.aws_resource_identifier} - ${var.aws_eks_environment} - EKS Master"
+    required: false
+  aws_eks_security_group_name_worker:
+    description:  "SG for ${var.aws_resource_identifier} - ${var.aws_eks_environment} - EKS Worker"
+    required: false
+  aws_eks_environment:
+    description: 'Specify the eks environment name. Defaults to env'
+    required: false
+  aws_eks_stackname:
+    description: 'Specify the eks stack name for your environment. Defaults to eks-stack'
+    required: false  
+  aws_eks_cidr_block:
+    description: 'Define Base CIDR block which is divided into subnet CIDR blocks (e.g. `10.0.0.0/16`)'
+    required: false  
+  aws_eks_workstation_cidr:
+    description: 'Enter your local workstation public IP to add it to Worker nodes security groups' 
+    required: false 
+  aws_eks_availability_zones:
+    description: "List of Availability Zones, Ex: `['us-east-1a', 'us-east-1b', 'us-east-1c']`"
+    required: false 
+  aws_eks_private_subnets:
+    description:  "List of private subnets (e.g. `['10.0.1.0/24', '10.0.2.0/24']`)"
+    required: false 
+  aws_eks_public_subnets:
+    description:  "List of public subnets (e.g. `['10.0.101.0/24', '10.0.102.0/24']`)"
+    required: false 
+  aws_eks_cluster_name:
+    description: "EKS Cluster name. Defaults to eks-cluster"
+    required: false
+  aws_eks_cluster_log_types:
+    description: "EKS Log types, csv list"
+    required: false
+  aws_eks_cluster_version:
+    description: 'Specify the k8s cluster version'
+    required: false 
+  aws_eks_instance_type:
+    description: 'enter the aws instance type'
+    required: false 
+  aws_eks_instance_ami_id:
+    description: 'AWS AMI ID. Will default to the latest Amazon EKS Node image for the cluster version.'
+    required: false
+  aws_eks_instance_user_data_file:
+    description: 'Relative path in the repo for a user provided script to be executed with Terraform EKS Node creation.'
+    required: false
+  aws_eks_ec2_key_pair:
+    description: 'Enter the existing ec2 key pair for worker nodes. If none, one will be created.'
+    required: false 
+  aws_eks_store_keypair_sm:
+    description: 'If true, will store the newly created keys in Secret Manager'
+    required: false 
+  aws_eks_desired_capacity:
+    description: 'Enter the desired capacity for the worker nodes' 
+    required: false
+  aws_eks_max_size:
+    description: 'Enter the max_size for the worker nodes' 
+    required: false
+  aws_eks_min_size:
+    description: 'Enter the min_size for the worker nodes'
+    required: false
+
 outputs:
   vm_url:
     description: "The URL of the generated app"
@@ -337,12 +411,14 @@ runs:
         GH_DEPLOYMENT_INPUT_ANSIBLE_PLAYBOOK: ${{ inputs.gh_deployment_input_ansible_playbook }}
         GH_DEPLOYMENT_INPUT_ANSIBLE_EXTRA_VARS_FILE: ${{ inputs.gh_deployment_input_ansible_extra_vars_file }}
         GH_DEPLOYMENT_ACTION_INPUT_ANSIBLE_EXTRA_VARS_FILE: ${{ inputs.gh_deployment_action_input_ansible_extra_vars_file }}
-        
+        GH_DEPLOYMENT_INPUT_HELM_CHARTS: ${{ inputs.gh_deployment_input_helm_charts }}
+
         # Action repo
         GH_ACTION_REPO: ${{ inputs.gh_action_repo }}
         GH_ACTION_INPUT_TERRAFORM: ${{ inputs.gh_action_input_terraform }}
         GH_ACTION_INPUT_ANSIBLE: ${{ inputs.gh_action_input_ansible }}
         GH_ACTION_INPUT_ANSIBLE_PLAYBOOK: ${{ inputs.gh_action_input_ansible_playbook }}
+        GH_ACTION_INPUT_HELM_CHARTS: ${{ inputs.gh_action_input_helm_charts }}
 
         # AWS Specific
         AWS_ACCESS_KEY_ID: ${{ inputs.aws_access_key_id }}
@@ -427,6 +503,30 @@ runs:
         DOCKER_REPO_APP_DIRECTORY: ${{ inputs.docker_repo_app_directory }}
         DOCKER_REPO_APP_DIRECTORY_CLEANUP: ${{ inputs.docker_repo_app_directory_cleanup }}
         DOCKER_EFS_MOUNT_TARGET: ${{ inputs.docker_efs_mount_target }}
+
+        # AWS EKS
+        AWS_EKS_CREATE: ${{ inputs.aws_eks_create }}
+        AWS_EKS_REGION: ${{ inputs.aws_eks_region }}
+        AWS_EKS_SECURITY_GROUP_NAME_MASTER: ${{ inputs.aws_eks_security_group_name_master }}
+        AWS_EKS_SECURITY_GROUP_NAME_WORKER: ${{ inputs.aws_eks_security_group_name_worker }}
+        AWS_EKS_ENVIRONMENT: ${{ inputs.aws_eks_environment }}
+        AWS_EKS_STACKNAME: ${{ inputs.aws_eks_stackname }}
+        AWS_EKS_CIDR_BLOCK: ${{ inputs.aws_eks_cidr_block }}
+        AWS_EKS_WORKSTATION_CIDR: ${{ inputs.aws_eks_workstation_cidr }}
+        AWS_EKS_AVAILABILITY_ZONES: ${{ inputs.aws_eks_availability_zones }}
+        AWS_EKS_PRIVATE_SUBNETS: ${{ inputs.aws_eks_private_subnets }}
+        AWS_EKS_PUBLIC_SUBNETS: ${{ inputs.aws_eks_public_subnets }}
+        AWS_EKS_CLUSTER_NAME: ${{ inputs.aws_eks_cluster_name }}
+        AWS_EKS_CLUSTER_LOG_TYPES: ${{ inputs.aws_eks_cluster_log_types }}
+        AWS_EKS_CLUSTER_VERSION: ${{ inputs.aws_eks_cluster_version }}
+        AWS_EKS_INSTANCE_TYPE: ${{ inputs.aws_eks_instance_type }}
+        AWS_EKS_INSTANCE_AMI_ID: ${{ inputs.aws_eks_instance_ami_id }}
+        AWS_EKS_INSTANCE_USER_DATA_FILE: ${{ inputs.aws_eks_instance_user_data_file }}
+        AWS_EKS_EC2_KEY_PAIR: ${{ inputs.aws_eks_ec2_key_pair }}
+        AWS_EKS_STORE_KEYPAIR_SM: ${{ inputs.aws_eks_store_keypair_sm }}
+        AWS_EKS_DESIRED_CAPACITY: ${{ inputs.aws_eks_desired_capacity}}
+        AWS_EKS_MAX_SIZE: ${{ inputs.aws_eks_max_size }}
+        AWS_EKS_MIN_SIZE: ${{ inputs.aws_eks_min_size }}
 
       run: |
         echo "Running operations/_scripts/deploy/deploy.sh"

@@ -21,6 +21,10 @@ module "rds" {
   source = "./modules/aws/rds"
 }
 
+module "eks" {
+  source = "./modules/aws/eks"
+}
+
 # Optional modules
 module "certificates" {
   count  = var.aws_r53_enable_cert ? 1 : 0

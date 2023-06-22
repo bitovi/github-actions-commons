@@ -138,4 +138,76 @@ if [ -n "$GH_DEPLOYMENT_INPUT_TERRAFORM" ]; then
   move_content_append "$GH_DEPLOYMENT_INPUT_TERRAFORM_PATH" deploy
 fi
 
+
+
+### HELM Merger
+
+if [ -n "${AWS_EKS_CLUSTER_NAME}" ]; then
+  aws_eks_cluster_name="$AWS_EKS_CLUSTER_NAME"
+else
+  aws_eks_cluster_name="$GITHUB_IDENTIFIER-cluster"
+fi
+
+function helm_move_content_prepend() {
+  source_folder="$1"
+  destination_folder="$2"
+  number="$3"
+  find "$source_folder" -maxdepth 1 -type d -not -name "." -path "$source_folder/*" | while read chart_folder; do
+  # Move files from source folder to destination folder
+    chart_name=$(basename "$chart_folder")
+    mkdir -p "$destination_folder/$chart_name/values-files"
+    find "$chart_folder" -maxdepth 1 -type f -path "$chart_folder/*" | while read file; do
+      file_name=$(basename "$file")
+      echo "Filename = $file_name"
+      if [[ "$file_name" == "values.yaml" ]]; then
+        echo "mv $file $destination_folder/$chart_name/values-files/$3_$file_name"
+        mv "$file" "$destination_folder/$chart_name/values-files/$3_$file_name"
+      else
+        echo "mv $file $destination_folder/$chart_name/$file_name"
+        mv "$file" "$destination_folder/$chart_name/$file_name"
+      fi
+      touch "$destination_folder/$chart_name/bitops.config.yaml"
+      if [ $(yq eval ".helm.options.release-name" "$destination_folder/$chart_name/bitops.config.yaml") == null ]; then
+          /tmp/yq ".helm.options.release-name = \"$chart_name\"" -i "$destination_folder/$chart_name/bitops.config.yaml"
+      fi
+      /tmp/yq ".helm.options.k8s.fetch.cluster-name = \"$aws_eks_cluster_name\"" -i "$destination_folder/$chart_name/bitops.config.yaml"
+    done
+    # Move remaining folders (if they exist) and exclude the . folder
+    find "$chart_folder" -maxdepth 1 -type d -not -name "." -path "$chart_folder/*" | while read folder; do
+      echo "mv $folder $destination_folder/$chart_name/."
+      mv "$folder" "$destination_folder/$chart_name/."
+    done
+    echo "Printing chart result"
+    tree "$destination_folder/$chart_name"
+    cat "$destination_folder/$chart_name/bitops.config.yaml"
+  done
+}
+
+# Action charts inputs
+if [[ "$(alpha_only $AWS_EKS_CREATE)" == "true" ]]; then
+  get_yq
+  if [ -n "$GH_ACTION_REPO" ]; then
+    # HELM CHARTS PART
+    if [ -n "$GH_ACTION_INPUT_HELM_CHARTS" ]; then
+      GH_ACTION_INPUT_HELM_CHARTS_PATH="$GH_ACTION_REPO/$GH_ACTION_INPUT_HELM_CHARTS"
+      echo "GH_ACTION_INPUT_HELM_CHARTS_PATH $GH_ACTION_INPUT_HELM_CHARTS_PATH"
+      helm_move_content_prepend $GH_ACTION_INPUT_HELM_CHARTS_PATH ${GITHUB_ACTION_PATH}/operations/deployment/helm 0
+    fi
+  fi
+  
+  # Deployment charts inputs
+  if [ -n "$GH_DEPLOYMENT_INPUT_HELM_CHARTS" ]; then
+      GH_DEPLOYMENT_INPUT_HELM_CHARTS_PATH="$GITHUB_WORKSPACE/$GH_DEPLOYMENT_INPUT_HELM_CHARTS"
+      echo "GH_DEPLOYMENT_INPUT_HELM_CHARTS_PATH $GH_DEPLOYMENT_INPUT_HELM_CHARTS_PATH"
+      helm_move_content_prepend $GH_DEPLOYMENT_INPUT_HELM_CHARTS_PATH ${GITHUB_ACTION_PATH}/operations/deployment/helm 1
+  fi
+  
+  if [[ "$(alpha_only $BITOPS_CODE_ONLY)" != "true" ]]; then
+    /tmp/yq ".bitops.deployments.helm.plugin = \"helm\"" -i $GITHUB_ACTION_PATH/operations/deployment/bitops.config.yaml
+  fi
+  /tmp/yq ".bitops.deployments.helm.plugin = \"helm\"" -i $GITHUB_ACTION_PATH/operations/generated_code/bitops.config.yaml
+  
+  tree ${GITHUB_ACTION_PATH}/operations/deployment/helm
+fi
+
 echo "Done with generate_bitops_incoming.sh"
