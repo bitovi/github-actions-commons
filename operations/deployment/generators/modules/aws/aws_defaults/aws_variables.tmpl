@@ -407,8 +407,8 @@ variable "aws_eks_cluster_name" {
 
 variable "aws_eks_cluster_log_types" {
   description = "enter the kubernetes version"
-  type        = list(string)
-  default     = []
+  type        = string
+  default     = ""
 }
 
 variable "aws_eks_cluster_version" {

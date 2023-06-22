@@ -17,11 +17,15 @@ resource "aws_eks_cluster" "main" {
     aws_iam_role_policy_attachment.managed_policies_master,
     aws_iam_role_policy_attachment.managed_policies_worker
   ]
-  enabled_cluster_log_types = var.aws_eks_cluster_log_types
+  enabled_cluster_log_types = local.aws_eks_cluster_log_types
 
   tags = {
     "kubernetes.io/cluster/${var.aws_eks_cluster_name}" = "owned"
   }
+}
+
+locals {
+  aws_eks_cluster_log_types = var.aws_eks_cluster_log_types != "" ? [for n in split(",", var.aws_eks_cluster_log_types) : (n)] : []
 }
 
 data "aws_eks_cluster" "eks_cluster" {
