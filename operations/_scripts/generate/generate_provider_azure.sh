@@ -2,7 +2,8 @@
 
 set -e
 
-echo "In generate_provider_azure.sh"
+# print script name
+echo "In $0"
 
 echo "
 terraform {
@@ -41,4 +42,4 @@ provider \"azurerm\" {
 }
 " > "${GITHUB_ACTION_PATH}/operations/deployment/terraform/bitovi_provider.tf"
 
-echo "Done with generate_provider_azure.sh"
+echo "Done with $0"
