@@ -84,7 +84,7 @@ else
 fi
 
 # set based on provider
-PROVIDER_IDENTIFIER="${AWS_RESOURCE_IDENTIFIER:-${AZURE_RESOURCE_IDENTIFIER}}"
+PROVIDER_IDENTIFIER="${AWS_RESOURCE_IDENTIFIER:-${azure_resource_identifier}}"
 # generate default identifier if necessary
 if [ -z $PROVIDER_IDENTIFIER ]; then
   GITHUB_IDENTIFIER="${GITHUB_ORG_NAME}-${GITHUB_REPO_NAME}-${GITHUB_BRANCH_NAME}"
