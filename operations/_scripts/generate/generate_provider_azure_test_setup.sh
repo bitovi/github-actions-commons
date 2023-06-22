@@ -1,7 +1,12 @@
 #!/bin/bash
-#Here's the shell script with example values for the environment variables
+# Here's the shell script with example values for the environment variables
+# These example values won't work with a real Azure subscription, but they can be used to test the script itself. 
+# Save this script as `set_azure_env_vars.sh` and run `source set_azure_env_vars.sh` in your terminal to set the 
+# environment variables before executing Terraform commands. 
+# Make sure to replace the example values with your actual Azure subscription and backend configuration details 
+# when you're ready to run real tests or deployments.
 
-# set test directory
+# set test directory - modify if necessary
 export GITHUB_ACTION_PATH=~/Bitovi/github/github-actions-commons
 
 # Set environment variables for Azure authentication
@@ -24,9 +29,3 @@ echo "Azure Client Secret: [REDACTED]"
 echo "Azure Resource Group: $AZURE_RESOURCE_GROUP"
 echo "Terraform State Storage Account: $TF_STATE_STORAGE_ACCOUNT"
 echo "Terraform State Container: $TF_STATE_CONTAINER"
-
-# These example values won't work with a real Azure subscription, but they can be used to test the script itself. 
-# Save this script as `set_azure_env_vars.sh` and run `source set_azure_env_vars.sh` in your terminal to set the 
-# environment variables before executing Terraform commands. 
-# Make sure to replace the example values with your actual Azure subscription and backend configuration details 
-# when you're ready to run real tests or deployments.
