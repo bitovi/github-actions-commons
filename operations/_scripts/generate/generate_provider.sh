@@ -2,7 +2,7 @@
 
 set -e
 
-echo "In generate_provider.sh"
+echo "In $(basename $0)"
 
 # Will print bitovi_provider.tf with the Terraform state file and path based on the first parameter. 
 function generate_provider_aws () {
