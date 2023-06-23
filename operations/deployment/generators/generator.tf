@@ -1,8 +1,8 @@
 # MUST Exist Modules
 
-module "aws_defauts" {
-  source = "./modules/aws/aws_defaults"
-}
+#module "aws_defauts" {
+#  source = "./modules/aws/aws_defaults"
+#}
 
 module "ec2" {
   source = "./modules/aws/ec2"
