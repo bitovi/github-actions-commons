@@ -51,7 +51,7 @@ export LB_LOGS_BUCKET="$(/bin/bash $GITHUB_ACTION_PATH/operations/_scripts/gener
 #/bin/bash $GITHUB_ACTION_PATH/operations/_scripts/generate/generate_app_repo.sh ansible/efs
 
 # Generate bitops config
-/bin/bash $GITHUB_ACTION_PATH/operations/_scripts/generate/generate_bitops_config.sh
+/bin/bash $GITHUB_ACTION_PATH/operations/_scripts/generate/generate_bitops_config.sh $TF_STATE_BUCKET
 
 # Generate bitops incoming repos config if any
 /bin/bash $GITHUB_ACTION_PATH/operations/_scripts/generate/generate_bitops_incoming.sh

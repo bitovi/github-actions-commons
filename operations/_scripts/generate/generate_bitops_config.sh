@@ -4,6 +4,9 @@ set -e
 
 echo "In generate_bitops_config.sh"
 
+
+echo "TF_STATE_BUCKET --> $TF_STATE_BUCKET"
+TF_STATE_BUCKET=$1
 ### Functions
 function alpha_only() {
   echo "$1" | tr -cd '[:alpha:]' | tr '[:upper:]' '[:lower:]'
@@ -55,7 +58,7 @@ function add_terraform_module (){
 }
 
 function add_ansible_module (){
-        echo -en "
+    echo -en "
     ansible/$1:
       plugin: ansible
 " >> $BITOPS_CONFIG_TEMP
@@ -128,7 +131,7 @@ bitops:
 # BitOps Config Temp file
   # Terraform - Generate infra
   # If to add ec2 in the begginning or the end, depending on aplly or destroy. 
-  if [[ $(alpha_only "$TF_STACK_DESTROY") == true ]] && 
+  if [[ $(alpha_only "$TF_STACK_DESTROY") == true ]]; then 
     if check_statefile aws ec2; then
       add_terraform_module aws ec2
     fi
@@ -142,7 +145,7 @@ bitops:
   if check_statefile aws eks; then
     add_terraform_module aws eks
   fi
-  if [[ $(alpha_only "$TF_STACK_DESTROY") != true ]] && 
+  if [[ $(alpha_only "$TF_STACK_DESTROY") != true ]]; then 
     if check_statefile aws ec2; then
       add_terraform_module aws ec2
     fi
