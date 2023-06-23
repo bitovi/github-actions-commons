@@ -31,7 +31,6 @@ terraform:
 }
 
 function check_aws_bucket_for_file() {
-  echo "In check bucket for file $1 $2" 
   bucket="$1"
   file_key="$2"
   aws s3 ls "s3://$bucket/$file_key" --summarize &>/dev/null
@@ -42,7 +41,6 @@ function check_statefile() {
   provider="$1"
   bucket="$TF_STATE_BUCKET"
   commons_module="$2"
-  echo "In check statefile $provider $bucket $commons_module"
   if [[ "$provider" == "aws" ]]; then
     check_aws_bucket_for_file $bucket "tf-state-$commons_module"
     return $?
@@ -51,7 +49,7 @@ function check_statefile() {
 
 function add_terraform_module (){
     echo -en "
-      terraform/$1/$2:
+    terraform/$1/$2:
       plugin: terraform
 " >> $BITOPS_CONFIG_TEMP
 }
@@ -133,25 +131,20 @@ bitops:
   if [[ $(alpha_only "$TF_STACK_DESTROY") == true ]]; then 
     if check_statefile aws ec2; then
       add_terraform_module aws ec2
-      echo "add_terraform_module aws ec2"
     fi
   fi
   if check_statefile aws efs; then
     add_terraform_module aws efs
-    echo "add_terraform_module aws efs"
   fi
   if check_statefile aws rds; then
     add_terraform_module aws rds
-    echo "add_terraform_module aws rds"
   fi
   if check_statefile aws eks; then
     add_terraform_module aws eks
-    echo "add_terraform_module aws eks"
   fi
   if [[ $(alpha_only "$TF_STACK_DESTROY") != true ]]; then 
     if check_statefile aws ec2; then
       add_terraform_module aws ec2
-      echo "add_terraform_module aws ec2"
     fi
   fi
   
@@ -161,29 +154,20 @@ bitops:
     # Ansible - Docker cleanup
     if [[ $(alpha_only "$DOCKER_FULL_CLEANUP") == true ]]; then
       add_ansible_module docker_cleanup
-      echo "add_ansible_module docker_cleanup"
     fi
-
     # Ansible - Instance cleanup
     if [[ $(alpha_only "$DOCKER_REPO_APP_DIRECTORY_CLEANUP") == true ]]; then
       add_ansible_module ec2_cleanup
-      echo "add_ansible_module ec2_cleanup"
     fi
-
     # Ansible - Fetch repo
     add_ansible_module clone_repo
-    echo "add_ansible_module clone_repo"
-    
     # Ansible - Install EFS
     if [[ $(alpha_only "$AWS_EFS_CREATE") == true ]] || [[ $(alpha_only "$AWS_EFS_CREATE_HA") == true ]] || [[ "$AWS_EFS_MOUNT_ID" != "" ]]; then
       add_ansible_module efs
-      echo "add_ansible_module efs"
     fi
-    
     # Ansible - Install Docker
     if [[ $(alpha_only "$DOCKER_INSTALL") == true ]]; then
       add_ansible_module docker
-      echo "add_ansible_module docker"
     fi
   fi
 
@@ -197,3 +181,4 @@ cat $BITOPS_CONFIG_TEMP >> $BITOPS_CODE_FILE
 rm $BITOPS_CONFIG_TEMP
 
 echo "Done with generate_bitops_config.sh"
+exit 0
