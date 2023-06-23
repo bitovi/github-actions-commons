@@ -30,6 +30,36 @@ terraform:
 " > $GITHUB_ACTION_PATH/operations/deployment/terraform/$1/$2/bitops.config.yaml
 }
 
+function check_aws_bucket_for_file() {
+  bucket="$1"
+  file_key="$2"
+  aws s3 ls "s3://$bucket/$file_key" --summarize &>/dev/null
+  return $?
+}
+
+function check_statefile() {
+  provider="$1"
+  bucket="$TF_STATE_BUCKET"
+  commons_module="$2"
+  
+  if [[ "$provider" == "aws" ]]; then
+    echo check_aws_bucket_for_file $bucket "tf-state-$commons_module"
+  fi 
+}
+
+function add_terraform_module (){
+    echo -en "
+      terraform/$1/$2:
+      plugin: terraform
+" >> $BITOPS_CONFIG_TEMP
+}
+
+function add_ansible_module (){
+        echo -en "
+    ansible/$1:
+      plugin: ansible
+" >> $BITOPS_CONFIG_TEMP
+}
 ### End functions
 
 if [[ "$(alpha_only $TF_STACK_DESTROY)" == "true" ]]; then
@@ -96,75 +126,55 @@ bitops:
 " > $BITOPS_CODE_FILE
 
 # BitOps Config Temp file
-  # If to add ec2 in the begginning or the end, depending on aplly or destroy. 
-  if [[ $(alpha_only "$AWS_EC2_INSTANCE_CREATE") == true ]] && [[ $(alpha_only "$AWS_EFS_ENABLE") == true ]] && ! [[ $(alpha_only "$TF_STACK_DESTROY") == true ]] ; then
   # Terraform - Generate infra
-    echo -en "
-    terraform/aws/rds:
-      plugin: terraform
-    terraform/aws/efs:
-      plugin: terraform
-    terraform/aws/eks:
-      plugin: terraform
-    terraform/aws/ec2:
-      plugin: terraform
-" >> $BITOPS_CONFIG_TEMP
-  else
-    echo -en "
-    terraform/aws/ec2:
-      plugin: terraform
-    terraform/aws/eks:
-      plugin: terraform
-    terraform/aws/rds:
-      plugin: terraform
-    terraform/aws/efs:
-      plugin: terraform
-" >> $BITOPS_CONFIG_TEMP
+  # If to add ec2 in the begginning or the end, depending on aplly or destroy. 
+  if [[ $(alpha_only "$TF_STACK_DESTROY") == true ]] && 
+    if check_statefile aws ec2; then
+      add_terraform_module aws ec2
+    fi
   fi
+  if check_statefile aws efs; then
+    add_terraform_module aws efs
+  fi
+  if check_statefile aws rds; then
+    add_terraform_module aws rds
+  fi
+  if check_statefile aws eks; then
+    add_terraform_module aws eks
+  fi
+  if [[ $(alpha_only "$TF_STACK_DESTROY") != true ]] && 
+    if check_statefile aws ec2; then
+      add_terraform_module aws ec2
+    fi
+  fi
+  
   # Ansible Code part
 
   if [[ "$(alpha_only $ANSIBLE_SKIP)" != "true" ]] && [[ "$(alpha_only $AWS_EC2_INSTANCE_CREATE)" == "true" ]] && [[ "$(alpha_only $AWS_EC2_INSTANCE_PUBLIC_IP)" == "true" ]]; then
     # Ansible - Docker cleanup
     if [[ $(alpha_only "$DOCKER_FULL_CLEANUP") == true ]]; then
-        echo -en "
-    ansible/docker_cleanup:
-      plugin: ansible
-" >> $BITOPS_CONFIG_TEMP
+      add_ansible_module docker_cleanup
     fi
 
     # Ansible - Instance cleanup
     if [[ $(alpha_only "$DOCKER_REPO_APP_DIRECTORY_CLEANUP") == true ]]; then
-        echo -en "
-    ansible/ec2_cleanup:
-      plugin: ansible
-" >> $BITOPS_CONFIG_TEMP
+      add_ansible_module ec2_cleanup:
     fi
 
     # Ansible - Fetch repo
-    echo -en "
-    ansible/clone_repo:
-      plugin: ansible
-" >> $BITOPS_CONFIG_TEMP
+    add_ansible_module clone_repo:
     
     # Ansible - Install EFS
     if [[ $(alpha_only "$AWS_EFS_CREATE") == true ]] || [[ $(alpha_only "$AWS_EFS_CREATE_HA") == true ]] || [[ "$AWS_EFS_MOUNT_ID" != "" ]]; then
-    echo -en "
-    ansible/efs:
-      plugin: ansible
-" >> $BITOPS_CONFIG_TEMP
+      add_ansible_module efs:
     fi
     
     # Ansible - Install Docker
     if [[ $(alpha_only "$DOCKER_INSTALL") == true ]]; then
-    echo -en "
-    ansible/docker:
-      plugin: ansible
-" >> $BITOPS_CONFIG_TEMP
-    fi
+      add_ansible_module docker:
   fi
 
 # Helm part
-
 
 #
 if [[ "$(alpha_only $BITOPS_CODE_ONLY)" != "true" ]]; then
