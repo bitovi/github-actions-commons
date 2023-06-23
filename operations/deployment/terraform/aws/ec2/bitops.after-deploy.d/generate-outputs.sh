@@ -28,7 +28,7 @@ AWS_INSTANCE_URL="$BITOPS_EC2_PUBLIC_URL"
 " > $BITOPS_ENVROOT/terraform/ec2.env
   fi
   if [ -n "$BITOPS_EC2_PUBLIC_IP" ] && [ "$BITOPS_ANSIBLE_SKIP_DEPLOY" != "true" ]; then
-      sed -i "s/BITOPS_EC2_PUBLIC_IP/$(echo $BITOPS_EC2_PUBLIC_IP)/" ${BITOPS_ENVROOT}/terraform/ec2/inventory.yaml
+      sed -i "s/BITOPS_EC2_PUBLIC_IP/$(echo $BITOPS_EC2_PUBLIC_IP)/" ${BITOPS_ENVROOT}/terraform/aws/ec2/inventory.yaml
   fi
 fi
 
