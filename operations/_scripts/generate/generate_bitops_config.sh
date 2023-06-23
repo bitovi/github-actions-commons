@@ -46,7 +46,8 @@ function check_statefile() {
   commons_module="$2"
   
   if [[ "$provider" == "aws" ]]; then
-    echo check_aws_bucket_for_file $bucket "tf-state-$commons_module"
+    check_aws_bucket_for_file $bucket "tf-state-$commons_module"
+    return $?
   fi 
 }
 
@@ -161,20 +162,21 @@ bitops:
 
     # Ansible - Instance cleanup
     if [[ $(alpha_only "$DOCKER_REPO_APP_DIRECTORY_CLEANUP") == true ]]; then
-      add_ansible_module ec2_cleanup:
+      add_ansible_module ec2_cleanup
     fi
 
     # Ansible - Fetch repo
-    add_ansible_module clone_repo:
+    add_ansible_module clone_repo
     
     # Ansible - Install EFS
     if [[ $(alpha_only "$AWS_EFS_CREATE") == true ]] || [[ $(alpha_only "$AWS_EFS_CREATE_HA") == true ]] || [[ "$AWS_EFS_MOUNT_ID" != "" ]]; then
-      add_ansible_module efs:
+      add_ansible_module efs
     fi
     
     # Ansible - Install Docker
     if [[ $(alpha_only "$DOCKER_INSTALL") == true ]]; then
-      add_ansible_module docker:
+      add_ansible_module docker
+    fi
   fi
 
 # Helm part
