@@ -13,17 +13,17 @@ module "ec2_efs" {
   source = "./modules/aws/ec2_efs"
 }
 
-module "efs" {
-  source = "./modules/aws/efs"
-}
-
-module "rds" {
-  source = "./modules/aws/rds"
-}
-
-module "eks" {
-  source = "./modules/aws/eks"
-}
+#module "efs" {
+#  source = "./modules/aws/efs"
+#}
+#
+#module "rds" {
+#  source = "./modules/aws/rds"
+#}
+#
+#module "eks" {
+#  source = "./modules/aws/eks"
+#}
 
 # Optional modules
 module "certificates" {

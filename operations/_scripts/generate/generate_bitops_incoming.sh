@@ -41,11 +41,11 @@ function move_content_append() {
 
   # Move files from source folder to destination folder
   find "$source_folder" -maxdepth 1 -type f -path "$source_folder/*" | while read file; do
-    mv "$file" "${GITHUB_ACTION_PATH}"/operations/deployment/terraform/ec2/"$prepend"_$(basename "$file")
+    mv "$file" "${GITHUB_ACTION_PATH}"/operations/deployment/terraform/aws/ec2/"$prepend"_$(basename "$file")
   done
   # Move remaining folders (if they exist) and exclude the . folder
   find "$source_folder" -maxdepth 1 -type d -not -name "." -path "$source_folder/*" | while read folder; do
-    mv "$folder" "${GITHUB_ACTION_PATH}/operations/deployment/terraform/ec2/."
+    mv "$folder" "${GITHUB_ACTION_PATH}/operations/deployment/terraform/aws/ec2/."
   done
 }
 
@@ -91,7 +91,7 @@ if [ -n "$GH_ACTION_REPO" ]; then
   if [ -n "$GH_ACTION_INPUT_TERRAFORM" ]; then
     GH_ACTION_INPUT_TERRAFORM_PATH="$GH_ACTION_REPO/$GH_ACTION_INPUT_TERRAFORM"
 
-    merge_tf_vars "$GH_ACTION_INPUT_TERRAFORM_PATH" ec2
+    merge_tf_vars "$GH_ACTION_INPUT_TERRAFORM_PATH" aws/ec2
     move_content_append "$GH_ACTION_INPUT_TERRAFORM_PATH" action
   fi
 fi
@@ -134,7 +134,7 @@ fi
 if [ -n "$GH_DEPLOYMENT_INPUT_TERRAFORM" ]; then
   GH_DEPLOYMENT_INPUT_TERRAFORM_PATH="$GITHUB_WORKSPACE/$GH_DEPLOYMENT_INPUT_TERRAFORM"
 
-  merge_tf_vars "$GH_DEPLOYMENT_INPUT_TERRAFORM_PATH" ec2
+  merge_tf_vars "$GH_DEPLOYMENT_INPUT_TERRAFORM_PATH" aws/ec2
   move_content_append "$GH_DEPLOYMENT_INPUT_TERRAFORM_PATH" deploy
 fi
 

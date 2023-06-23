@@ -10,12 +10,12 @@ function alpha_only() {
 }
 
 function create_bitops_terraform_config() {
-  if [[ $(alpha_only "$2") == true ]] && ! [[ $(alpha_only "$TF_STACK_DESTROY") == true ]] ; then
+  if [[ $(alpha_only "$3") == true ]] && ! [[ $(alpha_only "$TF_STACK_DESTROY") == true ]] ; then
     action="apply"
   else
     action="destroy"
   fi
-  if [[ $(alpha_only "$3") == targets ]]; then
+  if [[ $(alpha_only "$4") == targets ]]; then
     add_targets="$targets_attribute"
   else
     add_targets=""
@@ -27,7 +27,7 @@ terraform:
     stack-action: "$action"
     $add_targets
   options: {}
-" > $GITHUB_ACTION_PATH/operations/deployment/terraform/$1/bitops.config.yaml
+" > $GITHUB_ACTION_PATH/operations/deployment/terraform/$1/$2/bitops.config.yaml
 }
 
 ### End functions
@@ -51,23 +51,23 @@ targets="$targets
 targets_attribute="$targets_attribute $targets"
 
 #Will create bitops.config.yaml for that terraform folder
-create_bitops_terraform_config rds $AWS_POSTGRES_ENABLE
-create_bitops_terraform_config efs $AWS_EFS_ENABLE
-create_bitops_terraform_config ec2 $AWS_EC2_INSTANCE_CREATE targets
-create_bitops_terraform_config eks $AWS_EKS_CREATE
+create_bitops_terraform_config aws rds $AWS_POSTGRES_ENABLE
+create_bitops_terraform_config aws efs $AWS_EFS_ENABLE
+create_bitops_terraform_config aws ec2 $AWS_EC2_INSTANCE_CREATE targets
+create_bitops_terraform_config aws eks $AWS_EKS_CREATE
 
 #Will add the user_data file into the EC2 Terraform folder
 if [[ $(alpha_only "$AWS_EC2_INSTANCE_CREATE") == true ]]; then
   if [ -s "$GITHUB_WORKSPACE/$AWS_EC2_USER_DATA_FILE" ] && [ -f "$GITHUB_WORKSPACE/$AWS_EC2_USER_DATA_FILE" ]; then
       echo "Moving $AWS_EC2_USER_DATA_FILE to be used by Terraform during EC2 creation"
-      mv "$GITHUB_WORKSPACE/$AWS_EC2_USER_DATA_FILE" "$GITHUB_ACTION_PATH/operations/deployment/terraform/ec2/aws_ec2_incoming_user_data_script.sh"
+      mv "$GITHUB_WORKSPACE/$AWS_EC2_USER_DATA_FILE" "$GITHUB_ACTION_PATH/operations/deployment/terraform/aws/ec2/aws_ec2_incoming_user_data_script.sh"
   fi
 fi
 #Will add the user_data file into the EKS Terraform folder
 if [[ $(alpha_only "$AWS_EKS_CREATE") == true ]]; then
   if [ -s "$GITHUB_WORKSPACE/$AWS_EKS_INSTANCE_USER_DATA_FILE" ] && [ -f "$GITHUB_WORKSPACE/$AWS_EKS_INSTANCE_USER_DATA_FILE" ]; then
       echo "Moving $AWS_EKS_INSTANCE_USER_DATA_FILE to be used by Terraform during EKS Nodes creation"
-      mv "$GITHUB_WORKSPACE/$AWS_EKS_INSTANCE_USER_DATA_FILE" "$GITHUB_ACTION_PATH/operations/deployment/terraform/eks/aws_eks_incoming_user_data_script.sh"
+      mv "$GITHUB_WORKSPACE/$AWS_EKS_INSTANCE_USER_DATA_FILE" "$GITHUB_ACTION_PATH/operations/deployment/terraform/aws/eks/aws_eks_incoming_user_data_script.sh"
   fi
 fi
 # Below we will be creating the config file, one for the action itself, other to store as an artifact after. 
@@ -100,24 +100,24 @@ bitops:
   if [[ $(alpha_only "$AWS_EC2_INSTANCE_CREATE") == true ]] && [[ $(alpha_only "$AWS_EFS_ENABLE") == true ]] && ! [[ $(alpha_only "$TF_STACK_DESTROY") == true ]] ; then
   # Terraform - Generate infra
     echo -en "
-    terraform/rds:
+    terraform/aws/rds:
       plugin: terraform
-    terraform/efs:
+    terraform/aws/efs:
       plugin: terraform
-    terraform/eks:
+    terraform/aws/eks:
       plugin: terraform
-    terraform/ec2:
+    terraform/aws/ec2:
       plugin: terraform
 " >> $BITOPS_CONFIG_TEMP
   else
     echo -en "
-    terraform/ec2:
+    terraform/aws/ec2:
       plugin: terraform
-    terraform/eks:
+    terraform/aws/eks:
       plugin: terraform
-    terraform/rds:
+    terraform/aws/rds:
       plugin: terraform
-    terraform/efs:
+    terraform/aws/efs:
       plugin: terraform
 " >> $BITOPS_CONFIG_TEMP
   fi
