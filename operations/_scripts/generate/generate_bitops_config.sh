@@ -132,18 +132,26 @@ bitops:
     if check_statefile aws ec2; then
       add_terraform_module aws ec2
     fi
-  fi
-  if check_statefile aws efs; then
-    add_terraform_module aws efs
-  fi
-  if check_statefile aws rds; then
-    add_terraform_module aws rds
-  fi
-  if check_statefile aws eks; then
-    add_terraform_module aws eks
-  fi
-  if [[ $(alpha_only "$TF_STACK_DESTROY") != true ]]; then 
-    if check_statefile aws ec2; then
+    if check_statefile aws efs; then
+      add_terraform_module aws efs
+    fi
+    if check_statefile aws rds; then
+      add_terraform_module aws rds
+    fi
+    if check_statefile aws eks; then
+      add_terraform_module aws eks
+    fi
+  else
+    if [[ $(alpha_only "$AWS_EFS_CREATE") == true ]] || [[ $(alpha_only "$AWS_EFS_CREATE_HA") == true ]] || [[ "$AWS_EFS_MOUNT_ID" != "" ]]; then
+      add_terraform_module aws efs
+    fi
+    if [[ "$(alpha_only $AWS_ENABLE_POSTGRES)" == "true" ]]; then
+      add_terraform_module aws rds
+    fi
+    if [[ "$(alpha_only $AWS_EKS_CREATE)" == "true" ]]; then
+      add_terraform_module aws eks
+    fi
+    if [[ "$(alpha_only $AWS_EC2_INSTANCE_CREATE)" == "true" ]]; then
       add_terraform_module aws ec2
     fi
   fi
