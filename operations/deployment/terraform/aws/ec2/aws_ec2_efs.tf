@@ -143,6 +143,15 @@ resource "aws_security_group_rule" "mount_ingress_efs_to_ec2" {
   security_group_id        = var.aws_efs_mount_security_group_id
 }
 
+resource "local_file" "efs-dotenv" {
+  count    = local.create_ec2_efs ? 1 : 0
+  filename = format("%s/%s", abspath(path.root), "efs.env")
+  content  = <<-EOT
+#### EFS
+HOST_DIR="${var.app_install_root}/${var.app_repo_name}/$${var.aws_efs_ec2_mount_point}"
+TARGET_DIR="${var.docker_efs_mount_target}"
+EOT
+}
 
 locals {
   create_efs_url = local.create_ec2_efs ? data.aws_efs_file_system.efs[0].dns_name : ""
