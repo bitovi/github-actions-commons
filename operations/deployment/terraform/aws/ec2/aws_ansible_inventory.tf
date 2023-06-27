@@ -4,7 +4,7 @@ resource "local_sensitive_file" "private_key" {
   file_permission = "0600"
 }
 
-resource "local_file" "ansible_inventory" {
+resource "local_file" "ansible_inventor_no_efs" {
   count    = var.aws_efs_enable ? 0 : 1
   filename = format("%s/%s", abspath(path.root), "inventory.yaml")
   content  = <<-EOT
@@ -19,7 +19,7 @@ bitops_servers:
 EOT
 }
 
-resource "local_file" "ansible_inventory" {
+resource "local_file" "ansible_inventory_efs" {
   count    = var.aws_efs_enable ? 1 : 0
   filename = format("%s/%s", abspath(path.root), "inventory.yaml")
   content  = <<-EOT
