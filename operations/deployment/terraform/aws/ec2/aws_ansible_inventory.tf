@@ -12,10 +12,10 @@ bitops_servers:
  hosts: BITOPS_EC2_PUBLIC_IP
  vars:
    ansible_ssh_user: ubuntu
-   ansible_ssh_private_key_file: $${local_sensitive_file.private_key.filename}
-   app_repo_name: $${var.app_repo_name}
-   app_install_root: $${var.app_install_root}
-   resource_identifier: $${var.aws_resource_identifier}
+   ansible_ssh_private_key_file: ${local_sensitive_file.private_key.filename}
+   app_repo_name: ${var.app_repo_name}
+   app_install_root: ${var.app_install_root}
+   resource_identifier: ${var.aws_resource_identifier}
 EOT
 }
 
@@ -27,14 +27,14 @@ bitops_servers:
  hosts: BITOPS_EC2_PUBLIC_IP
  vars:
    ansible_ssh_user: ubuntu
-   ansible_ssh_private_key_file: $${local_sensitive_file.private_key.filename}
-   app_repo_name: $${var.app_repo_name}
-   app_install_root: $${var.app_install_root}
-   resource_identifier: $${var.aws_resource_identifier}
-   mount_efs: $${local.mount_efs}
-   efs_url: $${local.efs_url}
-   aws_efs_ec2_mount_point: $${var.aws_efs_ec2_mount_point}
-   aws_efs_mount_target: $${var.aws_efs_mount_target != null ? var.aws_efs_mount_target : ""}
-   docker_efs_mount_target: $${var.docker_efs_mount_target}
+   ansible_ssh_private_key_file: ${local_sensitive_file.private_key.filename}
+   app_repo_name: ${var.app_repo_name}
+   app_install_root: ${var.app_install_root}
+   resource_identifier: ${var.aws_resource_identifier}
+   mount_efs: ${local.mount_efs}
+   efs_url: ${local.efs_url}
+   aws_efs_ec2_mount_point: ${var.aws_efs_ec2_mount_point}
+   aws_efs_mount_target: ${var.aws_efs_mount_target != null ? var.aws_efs_mount_target : ""}
+   docker_efs_mount_target: ${var.docker_efs_mount_target}
    EOT
 }
