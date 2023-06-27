@@ -188,6 +188,13 @@ variable "aws_elb_healthcheck" {
 
 # AWS EFS
 
+### This variable is hidden for the end user. Is built in deploy.sh based on the next 3 variables. 
+variable "aws_efs_enable" {
+  type        = bool
+  description = "Global toggle for EFS creation/mounting or not"
+  default     = false
+}
+
 variable "aws_efs_create" {
   type        = bool
   description = "Toggle to indicate whether to create and EFS and mount it to the ec2 as a part of the provisioning. Note: The EFS will be managed by the stack and will be destroyed along with the stack."

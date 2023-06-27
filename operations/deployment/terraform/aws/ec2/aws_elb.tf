@@ -20,10 +20,10 @@ resource "aws_s3_bucket_policy" "allow_access_from_another_account" {
         "s3:PutObject"
       ],
       "Effect": "Allow",
-      "Resource": "arn:aws:s3:::$${var.lb_access_bucket_name}/*",
+      "Resource": "arn:aws:s3:::${var.lb_access_bucket_name}/*",
       "Principal": {
         "AWS": [
-          "$${data.aws_elb_service_account.main.arn}"
+          "${data.aws_elb_service_account.main.arn}"
         ]
       }
     }
@@ -44,8 +44,8 @@ resource "aws_security_group_rule" "incoming_elb" {
 
 # Adding ELB security group with full out
 resource "aws_security_group" "elb_security_group" {
-  name        = var.aws_elb_security_group_name != "" ? var.aws_elb_security_group_name : "SG for $${var.aws_resource_identifier} - ELB"
-  description = "SG for $${var.aws_resource_identifier} - ELB"
+  name        = var.aws_elb_security_group_name != "" ? var.aws_elb_security_group_name : "SG for ${var.aws_resource_identifier} - ELB"
+  description = "SG for ${var.aws_resource_identifier} - ELB"
   egress {
     from_port   = 0
     to_port     = 0
@@ -53,7 +53,7 @@ resource "aws_security_group" "elb_security_group" {
     cidr_blocks = ["0.0.0.0/0"]
   }
   tags = {
-    Name = "$${var.aws_resource_identifier}-elb"
+    Name = "${var.aws_resource_identifier}-elb"
   }
 }
 
@@ -69,7 +69,7 @@ resource "aws_security_group_rule" "incoming_elb_ports" {
 }
 
 # Creating ELB with port mappings
-resource "aws_elb" "${tmpl_elb_resource_string}" {
+resource "aws_elb" "vm_lb" {
   name               = var.aws_resource_identifier_supershort
   security_groups    = [aws_security_group.elb_security_group.id]
   availability_zones = [aws_instance.server.availability_zone]
@@ -109,13 +109,13 @@ resource "aws_elb" "${tmpl_elb_resource_string}" {
   connection_draining_timeout = 400
 
   tags = {
-    Name = "$${var.aws_resource_identifier_supershort}"
+    Name = "${var.aws_resource_identifier_supershort}"
   }
 }
 
 output "lb_public_dns" {
   description = "Public DNS address of the LB"
-  value       = aws_elb.${tmpl_elb_resource_string}.dns_name
+  value       = aws_elb.vm_lb.dns_name
 }
 
 locals {
@@ -124,7 +124,7 @@ locals {
 
 # The main idea of the next block is to get what should be opened, mapped, and with which protocol.
 locals {
-  aws_elb_arn = "${tmpl_cert_string}"
+  aws_elb_arn = var.aws_r53_enable_cert ? "${local.selected_arn}" : ""
 
   # Check if there is a cert available
   elb_ssl_available       = local.aws_elb_arn != "" ? true : false

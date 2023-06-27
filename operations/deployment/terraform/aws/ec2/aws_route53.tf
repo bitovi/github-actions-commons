@@ -1,18 +1,18 @@
 data "aws_route53_zone" "selected" {
   count        = var.aws_r53_domain_name != "" ? 1 : 0
-  name         = "$${var.aws_r53_domain_name}."
+  name         = "${var.aws_r53_domain_name}."
   private_zone = false
 }
 
 resource "aws_route53_record" "dev" {
   count   = local.fqdn_provided ? (var.aws_r53_root_domain_deploy ? 0 : 1) : 0
   zone_id = data.aws_route53_zone.selected[0].zone_id
-  name    = "$${var.aws_r53_sub_domain_name}.$${var.aws_r53_domain_name}"
+  name    = "${var.aws_r53_sub_domain_name}.${var.aws_r53_domain_name}"
   type    = "A"
 
   alias {
-    name                   = aws_elb.${tmpl_elb_resource_string}.dns_name
-    zone_id                = aws_elb.${tmpl_elb_resource_string}.zone_id
+    name                   = aws_elb.vm_lb.dns_name
+    zone_id                = aws_elb.vm_lb.zone_id
     evaluate_target_health = true
   }
 }
@@ -24,8 +24,8 @@ resource "aws_route53_record" "root-a" {
   type    = "A"
 
   alias {
-    name                   = aws_elb.${tmpl_elb_resource_string}.dns_name
-    zone_id                = aws_elb.${tmpl_elb_resource_string}.zone_id
+    name                   = aws_elb.vm_lb.dns_name
+    zone_id                = aws_elb.vm_lb.zone_id
     evaluate_target_health = true
   }
 }
@@ -33,12 +33,12 @@ resource "aws_route53_record" "root-a" {
 resource "aws_route53_record" "www-a" {
   count   = local.fqdn_provided ? (var.aws_r53_root_domain_deploy ? 1 : 0) : 0
   zone_id = data.aws_route53_zone.selected[0].zone_id
-  name    = "www.$${var.aws_r53_domain_name}"
+  name    = "www.${var.aws_r53_domain_name}"
   type    = "A"
 
   alias {
-    name                   = aws_elb.${tmpl_elb_resource_string}.dns_name
-    zone_id                = aws_elb.${tmpl_elb_resource_string}.zone_id
+    name                   = aws_elb.vm_lb.dns_name
+    zone_id                = aws_elb.vm_lb.zone_id
     evaluate_target_health = true
   }
 }
@@ -49,14 +49,14 @@ output "application_public_dns" {
 }
 
 locals {
-  protocol    = ${tmpl_r53_protocol_string}
-  public_port = var.aws_elb_listen_port != "" ? ":$${var.aws_elb_listen_port}" : ""
+  protocol    = var.aws_r53_enable_cert ? local.selected_arn != "" ? "https://" : "http://" : "http://"
+  public_port = var.aws_elb_listen_port != "" ? ":${var.aws_elb_listen_port}" : ""
   url = (local.fqdn_provided ?
     (var.aws_r53_root_domain_deploy ?
-      "$${local.protocol}$${var.aws_r53_domain_name}$${local.public_port}" :
-      "$${local.protocol}$${var.aws_r53_sub_domain_name}.$${var.aws_r53_domain_name}$${local.public_port}"
+      "${local.protocol}${var.aws_r53_domain_name}${local.public_port}" :
+      "${local.protocol}${var.aws_r53_sub_domain_name}.${var.aws_r53_domain_name}${local.public_port}"
     ) :
-  "$${local.protocol}$${aws_elb.${tmpl_elb_resource_string}.dns_name}$${local.public_port}")
+  "${local.protocol}${aws_elb.vm_lb.dns_name}${local.public_port}")
 
   fqdn_provided = (
     (var.aws_r53_domain_name != "") ?

@@ -155,7 +155,8 @@ if [[ $(alpha_only "$AWS_ELB_CREATE") == true ]]; then
 fi
 
 #-- AWS EFS --#
-if [[ $(alpha_only "$AWS_EFS_CREATE") == true ]] || [[ $(alpha_only "$AWS_EFS_CREATE_HA") == true ]] || [[ $AWS_EFS_MOUNT_ID != "" ]]; then
+if [[ $(alpha_only "$AWS_EFS_ENABLE") == true ]]; then
+  aws_efs_enable=$(generate_var aws_efs_enable $AWS_EFS_ENABLE)
   aws_efs_create=$(generate_var aws_efs_create $AWS_EFS_CREATE)
   aws_efs_create_ha=$(generate_var aws_efs_create_ha $AWS_EFS_CREATE_HA)
   aws_efs_mount_id=$(generate_var aws_efs_mount_id $AWS_EFS_MOUNT_ID)
@@ -294,6 +295,7 @@ $aws_elb_healthcheck
 $lb_access_bucket_name
 
 #-- EFS --#
+$aws_efs_enable
 $aws_efs_create
 $aws_efs_create_ha
 $aws_efs_mount_id
