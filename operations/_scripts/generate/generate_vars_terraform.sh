@@ -235,19 +235,7 @@ lb_access_bucket_name=$(generate_var lb_access_bucket_name $LB_LOGS_BUCKET)
 # -------------------------------------------------- #
 
 echo "
-$ansible_skip
-$aws_r53_enable_cert
-$aws_ec2_instance_create
 $aws_ec2_ami_update
-$aws_ec2_instance_public_ip
-$aws_efs_create
-$aws_efs_create_ha
-$aws_efs_mount_id
-$aws_elb_create
-$env_aws_secret
-$aws_postgres_enable
-$aws_r53_enable
-$docker_install
 
 " > "${GITHUB_ACTION_PATH}/operations/deployment/generators/terraform.tfvars"
 

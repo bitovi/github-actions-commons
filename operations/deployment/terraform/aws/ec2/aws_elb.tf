@@ -122,6 +122,7 @@ locals {
 
 }
 
+# TODO: Fix when a user only passes app_ports, the target length should be the same. 
 # The main idea of the next block is to get what should be opened, mapped, and with which protocol.
 locals {
   aws_elb_arn = var.aws_r53_enable_cert ? "${local.selected_arn}" : ""
