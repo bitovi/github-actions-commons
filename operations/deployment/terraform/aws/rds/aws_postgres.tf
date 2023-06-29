@@ -150,5 +150,5 @@ data "aws_db_cluster_snapshot" "existing_snapshot" {
 }
 
 locals {
-  snapshot_identifier = try(aws_db_cluster_snapshot.existing_snapshot.id , null)
+  snapshot_identifier = try(data.aws_db_cluster_snapshot.existing_snapshot.id , null)
 }
