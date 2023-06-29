@@ -138,14 +138,17 @@ resource "aws_db_cluster_snapshot" "inital_snapshot" {
   db_cluster_identifier          = module.rds_cluster[0].cluster_id
   db_cluster_snapshot_identifier = "inital-blank-snapshot"
   depends_on = [ module.rds_cluster ]
+  lifecycle {
+    ignore_updates = true
+  }
 }
 
 data "aws_db_cluster_snapshot" "existing_snapshot" {
- # count                          = var.aws_postgres_initial_snapshot ? 1 : 0
+# # count                          = var.aws_postgres_initial_snapshot ? 1 : 0
   db_cluster_identifier          = var.aws_resource_identifier
-  db_cluster_snapshot_identifier = "initial-blank-snapshot"
+  db_cluster_snapshot_identifier = aws_db_cluster_snapshot.inital_snapshot.db_cluster_snapshot_identifier
 }
 
 locals {
-  snapshot_identifier = try(data.aws_db_cluster_snapshot.existing_snapshot.id , null)
+  snapshot_identifier = try(aws_db_cluster_snapshot.existing_snapshot.id , null)
 }
