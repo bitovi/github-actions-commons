@@ -133,16 +133,16 @@ resource "random_string" "random_sm" {
 }
 
 ### All of this added to handle snapshots
-resource "aws_rds_cluster_snapshot" "inital_snapshot" {
+resource "aws_db_cluster_snapshot" "inital_snapshot" {
   count                    = var.aws_postgres_initial_snapshot ? 1 : 0
   db_cluster_identifier    = module.rds_cluster[0].cluster_id
   db_cluster_snapshot_identifier = "inital-blank-snapshot"
 }
 
-data "aws_rds_cluster_snapshot" "existing_snapshot" {
+data "aws_db_cluster_snapshot" "existing_snapshot" {
   db_cluster_snapshot_identifier = "inital-blank-snapshot"
 }
 
 locals {
-  snapshot_identifier = data.aws_rds_cluster_snapshot.existing_snapshot.exists ? "inital-blank-snapshot" : null
+  snapshot_identifier = data.aws_db_cluster_snapshot.existing_snapshot.exists ? "inital-blank-snapshot" : null
 }
