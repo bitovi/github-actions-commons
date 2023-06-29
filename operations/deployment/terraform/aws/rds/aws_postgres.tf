@@ -141,7 +141,6 @@ resource "aws_db_cluster_snapshot" "inital_snapshot" {
 
 data "aws_db_cluster_snapshot" "existing_snapshot" {
   count                          = var.aws_postgres_initial_snapshot ? 1 : 0
-  db_cluster_identifier          = module.rds_cluster[0].cluster_id
   db_cluster_snapshot_identifier = "inital-blank-snapshot"
 }
 
