@@ -130,12 +130,14 @@ bitops:
   # If to add ec2 in the begginning or the end, depending on aplly or destroy. 
   if [[ $(alpha_only "$TF_STACK_DESTROY") == true ]]; then 
     if check_statefile aws ec2; then
+      echo "In here nok ec2"
       add_terraform_module aws ec2
     fi
     if check_statefile aws efs; then
       add_terraform_module aws efs
     fi
     if check_statefile aws rds; then
+      echo "In here nok"
       add_terraform_module aws rds
     fi
     if check_statefile aws eks; then
@@ -146,12 +148,14 @@ bitops:
       add_terraform_module aws efs
     fi
     if [[ "$(alpha_only $AWS_ENABLE_POSTGRES)" == "true" ]]; then
+      echo "In here ok"
       add_terraform_module aws rds
     fi
     if [[ "$(alpha_only $AWS_EKS_CREATE)" == "true" ]]; then
       add_terraform_module aws eks
     fi
     if [[ "$(alpha_only $AWS_EC2_INSTANCE_CREATE)" == "true" ]]; then
+      echo "In here ok ec2"
       add_terraform_module aws ec2
     fi
   fi
