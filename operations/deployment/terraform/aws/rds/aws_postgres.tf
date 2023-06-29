@@ -135,9 +135,9 @@ resource "random_string" "random_sm" {
 ### All of this added to handle snapshots
 resource "aws_db_cluster_snapshot" "inital_snapshot" {
   count                          = var.aws_postgres_enable ? ( var.aws_postgres_initial_snapshot ? 1 : 0 ) : 0
-  db_cluster_identifier          = module.rds_cluster[0].cluster_id
+  db_cluster_identifier          = var.aws_resource_identifier
   db_cluster_snapshot_identifier = "inital-blank-snapshot"
-  depends_on = [ module.rds_cluster ]
+  #depends_on = [ module.rds_cluster ]
   lifecycle {
     ignore_changes = all
   }
@@ -146,7 +146,7 @@ resource "aws_db_cluster_snapshot" "inital_snapshot" {
 data "aws_db_cluster_snapshot" "existing_snapshot" {
 # # count                          = var.aws_postgres_initial_snapshot ? 1 : 0
   db_cluster_identifier          = var.aws_resource_identifier
-  db_cluster_snapshot_identifier = aws_db_cluster_snapshot.inital_snapshot.db_cluster_snapshot_identifier
+  db_cluster_snapshot_identifier = "inital-blank-snapshot"
 }
 
 locals {
