@@ -204,6 +204,8 @@ The following inputs can be used as `step.with` keys
 | `aws_postgres_subnets` | String | Specify which subnets to use as a list of strings.  Example: `i-1234,i-5678,i-9101`. |
 | `aws_postgres_database_name` | String | Specify a database name. Will be created if it does not exist. Default is `root`. |
 | `aws_postgres_database_port` | String | Specify a listening port for the database. Default is `5432`.|
+| `aws_postgres_initial_snapshot` | Boolean | Creates an initial snapshot of the DB. Could be used only one time. | 
+| `aws_postgres_database_wipe` | Boolean | Rollbacks DB to the initial snapshot. |
 | `aws_postgres_database_protection` | Boolean | Protects the database from deletion. Default is `false`.|
 | `aws_postgres_database_final_snapshot` | Boolean | Creates a snapshot before deletion. If a string is passed, it will be used as snapsthot name. Defaults to `false`.|
 <hr/>

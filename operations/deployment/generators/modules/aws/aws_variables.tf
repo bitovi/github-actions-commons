@@ -319,6 +319,18 @@ variable "aws_postgres_database_port" {
   description = "database port"
 }
 
+variable "aws_postgres_initial_snapshot" {
+  type        = bool
+  default     = false
+  description = "Creates an initial snapshot of the DB."
+}
+
+variable "aws_postgres_database_wipe" {
+  type        = bool
+  default     = false
+  description = "Rollbacks DB to the initial snapshot."
+}
+
 variable "aws_postgres_database_protection" {
   type        = bool
   default     = false

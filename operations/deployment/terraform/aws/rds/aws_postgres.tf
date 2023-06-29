@@ -61,7 +61,9 @@ module "rds_cluster" {
   create_random_password                 = false
   apply_immediately                      = true
   skip_final_snapshot                    = var.aws_postgres_database_final_snapshot == "" ? true : false
-  snapshot_identifier                    = var.aws_postgres_database_final_snapshot
+  # Changed this two vars
+  final_snapshot_identifier_prefix       = var.aws_postgres_database_final_snapshot
+  snapshot_identifier                    = var.aws_postgres_database_wipe ? local.snapshot_identifier : ""
   create_db_cluster_parameter_group      = true
   db_cluster_parameter_group_name        = var.aws_resource_identifier
   db_cluster_parameter_group_family      = var.aws_postgres_database_group_family
@@ -128,4 +130,19 @@ resource "random_string" "random_sm" {
   lower     = true
   special   = false
   numeric   = false
+}
+
+### All of this added to handle snapshots
+resource "aws_rds_cluster_snapshot" "inital_snapshot" {
+  count                    = var.aws_postgres_initial_snapshot ? 1 : 0
+  db_cluster_identifier    = module.rds_cluster[0].cluster_id
+  db_cluster_snapshot_identifier = "inital-blank-snapshot"
+}
+
+data "aws_rds_cluster_snapshot" "existing_snapshot" {
+  db_cluster_snapshot_identifier = "inital-blank-snapshot"
+}
+
+locals {
+  snapshot_identifier = data.aws_rds_cluster_snapshot.existing_snapshot.exists ? "inital-blank-snapshot" : null
 }
