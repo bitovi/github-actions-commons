@@ -144,5 +144,5 @@ data "aws_db_cluster_snapshot" "existing_snapshot" {
 }
 
 locals {
-  snapshot_identifier = data.aws_db_cluster_snapshot.existing_snapshot.exists ? "inital-blank-snapshot" : null
+  snapshot_identifier = data.aws_db_cluster_snapshot.existing_snapshot.status ? "inital-blank-snapshot" : null
 }
