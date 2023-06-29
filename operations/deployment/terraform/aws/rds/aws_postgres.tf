@@ -143,12 +143,6 @@ resource "aws_db_cluster_snapshot" "inital_snapshot" {
   }
 }
 
-data "aws_db_cluster_snapshot" "existing_snapshot" {
-# # count                          = var.aws_postgres_initial_snapshot ? 1 : 0
-  db_cluster_identifier          = var.aws_resource_identifier
-  db_cluster_snapshot_identifier = "inital-blank-snapshot"
-}
-
 locals {
-  snapshot_identifier = try(data.aws_db_cluster_snapshot.existing_snapshot.id , null)
+  snapshot_identifier = try(aws_db_cluster_snapshot.inital_snapshot.db_cluster_snapshot_identifier , null)
 }
