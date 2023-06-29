@@ -139,7 +139,7 @@ resource "aws_db_cluster_snapshot" "inital_snapshot" {
   db_cluster_snapshot_identifier = "inital-blank-snapshot"
   depends_on = [ module.rds_cluster ]
   lifecycle {
-    ignore_updates = true
+    ignore_updates = all
   }
 }
 
