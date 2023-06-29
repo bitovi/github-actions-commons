@@ -144,5 +144,5 @@ resource "aws_db_cluster_snapshot" "inital_snapshot" {
 }
 
 locals {
-  snapshot_identifier = try(aws_db_cluster_snapshot.inital_snapshot.db_cluster_snapshot_identifier , null)
+  snapshot_identifier = try(aws_db_cluster_snapshot.inital_snapshot[0].db_cluster_snapshot_identifier , null)
 }
