@@ -148,7 +148,3 @@ data "aws_db_cluster_snapshot" "existing_snapshot" {
 locals {
   snapshot_identifier = data.aws_db_cluster_snapshot.existing_snapshot[0].status != null ? "inital-blank-snapshot" : null
 }
-
-resource "null_resource" "handle_no_snapshot" {
-  count = try(length(data.aws_db_cluster_snapshot.existing_snapshot) > 0 ? 0 : 1, 1)
-}
