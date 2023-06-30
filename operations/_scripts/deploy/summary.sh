@@ -25,9 +25,6 @@
 
 SUMMARY_CODE=0
 
-# used for unit tests, could be used elsewhere
-export SUMMARY_CODE_OUTPUT=$GITHUB_WORKSPACE/summary_code_output
-
 if [[ $SUCCESS == 'true' ]]; then 
   if [[ $URL_OUTPUT != '' ]]; then
     #Print result created
@@ -75,5 +72,5 @@ else
   If you consider this is a bug in the Github Action, please submit an issue to our repo."
 fi
 
-echo "$result_string" >> $GITHUB_OUTPUT
-echo $SUMMARY_CODE >> $SUMMARY_CODE_OUTPUT
+echo "$result_string" >> $GITHUB_STEP_SUMMARY
+echo "SUMMARY_CODE=$SUMMARY_CODE" >> $GITHUB_OUTPUT

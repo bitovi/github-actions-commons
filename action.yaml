@@ -563,6 +563,7 @@ runs:
         TF_STACK_DESTROY: ${{ inputs.tf_stack_destroy }}
         TF_STATE_BUCKET_DESTROY: ${{ inputs.tf_state_bucket_destroy }}
       run: |
+        echo ::group::Generate Summary
         echo "SUCCESS: $SUCCESS"
         echo "URL_OUTPUT: $URL_OUTPUT"
         echo "BITOPS_CODE_ONLY: $BITOPS_CODE_ONLY"
@@ -571,8 +572,8 @@ runs:
         echo "TF_STATE_BUCKET_DESTROY: $TF_STATE_BUCKET_DESTROY"
 
         summary_script="$GITHUB_ACTION_PATH/operations/_scripts/deploy/summary.sh"
-        echo "Running $summary_script"
         $summary_script
+        echo ::endgroup::
 
     # upload generated artifacts to GitHub if enabled
     - if: ${{ inputs.bitops_code_store == 'true' }}
