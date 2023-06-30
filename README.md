@@ -202,10 +202,12 @@ The following inputs can be used as `step.with` keys
 | `aws_postgres_instance_class` | String | Define the size of the instances in the DB cluster. Default is `db.t3.medium`. | 
 | `aws_postgres_security_group_name` | String | The name of the Postgres security group. Defaults to `SG for ${aws_resource_identifier} - PG`. |
 | `aws_postgres_subnets` | String | Specify which subnets to use as a list of strings.  Example: `i-1234,i-5678,i-9101`. |
-| `aws_postgres_database_name` | String | Specify a database name. Will be created if it does not exist. Default is `root`. |
+| `aws_postgres_cluster_name` | String | Specify a cluster name. Will be created if it does not exist. Defaults to `aws_resource_identifier`. |
+| `aws_postgres_database_name` | String | Specify a database name. Will be created if it does not exist. Defaults to `aws_resource_identifier`. |
 | `aws_postgres_database_port` | String | Specify a listening port for the database. Default is `5432`.|
-| `aws_postgres_initial_snapshot` | Boolean | Creates an initial snapshot of the DB. Could be used only one time. | 
-| `aws_postgres_database_wipe` | Boolean | Rollbacks DB to the initial snapshot. |
+| `aws_postgres_restore_snapshot` | String | Restore a snapshot to the DB. Should be set only once. Changes in this value will destroy and recreate the database completely. | 
+| `aws_postgres_snapshot_name` | String | Specify a database name. Will be created if it does not exist. Won't overwrite. |
+| `aws_postgres_snapshot_overwrite` | Boolean | Set to true to overwrite the snapshot. |
 | `aws_postgres_database_protection` | Boolean | Protects the database from deletion. Default is `false`.|
 | `aws_postgres_database_final_snapshot` | Boolean | Creates a snapshot before deletion. If a string is passed, it will be used as snapsthot name. Defaults to `false`.|
 <hr/>

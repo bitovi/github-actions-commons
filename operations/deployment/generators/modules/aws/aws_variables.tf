@@ -308,35 +308,41 @@ variable "aws_postgres_subnets" {
   description = "The list of subnet ids to use for postgres. For more details, see: https://registry.terraform.io/modules/terraform-aws-modules/rds-aurora/aws/latest?tab=inputs"
   default     = []
 }
+variable "aws_postgres_cluster_name" {
+  type        = string
+  description = "The name of the cluster. will be created if it does not exist."
+  default     = ""
+}
 variable "aws_postgres_database_name" {
   type        = string
   description = "The name of the database. will be created if it does not exist."
-  default     = "root"
+  default     = ""
 }
 variable "aws_postgres_database_port" {
   type        = string
   default     = "5432"
   description = "database port"
 }
-
-variable "aws_postgres_initial_snapshot" {
+variable "aws_postgres_restore_snapshot" {
+  type        = string
+  default     = false
+  description = "Restore an initial snapshot of the DB."
+}
+variable "aws_postgres_snapshot_name" {
+  type        = string
+  default     = false
+  description = "Takes a snapshot of the DB."
+}
+variable "aws_postgres_snapshot_overwrite" {
   type        = bool
   default     = false
-  description = "Creates an initial snapshot of the DB."
+  description = "Overwrites snapshot."
 }
-
-variable "aws_postgres_database_wipe" {
-  type        = bool
-  default     = false
-  description = "Rollbacks DB to the initial snapshot."
-}
-
 variable "aws_postgres_database_protection" {
   type        = bool
   default     = false
   description = "Protects the database from deletion."
 }
-
 variable "aws_postgres_database_final_snapshot" {
   type        = string
   default     = ""

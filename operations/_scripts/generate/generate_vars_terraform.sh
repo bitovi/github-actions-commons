@@ -85,11 +85,14 @@ if [ -n "${AWS_POSTGRES_SUBNETS}" ]; then
 fi
 echo "AWS Postgres subnets: $aws_postgres_subnets"
 
+# If the name is true, set it up to be the GH ID - If not, if it's not false, it's the snap name.
 if [ -n "$AWS_POSTGRES_DATABASE_FINAL_SNAPSHOT" ];then
   if [[ $(alpha_only "$AWS_POSTGRES_DATABASE_FINAL_SNAPSHOT") == "true" ]]; then
     aws_postgres_database_final_snapshot="aws_postgres_database_final_snapshot = \"${GITHUB_IDENTIFIER}\""
   else
-    aws_postgres_database_final_snapshot="aws_postgres_database_final_snapshot = \"${AWS_POSTGRES_DATABASE_FINAL_SNAPSHOT}\""
+    if [[ $(alpha_only "$AWS_POSTGRES_DATABASE_FINAL_SNAPSHOT") != "false" ]]; then
+      aws_postgres_database_final_snapshot="aws_postgres_database_final_snapshot = \"${AWS_POSTGRES_DATABASE_FINAL_SNAPSHOT}\""
+    fi
   fi
 fi
 
@@ -180,10 +183,12 @@ if [[ $(alpha_only "$AWS_POSTGRES_ENABLE") == true ]]; then
   aws_postgres_instance_class=$(generate_var aws_postgres_instance_class $AWS_POSTGRES_INSTANCE_CLASS)
   aws_postgres_security_group_name=$(generate_var aws_postgres_security_group_name $AWS_POSTGRES_SECURITY_GROUP_NAME )
   # aws_postgres_subnets=$(generate_var aws_postgres_subnets $AWS_POSTGRES_SUBNETS) - Special case
+  aws_postgres_cluster_name=$(generate_var aws_postgres_cluster_name $AWS_POSTGRES_CLUSTER_NAME)
   aws_postgres_database_name=$(generate_var aws_postgres_database_name $AWS_POSTGRES_DATABASE_NAME)
   aws_postgres_database_port=$(generate_var aws_postgres_database_port $AWS_POSTGRES_DATABASE_PORT)
-  aws_postgres_initial_snapshot=$(generate_var aws_postgres_initial_snapshot $AWS_POSTGRES_INITIAL_SNAPSHOT)
-  aws_postgres_database_wipe=$(generate_var aws_postgres_database_wipe $AWS_POSTGRES_DATABASE_WIPE)
+  aws_postgres_restore_snapshot=$(generate_var aws_postgres_restore_snapshot $AWS_POSTGRES_RESTORE_SNAPSHOT)
+  aws_postgres_snapshot_name=$(generate_var aws_postgres_snapshot_name $AWS_POSTGRES_SNAPSHOT_NAME)
+  aws_postgres_snapshot_overwrite=$(generate_var aws_postgres_snapshot_overwrite $AWS_POSTGRES_SNAPSHOT_OVERWRITE)
   aws_postgres_database_protection=$(generate_var aws_postgres_database_protection $AWS_POSTGRES_DATABASE_PROTECTION )
   # aws_postgres_database_final_snapshot=$(generate_var aws_postgres_database_final_snapshot $AWS_POSTGRES_DATABASE_FINAL_SNAPSHOT ) - Special case
 fi
@@ -307,10 +312,12 @@ $aws_postgres_database_group_family
 $aws_postgres_instance_class
 $aws_postgres_security_group_name
 $aws_postgres_subnets
+$aws_postgres_cluster_name
 $aws_postgres_database_name
 $aws_postgres_database_port
-$aws_postgres_initial_snapshot
-$aws_postgres_database_wipe
+$aws_postgres_restore_snapshot
+$aws_postgres_snapshot_name
+$aws_postgres_snapshot_overwrite
 $aws_postgres_database_protection
 $aws_postgres_database_final_snapshot
 

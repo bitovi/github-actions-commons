@@ -274,17 +274,23 @@ inputs:
   aws_postgres_subnets:
     description: 'Specify which subnets to use as a list of strings.  Example: `i-1234,i-5678,i-9101`'
     required: false
+  aws_postgres_cluster_name:
+    description: 'Specify a cluster name. Will be created if it does not exist'
+    required: false
   aws_postgres_database_name:
     description: 'Specify a database name. Will be created if it does not exist'
     required: false
   aws_postgres_database_port:
     description: 'Postgres database port'
     required: false
-  aws_postgres_initial_snapshot:
-    description: 'Creates an initial snapshot of the DB. Could be used only once.'
+  aws_postgres_restore_snapshot:
+    description: 'Restore a snapshot to the DB. Should be used only once. Changes in this value will destroy and recreate the database completely.'
     required: false
-  aws_postgres_database_wipe:
-    description: 'Rollbacks DB to the initial snapshot.'
+  aws_postgres_snapshot_name:
+    description: 'Takes a snapshot of the cluster using that name. If none definded, no snapshot will be made. If snap already exists, no new one will be created.'
+    required: false
+  aws_postgres_snapshot_overwrite:
+    description: 'If the snapshot name is the same as an existing one, will destroy and create a new one.'
     required: false
   aws_postgres_database_protection:
     description: 'Protects the database from deletion.'
@@ -498,10 +504,12 @@ runs:
         AWS_POSTGRES_INSTANCE_CLASS: ${{ inputs.aws_postgres_instance_class }}
         AWS_POSTGRES_SECURITY_GROUP_NAME: ${{ inputs.aws_postgres_security_group_name }}
         AWS_POSTGRES_SUBNETS: ${{ inputs.aws_postgres_subnets }}
+        AWS_POSTGRES_CLUSTER_NAME: ${{ inputs.aws_postgres_cluster_name }}
         AWS_POSTGRES_DATABASE_NAME: ${{ inputs.aws_postgres_database_name }}
         AWS_POSTGRES_DATABASE_PORT: ${{ inputs.aws_postgres_database_port}}
-        AWS_POSTGRES_INITIAL_SNAPSHOT: ${{ inputs.aws_postgres_initial_snapshot }}
-        AWS_POSTGRES_DATABASE_WIPE: ${{ inputs.aws_postgres_database_wipe }}
+        AWS_POSTGRES_RESTORE_SNAPSHOT: ${{ inputs.aws_postgres_restore_snapshot }}
+        AWS_POSTGRES_SNAPSHOT_NAME: ${{ inputs.aws_postgres_snapshot_name }}
+        AWS_POSTGRES_SNAPSHOT_OVERWRITE: ${{ inputs.aws_postgres_snapshot_overwrite }}
         AWS_POSTGRES_DATABASE_PROTECTION: ${{ inputs.aws_postgres_database_protection }}
         AWS_POSTGRES_DATABASE_FINAL_SNAPSHOT: ${{ inputs.aws_postgres_database_final_snapshot }}
 

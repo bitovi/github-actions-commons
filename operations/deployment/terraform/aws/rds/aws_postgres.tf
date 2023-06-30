@@ -30,7 +30,7 @@ module "rds_cluster" {
   depends_on     = [data.aws_subnets.vpc_subnets]
   source         = "terraform-aws-modules/rds-aurora/aws"
   version        = "v7.7.1"
-  name           = var.aws_resource_identifier
+  name           = var.aws_postgres_cluster_name != "" ? var.aws_postgres_cluster_name : var.aws_resource_identifier
   engine         = var.aws_postgres_engine
   engine_version = var.aws_postgres_engine_version
   instance_class = var.aws_postgres_instance_class
@@ -45,7 +45,7 @@ module "rds_cluster" {
   # allowed_cidr_blocks    = [var.vpc_cidr]
   subnets                  = var.aws_postgres_subnets == null || length(var.aws_postgres_subnets) == 0 ? data.aws_subnets.vpc_subnets.ids : var.aws_postgres_subnets
 
-  database_name          = var.aws_postgres_database_name
+  database_name          = var.aws_postgres_database_name != "" ? var.aws_postgres_database_name : var.aws_resource_identifier
   port                   = var.aws_postgres_database_port
   deletion_protection    = var.aws_postgres_database_protection
   storage_encrypted      = true
@@ -63,7 +63,7 @@ module "rds_cluster" {
   skip_final_snapshot                    = var.aws_postgres_database_final_snapshot == "" ? true : false
   # Changed this two vars
   final_snapshot_identifier_prefix       = var.aws_postgres_database_final_snapshot
-  snapshot_identifier                    = var.aws_postgres_database_wipe ? local.snapshot_identifier : ""
+  snapshot_identifier                    = var.aws_postgres_restore_snapshot
   create_db_cluster_parameter_group      = true
   db_cluster_parameter_group_name        = var.aws_resource_identifier
   db_cluster_parameter_group_family      = var.aws_postgres_database_group_family
@@ -133,16 +133,20 @@ resource "random_string" "random_sm" {
 }
 
 ### All of this added to handle snapshots
-resource "aws_db_cluster_snapshot" "inital_snapshot" {
-  count                          = var.aws_postgres_enable ? ( var.aws_postgres_initial_snapshot ? 1 : 0 ) : 0
-  db_cluster_identifier          = var.aws_resource_identifier
-  db_cluster_snapshot_identifier = "inital-blank-snapshot"
-  #depends_on = [ module.rds_cluster ]
+resource "aws_db_cluster_snapshot" "db_snapshot" {
+  count                          = var.aws_postgres_enable ? ( var.aws_postgres_snapshot_name != "" ? ( var.aws_postgres_snapshot_overwrite ? 0 : 1 ) : 0 ) : 0
+  db_cluster_identifier          = var.aws_postgres_cluster_name != "" ? var.aws_postgres_cluster_name : var.aws_resource_identifier
+  db_cluster_snapshot_identifier = var.aws_postgres_snapshot_name
   lifecycle {
     ignore_changes = all
   }
 }
 
-locals {
-  snapshot_identifier = try(aws_db_cluster_snapshot.inital_snapshot[0].db_cluster_snapshot_identifier , null)
+resource "aws_db_cluster_snapshot" "overwrite_db_snapshot" {
+  count                          = var.aws_postgres_enable ? ( var.aws_postgres_snapshot_name != "" ? ( var.aws_postgres_snapshot_overwrite ? 1 : 0 ) : 0 ) : 0
+  db_cluster_identifier          = var.aws_postgres_cluster_name != "" ? var.aws_postgres_cluster_name : var.aws_resource_identifier
+  db_cluster_snapshot_identifier = var.aws_postgres_snapshot_name
+  lifecycle {
+    create_before_destroy = true
+  }
 }
