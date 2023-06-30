@@ -3,7 +3,7 @@
 # see here for summary_codes
 # this runs once before all tests
 setup_file() {
-  export file_under_test=../summary.sh
+  export file_under_test=$GITHUB_WORKSPACE/operations/_scripts/deploy/summary.sh
   export GITHUB_STEP_SUMMARY=$(mktemp ./test.XXX)
   export GITHUB_OUTPUT=$(mktemp ./test.XXX)
 }

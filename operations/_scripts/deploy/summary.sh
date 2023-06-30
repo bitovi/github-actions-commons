@@ -2,7 +2,7 @@
 # shellcheck disable=SC2086
 
 ### coming into this we have env vars:
-# SUCCESS=${{ success() }}
+# SUCCESS=${{ job.status }}
 # URL_OUTPUT=${{ steps.deploy.outputs.vm_url }}
 # BITOPS_CODE_ONLY
 # BITOPS_CODE_STORE
