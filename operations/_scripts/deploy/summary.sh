@@ -2,7 +2,7 @@
 # shellcheck disable=SC2086
 
 ### coming into this we have env vars:
-# SUCCESS=${{ job.status }}
+# SUCCESS=${{ job.status }} # success, cancelled, failure
 # URL_OUTPUT=${{ steps.deploy.outputs.vm_url }}
 # BITOPS_CODE_ONLY
 # BITOPS_CODE_STORE
@@ -22,10 +22,11 @@
 # 7 - success, code generated, archived, but no URL found # invalid case
 # 8 - success, destroy buckets and infrastructure
 # 9 - success, destroy infrastructure
+# 10 - cancelled
 
 SUMMARY_CODE=0
 
-if [[ $SUCCESS == 'true' ]]; then 
+if [[ $SUCCESS == 'success' ]]; then
   if [[ $URL_OUTPUT != '' ]]; then
     #Print result created
     result_string="## VM Created! :rocket:
@@ -61,9 +62,13 @@ if [[ $SUCCESS == 'true' ]]; then
     SUMMARY_CODE=4
     #Print result deploy finished but no URL found
     result_string="## Deploy finished! But no URL found. :thinking:
-    If expecting a URL, please check the logs for possible  errors.
+    If expecting a URL, please check the logs for possible errors.
     If you consider this is a bug in the Github Action, please submit an issue to our repo."
   fi
+elif [[ $SUCCESS == 'cancelled' ]]; then
+  SUMMARY_CODE=10
+  result_string="## Workflow cancelled :warning:"
+
 else
   SUMMARY_CODE=1
   # Print error result

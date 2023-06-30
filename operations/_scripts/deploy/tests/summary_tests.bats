@@ -28,7 +28,7 @@ function runTest() {
 
 @test "SUCCESS is true, URL_OUTPUT is not empty" {
   # Set the environment variables
-  export SUCCESS='true'
+  export SUCCESS='success'
   export URL_OUTPUT='example.com'
 
   # Run the test and pass in the expected result code
@@ -36,7 +36,7 @@ function runTest() {
 }
 
 @test "SUCCESS is true, URL_OUTPUT is empty, BITOPS_CODE_ONLY is true, BITOPS_CODE_STORE is true" {
-  export SUCCESS='true'
+  export SUCCESS='success'
   export URL_OUTPUT=''
   export BITOPS_CODE_ONLY='true'
   export BITOPS_CODE_STORE='true'
@@ -45,7 +45,7 @@ function runTest() {
 }
 
 @test "SUCCESS is true, URL_OUTPUT is empty, BITOPS_CODE_ONLY is true, BITOPS_CODE_STORE is false" {
-  export SUCCESS='true'
+  export SUCCESS='success'
   export URL_OUTPUT=''
   export BITOPS_CODE_ONLY='true'
   export BITOPS_CODE_STORE='false'
@@ -54,7 +54,7 @@ function runTest() {
 }
 
 @test "SUCCESS is true, URL_OUTPUT is empty, TF_STACK_DESTROY is true, TF_STATE_BUCKET_DESTROY is false" {
-  export SUCCESS='true'
+  export SUCCESS='success'
   export URL_OUTPUT=''
   export BITOPS_CODE_ONLY='false'
   export TF_STACK_DESTROY='true'
@@ -64,7 +64,7 @@ function runTest() {
 }
 
 @test "SUCCESS is true, URL_OUTPUT is empty, TF_STACK_DESTROY is true, TF_STATE_BUCKET_DESTROY is true" {
-  export SUCCESS='true'
+  export SUCCESS='success'
   export URL_OUTPUT=''
   export BITOPS_CODE_ONLY='false'
   export TF_STACK_DESTROY='true'
@@ -74,7 +74,7 @@ function runTest() {
 }
 
 @test "SUCCESS is true, URL_OUTPUT is empty, BITOPS_CODE_ONLY is false, TF_STACK_DESTROY is false" {
-  export SUCCESS='true'
+  export SUCCESS='success'
   export URL_OUTPUT=''
   export BITOPS_CODE_ONLY='false'
   export TF_STACK_DESTROY='false'
@@ -87,4 +87,11 @@ function runTest() {
   export SUCCESS='false'
 
   runTest 1
+
+}
+
+@test "SUCCESS is 'cancelled'" {
+  export SUCCESS='cancelled'
+
+  runTest 10
 }
