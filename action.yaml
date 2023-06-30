@@ -556,7 +556,7 @@ runs:
       if: ${{ always() }}
       shell: bash
       env: 
-        SUCCESS: ${{ success() }}
+        SUCCESS: ${{ job.status }} # success, failure, cancelled
         URL_OUTPUT: ${{ steps.deploy.outputs.vm_url }}
         BITOPS_CODE_ONLY: ${{ inputs.bitops_code_only }}
         BITOPS_CODE_STORE: ${{ inputs.bitops_code_store }}
