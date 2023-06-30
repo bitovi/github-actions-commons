@@ -18,5 +18,4 @@ jobs:
       uses: actions/checkout@v2
 
     - name: unit tests
-      run: |
-        bats $GITHUB_WORKSPACE/operations/_scripts/deploy/tests/.
+      run: bats $GITHUB_WORKSPACE/operations/_scripts/deploy/tests/.
