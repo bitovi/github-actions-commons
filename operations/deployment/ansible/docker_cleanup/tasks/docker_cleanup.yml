@@ -4,6 +4,25 @@
   register: docker_check
   ignore_errors: true
 
+- name: Check if compose files exist
+  stat:
+    path: "{{ item }}"
+  register: file_status
+  with_items:
+    - docker-compose.yml
+    - docker-compose.yaml
+    - compose.yml
+    - compose.yaml
+
+- name: Count existing files
+  set_fact:
+    existing_files: "{{ file_status.results | selectattr('stat.exists') | map(attribute='item') | list }}"
+
+- name: Check the count of existing files
+  fail:
+    msg: "Can't find a valid compose file. Expected one of: docker-compose.yml, docker-compose.yaml, compose.yml, compose.yaml"
+  when: existing_files | length < 1
+
 - name: Stop and cleanup Docker
   docker_compose:
     project_src: "{{ app_install_root }}/{{ app_repo_name }}"
@@ -12,7 +31,7 @@
     remove_images: all
     remove_volumes: true
   register: output
-  when: docker_check.rc == 0
+  when: docker_check.rc == 0 and existing_files | length > 0
 
 - name: Prune Docker system
   command: docker system prune --all --force --volumes

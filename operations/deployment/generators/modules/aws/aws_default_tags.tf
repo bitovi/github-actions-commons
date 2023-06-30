@@ -6,7 +6,7 @@ locals {
     GitHubRepoName            = "${var.app_repo_name}"
     GitHubBranchName          = "${var.app_branch_name}"
     GitHubAction              = "bitovi/github-actions-commons"
-    OperationsRepoEnvironment = "deployment"
-    created_with              = "terraform"
+    OperationsRepoEnvironment = "${var.ops_repo_environment}"
+    Created_with              = "Bitovi BitOps - Ansible + Terraform + Helm + some magic dust"
   }
 }

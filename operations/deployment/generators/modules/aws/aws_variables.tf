@@ -325,12 +325,12 @@ variable "aws_postgres_database_port" {
 }
 variable "aws_postgres_restore_snapshot" {
   type        = string
-  default     = false
+  default     = ""
   description = "Restore an initial snapshot of the DB."
 }
 variable "aws_postgres_snapshot_name" {
   type        = string
-  default     = false
+  default     = ""
   description = "Takes a snapshot of the DB."
 }
 variable "aws_postgres_snapshot_overwrite" {
