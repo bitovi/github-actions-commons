@@ -570,7 +570,7 @@ runs:
         echo "TF_STACK_DESTROY: $TF_STACK_DESTROY"
         echo "TF_STATE_BUCKET_DESTROY: $TF_STATE_BUCKET_DESTROY"
 
-        summary_script="operations/_scripts/deploy/summary.sh"
+        summary_script="$GITHUB_ACTION_PATH/operations/_scripts/deploy/summary.sh"
         echo "Running $summary_script"
         $summary_script
 
