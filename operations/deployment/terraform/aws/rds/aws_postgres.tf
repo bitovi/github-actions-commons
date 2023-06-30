@@ -30,8 +30,7 @@ module "rds_cluster" {
   depends_on     = [data.aws_subnets.vpc_subnets]
   source         = "terraform-aws-modules/rds-aurora/aws"
   version        = "v7.7.1"
-  #name           = var.aws_postgres_cluster_name != "" ? var.aws_postgres_cluster_name : var.aws_resource_identifier
-  name           = var.aws_resource_identifier
+  name           = var.aws_postgres_cluster_name != "" ? var.aws_postgres_cluster_name : var.aws_resource_identifier_supershort
   engine         = var.aws_postgres_engine
   engine_version = var.aws_postgres_engine_version
   instance_class = var.aws_postgres_instance_class
@@ -46,8 +45,7 @@ module "rds_cluster" {
   # allowed_cidr_blocks    = [var.vpc_cidr]
   subnets                  = var.aws_postgres_subnets == null || length(var.aws_postgres_subnets) == 0 ? data.aws_subnets.vpc_subnets.ids : var.aws_postgres_subnets
 
-  #database_name          = var.aws_postgres_database_name != "" ? var.aws_postgres_database_name : var.aws_resource_identifier
-  database_name          = var.aws_resource_identifier
+  database_name          = var.aws_postgres_database_name != "" ? var.aws_postgres_database_name : var.aws_resource_identifier_supershort
   port                   = var.aws_postgres_database_port
   deletion_protection    = var.aws_postgres_database_protection
   storage_encrypted      = true
