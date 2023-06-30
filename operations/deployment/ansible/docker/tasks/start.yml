@@ -14,7 +14,7 @@
 
 - name: Check the count of existing files
   fail:
-    msg: "Can't find a valid compose file. Expected one of: docker-compose.yml, docker-compose.yaml, compose.yml, compose.yaml"
+    msg: "Can't find a valid compose file. Expected one of: docker-compose.yml, docker-compose.yaml, compose.yml, compose.yaml. Not running docker-compose up."
   when: existing_files | length < 1
 
 - name: Start docker-compose

@@ -14,14 +14,15 @@
     - compose.yml
     - compose.yaml
 
-- name: Count existing files
+- name: Counting those compose files
   set_fact:
     existing_files: "{{ file_status.results | selectattr('stat.exists') | map(attribute='item') | list }}"
 
-- name: Check the count of existing files
+- name: Printing warning message of missing compose file
   fail:
-    msg: "Can't find a valid compose file. Expected one of: docker-compose.yml, docker-compose.yaml, compose.yml, compose.yaml"
+    msg: "Can't find a valid compose file. Expected one of: docker-compose.yml, docker-compose.yaml, compose.yml, compose.yaml to stop and cleanup Docker."
   when: existing_files | length < 1
+  ignore_errors: true
 
 - name: Stop and cleanup Docker
   docker_compose:
