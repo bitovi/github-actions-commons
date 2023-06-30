@@ -14,7 +14,7 @@ resource "aws_security_group" "pg_security_group" {
 }
 
 locals {
-  aws_resource_identifier_custom = length(var.aws:aws_resource_identifier) > 59 ? var.aws_resource_identifier_supershort : var.aws_resource_identifier
+  aws_resource_identifier_custom = length(var.aws_resource_identifier) > 59 ? var.aws_resource_identifier_supershort : var.aws_resource_identifier
 }
 
 resource "aws_security_group_rule" "ingress_postgres" {
