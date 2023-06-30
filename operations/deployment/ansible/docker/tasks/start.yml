@@ -3,10 +3,10 @@
     path: "{{ item }}"
   register: file_status
   with_items:
-    - docker-compose.yml
-    - docker-compose.yaml
-    - compose.yml
-    - compose.yaml
+    - "{{ app_install_root }}/{{ app_repo_name }}/docker-compose.yml"
+    - "{{ app_install_root }}/{{ app_repo_name }}/docker-compose.yaml"
+    - "{{ app_install_root }}/{{ app_repo_name }}/compose.yml"
+    - "{{ app_install_root }}/{{ app_repo_name }}/compose.yaml"
 
 - name: Count existing files
   set_fact:
