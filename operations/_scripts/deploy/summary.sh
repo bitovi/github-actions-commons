@@ -9,38 +9,66 @@
 # TF_STACK_DESTROY
 # TF_STATE_BUCKET_DESTROY
 
+# Create an error code mechanism so we don't have to check the actual static text,
+# just which case we fell into
+
+# 0 - success
+# 1 - failure
+# 2 - failure, no URL # invalid case
+# 3 - failure, no URL, no code generated # invalid case
+# 4 - success, no URL
+# 5 - success, code generated, not archived
+# 6 - success, code generated, archived
+# 7 - success, code generated, archived, but no URL found # invalid case
+# 8 - success, destroy buckets and infrastructure
+# 9 - success, destroy infrastructure
+
+SUMMARY_CODE=0
+
+# used for unit tests, could be used elsewhere
+export SUMMARY_CODE_OUTPUT=$GITHUB_WORKSPACE/summary_code_output
+
 if [[ $SUCCESS == 'true' ]]; then 
   if [[ $URL_OUTPUT != '' ]]; then
     #Print result created
     result_string="## VM Created! :rocket:
     $URL_OUTPUT"
+
   elif [[ $BITOPS_CODE_ONLY == 'true' ]]; then
     if [[ $BITOPS_CODE_STORE == 'true' ]]; then
+      SUMMARY_CODE=6
       #Print code generated and archived
       result_string="## BitOps Code generated. :tada: 
       Download the code artifact. Will be there for 5 days.
       Keep in mind that for creation, EFS should be created before EC2.
       While destroying, EC2 should be destroyed before EFS. (Due to resources being in use).
       You can change that in the bitops.config.yaml file, or regenerate the code with destroy set."
-    else 
+    else
+      SUMMARY_CODE=5
       #Print code generated not archived
       result_string="## BitOps Code generated. :tada:"
     fi
+
   elif [[ $TF_STACK_DESTROY == 'true' ]]; then
     if [[ $TF_STATE_BUCKET_DESTROY != 'true' ]]; then
+      SUMMARY_CODE=9
       result_string="## VM Destroyed! :boom:
       Infrastructure should be gone now!"
     else
+      SUMMARY_CODE=8
       result_string="## VM Destroyed! :boom:
       Buckets and infrastructure should be gone now!"
     fi
+
   elif [[ $TF_STACK_DESTROY != 'true' && $BITOPS_CODE_ONLY != 'true' ]]; then
+    SUMMARY_CODE=4
     #Print result deploy finished but no URL found
     result_string="## Deploy finished! But no URL found. :thinking:
     If expecting a URL, please check the logs for possible  errors.
     If you consider this is a bug in the Github Action, please submit an issue to our repo."
   fi
 else
+  SUMMARY_CODE=1
   # Print error result
   result_string="## Workflow failed to run :fire:
   Please check the logs for possible errors.
@@ -48,3 +76,4 @@ else
 fi
 
 echo "$result_string" >> $GITHUB_OUTPUT
+echo $SUMMARY_CODE >> $SUMMARY_CODE_OUTPUT
