@@ -19,6 +19,4 @@ jobs:
 
     - name: unit tests
       run: |
-        echo ::group::Unit Tests
         bats $GITHUB_WORKSPACE/operations/_scripts/deploy/tests/.
-        echo ::endgroup::

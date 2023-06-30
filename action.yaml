@@ -552,7 +552,7 @@ runs:
         echo "Finished executions - Now to print results"
 
     # always output results to GitHub Summary UI
-    - name: Summary Output
+    - name: Generate Summary Output
       if: ${{ always() }}
       shell: bash
       env: 
@@ -562,18 +562,7 @@ runs:
         BITOPS_CODE_STORE: ${{ inputs.bitops_code_store }}
         TF_STACK_DESTROY: ${{ inputs.tf_stack_destroy }}
         TF_STATE_BUCKET_DESTROY: ${{ inputs.tf_state_bucket_destroy }}
-      run: |
-        echo ::group::Generate Summary
-        echo "SUCCESS: $SUCCESS"
-        echo "URL_OUTPUT: $URL_OUTPUT"
-        echo "BITOPS_CODE_ONLY: $BITOPS_CODE_ONLY"
-        echo "BITOPS_CODE_STORE: $BITOPS_CODE_STORE"
-        echo "TF_STACK_DESTROY: $TF_STACK_DESTROY"
-        echo "TF_STATE_BUCKET_DESTROY: $TF_STATE_BUCKET_DESTROY"
-
-        summary_script="$GITHUB_ACTION_PATH/operations/_scripts/deploy/summary.sh"
-        $summary_script
-        echo ::endgroup::
+      run: $GITHUB_ACTION_PATH/operations/_scripts/deploy/summary.sh
 
     # upload generated artifacts to GitHub if enabled
     - if: ${{ inputs.bitops_code_store == 'true' }}

@@ -28,14 +28,12 @@ SUMMARY_CODE=0
 
 if [[ $SUCCESS == 'success' ]]; then
   if [[ $URL_OUTPUT != '' ]]; then
-    #Print result created
-    result_string="## VM Created! :rocket:
+    result_string="## Deploy Complete! :rocket:
     $URL_OUTPUT"
 
   elif [[ $BITOPS_CODE_ONLY == 'true' ]]; then
     if [[ $BITOPS_CODE_STORE == 'true' ]]; then
       SUMMARY_CODE=6
-      #Print code generated and archived
       result_string="## BitOps Code generated. :tada: 
       Download the code artifact. Will be there for 5 days.
       Keep in mind that for creation, EFS should be created before EC2.
@@ -43,7 +41,6 @@ if [[ $SUCCESS == 'success' ]]; then
       You can change that in the bitops.config.yaml file, or regenerate the code with destroy set."
     else
       SUMMARY_CODE=5
-      #Print code generated not archived
       result_string="## BitOps Code generated. :tada:"
     fi
 
@@ -60,7 +57,6 @@ if [[ $SUCCESS == 'success' ]]; then
 
   elif [[ $TF_STACK_DESTROY != 'true' && $BITOPS_CODE_ONLY != 'true' ]]; then
     SUMMARY_CODE=4
-    #Print result deploy finished but no URL found
     result_string="## Deploy finished! But no URL found. :thinking:
     If expecting a URL, please check the logs for possible errors.
     If you consider this is a bug in the Github Action, please submit an issue to our repo."
@@ -71,7 +67,6 @@ elif [[ $SUCCESS == 'cancelled' ]]; then
 
 else
   SUMMARY_CODE=1
-  # Print error result
   result_string="## Workflow failed to run :fire:
   Please check the logs for possible errors.
   If you consider this is a bug in the Github Action, please submit an issue to our repo."
