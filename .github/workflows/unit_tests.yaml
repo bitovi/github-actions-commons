@@ -1,0 +1,21 @@
+name: Unit Tests
+
+on:
+  - push
+  - workflow_dispatch
+  
+permissions:
+  contents: read
+
+jobs:
+  Unit-Tests:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Setup BATS
+      uses: mig4/setup-bats@v1
+
+    - name: checkout
+      uses: actions/checkout@v2
+
+    - name: unit tests
+      run: bats $GITHUB_WORKSPACE/operations/_scripts/deploy/tests/.
