@@ -316,7 +316,7 @@ variable "aws_postgres_cluster_name" {
 variable "aws_postgres_database_name" {
   type        = string
   description = "The name of the database. will be created if it does not exist."
-  default     = ""
+  default     = "root"
 }
 variable "aws_postgres_database_port" {
   type        = string

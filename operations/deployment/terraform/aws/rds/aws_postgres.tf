@@ -29,7 +29,6 @@ module "rds_cluster" {
   depends_on     = [data.aws_subnets.vpc_subnets]
   source         = "terraform-aws-modules/rds-aurora/aws"
   version        = "v7.7.1"
-#  name           = var.aws_resource_identifier
   name           = var.aws_postgres_cluster_name != "" ? var.aws_postgres_cluster_name : var.aws_resource_identifier
 
   engine         = var.aws_postgres_engine
@@ -47,7 +46,6 @@ module "rds_cluster" {
   subnets                  = var.aws_postgres_subnets == null || length(var.aws_postgres_subnets) == 0 ? data.aws_subnets.vpc_subnets.ids : var.aws_postgres_subnets
 
   database_name          = var.aws_postgres_database_name
-  #  database_name          = var.aws_postgres_database_name != "" ? var.aws_postgres_database_name : local.aws_resource_identifier_custom
   port                   = var.aws_postgres_database_port
   deletion_protection    = var.aws_postgres_database_protection
   storage_encrypted      = true
@@ -63,14 +61,12 @@ module "rds_cluster" {
   create_random_password                 = false
   apply_immediately                      = true
   skip_final_snapshot                    = var.aws_postgres_database_final_snapshot == "" ? true : false
- #   # Changed this two vars
- # final_snapshot_identifier_prefix       = var.aws_postgres_database_final_snapshot
-#  snapshot_identifier                    = var.aws_postgres_restore_snapshot
+  final_snapshot_identifier_prefix       = var.aws_postgres_database_final_snapshot
+  snapshot_identifier                    = var.aws_postgres_restore_snapshot
 
   snapshot_identifier                    = var.aws_postgres_database_final_snapshot
   create_db_cluster_parameter_group      = true
   db_cluster_parameter_group_name        = var.aws_resource_identifier
-#    db_cluster_parameter_group_name        = local.aws_resource_identifier_custom
 
   db_cluster_parameter_group_family      = var.aws_postgres_database_group_family
   db_cluster_parameter_group_description = "${var.aws_resource_identifier}  cluster parameter group"
@@ -94,7 +90,6 @@ module "rds_cluster" {
 
   create_db_parameter_group      = true
   db_parameter_group_name        = var.aws_resource_identifier
-  #db_parameter_group_name        = local.aws_resource_identifier_custom
   db_parameter_group_family      = var.aws_postgres_database_group_family
   db_parameter_group_description = "${var.aws_resource_identifier} example DB parameter group"
   db_parameter_group_parameters = var.aws_postgres_engine == "aurora-postgresql" ? [

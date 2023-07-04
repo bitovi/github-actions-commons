@@ -22,7 +22,7 @@ POSTGRES_CLUSTER_ENGINE_VERSION_ACTUAL=${module.rds_cluster[0].cluster_engine_ve
 # database_name is not set on `aws_rds_cluster[0]` resource if it was not specified, so can't be used in output
 POSTGRES_CLUSTER_DATABASE_NAME=${module.rds_cluster[0].cluster_database_name == null ? "" : module.rds_cluster[0].cluster_database_name}
 # The database port
-POSTGRES_CLUSTER_PORT=${module.rds_cluster[0].cluster_port}
+POSTGRES_CLUSTER_PORT="${module.rds_cluster[0].cluster_port}"
 # TODO: use IAM (give ec2 instance(s) access to the DB via a role)
 # The database master password
 POSTGRES_CLUSTER_MASTER_PASSWORD=${module.rds_cluster[0].cluster_master_password}
@@ -34,7 +34,7 @@ POSTGRES_CLUSTER_HOSTED_ZONE_ID=${module.rds_cluster[0].cluster_hosted_zone_id}
 PG_USER="${module.rds_cluster[0].cluster_master_username}"
 PG_PASSWORD="${module.rds_cluster[0].cluster_master_password}"
 PGDATABASE=${module.rds_cluster[0].cluster_database_name == null ? "" : module.rds_cluster[0].cluster_database_name}
-PGPORT="${module.rds_cluster[0].cluster_port}"
+PGPORT=${module.rds_cluster[0].cluster_port}
 PGHOST="${module.rds_cluster[0].cluster_endpoint}"
 EOT
 }
