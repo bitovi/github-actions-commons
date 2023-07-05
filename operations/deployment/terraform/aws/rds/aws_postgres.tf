@@ -63,8 +63,6 @@ module "rds_cluster" {
   skip_final_snapshot                    = var.aws_postgres_database_final_snapshot == "" ? true : false
   final_snapshot_identifier_prefix       = var.aws_postgres_database_final_snapshot
   snapshot_identifier                    = var.aws_postgres_restore_snapshot
-
-  snapshot_identifier                    = var.aws_postgres_database_final_snapshot
   create_db_cluster_parameter_group      = true
   db_cluster_parameter_group_name        = var.aws_resource_identifier
 
