@@ -11,7 +11,7 @@ module "aws_certificates" {
   # Others
   aws_route53_sone_id       = module.aws_route53.zone_id
   common_tags               = local.default_tags
-  fqdh_provided             = local.fqdn_provided
+  fqdn_provided             = local.fqdn_provided
 }
 
 module "aws_route53" {
@@ -29,7 +29,7 @@ module "aws_route53" {
   # Certs
   aws_certificates_selected_arn = var.aws_r53_enable_cert ? module.aws_certificates.selected_arn : ""
   # Others
-  fqdh_provided              = local.fqdn_provided
+  fqdn_provided              = local.fqdn_provided
   common_tags                = local.default_tags
 }
 

@@ -7,7 +7,7 @@ variable "aws_elb_zone_id" {}
 variable "aws_elb_listen_port" {}
   # Certs
 variable "aws_certificates_selected_arn" {}
-variable "fqdh_provided" {}
+variable "fqdn_provided" {}
 variable "common_tags" {
     type = map
     default = {}
