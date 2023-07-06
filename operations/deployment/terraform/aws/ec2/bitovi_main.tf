@@ -33,6 +33,22 @@ module "aws_route53" {
   common_tags                = local.default_tags
 }
 
+module "efs" {
+  source = "../../modules/aws/efs"
+  count  = local.create_efs ? 1 : 0
+  # EFS
+  aws_resource_identifier         = var.aws_resource_identifier
+  aws_efs_replication_destination = var.aws_efs_replication_destination
+  aws_efs_transition_to_inactive  = var.aws_efs_transition_to_inactive
+  aws_efs_security_group_name     = var.aws_efs_security_group_name
+  aws_efs_enable_backup_policy    = var.aws_efs_enable_backup_policy
+  aws_efs_create_replica          = var.aws_efs_create_replica
+  # Others
+  aws_vpc_default_id      = data.aws_vpc.default.id
+  aws_region_current_name = data.aws_region.current.name
+  common_tags             = local.default_tags
+}
+
 locals {
   default_tags = merge(local.aws_tags, var.aws_additional_tags)
   fqdn_provided = (
@@ -43,4 +59,9 @@ locals {
     ) :
     false
   )
+  create_efs = var.aws_create_efs == true ? true : (var.aws_create_ha_efs == true ? true : false)
 }
+
+
+
+

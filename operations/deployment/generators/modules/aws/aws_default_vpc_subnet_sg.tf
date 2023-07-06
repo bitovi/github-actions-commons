@@ -16,10 +16,6 @@ data "aws_subnets" "vpc_subnets" {
   }
 }
 
-output "aws_default_subnet_ids" {
-  description = "The subnet ids from the default vpc"
-  value       = data.aws_subnets.vpc_subnets.ids
-}
 
 data "aws_region" "current" {}
 
@@ -34,4 +30,14 @@ data "aws_security_group" "default" {
     name   = "vpc-id"
     values = [data.aws_vpc.default.id]
   }
+}
+
+output "aws_default_subnet_ids" {
+  description = "The subnet ids from the default vpc"
+  value       = data.aws_subnets.vpc_subnets.ids
+}
+
+output "aws_region_current_name" {
+  description = "The AWS Current region name"
+  value       = data.aws_region.current.name
 }
