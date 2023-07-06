@@ -272,6 +272,7 @@ $aws_ec2_instance_public_ip
 $aws_ec2_user_data_replace_on_change
 
 #-- R53 --#
+$aws_r53_enable
 $aws_r53_domain_name
 $aws_r53_sub_domain_name
 $aws_r53_root_domain_deploy

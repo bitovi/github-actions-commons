@@ -104,6 +104,11 @@ variable "aws_ec2_user_data_replace_on_change"  {
 }
 
 # AWS Route53 Domains abd Certificates
+variable "aws_r53_enable" {
+  type        = bool
+  description = "Enable AWS R53 management."
+  default     = false
+}
 
 variable "aws_r53_domain_name" {
   type        = string

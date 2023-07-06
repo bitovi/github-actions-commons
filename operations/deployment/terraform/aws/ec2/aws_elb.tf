@@ -118,10 +118,6 @@ output "lb_public_dns" {
   value       = aws_elb.vm_lb.dns_name
 }
 
-locals {
-
-}
-
 # TODO: Fix when a user only passes app_ports, the target length should be the same. 
 # The main idea of the next block is to get what should be opened, mapped, and with which protocol.
 locals {
