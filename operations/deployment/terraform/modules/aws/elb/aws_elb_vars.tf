@@ -10,7 +10,7 @@ variable "lb_access_bucket_name" {}
 variable "aws_instance_server_az" {}
 variable "aws_instance_server_id" {}
 variable "aws_certificates_selected_arn" {}
-varialbe "aws_elb_target_sg_id" {}
+variable "aws_elb_target_sg_id" {}
 
 variable "aws_resource_identifier" {}
 variable "aws_resource_identifier_supershort" {}
