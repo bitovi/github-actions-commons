@@ -81,7 +81,7 @@ targets="$targets
 targets_attribute="$targets_attribute $targets"
 
 #Will create bitops.config.yaml for that terraform folder
-create_bitops_terraform_config aws rds $AWS_POSTGRES_ENABLE
+#create_bitops_terraform_config aws rds $AWS_POSTGRES_ENABLE
 #create_bitops_terraform_config aws efs $AWS_EFS_ENABLE
 create_bitops_terraform_config aws ec2 $AWS_EC2_INSTANCE_CREATE targets
 create_bitops_terraform_config aws eks $AWS_EKS_CREATE
@@ -135,9 +135,9 @@ bitops:
     #if check_statefile aws efs; then
     #  add_terraform_module aws efs
     #fi
-    if check_statefile aws rds; then
-      add_terraform_module aws rds
-    fi
+    #if check_statefile aws rds; then
+    #  add_terraform_module aws rds
+    #fi
     if check_statefile aws eks; then
       add_terraform_module aws eks
     fi
@@ -145,9 +145,9 @@ bitops:
     #if [[ $(alpha_only "$AWS_EFS_CREATE") == true ]] || [[ $(alpha_only "$AWS_EFS_CREATE_HA") == true ]] || [[ "$AWS_EFS_MOUNT_ID" != "" ]]; then
     #  add_terraform_module aws efs
     #fi
-    if [[ "$(alpha_only $AWS_POSTGRES_ENABLE)" == "true" ]]; then
-      add_terraform_module aws rds
-    fi
+    #if [[ "$(alpha_only $AWS_POSTGRES_ENABLE)" == "true" ]]; then
+    #  add_terraform_module aws rds
+    #fi
     if [[ "$(alpha_only $AWS_EKS_CREATE)" == "true" ]]; then
       add_terraform_module aws eks
     fi

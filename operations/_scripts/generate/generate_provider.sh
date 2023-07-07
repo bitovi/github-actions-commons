@@ -36,7 +36,7 @@ provider \"aws\" {
 " > "${GITHUB_ACTION_PATH}/operations/deployment/terraform/aws/$1/bitovi_provider.tf"
 }
 
-generate_provider_aws rds
+#generate_provider_aws rds
 #generate_provider_aws efs
 generate_provider_aws ec2
 generate_provider_aws eks

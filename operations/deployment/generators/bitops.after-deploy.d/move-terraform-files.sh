@@ -15,7 +15,7 @@ rm "${BITOPS_ENVROOT}/generators/terraform.tfvars"
 
 #if [ $(find "$BITOPS_ENVROOT/generators/." -iname "bitovi_*postgres.tf" | wc -l) -gt 0 ]; then 
   #mv "${BITOPS_ENVROOT}"/generators/bitovi_*postgres.tf "${BITOPS_ENVROOT}"/terraform/aws/rds/.
-  cp "${BITOPS_ENVROOT}"/generators/modules/aws/aws_default* "${BITOPS_ENVROOT}"/terraform/aws/rds/.
+  #cp "${BITOPS_ENVROOT}"/generators/modules/aws/aws_default* "${BITOPS_ENVROOT}"/terraform/aws/rds/.
 #fi
 #if [ $(find "$BITOPS_ENVROOT/generators/." -iname "bitovi_aws_efs.tf" | wc -l) -gt 0 ]; then 
   #mv "${BITOPS_ENVROOT}"/generators/bitovi_aws_efs.tf "${BITOPS_ENVROOT}"/terraform/aws/efs/.
