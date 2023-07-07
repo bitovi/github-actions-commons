@@ -9,7 +9,7 @@ module "aws_certificates" {
   aws_r53_domain_name       = var.aws_r53_domain_name
   aws_r53_sub_domain_name   = var.aws_r53_sub_domain_name
   # Others
-  aws_route53_sone_id       = module.aws_route53.zone_id
+  aws_route53_zone_id       = [module.aws_route53.zone_id]
   fqdn_provided             = local.fqdn_provided
   common_tags               = local.default_tags
 }
@@ -90,7 +90,7 @@ locals {
     ) :
     false
   )
-  create_efs = var.aws_create_efs == true ? true : (var.aws_create_ha_efs == true ? true : false)
+  create_efs = var.aws_efs_create == true ? true : (var.aws_efs_create_ha == true ? true : false)
 }
 
 

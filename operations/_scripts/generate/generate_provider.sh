@@ -30,7 +30,7 @@ terraform {
 provider \"aws\" {
   region = \"${AWS_DEFAULT_REGION}\"
   default_tags {
-    tags = local.common_tags
+    tags = local.default_tags
   }
 }
 " > "${GITHUB_ACTION_PATH}/operations/deployment/terraform/aws/$1/bitovi_provider.tf"
