@@ -32,14 +32,14 @@ resource "aws_s3_bucket_policy" "allow_access_from_another_account" {
 POLICY
 }
 
-# Adding an allow all from ELB to EC2
+# Adding an allow all from ELB to target SG
 resource "aws_security_group_rule" "incoming_elb" {
   type                     = "ingress"
   from_port                = 0
   to_port                  = 0
   protocol                 = -1
   source_security_group_id = aws_security_group.elb_security_group.id
-  security_group_id        = aws_security_group.ec2_security_group.id
+  security_group_id        = var.aws_elb_target_sg_id
 }
 
 # Adding ELB security group with full out
@@ -72,7 +72,7 @@ resource "aws_security_group_rule" "incoming_elb_ports" {
 resource "aws_elb" "vm_lb" {
   name               = var.aws_resource_identifier_supershort
   security_groups    = [aws_security_group.elb_security_group.id]
-  availability_zones = [aws_instance.server.availability_zone]
+  availability_zones = [var.aws_instance_server_az]
   # TODO - ADD VPC Handling
   # availability_zones = var.create_vpc == "true" ? null : [aws_instance.server.availability_zone]
   # subnets            = var.create_vpc == "true" ? aws_subnet.public.*.id : null
@@ -102,7 +102,7 @@ resource "aws_elb" "vm_lb" {
     interval            = 30
   }
 
-  instances                   = [aws_instance.server.id]
+  instances                   = [var.var.aws_instance_server_id]
   cross_zone_load_balancing   = true
   idle_timeout                = 400
   connection_draining         = true
@@ -118,6 +118,14 @@ output "lb_public_dns" {
   value       = aws_elb.vm_lb.dns_name
 }
 
+output "aws_elb_dns_name" {
+  value = aws_elb.vm_lb.dns_name
+}
+output "aws_elb_zone_id" {
+  value = aws_elb.vm_lb.zone_id
+}
+
+  
 # TODO: Fix when a user only passes app_ports, the target length should be the same. 
 # The main idea of the next block is to get what should be opened, mapped, and with which protocol.
 locals {

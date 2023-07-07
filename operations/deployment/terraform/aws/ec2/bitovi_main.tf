@@ -22,8 +22,8 @@ module "aws_route53" {
   aws_r53_root_domain_deploy = var.aws_r53_root_domain_deploy
   aws_r53_enable_cert        = var.aws_r53_enable_cert
   # ELB
-  aws_elb_dns_name           = aws_elb.vm_lb.dns_name
-  aws_elb_zone_id            = aws_elb.vm_lb.zone_id
+  aws_elb_dns_name           = module.aws_elb_dns_name
+  aws_elb_zone_id            = module.aws_elb_zone_id
   aws_elb_listen_port        = var.aws_elb_listen_port
   # Certs
   aws_certificates_selected_arn = var.aws_r53_enable_cert ? module.aws_certificates.selected_arn : ""
@@ -45,6 +45,7 @@ module "aws_elb" {
   # EC2
   aws_instance_server_az = [aws_instance.server.availability_zone]
   aws_instance_server_id = [aws_instance.server.id]
+  aws_elb_target_sg_id   = aws_security_group.ec2_security_group.id
   # Certs
   aws_certificates_selected_arn = var.aws_r53_enable_cert ? module.aws_certificates.selected_arn : ""
   # Others
