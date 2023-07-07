@@ -1,6 +1,6 @@
 module "aws_certificates" {
   source = "../../modules/aws/certificates"
-  count  = var.aws_r53_enable_cert && var.var.aws_r53_domain_name != "" ? 1 : 0
+  count  = var.aws_r53_enable_cert && var.aws_r53_domain_name != "" ? 1 : 0
   # Cert
   aws_r53_create_root_cert = var.aws_r53_create_root_cert
   aws_r53_create_sub_cert  = var.aws_r53_create_sub_cert
@@ -16,7 +16,7 @@ module "aws_certificates" {
 
 module "aws_route53" {
   source = "../../modules/aws/route53"
-  count  = var.aws_r53_enable && var.var.aws_r53_domain_name != "" ? 1 : 0
+  count  = var.aws_r53_enable && var.aws_r53_domain_name != "" ? 1 : 0
   # R53 values
   aws_r53_domain_name        = var.aws_r53_domain_name
   aws_r53_sub_domain_name    = var.aws_r53_sub_domain_name
