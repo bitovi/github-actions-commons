@@ -32,6 +32,27 @@ module "aws_route53" {
   common_tags                = local.default_tags
 }
 
+module "aws_elb" {
+  source = "../../modules/aws/elb"
+  # We should have a count here, right? 
+  aws_elb_security_group_name = var.aws_elb_security_group_name
+  aws_elb_app_port            = var.aws_elb_app_port
+  aws_elb_app_protocol        = var.aws_elb_app_protocol
+  aws_elb_listen_port         = var.aws_elb_listen_port
+  aws_elb_listen_protocol     = var.aws_elb_listen_protocol
+  aws_elb_healthcheck         = var.aws_elb_healthcheck
+  lb_access_bucket_name       = var.lb_access_bucket_name
+  # EC2
+  aws_instance_server_az = [aws_instance.server.availability_zone]
+  aws_instance_server_id = [aws_instance.server.id]
+  # Certs
+  aws_certificates_selected_arn = var.aws_r53_enable_cert ? module.aws_certificates.selected_arn : ""
+  # Others
+  aws_resource_identifier            = var.aws_resource_identifier
+  aws_resource_identifier_supershort = var.aws_resource_identifier_supershort
+  common_tags                        = local.default_tags
+}
+
 module "efs" {
   source = "../../modules/aws/efs"
   count  = local.create_efs ? 1 : 0
@@ -68,11 +89,11 @@ module "aurora_rds" {
   aws_postgres_database_protection     = var.aws_postgres_database_protection
   aws_postgres_database_final_snapshot = var.aws_postgres_database_final_snapshot
   # Data inputs
-  aws_subnets_vpc_subnets_ids = data.aws_subnets.vpc_subnets.ids
   # Others
   aws_resource_identifier            = var.aws_resource_identifier
   aws_resource_identifier_supershort = var.aws_resource_identifier_supershort
   aws_vpc_default_id                 = data.aws_vpc.default.id
+  aws_subnets_vpc_subnets_ids        = data.aws_subnets.vpc_subnets.ids
   aws_region_current_name            = data.aws_region.current.name
   common_tags                        = local.default_tags
   # Dependencies

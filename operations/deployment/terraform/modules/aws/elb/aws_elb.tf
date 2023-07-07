@@ -121,7 +121,7 @@ output "lb_public_dns" {
 # TODO: Fix when a user only passes app_ports, the target length should be the same. 
 # The main idea of the next block is to get what should be opened, mapped, and with which protocol.
 locals {
-  aws_elb_arn = var.aws_r53_enable_cert ? try(module.aws_certificates.selected_arn, "") : ""
+  aws_elb_arn = var.aws_certificates_selected_arn
 
   # Check if there is a cert available
   elb_ssl_available       = local.aws_elb_arn != "" ? true : false

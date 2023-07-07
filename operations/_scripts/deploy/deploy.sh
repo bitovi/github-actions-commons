@@ -119,6 +119,6 @@ bitovi/bitops:2.6.0
 BITOPS_RESULT=$?
 echo "::endgroup::"
 
-tree $GITHUB_ACTION_PATH/terraform
+tree $GITHUB_ACTION_PATH)/operations/deployment/terraform
 
 exit $BITOPS_RESULT
