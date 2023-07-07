@@ -102,7 +102,7 @@ resource "aws_elb" "vm_lb" {
     interval            = 30
   }
 
-  instances                   = [var.var.aws_instance_server_id]
+  instances                   = [var.aws_instance_server_id]
   cross_zone_load_balancing   = true
   idle_timeout                = 400
   connection_draining         = true
