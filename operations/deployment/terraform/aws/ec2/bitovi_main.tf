@@ -9,7 +9,6 @@ module "aws_certificates" {
   aws_r53_domain_name       = var.aws_r53_domain_name
   aws_r53_sub_domain_name   = var.aws_r53_sub_domain_name
   # Others
-  aws_route53_zone_id       = module.aws_route53.zone_id
   fqdn_provided             = local.fqdn_provided
   common_tags               = local.default_tags
 }
