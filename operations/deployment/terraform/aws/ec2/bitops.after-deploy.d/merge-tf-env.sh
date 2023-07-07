@@ -97,3 +97,10 @@ IFS=',' read -r -a options <<< "$order"
 for option in "${options[@]}"; do
   process "$option"
 done
+
+ls -l ${BITOPS_ENVROOT}/terraform
+ls -l ${BITOPS_ENVROOT}/terraform/aws
+ls -l ${BITOPS_ENVROOT}/terraform/modules
+ls -l ${BITOPS_ENVROOT}/terraform/modules/aws
+ls -l ${BITOPS_ENVROOT}/terraform/modules/aws/efs
+ls -l ${BITOPS_ENVROOT}/terraform/modules/aws/aurora

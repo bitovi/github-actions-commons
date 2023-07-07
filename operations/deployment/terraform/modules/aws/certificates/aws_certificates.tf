@@ -63,7 +63,7 @@ resource "aws_acm_certificate_validation" "sub_domain" {
 }
 
 locals {
-  is_enabled_and_valid = var.aws_r53_domain_name != "" ? 1 : 0
+  is_enabled_and_valid = var.aws_r53_domain_name != "" ? true : false
   selected_arn = (
     local.is_enabled_and_valid ? 
     (var.aws_r53_cert_arn != "" ? var.aws_r53_cert_arn :
