@@ -1,5 +1,4 @@
 resource "aws_security_group" "pg_security_group" {
-  count = var.aws_postgres_enable ? 1 : 0
   name        = var.aws_postgres_security_group_name != "" ? var.aws_postgres_security_group_name : "SG for ${var.aws_resource_identifier} - PG"
   description = "SG for ${var.aws_resource_identifier} - PG"
   egress {
@@ -14,7 +13,6 @@ resource "aws_security_group" "pg_security_group" {
 }
 
 resource "aws_security_group_rule" "ingress_postgres" {
-  count = var.aws_postgres_enable ? 1 : 0
   type              = "ingress"
   description       = "${var.aws_resource_identifier} - pgPort"
   from_port         = tonumber(var.aws_postgres_database_port)
@@ -25,8 +23,6 @@ resource "aws_security_group_rule" "ingress_postgres" {
 }
 
 module "rds_cluster" {
-  count = var.aws_postgres_enable ? 1 : 0
-  depends_on     = [data.aws_subnets.vpc_subnets]
   source         = "terraform-aws-modules/rds-aurora/aws"
   version        = "v7.7.1"
   name           = var.aws_postgres_cluster_name != "" ? var.aws_postgres_cluster_name : var.aws_resource_identifier
@@ -40,10 +36,10 @@ module "rds_cluster" {
     }
   }
 
-    # Todo: handle vpc/networking explicitly
+  # Todo: handle vpc/networking explicitly
   # vpc_id                 = var.vpc_id
   # allowed_cidr_blocks    = [var.vpc_cidr]
-  subnets                  = var.aws_postgres_subnets == null || length(var.aws_postgres_subnets) == 0 ? data.aws_subnets.vpc_subnets.ids : var.aws_postgres_subnets
+  subnets                  = var.aws_postgres_subnets == null || length(var.aws_postgres_subnets) == 0 ? var.aws_subnets_vpc_subnets_ids : var.aws_postgres_subnets
 
   database_name          = var.aws_postgres_database_name
   port                   = var.aws_postgres_database_port
@@ -110,12 +106,10 @@ resource "random_password" "rds" {
 
 // Creates a secret manager secret for the databse credentials
 resource "aws_secretsmanager_secret" "database_credentials" {
-   count = var.aws_postgres_enable ? 1 : 0
    name   = "${var.aws_resource_identifier_supershort}-ec2db-pub-${random_string.random_sm.result}"
 }
  
 resource "aws_secretsmanager_secret_version" "database_credentials_sm_secret_version" {
-  count = var.aws_postgres_enable ? 1 : 0
   secret_id = aws_secretsmanager_secret.database_credentials[0].id
   secret_string = <<EOF
    {
@@ -134,7 +128,7 @@ resource "random_string" "random_sm" {
 
 ### All of this added to handle snapshots
 resource "aws_db_cluster_snapshot" "db_snapshot" {
-  count                          = var.aws_postgres_enable ? ( var.aws_postgres_snapshot_name != "" ? ( var.aws_postgres_snapshot_overwrite ? 0 : 1 ) : 0 ) : 0
+  count                          = var.aws_postgres_snapshot_name != "" ? ( var.aws_postgres_snapshot_overwrite ? 0 : 1 ) : 0 
   db_cluster_identifier          = var.aws_postgres_cluster_name != "" ? var.aws_postgres_cluster_name : var.aws_resource_identifier
   db_cluster_snapshot_identifier = var.aws_postgres_snapshot_name
   lifecycle {
@@ -143,7 +137,7 @@ resource "aws_db_cluster_snapshot" "db_snapshot" {
 }
 
 resource "aws_db_cluster_snapshot" "overwrite_db_snapshot" {
-  count                          = var.aws_postgres_enable ? ( var.aws_postgres_snapshot_name != "" ? ( var.aws_postgres_snapshot_overwrite ? 1 : 0 ) : 0 ) : 0
+  count                          = var.aws_postgres_snapshot_name != "" ? ( var.aws_postgres_snapshot_overwrite ? 1 : 0 ) : 0
   db_cluster_identifier          = var.aws_postgres_cluster_name != "" ? var.aws_postgres_cluster_name : var.aws_resource_identifier
   db_cluster_snapshot_identifier = var.aws_postgres_snapshot_name
   lifecycle {
