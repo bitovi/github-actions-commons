@@ -26,7 +26,7 @@ module "aws_route53" {
   aws_elb_zone_id            = module.aws_elb.aws_elb_zone_id
   aws_elb_listen_port        = var.aws_elb_listen_port
   # Certs
-  aws_certificates_selected_arn = var.aws_r53_enable_cert ? module.aws_certificates.selected_arn : ""
+  aws_certificates_selected_arn = var.aws_r53_enable_cert ? try(module.aws_certificates.selected_arn,"") : ""
   # Others
   fqdn_provided              = local.fqdn_provided
   common_tags                = local.default_tags
