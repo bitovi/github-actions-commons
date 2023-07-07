@@ -97,5 +97,3 @@ IFS=',' read -r -a options <<< "$order"
 for option in "${options[@]}"; do
   process "$option"
 done
-
-tree ${BITOPS_ENVROOT}/terraform/
