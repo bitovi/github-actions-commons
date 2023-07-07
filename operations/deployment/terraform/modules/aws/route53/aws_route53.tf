@@ -63,5 +63,5 @@ output "vm_url" {
 }
 
 output "zone_id" {
-  value = data.aws_route53_zone.selected.zone_id
+  value = tostring(data.aws_route53_zone.selected.zone_id)
 }
