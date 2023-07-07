@@ -6,7 +6,7 @@ variable "aws_r53_domain_name" {}
 variable "aws_r53_sub_domain_name" {}
 # Others
 variable "aws_route53_zone_id" {
-    type = list
+   # type = list
 }
 variable "fqdn_provided" {}
 variable "common_tags" {
