@@ -11,8 +11,8 @@ resource "aws_route53_record" "dev" {
   type    = "A"
 
   alias {
-    name                   = aws_elb.vm_lb.dns_name
-    zone_id                = aws_elb.vm_lb.zone_id
+    name                   = var.aws_elb_dns_name
+    zone_id                = var.aws_elb_zone_id
     evaluate_target_health = true
   }
 }
@@ -24,8 +24,8 @@ resource "aws_route53_record" "root-a" {
   type    = "A"
 
   alias {
-    name                   = aws_elb.vm_lb.dns_name
-    zone_id                = aws_elb.vm_lb.zone_id
+    name                   = var.aws_elb_dns_name
+    zone_id                = var.aws_elb_zone_id
     evaluate_target_health = true
   }
 }
@@ -37,8 +37,8 @@ resource "aws_route53_record" "www-a" {
   type    = "A"
 
   alias {
-    name                   = aws_elb.vm_lb.dns_name
-    zone_id                = aws_elb.vm_lb.zone_id
+    name                   = var.aws_elb_dns_name
+    zone_id                = var.aws_elb_zone_id
     evaluate_target_health = true
   }
 }
@@ -51,7 +51,7 @@ locals {
       "${local.protocol}${var.aws_r53_domain_name}${local.public_port}" :
       "${local.protocol}${var.aws_r53_sub_domain_name}.${var.aws_r53_domain_name}${local.public_port}"
     ) :
-  "${local.protocol}${aws_elb.vm_lb.dns_name}${local.public_port}")
+  "${local.protocol}${var.aws_elb_dns_name}${local.public_port}")
 }
 
 output "application_public_dns" {
@@ -61,4 +61,8 @@ output "application_public_dns" {
 
 output "vm_url" {
   value = local.url
+}
+
+output "zone_id" {
+  value = data.aws_route53_zone.selected[0].zone_id
 }

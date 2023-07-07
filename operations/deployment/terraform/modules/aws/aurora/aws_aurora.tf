@@ -19,7 +19,7 @@ resource "aws_security_group_rule" "ingress_postgres" {
   to_port           = tonumber(var.aws_postgres_database_port)
   protocol          = "tcp"
   cidr_blocks       = ["0.0.0.0/0"]
-  security_group_id = aws_security_group.pg_security_group[0].id
+  security_group_id = aws_security_group.pg_security_group.id
 }
 
 module "rds_cluster" {
@@ -49,7 +49,7 @@ module "rds_cluster" {
   create_db_subnet_group = true
   db_subnet_group_name   = "${var.aws_resource_identifier}-pg"
   create_security_group  = false
-  vpc_security_group_ids = [aws_security_group.pg_security_group[0].id]
+  vpc_security_group_ids = [aws_security_group.pg_security_group.id]
 
   # TODO: take advantage of iam database auth
   iam_database_authentication_enabled    = true
@@ -110,7 +110,7 @@ resource "aws_secretsmanager_secret" "database_credentials" {
 }
  
 resource "aws_secretsmanager_secret_version" "database_credentials_sm_secret_version" {
-  secret_id = aws_secretsmanager_secret.database_credentials[0].id
+  secret_id = aws_secretsmanager_secret.database_credentials.id
   secret_string = <<EOF
    {
     "key": "database_password",

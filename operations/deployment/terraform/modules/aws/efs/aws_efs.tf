@@ -40,7 +40,7 @@ resource "aws_security_group_rule" "efs_ingress_ports" {
   to_port     = 80
   protocol    = "tcp"
   cidr_blocks = ["0.0.0.0/0"]
-  security_group_id = aws_security_group.efs_security_group[0].id
+  security_group_id = aws_security_group.efs_security_group.id
 }
 
 resource "aws_security_group_rule" "efs_tls_incoming_ports" {
@@ -50,12 +50,12 @@ resource "aws_security_group_rule" "efs_tls_incoming_ports" {
   to_port     = 443
   protocol    = "tcp"
   cidr_blocks = ["0.0.0.0/0"]
-  security_group_id = aws_security_group.efs_security_group[0].id
+  security_group_id = aws_security_group.efs_security_group.id
 }
 
 resource "aws_efs_backup_policy" "efs_policy" {
   count          = var.aws_efs_enable_backup_policy ? 1 : 0
-  file_system_id = aws_efs_file_system.efs[0].id
+  file_system_id = aws_efs_file_system.efs.id
 
   backup_policy {
     status = "ENABLED"
@@ -64,7 +64,7 @@ resource "aws_efs_backup_policy" "efs_policy" {
 
 resource "aws_efs_replication_configuration" "efs_rep_config" {
   count                 = var.aws_efs_create_replica ? 1 : 0
-  source_file_system_id = aws_efs_file_system.efs[0].id
+  source_file_system_id = aws_efs_file_system.efs.id
 
   destination {
     region = local.replica_destination
