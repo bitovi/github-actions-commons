@@ -47,7 +47,7 @@ module "aws_elb" {
   aws_instance_server_id = [aws_instance.server.id]
   aws_elb_target_sg_id   = aws_security_group.ec2_security_group.id
   # Certs
-  aws_certificates_selected_arn = var.aws_r53_enable_cert ? module.aws_certificates.selected_arn : ""
+  aws_certificates_selected_arn = try(module.aws_certificates.selected_arn,"")
   # Others
   aws_resource_identifier            = var.aws_resource_identifier
   aws_resource_identifier_supershort = var.aws_resource_identifier_supershort
