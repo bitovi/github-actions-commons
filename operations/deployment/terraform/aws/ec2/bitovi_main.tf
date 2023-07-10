@@ -81,6 +81,8 @@ module "ec2_efs" {
   aws_efs_mount_security_group_id = var.aws_efs_mount_security_group_id
   aws_efs_zone_mapping            = var.aws_efs_zone_mapping
   aws_efs_ec2_mount_point         = var.aws_efs_ec2_mount_point
+  # Other
+  ha_zone_mapping = local.ha_zone_mapping
   # EC2
   aws_ec2_instance_type           = var.aws_ec2_instance_type
   # Docker
@@ -136,19 +138,19 @@ module "eks" {
   aws_eks_region                     = var.aws_eks_region
   aws_eks_security_group_name_master = var.aws_eks_security_group_name_master
   aws_eks_security_group_name_worker = var.aws_eks_security_group_name_worker
-  aws_eks_environmen                 = var.aws_eks_environment
-  aws_eks_stacknam                   = var.aws_eks_stackname
+  aws_eks_environment                = var.aws_eks_environment
+  aws_eks_stackname                  = var.aws_eks_stackname
   aws_eks_cidr_block                 = var.aws_eks_cidr_block
   aws_eks_workstation_cidr           = var.aws_eks_workstation_cidr
   aws_eks_availability_zones         = var.aws_eks_availability_zones
-  aws_eks_private_subnet             = var.aws_eks_private_subnets
+  aws_eks_private_subnets            = var.aws_eks_private_subnets
   aws_eks_public_subnets             = var.aws_eks_public_subnets
   aws_eks_cluster_name               = var.aws_eks_cluster_name
-  aws_eks_cluster_log_type           = var.aws_eks_cluster_log_types
-  aws_eks_cluster_versio             = var.aws_eks_cluster_version
-  aws_eks_instance_typ               = var.aws_eks_instance_type
-  aws_eks_instance_ami_i             = var.aws_eks_instance_ami_id
-  aws_eks_instance_user_data_fil     = var.aws_eks_instance_user_data_file
+  aws_eks_cluster_log_types          = var.aws_eks_cluster_log_types
+  aws_eks_cluster_version            = var.aws_eks_cluster_version
+  aws_eks_instance_type              = var.aws_eks_instance_type
+  aws_eks_instance_ami_id            = var.aws_eks_instance_ami_id
+  aws_eks_instance_user_data_file    = var.aws_eks_instance_user_data_file
   aws_eks_ec2_key_pair               = var.aws_eks_ec2_key_pair
   aws_eks_store_keypair_sm           = var.aws_eks_store_keypair_sm
   aws_eks_desired_capacity           = var.aws_eks_desired_capacity

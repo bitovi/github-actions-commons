@@ -1,47 +1,4 @@
 locals {
-  # no_zone_mapping: Creates a empty zone mapping object list
-  no_zone_mapping  = { "" : { "subnet_id" : "", "security_groups" : [""] } }
-  # ec2_zone_mapping: Creates a zone mapping object list based on default values (default sg, default subnet, etc)
-  ec2_zone_mapping = { "${local.preferred_az}" : { "subnet_id" : "${data.aws_subnet.selected[0].id}", "security_groups" : [var.aws_security_group_ec2_sg_name] } }
-
-  # auto_ha_availability_zone*: Creates zone map objects for each available AZ in a region
-  auto_ha_availability_zonea = {
-    "${var.aws_region_current_name}a" : {
-      "subnet_id" : data.aws_subnet.defaulta.id,
-      "security_groups" : [var.aws_security_group_default_id]
-  } }
-  auto_ha_availability_zoneb = length(data.aws_subnet.defaultb) > 0 ? ({
-    "${var.aws_region_current_name}b" : {
-      "subnet_id" : data.aws_subnet.defaultb[0].id,
-      "security_groups" : [var.aws_security_group_default_id]
-    }
-  }) : null
-  auto_ha_availability_zonec = length(data.aws_subnet.defaultc) > 0 ? ({
-    "${var.aws_region_current_name}c" : {
-      "subnet_id" : data.aws_subnet.defaultc[0].id,
-      "security_groups" : [var.aws_security_group_default_id]
-    }
-  }) : null
-  auto_ha_availability_zoned = length(data.aws_subnet.defaultd) > 0 ? ({
-    "${var.aws_region_current_name}d" : {
-      "subnet_id" : data.aws_subnet.defaultd[0].id,
-      "security_groups" : [var.aws_security_group_default_id]
-    }
-  }) : null
-  auto_ha_availability_zonee = length(data.aws_subnet.defaulte) > 0 ? ({
-    "${var.aws_region_current_name}e" : {
-      "subnet_id" : data.aws_subnet.defaulte[0].id,
-      "security_groups" : [var.aws_security_group_default_id]
-    }
-  }) : null
-  auto_ha_availability_zonef = length(data.aws_subnet.defaultf) > 0 ? ({
-    "${var.aws_region_current_name}f" : {
-      "subnet_id" : data.aws_subnet.defaultf[0].id,
-      "security_groups" : [var.aws_security_group_default_id]
-    }
-  }) : null
-  # ha_zone_mapping: Creates a zone mapping object list for all available AZs in a region
-  ha_zone_mapping = merge(local.auto_ha_availability_zonea, local.auto_ha_availability_zoneb, local.auto_ha_availability_zonec, local.auto_ha_availability_zoned, local.auto_ha_availability_zonee, local.auto_ha_availability_zonef)
   # user_zone_mapping: Create a zone mapping object list for all user specified zone_maps
   user_zone_mapping = var.aws_efs_zone_mapping != null ? ({
     for k, val in var.aws_efs_zone_mapping : "${var.aws_region_current_name}${k}" => val
@@ -49,7 +6,7 @@ locals {
 
   create_ec2_efs    = var.aws_efs_create || var.aws_efs_create_ha ? true : false
   # mount_target: Fall-Through variable that checks multiple layers of EFS zone map selection
-  mount_target      = var.aws_efs_zone_mapping != null ? local.user_zone_mapping : (var.aws_efs_create_ha ? local.ha_zone_mapping : (length(local.ec2_zone_mapping) > 0 ? local.ec2_zone_mapping : local.no_zone_mapping))
+  mount_target      = var.aws_efs_zone_mapping != null ? local.user_zone_mapping : (var.aws_efs_create_ha ? var.ha_zone_mapping : (length(local.ec2_zone_mapping) > 0 ? local.ec2_zone_mapping : local.no_zone_mapping))
   # mount_efs: Fall-Through variable that checks multiple layers of EFS creation and if any of them are active, sets creation to active.
   mount_efs         = var.aws_efs_mount_id != null ? true : (local.create_ec2_efs ? true : false)
   # create_mount_targets: boolean on whether to create mount_targets
