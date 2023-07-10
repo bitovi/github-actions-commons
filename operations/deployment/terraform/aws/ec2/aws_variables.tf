@@ -363,6 +363,12 @@ variable "docker_efs_mount_target" {
 }
 
 # EKS
+variable "aws_eks_create" {
+  type        = bool
+  description = "deploy a eks cluster"
+  default     = false
+}
+
 variable "aws_eks_region" {
   description = "aws region name"
   type        = string

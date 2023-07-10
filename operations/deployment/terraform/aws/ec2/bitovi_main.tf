@@ -131,7 +131,7 @@ module "aurora_rds" {
 
 module "eks" {
   source = "../../modules/aws/eks"
-  count  = var.aws_postgres_enable ? 1 : 0
+  count  = var.aws_eks_create ? 1 : 0
   # EKS
   aws_eks_region                     = var.aws_eks_region
   aws_eks_security_group_name_master = var.aws_eks_security_group_name_master
