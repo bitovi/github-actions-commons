@@ -5,6 +5,7 @@ variable "aws_efs_mount_id" {}
 variable "aws_efs_mount_security_group_id" {}
 variable "aws_efs_zone_mapping" {}
 variable "aws_efs_ec2_mount_point" {}
+variable "ha_zone_mapping" {}
 # EC2
 variable "aws_ec2_instance_type" {}
 # Docker
