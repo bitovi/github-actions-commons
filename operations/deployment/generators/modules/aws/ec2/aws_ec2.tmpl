@@ -76,6 +76,12 @@ resource "aws_instance" "server" {
   }
 }
 
+data "aws_subnet" "selected" {
+  count             = contains(data.aws_availability_zones.all.names, local.preferred_az) ? 1 : 0
+  availability_zone = local.preferred_az
+  default_for_az    = true
+}
+
 output "instance_public_dns" {
   description = "Public DNS address of the EC2 instance"
   value       = var.aws_ec2_instance_public_ip ? aws_instance.server.public_dns : "EC2 Instance doesn't have public IP address"

@@ -129,6 +129,36 @@ module "aurora_rds" {
   depends_on = [data.aws_subnets.vpc_subnets]
 }
 
+module "eks" {
+  source = "../../modules/aws/eks"
+  count  = var.aws_postgres_enable ? 1 : 0
+  # EKS
+  aws_eks_region                     = var.aws_eks_region
+  aws_eks_security_group_name_master = var.aws_eks_security_group_name_master
+  aws_eks_security_group_name_worker = var.aws_eks_security_group_name_worker
+  aws_eks_environmen                 = var.aws_eks_environment
+  aws_eks_stacknam                   = var.aws_eks_stackname
+  aws_eks_cidr_block                 = var.aws_eks_cidr_block
+  aws_eks_workstation_cidr           = var.aws_eks_workstation_cidr
+  aws_eks_availability_zones         = var.aws_eks_availability_zones
+  aws_eks_private_subnet             = var.aws_eks_private_subnets
+  aws_eks_public_subnets             = var.aws_eks_public_subnets
+  aws_eks_cluster_name               = var.aws_eks_cluster_name
+  aws_eks_cluster_log_type           = var.aws_eks_cluster_log_types
+  aws_eks_cluster_versio             = var.aws_eks_cluster_version
+  aws_eks_instance_typ               = var.aws_eks_instance_type
+  aws_eks_instance_ami_i             = var.aws_eks_instance_ami_id
+  aws_eks_instance_user_data_fil     = var.aws_eks_instance_user_data_file
+  aws_eks_ec2_key_pair               = var.aws_eks_ec2_key_pair
+  aws_eks_store_keypair_sm           = var.aws_eks_store_keypair_sm
+  aws_eks_desired_capacity           = var.aws_eks_desired_capacity
+  aws_eks_max_size                   = var.aws_eks_max_size
+  aws_eks_min_size                   = var.aws_eks_min_size
+  # Others
+  aws_resource_identifier = var.aws_resource_identifier
+  common_tags             = local.default_tags
+}
+
 locals {
   default_tags = merge(local.aws_tags, var.aws_additional_tags)
   fqdn_provided = (

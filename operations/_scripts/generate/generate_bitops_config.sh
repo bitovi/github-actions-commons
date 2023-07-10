@@ -84,7 +84,7 @@ targets_attribute="$targets_attribute $targets"
 #create_bitops_terraform_config aws rds $AWS_POSTGRES_ENABLE
 #create_bitops_terraform_config aws efs $AWS_EFS_ENABLE
 create_bitops_terraform_config aws ec2 $AWS_EC2_INSTANCE_CREATE targets
-create_bitops_terraform_config aws eks $AWS_EKS_CREATE
+#create_bitops_terraform_config aws eks $AWS_EKS_CREATE
 
 #Will add the user_data file into the EC2 Terraform folder
 if [[ $(alpha_only "$AWS_EC2_INSTANCE_CREATE") == true ]]; then
@@ -97,7 +97,7 @@ fi
 if [[ $(alpha_only "$AWS_EKS_CREATE") == true ]]; then
   if [ -s "$GITHUB_WORKSPACE/$AWS_EKS_INSTANCE_USER_DATA_FILE" ] && [ -f "$GITHUB_WORKSPACE/$AWS_EKS_INSTANCE_USER_DATA_FILE" ]; then
       echo "Moving $AWS_EKS_INSTANCE_USER_DATA_FILE to be used by Terraform during EKS Nodes creation"
-      mv "$GITHUB_WORKSPACE/$AWS_EKS_INSTANCE_USER_DATA_FILE" "$GITHUB_ACTION_PATH/operations/deployment/terraform/aws/eks/aws_eks_incoming_user_data_script.sh"
+      mv "$GITHUB_WORKSPACE/$AWS_EKS_INSTANCE_USER_DATA_FILE" "$GITHUB_ACTION_PATH/operations/deployment/terraform/modules/aws/eks/aws_eks_incoming_user_data_script.sh"
   fi
 fi
 # Below we will be creating the config file, one for the action itself, other to store as an artifact after. 
@@ -138,9 +138,9 @@ bitops:
     #if check_statefile aws rds; then
     #  add_terraform_module aws rds
     #fi
-    if check_statefile aws eks; then
-      add_terraform_module aws eks
-    fi
+    #if check_statefile aws eks; then
+    #  add_terraform_module aws eks
+    #fi
   else
     #if [[ $(alpha_only "$AWS_EFS_CREATE") == true ]] || [[ $(alpha_only "$AWS_EFS_CREATE_HA") == true ]] || [[ "$AWS_EFS_MOUNT_ID" != "" ]]; then
     #  add_terraform_module aws efs
@@ -148,9 +148,9 @@ bitops:
     #if [[ "$(alpha_only $AWS_POSTGRES_ENABLE)" == "true" ]]; then
     #  add_terraform_module aws rds
     #fi
-    if [[ "$(alpha_only $AWS_EKS_CREATE)" == "true" ]]; then
-      add_terraform_module aws eks
-    fi
+    #if [[ "$(alpha_only $AWS_EKS_CREATE)" == "true" ]]; then
+    #  add_terraform_module aws eks
+    #fi
     if [[ "$(alpha_only $AWS_EC2_INSTANCE_CREATE)" == "true" ]]; then
       add_terraform_module aws ec2
     fi
