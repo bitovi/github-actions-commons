@@ -27,7 +27,7 @@ rm "${BITOPS_ENVROOT}/generators/terraform.tfvars"
 #fi
 if [ $(find "$BITOPS_ENVROOT/generators/." -iname "bitovi_*.tf" | wc -l) -gt 0 ]; then 
   mv "${BITOPS_ENVROOT}"/generators/bitovi_*.tf "${BITOPS_ENVROOT}"/terraform/aws/ec2/.
-  mv "${BITOPS_ENVROOT}"/generators/modules/aws/aws_default* "${BITOPS_ENVROOT}"/terraform/aws/ec2/.
+  #mv "${BITOPS_ENVROOT}"/generators/modules/aws/aws_default* "${BITOPS_ENVROOT}"/terraform/aws/ec2/.
 fi 
 
 find "${BITOPS_ENVROOT}/terraform/aws" -maxdepth 1 -type d -not -name "."  -path "${BITOPS_ENVROOT}/terraform/aws/*" | while read terraform_folder; do

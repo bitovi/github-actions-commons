@@ -2,49 +2,49 @@ locals {
   # no_zone_mapping: Creates a empty zone mapping object list
   no_zone_mapping  = { "" : { "subnet_id" : "", "security_groups" : [""] } }
   # ec2_zone_mapping: Creates a zone mapping object list based on default values (default sg, default subnet, etc)
-  ec2_zone_mapping = { "${local.preferred_az}" : { "subnet_id" : "${data.aws_subnet.selected[0].id}", "security_groups" : [aws_security_group.ec2_security_group.name] } }
+  ec2_zone_mapping = { "${local.preferred_az}" : { "subnet_id" : "${data.aws_subnet.selected[0].id}", "security_groups" : [var.aws_security_group_ec2_sg_name] } }
 
   # auto_ha_availability_zone*: Creates zone map objects for each available AZ in a region
   auto_ha_availability_zonea = {
-    "${data.aws_region.current.name}a" : {
+    "${var.aws_region_current_name}a" : {
       "subnet_id" : data.aws_subnet.defaulta.id,
-      "security_groups" : [data.aws_security_group.default.id]
+      "security_groups" : [var.aws_security_group_default_id]
   } }
   auto_ha_availability_zoneb = length(data.aws_subnet.defaultb) > 0 ? ({
-    "${data.aws_region.current.name}b" : {
+    "${var.aws_region_current_name}b" : {
       "subnet_id" : data.aws_subnet.defaultb[0].id,
-      "security_groups" : [data.aws_security_group.default.id]
+      "security_groups" : [var.aws_security_group_default_id]
     }
   }) : null
   auto_ha_availability_zonec = length(data.aws_subnet.defaultc) > 0 ? ({
-    "${data.aws_region.current.name}c" : {
+    "${var.aws_region_current_name}c" : {
       "subnet_id" : data.aws_subnet.defaultc[0].id,
-      "security_groups" : [data.aws_security_group.default.id]
+      "security_groups" : [var.aws_security_group_default_id]
     }
   }) : null
   auto_ha_availability_zoned = length(data.aws_subnet.defaultd) > 0 ? ({
-    "${data.aws_region.current.name}d" : {
+    "${var.aws_region_current_name}d" : {
       "subnet_id" : data.aws_subnet.defaultd[0].id,
-      "security_groups" : [data.aws_security_group.default.id]
+      "security_groups" : [var.aws_security_group_default_id]
     }
   }) : null
   auto_ha_availability_zonee = length(data.aws_subnet.defaulte) > 0 ? ({
-    "${data.aws_region.current.name}e" : {
+    "${var.aws_region_current_name}e" : {
       "subnet_id" : data.aws_subnet.defaulte[0].id,
-      "security_groups" : [data.aws_security_group.default.id]
+      "security_groups" : [var.aws_security_group_default_id]
     }
   }) : null
   auto_ha_availability_zonef = length(data.aws_subnet.defaultf) > 0 ? ({
-    "${data.aws_region.current.name}f" : {
+    "${var.aws_region_current_name}f" : {
       "subnet_id" : data.aws_subnet.defaultf[0].id,
-      "security_groups" : [data.aws_security_group.default.id]
+      "security_groups" : [var.aws_security_group_default_id]
     }
   }) : null
   # ha_zone_mapping: Creates a zone mapping object list for all available AZs in a region
   ha_zone_mapping = merge(local.auto_ha_availability_zonea, local.auto_ha_availability_zoneb, local.auto_ha_availability_zonec, local.auto_ha_availability_zoned, local.auto_ha_availability_zonee, local.auto_ha_availability_zonef)
   # user_zone_mapping: Create a zone mapping object list for all user specified zone_maps
   user_zone_mapping = var.aws_efs_zone_mapping != null ? ({
-    for k, val in var.aws_efs_zone_mapping : "${data.aws_region.current.name}${k}" => val
+    for k, val in var.aws_efs_zone_mapping : "${var.aws_region_current_name}${k}" => val
   }) : local.no_zone_mapping
 
   create_ec2_efs    = var.aws_efs_create || var.aws_efs_create_ha ? true : false
@@ -62,19 +62,6 @@ resource "aws_efs_mount_target" "efs_mount_target" {
   subnet_id       = each.value["subnet_id"]
   security_groups = [data.aws_security_group.efs_security_group[0].id]
 }
-
-# resource "aws_efs_file_system_policy" "policy" {
-#   file_system_id = aws_efs_file_system.efs[0].id
-
-#   bypass_policy_lockout_safety_check = false
-
-#   policy = <<POLICY
-# POLICY
-# }
-
-# resource "aws_efs_access_point" "efs" {
-#   file_system_id = aws_efs_file_system.efs[0].id
-# }
 
 data "aws_security_group" "efs_security_group" {
   count  = local.create_ec2_efs ? 1 : 0
@@ -100,7 +87,7 @@ resource "aws_security_group_rule" "ingress_ec2_to_efs" {
   to_port                  = 443
   protocol                 = "all"
   source_security_group_id = data.aws_security_group.efs_security_group[0].id
-  security_group_id        = data.aws_security_group.ec2_security_group.id
+  security_group_id        = var.aws_security_group_ec2_sg_id
 }
 
 resource "aws_security_group_rule" "ingress_efs_to_ec2" {
@@ -110,7 +97,7 @@ resource "aws_security_group_rule" "ingress_efs_to_ec2" {
   from_port                = 80
   to_port                  = 80
   protocol                 = "all"
-  source_security_group_id = data.aws_security_group.ec2_security_group.id
+  source_security_group_id = var.aws_security_group_ec2_sg_id
   security_group_id        = data.aws_security_group.efs_security_group[0].id
 }
 # ----------------------------------------------------- #
@@ -129,7 +116,7 @@ resource "aws_security_group_rule" "mount_ingress_ec2_to_efs" {
   to_port                  = 443
   protocol                 = "all"
   source_security_group_id = var.aws_efs_mount_security_group_id
-  security_group_id        = data.aws_security_group.ec2_security_group.id
+  security_group_id        = var.aws_security_group_ec2_sg_id
 }
 
 resource "aws_security_group_rule" "mount_ingress_efs_to_ec2" {
@@ -139,7 +126,7 @@ resource "aws_security_group_rule" "mount_ingress_efs_to_ec2" {
   from_port                = 443
   to_port                  = 443
   protocol                 = "all"
-  source_security_group_id = data.aws_security_group.ec2_security_group.id
+  source_security_group_id = var.aws_security_group_ec2_sg_id
   security_group_id        = var.aws_efs_mount_security_group_id
 }
 

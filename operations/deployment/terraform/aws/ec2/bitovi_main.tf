@@ -71,6 +71,34 @@ module "efs" {
   common_tags             = local.default_tags
 }
 
+module "ec2_efs" {
+  source = "../../modules/aws/efs"
+  count  = local.create_efs ? var.aws_efs_mount_id != "" ? 1 : 0 : 0
+  # EFS
+  aws_efs_create                  = var.aws_efs_create
+  aws_efs_create_ha               = var.aws_efs_create_ha
+  aws_efs_mount_id                = var.aws_efs_mount_id
+  aws_efs_mount_security_group_id = var.aws_efs_mount_security_group_id
+  aws_efs_zone_mapping            = var.aws_efs_zone_mapping
+  aws_efs_ec2_mount_point         = var.aws_efs_ec2_mount_point
+  # EC2
+  aws_ec2_instance_type           = var.aws_ec2_instance_type
+  # Docker
+  docker_efs_mount_target         = var.docker_efs_mount_target
+  # Data inputs
+  aws_region_current_name        = data.aws_region.current.name
+  aws_security_group_default_id  = data.aws_security_group.default.id
+  aws_security_group_ec2_sg_name = data.aws_security_group.ec2_security_group.name
+  aws_security_group_ec2_sg_id   = data.aws_security_group.ec2_security_group.id
+  # Others
+  aws_resource_identifier = var.aws_resource_identifier
+  common_tags             = local.default_tags
+  # Not exposed
+  availability_zone               = var.availability_zone 
+  app_install_root                = var.app_install_root
+  app_repo_name                   = var.app_repo_name
+}
+
 module "aurora_rds" {
   source = "../../modules/aws/aurora"
   count  = var.aws_postgres_enable ? 1 : 0

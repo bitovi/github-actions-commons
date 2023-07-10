@@ -1,32 +1,34 @@
-
 # All regions have "a", skipping az validation
+
+data "aws_availability_zones" "all" {}
+
 data "aws_subnet" "defaulta" {
-  availability_zone = "${data.aws_region.current.name}a"
+  availability_zone = "${var.aws_region_current_name}a"
   default_for_az    = true
 }
 data "aws_subnet" "defaultb" {
-  count             = contains(data.aws_availability_zones.all.names, "${data.aws_region.current.name}b") ? 1 : 0
-  availability_zone = "${data.aws_region.current.name}b"
+  count             = contains(data.aws_availability_zones.all.names, "${var.aws_region_current_name}b") ? 1 : 0
+  availability_zone = "${var.aws_region_current_name}b"
   default_for_az    = true
 }
 data "aws_subnet" "defaultc" {
-  count             = contains(data.aws_availability_zones.all.names, "${data.aws_region.current.name}c") ? 1 : 0
-  availability_zone = "${data.aws_region.current.name}c"
+  count             = contains(data.aws_availability_zones.all.names, "${var.aws_region_current_name}c") ? 1 : 0
+  availability_zone = "${var.aws_region_current_name}c"
   default_for_az    = true
 }
 data "aws_subnet" "defaultd" {
-  count             = contains(data.aws_availability_zones.all.names, "${data.aws_region.current.name}d") ? 1 : 0
-  availability_zone = "${data.aws_region.current.name}d"
+  count             = contains(data.aws_availability_zones.all.names, "${var.aws_region_current_name}d") ? 1 : 0
+  availability_zone = "${var.aws_region_current_name}d"
   default_for_az    = true
 }
 data "aws_subnet" "defaulte" {
-  count             = contains(data.aws_availability_zones.all.names, "${data.aws_region.current.name}e") ? 1 : 0
-  availability_zone = "${data.aws_region.current.name}e"
+  count             = contains(data.aws_availability_zones.all.names, "${var.aws_region_current_name}e") ? 1 : 0
+  availability_zone = "${var.aws_region_current_name}e"
   default_for_az    = true
 }
 data "aws_subnet" "defaultf" {
-  count             = contains(data.aws_availability_zones.all.names, "${data.aws_region.current.name}f") ? 1 : 0
-  availability_zone = "${data.aws_region.current.name}f"
+  count             = contains(data.aws_availability_zones.all.names, "${var.aws_region_current_name}f") ? 1 : 0
+  availability_zone = "${var.aws_region_current_name}f"
   default_for_az    = true
 }
 

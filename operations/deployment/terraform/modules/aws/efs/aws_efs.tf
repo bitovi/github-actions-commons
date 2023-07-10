@@ -70,3 +70,7 @@ resource "aws_efs_replication_configuration" "efs_rep_config" {
     region = local.replica_destination
   }
 }
+
+output "aws_security_group_efs_id" {
+  value = data.aws_security_group.efs_security_group[0].id
+}
