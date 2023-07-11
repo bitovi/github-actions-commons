@@ -20,6 +20,8 @@ variable "aws_eks_store_keypair_sm" {}
 variable "aws_eks_desired_capacity" {}
 variable "aws_eks_max_size" {}
 variable "aws_eks_min_size" {}
+# Hidden
+variable "aws_eks_vpc_name" {}
 # Others
 variable "aws_resource_identifier" {}
 variable "common_tags" {
