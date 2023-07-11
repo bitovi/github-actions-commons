@@ -31,10 +31,15 @@ bitops_servers:
    app_repo_name: ${var.app_repo_name}
    app_install_root: ${var.app_install_root}
    resource_identifier: ${var.aws_resource_identifier}
-   mount_efs: ${module.ec2_efs.mount_efs}
+   mount_efs: ${local.mount_efs}
    efs_url: ${module.ec2_efs.efs_url}
    aws_efs_ec2_mount_point: ${var.aws_efs_ec2_mount_point}
    aws_efs_mount_target: ${var.aws_efs_mount_target != null ? var.aws_efs_mount_target : ""}
    docker_efs_mount_target: ${var.docker_efs_mount_target}
    EOT
+}
+
+locals {
+  create_ec2_efs    = var.aws_efs_create || var.aws_efs_create_ha ? true : false
+  mount_efs         = var.aws_efs_mount_id != null ? true : (local.create_ec2_efs ? true : false)
 }

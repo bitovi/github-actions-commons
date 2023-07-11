@@ -82,19 +82,21 @@ module "ec2_efs" {
   aws_efs_zone_mapping            = var.aws_efs_zone_mapping
   aws_efs_ec2_mount_point         = var.aws_efs_ec2_mount_point
   # Other
-  ha_zone_mapping = local.ha_zone_mapping
+  ha_zone_mapping  = local.ha_zone_mapping
+  ec2_zone_mapping = local.ec2_zone_mapping
   # EC2
   aws_ec2_instance_type           = var.aws_ec2_instance_type
+  aws_elb_target_sg_id            = aws_security_group.ec2_security_group.id
   # Docker
   docker_efs_mount_target         = var.docker_efs_mount_target
   # Data inputs
-  aws_region_current_name        = data.aws_region.current.name #
-  aws_security_group_default_id  = data.aws_security_group.default.id # 
-  aws_security_group_ec2_sg_name = data.aws_security_group.ec2_security_group.name # 
-  aws_security_group_ec2_sg_id   = data.aws_security_group.ec2_security_group.id
+  aws_region_current_name         = data.aws_region.current.name #
+  aws_security_group_default_id   = data.aws_security_group.default.id # 
+  aws_security_group_ec2_sg_name  = data.aws_security_group.ec2_security_group.name # 
+  aws_security_group_ec2_sg_id    = data.aws_security_group.ec2_security_group.id
   # Others
-  aws_resource_identifier = var.aws_resource_identifier
-  common_tags             = local.default_tags
+  aws_resource_identifier         = var.aws_resource_identifier
+  common_tags                     = local.default_tags
   # Not exposed
   availability_zone               = var.availability_zone 
   app_install_root                = var.app_install_root

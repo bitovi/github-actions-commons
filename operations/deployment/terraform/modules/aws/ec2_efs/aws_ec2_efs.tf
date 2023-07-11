@@ -107,7 +107,7 @@ locals {
 }
 
 output "mount_efs" {
-  value = local.mount_efs[0]
+  value = local.mount_efs
 }
 
 output "efs_url" {

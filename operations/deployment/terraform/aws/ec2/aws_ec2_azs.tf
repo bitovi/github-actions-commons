@@ -114,6 +114,10 @@ locals {
   ha_zone_mapping = merge(local.auto_ha_availability_zonea, local.auto_ha_availability_zoneb, local.auto_ha_availability_zonec, local.auto_ha_availability_zoned, local.auto_ha_availability_zonee, local.auto_ha_availability_zonef)
 }
 
+output "ec2_zone_mapping" {
+  value = local.ec2_zone_mapping
+}
+
 output "ha_zone_mapping" {
   value = local.ha_zone_mapping
 }
