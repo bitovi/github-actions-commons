@@ -3,32 +3,32 @@
 data "aws_availability_zones" "all" {}
 
 data "aws_subnet" "defaulta" {
-  availability_zone = "${var.aws_region_current_name}a"
+  availability_zone = "${data.aws_region.current.name}a"
   default_for_az    = true
 }
 data "aws_subnet" "defaultb" {
-  count             = contains(data.aws_availability_zones.all.names, "${var.aws_region_current_name}b") ? 1 : 0
-  availability_zone = "${var.aws_region_current_name}b"
+  count             = contains(data.aws_availability_zones.all.names, "${data.aws_region.current.name}b") ? 1 : 0
+  availability_zone = "${data.aws_region.current.name}b"
   default_for_az    = true
 }
 data "aws_subnet" "defaultc" {
-  count             = contains(data.aws_availability_zones.all.names, "${var.aws_region_current_name}c") ? 1 : 0
-  availability_zone = "${var.aws_region_current_name}c"
+  count             = contains(data.aws_availability_zones.all.names, "${data.aws_region.current.name}c") ? 1 : 0
+  availability_zone = "${data.aws_region.current.name}c"
   default_for_az    = true
 }
 data "aws_subnet" "defaultd" {
-  count             = contains(data.aws_availability_zones.all.names, "${var.aws_region_current_name}d") ? 1 : 0
-  availability_zone = "${var.aws_region_current_name}d"
+  count             = contains(data.aws_availability_zones.all.names, "${data.aws_region.current.name}d") ? 1 : 0
+  availability_zone = "${data.aws_region.current.name}d"
   default_for_az    = true
 }
 data "aws_subnet" "defaulte" {
-  count             = contains(data.aws_availability_zones.all.names, "${var.aws_region_current_name}e") ? 1 : 0
-  availability_zone = "${var.aws_region_current_name}e"
+  count             = contains(data.aws_availability_zones.all.names, "${data.aws_region.current.name}e") ? 1 : 0
+  availability_zone = "${data.aws_region.current.name}e"
   default_for_az    = true
 }
 data "aws_subnet" "defaultf" {
-  count             = contains(data.aws_availability_zones.all.names, "${var.aws_region_current_name}f") ? 1 : 0
-  availability_zone = "${var.aws_region_current_name}f"
+  count             = contains(data.aws_availability_zones.all.names, "${data.aws_region.current.name}f") ? 1 : 0
+  availability_zone = "${data.aws_region.current.name}f"
   default_for_az    = true
 }
 
@@ -72,40 +72,40 @@ locals {
   # no_zone_mapping: Creates a empty zone mapping object list
   no_zone_mapping  = { "" : { "subnet_id" : "", "security_groups" : [""] } }
   # ec2_zone_mapping: Creates a zone mapping object list based on default values (default sg, default subnet, etc)
-  ec2_zone_mapping = { "${local.preferred_az}" : { "subnet_id" : "${data.aws_subnet.selected[0].id}", "security_groups" : [var.aws_security_group_ec2_sg_name] } }
+  ec2_zone_mapping = { "${local.preferred_az}" : { "subnet_id" : "${data.aws_subnet.selected[0].id}", "security_groups" : [data.aws_security_group.ec2_security_group.name] } }
 
   # auto_ha_availability_zone*: Creates zone map objects for each available AZ in a region
   auto_ha_availability_zonea = {
-    "${var.aws_region_current_name}a" : {
+    "${data.aws_region.current.name}a" : {
       "subnet_id" : data.aws_subnet.defaulta.id,
       "security_groups" : [var.aws_security_group_default_id]
   } }
   auto_ha_availability_zoneb = length(data.aws_subnet.defaultb) > 0 ? ({
-    "${var.aws_region_current_name}b" : {
+    "${data.aws_region.current.name}b" : {
       "subnet_id" : data.aws_subnet.defaultb[0].id,
       "security_groups" : [var.aws_security_group_default_id]
     }
   }) : null
   auto_ha_availability_zonec = length(data.aws_subnet.defaultc) > 0 ? ({
-    "${var.aws_region_current_name}c" : {
+    "${data.aws_region.current.name}c" : {
       "subnet_id" : data.aws_subnet.defaultc[0].id,
       "security_groups" : [var.aws_security_group_default_id]
     }
   }) : null
   auto_ha_availability_zoned = length(data.aws_subnet.defaultd) > 0 ? ({
-    "${var.aws_region_current_name}d" : {
+    "${data.aws_region.current.name}d" : {
       "subnet_id" : data.aws_subnet.defaultd[0].id,
       "security_groups" : [var.aws_security_group_default_id]
     }
   }) : null
   auto_ha_availability_zonee = length(data.aws_subnet.defaulte) > 0 ? ({
-    "${var.aws_region_current_name}e" : {
+    "${data.aws_region.current.name}e" : {
       "subnet_id" : data.aws_subnet.defaulte[0].id,
       "security_groups" : [var.aws_security_group_default_id]
     }
   }) : null
   auto_ha_availability_zonef = length(data.aws_subnet.defaultf) > 0 ? ({
-    "${var.aws_region_current_name}f" : {
+    "${data.aws_region.current.name}f" : {
       "subnet_id" : data.aws_subnet.defaultf[0].id,
       "security_groups" : [var.aws_security_group_default_id]
     }

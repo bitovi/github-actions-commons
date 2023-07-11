@@ -88,9 +88,9 @@ module "ec2_efs" {
   # Docker
   docker_efs_mount_target         = var.docker_efs_mount_target
   # Data inputs
-  aws_region_current_name        = data.aws_region.current.name
+  aws_region_current_name        = data.aws_region.current.name #
   aws_security_group_default_id  = data.aws_security_group.default.id
-  aws_security_group_ec2_sg_name = data.aws_security_group.ec2_security_group.name
+  aws_security_group_ec2_sg_name = data.aws_security_group.ec2_security_group.name # 
   aws_security_group_ec2_sg_id   = data.aws_security_group.ec2_security_group.id
   # Others
   aws_resource_identifier = var.aws_resource_identifier
