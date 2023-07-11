@@ -89,7 +89,7 @@ module "ec2_efs" {
   docker_efs_mount_target         = var.docker_efs_mount_target
   # Data inputs
   aws_region_current_name        = data.aws_region.current.name #
-  aws_security_group_default_id  = data.aws_security_group.default.id
+  aws_security_group_default_id  = data.aws_security_group.default.id # 
   aws_security_group_ec2_sg_name = data.aws_security_group.ec2_security_group.name # 
   aws_security_group_ec2_sg_id   = data.aws_security_group.ec2_security_group.id
   # Others
@@ -156,6 +156,8 @@ module "eks" {
   aws_eks_desired_capacity           = var.aws_eks_desired_capacity
   aws_eks_max_size                   = var.aws_eks_max_size
   aws_eks_min_size                   = var.aws_eks_min_size
+  # Hidden
+  aws_eks_vpc_name = var.aws_eks_vpc_name
   # Others
   aws_resource_identifier = var.aws_resource_identifier
   common_tags             = local.default_tags

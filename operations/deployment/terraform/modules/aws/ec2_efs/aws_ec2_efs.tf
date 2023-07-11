@@ -17,7 +17,7 @@ resource "aws_efs_mount_target" "efs_mount_target" {
   for_each        = local.create_mount_targets
   file_system_id  = data.aws_efs_file_system.efs[0].id
   subnet_id       = each.value["subnet_id"]
-  security_groups = [data.aws_security_group.efs_security_group[0].id]
+  security_groups = [var.aws_elb_target_sg_id]
 }
 
 data "aws_security_group" "efs_security_group" {
@@ -43,7 +43,7 @@ resource "aws_security_group_rule" "ingress_ec2_to_efs" {
   from_port                = 443
   to_port                  = 443
   protocol                 = "all"
-  source_security_group_id = data.aws_security_group.efs_security_group[0].id
+  source_security_group_id = var.aws_elb_target_sg_id
   security_group_id        = var.aws_security_group_ec2_sg_id
 }
 
@@ -55,7 +55,7 @@ resource "aws_security_group_rule" "ingress_efs_to_ec2" {
   to_port                  = 80
   protocol                 = "all"
   source_security_group_id = var.aws_security_group_ec2_sg_id
-  security_group_id        = data.aws_security_group.efs_security_group[0].id
+  security_group_id        = var.aws_elb_target_sg_id
 }
 # ----------------------------------------------------- #
 
@@ -101,12 +101,15 @@ locals {
   create_efs_url = local.create_ec2_efs ? data.aws_efs_file_system.efs[0].dns_name : ""
   mount_efs_url  = var.aws_efs_mount_id != null ? data.aws_efs_file_system.mount_efs[0].dns_name : ""
   efs_url        = local.create_efs_url != "" ? local.create_efs_url : local.mount_efs_url
+
+  # no_zone_mapping: Creates a empty zone mapping object list
+  no_zone_mapping  = { "" : { "subnet_id" : "", "security_groups" : [""] } }
 }
 
 output "mount_efs" {
-  value = local.mount_efs
+  value = local.mount_efs[0]
 }
 
 output "efs_url" {
-  value = local.efs_url
+  value = local.efs_url[0]
 }
