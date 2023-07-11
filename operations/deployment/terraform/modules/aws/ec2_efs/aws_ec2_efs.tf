@@ -111,5 +111,5 @@ output "mount_efs" {
 }
 
 output "efs_url" {
-  value = local.efs_url
+  value = tostring(local.efs_url)
 }
