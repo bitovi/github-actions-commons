@@ -63,6 +63,19 @@ module "efs" {
   aws_efs_security_group_name     = var.aws_efs_security_group_name
   aws_efs_enable_backup_policy    = var.aws_efs_enable_backup_policy
   aws_efs_create_replica          = var.aws_efs_create_replica
+
+  aws_efs_mount_security_group_id = var.aws_efs_mount_security_group_id
+  # EC2
+  #aws_ec2_instance_type           = var.aws_ec2_instance_type
+  #aws_elb_target_sg_id            = aws_security_group.ec2_security_group.id
+  # Data    
+  #aws_security_group_default_id   = data.aws_security_group.default.id # 
+  #aws_security_group_ec2_sg_name  = data.aws_security_group.ec2_security_group.name # 
+  aws_security_group_ec2_sg_id    = data.aws_security_group.ec2_security_group.id
+
+  # Not exposed
+  availability_zone               = var.availability_zone 
+
   # EC2
   aws_ec2_instance_create = var.aws_ec2_instance_create
   # Data inputs
@@ -80,27 +93,21 @@ module "ec2_efs" {
   aws_efs_create                  = var.aws_efs_create
   aws_efs_create_ha               = var.aws_efs_create_ha
   aws_efs_mount_id                = var.aws_efs_mount_id
-  aws_efs_mount_security_group_id = var.aws_efs_mount_security_group_id
   aws_efs_zone_mapping            = var.aws_efs_zone_mapping
   aws_efs_ec2_mount_point         = var.aws_efs_ec2_mount_point
   # Other
   ha_zone_mapping  = local.ha_zone_mapping
   ec2_zone_mapping = local.ec2_zone_mapping
   # EC2
-  aws_ec2_instance_type           = var.aws_ec2_instance_type
   aws_elb_target_sg_id            = aws_security_group.ec2_security_group.id
   # Docker
   docker_efs_mount_target         = var.docker_efs_mount_target
   # Data inputs
   aws_region_current_name         = data.aws_region.current.name #
-  aws_security_group_default_id   = data.aws_security_group.default.id # 
-  aws_security_group_ec2_sg_name  = data.aws_security_group.ec2_security_group.name # 
-  aws_security_group_ec2_sg_id    = data.aws_security_group.ec2_security_group.id
   # Others
   aws_resource_identifier         = var.aws_resource_identifier
   common_tags                     = local.default_tags
   # Not exposed
-  availability_zone               = var.availability_zone 
   app_install_root                = var.app_install_root
   app_repo_name                   = var.app_repo_name
   # Dependencies
@@ -190,5 +197,5 @@ output "lb_public_dns" {
 
 output "application_public_dns" {
   description = "Public DNS address for the application or load balancer public DNS"
-  value       = [for url in module.aws_route53 : url.vm_url]
+  value       = module.aws_route53[0].vm_url
 }
