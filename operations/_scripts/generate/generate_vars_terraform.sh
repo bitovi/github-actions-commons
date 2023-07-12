@@ -259,6 +259,7 @@ $aws_additional_tags
 $env_aws_secret
 
 #-- EC2 --#
+$aws_ec2_instance_create
 $aws_ec2_ami_filter
 $aws_ec2_ami_owner
 $aws_ec2_ami_id

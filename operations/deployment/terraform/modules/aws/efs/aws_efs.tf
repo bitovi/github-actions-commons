@@ -34,7 +34,7 @@ resource "aws_security_group" "efs_security_group" {
 }
 
 resource "aws_security_group_rule" "efs_ingress_ports" {
-  count = aws_ec2_instance_create ? 0 : 1
+  count = var.aws_ec2_instance_create ? 0 : 1
   type        = "ingress"
   description = "HTTP from VPC"
   from_port   = 80
@@ -45,7 +45,7 @@ resource "aws_security_group_rule" "efs_ingress_ports" {
 }
 
 resource "aws_security_group_rule" "efs_tls_incoming_ports" {
-  count = aws_ec2_instance_create ? 0 : 1
+  count = var.aws_ec2_instance_create ? 0 : 1
   type        = "ingress"
   description = "TLS from VPC"
   from_port   = 443
