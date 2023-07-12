@@ -6,7 +6,7 @@ set -e
 echo "BitOps Ansible before script: Merge Terraform Enviornment Variables..."
 
 ANSIBLE_DIR=ansible/clone_repo
-AWS_MODULES_PATH=terraform/modules/aws/ec2
+AWS_MODULES_PATH=terraform/modules/aws
 
 # Merging order
 order=ec2,efs,postgres,repo,ghv,ghs,aws
