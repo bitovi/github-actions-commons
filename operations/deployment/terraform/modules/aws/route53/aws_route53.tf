@@ -53,11 +53,6 @@ locals {
   "${local.protocol}${var.aws_elb_dns_name}${local.public_port}")
 }
 
-output "application_public_dns" {
-  description = "Public DNS address for the application or load balancer public DNS"
-  value       = local.url
-}
-
 output "vm_url" {
   value = local.url
 }

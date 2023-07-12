@@ -180,6 +180,12 @@ locals {
   create_efs = var.aws_efs_create == true ? true : (var.aws_efs_create_ha == true ? true : false)
 }
 
+output "lb_public_dns" {
+  description = "Public DNS address of the LB"
+  value       = module.aws_elb.aws_elb_dns_name
+}
 
-
-
+output "application_public_dns" {
+  description = "Public DNS address for the application or load balancer public DNS"
+  value       = module.aws_route53.vm_url
+}

@@ -90,7 +90,7 @@ resource "aws_elb" "vm_lb" {
       instance_protocol  = local.elb_app_protocol[listener.key]
       lb_port            = local.aws_elb_listen_port[listener.key]
       lb_protocol        = local.elb_listen_protocol[listener.key]
-      ssl_certificate_id = local.aws_elb_arn
+      ssl_certificate_id = var.aws_certificates_selected_arn
     }
   }
 
@@ -113,11 +113,6 @@ resource "aws_elb" "vm_lb" {
   }
 }
 
-output "lb_public_dns" {
-  description = "Public DNS address of the LB"
-  value       = aws_elb.vm_lb.dns_name
-}
-
 output "aws_elb_dns_name" {
   value = aws_elb.vm_lb.dns_name
 }
@@ -129,10 +124,8 @@ output "aws_elb_zone_id" {
 # TODO: Fix when a user only passes app_ports, the target length should be the same. 
 # The main idea of the next block is to get what should be opened, mapped, and with which protocol.
 locals {
-  aws_elb_arn = var.aws_certificates_selected_arn
-
   # Check if there is a cert available
-  elb_ssl_available       = local.aws_elb_arn != "" ? true : false
+  elb_ssl_available       = var.aws_certificates_selected_arn != "" ? true : false
 
   # Transform CSV values into arrays. ( Now variables will be called local.xx instead of var.xx )
   aws_elb_listen_port     = var.aws_elb_listen_port     != "" ? [for n in split(",", var.aws_elb_listen_port)     : tonumber(n)] : ( local.elb_ssl_available ? [443] : [80] )
