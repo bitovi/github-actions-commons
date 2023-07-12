@@ -35,7 +35,7 @@ data "aws_security_group" "efs_security_group" {
 
 
 # Will create a whitelist for the whole VPC - Maybe a flag here?
-resource "aws_security_group_rule" "efs_ingress_ports" {
+resource "aws_security_group_rule" "efs_http_ingress_ports" {
   #count             = var.aws_ec2_instance_create ? 0 : 1
   type              = "ingress"
   description       = "HTTP from VPC"
@@ -57,7 +57,7 @@ resource "aws_security_group_rule" "efs_tls_incoming_ports" {
   security_group_id = data.aws_security_group.efs_security_group.id
 }
 
-resource "aws_security_group_rule" "efs_tls_incoming_ports" {
+resource "aws_security_group_rule" "efs_nfs_incoming_ports" {
   #count             = var.aws_ec2_instance_create ? 0 : 1
   type              = "ingress"
   description       = "NFS from VPC"
