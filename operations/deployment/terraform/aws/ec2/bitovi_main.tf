@@ -2,9 +2,9 @@ module "aws_certificates" {
   source = "../../modules/aws/certificates"
   count  = var.aws_r53_enable_cert && var.aws_r53_domain_name != "" ? 1 : 0
   # Cert
+  aws_r53_cert_arn         = var.aws_r53_cert_arn
   aws_r53_create_root_cert = var.aws_r53_create_root_cert
   aws_r53_create_sub_cert  = var.aws_r53_create_sub_cert
-  aws_r53_cert_arn         = var.aws_r53_cert_arn
   # R53
   aws_r53_domain_name       = var.aws_r53_domain_name
   aws_r53_sub_domain_name   = var.aws_r53_sub_domain_name
@@ -26,7 +26,7 @@ module "aws_route53" {
   aws_elb_zone_id            = module.aws_elb.aws_elb_zone_id
   aws_elb_listen_port        = var.aws_elb_listen_port
   # Certs
-  aws_certificates_selected_arn = var.aws_r53_enable_cert ? try(module.aws_certificates.selected_arn,"") : ""
+  aws_certificates_selected_arn = var.aws_r53_enable_cert && var.aws_r53_domain_name != "" ? module.aws_certificates.selected_arn : ""
   # Others
   fqdn_provided              = local.fqdn_provided
   common_tags                = local.default_tags
@@ -47,7 +47,7 @@ module "aws_elb" {
   aws_instance_server_id = [aws_instance.server.id]
   aws_elb_target_sg_id   = aws_security_group.ec2_security_group.id
   # Certs
-  aws_certificates_selected_arn = try(module.aws_certificates.selected_arn,"")
+  aws_certificates_selected_arn = var.aws_r53_enable_cert && var.aws_r53_domain_name != "" ? module.aws_certificates.selected_arn : ""
   # Others
   aws_resource_identifier            = var.aws_resource_identifier
   aws_resource_identifier_supershort = var.aws_resource_identifier_supershort
