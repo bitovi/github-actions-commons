@@ -17,7 +17,7 @@ ENV_OUT_FILE="${BITOPS_ENVROOT}/${ANSIBLE_DIR}/app.env"
 ENV_EC2_FILE="${BITOPS_ENVROOT}/terraform/aws/ec2/ec2.env"
 
 # EFS dotenv file
-ENV_EFS_FILE="${BITOPS_ENVROOT}/terraform/aws/efs/efs.env"
+ENV_EFS_FILE="${BITOPS_ENVROOT}/terraform/aws/ec2_efs/efs.env"
 
 # Postgres dotenv file
 ENV_POSTGRES_FILE="${BITOPS_ENVROOT}/terraform/aws/rds/postgres.env"
