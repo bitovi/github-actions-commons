@@ -191,11 +191,11 @@ locals {
 
 output "lb_public_dns" {
   description = "Public DNS address of the LB"
-  value       = module.aws_elb.aws_elb_dns_name
+  value       = try(module.aws_elb.aws_elb_dns_name,"")
   #  efs_url           = [for efs in module.ec2_efs : efs.efs_url]
 }
 
 output "application_public_dns" {
   description = "Public DNS address for the application or load balancer public DNS"
-  value       = module.aws_route53[0].vm_url
+  value       = try(module.aws_route53[0].vm_url,"")
 }
