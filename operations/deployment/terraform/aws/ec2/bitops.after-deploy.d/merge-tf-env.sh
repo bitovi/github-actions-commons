@@ -6,7 +6,7 @@ set -e
 echo "BitOps Ansible before script: Merge Terraform Enviornment Variables..."
 
 ANSIBLE_DIR=ansible/clone_repo
-AWS_MODULES_PATH=terraform/modules/aws
+TERRAFORM_PATH=terraform/aws/ec2
 
 # Merging order
 order=ec2,efs,postgres,repo,ghv,ghs,aws
@@ -18,10 +18,10 @@ ENV_OUT_FILE="${BITOPS_ENVROOT}/${ANSIBLE_DIR}/app.env"
 ENV_EC2_FILE="${BITOPS_ENVROOT}/terraform/aws/ec2/ec2.env"
 
 # EFS dotenv file
-ENV_EFS_FILE="${BITOPS_ENVROOT}/${AWS_MODULES_PATH}/ec2_efs/efs.env"
+ENV_EFS_FILE="${BITOPS_ENVROOT}/${TERRAFORM_PATH}/efs.env"
 
 # Postgres dotenv file
-ENV_POSTGRES_FILE="${BITOPS_ENVROOT}/${AWS_MODULES_PATH}/aurora/postgres.env"
+ENV_POSTGRES_FILE="${BITOPS_ENVROOT}/${TERRAFORM_PATH}/postgres.env"
 
 # Repo env file
 ENV_REPO_FILE="${BITOPS_ENVROOT}/env-files/repo.env"
@@ -101,7 +101,7 @@ done
 
 ls -l ${BITOPS_ENVROOT}/terraform
 ls -l ${BITOPS_ENVROOT}/terraform/aws
+ls -l ${BITOPS_ENVROOT}/terraform/aws/ec2
 ls -l ${BITOPS_ENVROOT}/terraform/modules
 ls -l ${BITOPS_ENVROOT}/terraform/modules/aws
-ls -l ${BITOPS_ENVROOT}/${AWS_MODULES_PATH}/ec2_efs/
 ls -l ${BITOPS_ENVROOT}/terraform/modules/aws/aurora
