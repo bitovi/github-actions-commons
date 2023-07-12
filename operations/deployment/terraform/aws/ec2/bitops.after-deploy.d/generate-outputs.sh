@@ -32,4 +32,6 @@ AWS_INSTANCE_URL="$BITOPS_EC2_PUBLIC_URL"
   fi
 fi
 
+cat ${BITOPS_ENVROOT}/terraform/aws/ec2/inventory.yaml
+
 echo "end terraform output for bo-out"
