@@ -61,3 +61,11 @@ output "mount_efs" {
 output "efs_url" {
   value = try(data.aws_efs_file_system.efs[0].dns_name,data.aws_efs_file_system.mount_efs[0].dns_name)
 }
+
+#output "efs_url" {
+#  value = try(data.aws_efs_file_system.efs[0].dns_name,"")
+#}
+#
+#output "mount_id_efs_url" {
+#  value = try(data.aws_efs_file_system.mount_efs[0].dns_name,"")
+#}
