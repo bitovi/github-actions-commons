@@ -74,7 +74,7 @@ module "efs" {
   aws_security_group_ec2_sg_id    = data.aws_security_group.ec2_security_group.id
 
   # Not exposed
-  availability_zone               = var.availability_zone 
+  #availability_zone               = var.availability_zone 
 
   # EC2
   aws_ec2_instance_create = var.aws_ec2_instance_create
