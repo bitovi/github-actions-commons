@@ -26,6 +26,12 @@ variable "env_aws_secret" {
 
 # EC2 Instance
 
+variable "aws_ec2_instance_create" {
+  type        = bool
+  description = "Enable EC2 Instance creation."
+  default     = false
+}
+
 variable "aws_ec2_ami_id" {
   type        = string
   description = "AWS AMI ID image to use for deployment"

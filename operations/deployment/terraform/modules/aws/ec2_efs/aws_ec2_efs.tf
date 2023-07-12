@@ -57,6 +57,7 @@ resource "aws_security_group_rule" "ingress_efs_to_ec2" {
   source_security_group_id = var.aws_security_group_ec2_sg_id
   security_group_id        = var.aws_elb_target_sg_id
 }
+
 # ----------------------------------------------------- #
 
 # ---------------------MOUNT--------------------------- #

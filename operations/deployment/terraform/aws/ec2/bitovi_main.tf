@@ -63,6 +63,8 @@ module "efs" {
   aws_efs_security_group_name     = var.aws_efs_security_group_name
   aws_efs_enable_backup_policy    = var.aws_efs_enable_backup_policy
   aws_efs_create_replica          = var.aws_efs_create_replica
+  # EC2
+  aws_ec2_instance_create = var.aws_ec2_instance_create
   # Data inputs
   aws_vpc_default_id      = data.aws_vpc.default.id
   aws_region_current_name = data.aws_region.current.name
@@ -183,9 +185,10 @@ locals {
 output "lb_public_dns" {
   description = "Public DNS address of the LB"
   value       = module.aws_elb.aws_elb_dns_name
+  #  efs_url           = [for efs in module.ec2_efs : efs.efs_url]
 }
 
 output "application_public_dns" {
   description = "Public DNS address for the application or load balancer public DNS"
-  value       = module.aws_route53.vm_url
+  value       = [for url in module.aws_route53 : url.vm_url]
 }

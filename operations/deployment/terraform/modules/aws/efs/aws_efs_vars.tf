@@ -5,6 +5,8 @@ variable "aws_efs_security_group_name" {}
 variable "aws_efs_enable_backup_policy" {}
 variable "aws_efs_create_replica" {}
 
+variable "aws_ec2_instance_create" {}
+
 variable "aws_region_current_name" {}
 variable "aws_vpc_default_id" {}
 
