@@ -101,6 +101,8 @@ module "ec2_efs" {
   availability_zone               = var.availability_zone 
   app_install_root                = var.app_install_root
   app_repo_name                   = var.app_repo_name
+  # Dependencies
+  depends_on = [module.efs]
 }
 
 module "aurora_rds" {
