@@ -42,7 +42,7 @@ resource "aws_security_group_rule" "efs_ingress_ports" {
   from_port         = 80
   to_port           = 80
   protocol          = "tcp"
-  cidr_blocks       = var.aws_ec2_vpc_cidr_block
+  cidr_blocks       = [var.aws_ec2_vpc_cidr_block]
   security_group_id = data.aws_security_group.efs_security_group.id
 }
 
@@ -53,7 +53,18 @@ resource "aws_security_group_rule" "efs_tls_incoming_ports" {
   from_port         = 443
   to_port           = 443
   protocol          = "tcp"
-  cidr_blocks       = var.aws_ec2_vpc_cidr_block
+  cidr_blocks       = [var.aws_ec2_vpc_cidr_block]
+  security_group_id = data.aws_security_group.efs_security_group.id
+}
+
+resource "aws_security_group_rule" "efs_tls_incoming_ports" {
+  #count             = var.aws_ec2_instance_create ? 0 : 1
+  type              = "ingress"
+  description       = "NFS from VPC"
+  from_port         = 2049
+  to_port           = 2049
+  protocol          = "tcp"
+  cidr_blocks       = [var.aws_ec2_vpc_cidr_block]
   security_group_id = data.aws_security_group.efs_security_group.id
 }
 
