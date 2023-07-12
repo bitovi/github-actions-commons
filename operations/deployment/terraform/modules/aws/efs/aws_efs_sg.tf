@@ -43,7 +43,7 @@ resource "aws_security_group_rule" "efs_ingress_ports" {
   to_port           = 80
   protocol          = "tcp"
   cidr_blocks       = ["0.0.0.0/0"]
-  security_group_id = aws_security_group.efs_security_group.id
+  security_group_id = data.aws_security_group.efs_security_group.id
 }
 
 resource "aws_security_group_rule" "efs_tls_incoming_ports" {
@@ -54,16 +54,16 @@ resource "aws_security_group_rule" "efs_tls_incoming_ports" {
   to_port           = 443
   protocol          = "tcp"
   cidr_blocks       = ["0.0.0.0/0"]
-  security_group_id = aws_security_group.efs_security_group.id
+  security_group_id = data.aws_security_group.efs_security_group.id
 }
 
 # Whitelist the EFS security group for the EC2 Security Group
 resource "aws_security_group_rule" "ingress_ec2_to_efs" {
   count                    = var.aws_ec2_instance_create ? 1 : 0
   type                     = "ingress"
-  description              = "${var.aws_resource_identifier} - SSL EFS"
-  from_port                = 443
-  to_port                  = 443
+  description              = "${var.aws_resource_identifier} - NFS EFS"
+  #from_port                = 443
+  #to_port                  = 443
   protocol                 = "all"
   source_security_group_id = data.aws_security_group.efs_security_group.id
   security_group_id        = var.aws_security_group_ec2_sg_id
@@ -73,33 +73,33 @@ resource "aws_security_group_rule" "ingress_efs_to_ec2" {
   count                    = var.aws_ec2_instance_create ? 1 : 0
   type                     = "ingress"
   description              = "${var.aws_resource_identifier} - NFS EFS"
-  from_port                = 80
-  to_port                  = 80
+  #from_port                = 80
+  #to_port                  = 80
   protocol                 = "all"
   source_security_group_id = var.aws_security_group_ec2_sg_id
   security_group_id        = data.aws_security_group.efs_security_group.id
 }
 
-resource "aws_security_group_rule" "mount_ingress_ec2_to_efs" {
-  count                    = var.aws_efs_mount_security_group_id != null ? 1 : 0
-  type                     = "ingress"
-  description              = "${var.aws_resource_identifier} - EFS"
-  from_port                = 443
-  to_port                  = 443
-  protocol                 = "all"
-  source_security_group_id = var.aws_efs_mount_security_group_id
-  security_group_id        = var.aws_security_group_ec2_sg_id
-}
-
-resource "aws_security_group_rule" "mount_ingress_efs_to_ec2" {
-  count                    = var.aws_efs_mount_security_group_id != null ? 1 : 0
-  type                     = "ingress"
-  description              = "${var.aws_resource_identifier} - NFS EFS"
-  from_port                = 443
-  to_port                  = 443
-  protocol                 = "all"
-  source_security_group_id = var.aws_security_group_ec2_sg_id
-  security_group_id        = var.aws_efs_mount_security_group_id
-}
-
+#resource "aws_security_group_rule" "mount_ingress_ec2_to_efs" {
+#  count                    = var.aws_efs_mount_security_group_id != null ? 1 : 0
+#  type                     = "ingress"
+#  description              = "${var.aws_resource_identifier} - EFS"
+#  from_port                = 443
+#  to_port                  = 443
+#  protocol                 = "all"
+#  source_security_group_id = var.aws_efs_mount_security_group_id
+#  security_group_id        = var.aws_security_group_ec2_sg_id
+#}
+#
+#resource "aws_security_group_rule" "mount_ingress_efs_to_ec2" {
+#  count                    = var.aws_efs_mount_security_group_id != null ? 1 : 0
+#  type                     = "ingress"
+#  description              = "${var.aws_resource_identifier} - NFS EFS"
+#  from_port                = 443
+#  to_port                  = 443
+#  protocol                 = "all"
+#  source_security_group_id = var.aws_security_group_ec2_sg_id
+#  security_group_id        = var.aws_efs_mount_security_group_id
+#}
+#
 
