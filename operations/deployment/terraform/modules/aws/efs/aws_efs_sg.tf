@@ -44,7 +44,7 @@ resource "aws_security_group_rule" "ingress_ec2_to_efs" {
   from_port                = 443
   to_port                  = 443
   protocol                 = "all"
-  source_security_group_id = data.aws_security_group.efs_security_group[0].id
+  source_security_group_id = aws_security_group.efs_security_group[0].id
   security_group_id        = var.aws_security_group_ec2_sg_id
 }
 
@@ -56,7 +56,7 @@ resource "aws_security_group_rule" "ingress_efs_to_ec2" {
   to_port                  = 80
   protocol                 = "all"
   source_security_group_id = var.aws_security_group_ec2_sg_id
-  security_group_id        = data.aws_security_group.efs_security_group[0].id
+  security_group_id        = aws_security_group.efs_security_group[0].id
 }
 
 resource "aws_security_group_rule" "mount_ingress_ec2_to_efs" {
