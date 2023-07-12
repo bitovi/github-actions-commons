@@ -63,7 +63,6 @@ module "efs" {
   aws_efs_security_group_name     = var.aws_efs_security_group_name
   aws_efs_enable_backup_policy    = var.aws_efs_enable_backup_policy
   aws_efs_create_replica          = var.aws_efs_create_replica
-
   aws_efs_mount_security_group_id = var.aws_efs_mount_security_group_id
   # EC2
   #aws_ec2_instance_type           = var.aws_ec2_instance_type
@@ -72,6 +71,7 @@ module "efs" {
   #aws_security_group_default_id   = data.aws_security_group.default.id # 
   #aws_security_group_ec2_sg_name  = data.aws_security_group.ec2_security_group.name # 
   aws_security_group_ec2_sg_id    = data.aws_security_group.ec2_security_group.id
+  aws_ec2_vpc_cidr_block          = data.aws_vpc.default.cidr_block
 
   # Not exposed
   #availability_zone               = var.availability_zone 
