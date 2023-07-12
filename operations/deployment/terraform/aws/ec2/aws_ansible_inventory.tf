@@ -42,5 +42,5 @@ bitops_servers:
 locals {
   create_ec2_efs    = var.aws_efs_create || var.aws_efs_create_ha ? true : false
   mount_efs         = var.aws_efs_mount_id != null ? true : (local.create_ec2_efs ? true : false)
-  efs_url           = module.ec2_efs[0].efs_url
+  efs_url           = try(module.ec2_efs[0].efs_url,"")
 }
