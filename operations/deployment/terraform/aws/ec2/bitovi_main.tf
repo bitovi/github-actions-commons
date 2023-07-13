@@ -57,25 +57,21 @@ module "aws_elb" {
 module "efs" {
   source = "../../modules/aws/efs"
   count  = local.create_efs ? 1 : 0
-  # EFS
+# EFS
   aws_efs_replication_destination = var.aws_efs_replication_destination
   aws_efs_transition_to_inactive  = var.aws_efs_transition_to_inactive
   aws_efs_security_group_name     = var.aws_efs_security_group_name
   aws_efs_enable_backup_policy    = var.aws_efs_enable_backup_policy
   aws_efs_create_replica          = var.aws_efs_create_replica
-  aws_efs_mount_security_group_id = var.aws_efs_mount_security_group_id
-
-  aws_security_group_ec2_sg_id    = data.aws_security_group.ec2_security_group.id
-  aws_ec2_vpc_cidr_block          = data.aws_vpc.default.cidr_block
-
   # EC2
-  aws_ec2_instance_create = var.aws_ec2_instance_create
-  # Data inputs
-  aws_vpc_default_id      = data.aws_vpc.default.id
-  aws_region_current_name = data.aws_region.current.name
+  aws_ec2_instance_create         = var.aws_ec2_instance_create
+  # VPC inputs
+  aws_vpc_id                      = data.aws_vpc.default.id
+  aws_vpc_cidr_block_whitelist    = data.aws_vpc.default.cidr_block
+  aws_region_current_name         = data.aws_region.current.name
   # Others
-  aws_resource_identifier = var.aws_resource_identifier
-  common_tags             = local.default_tags
+  aws_resource_identifier         = var.aws_resource_identifier
+  common_tags                     = local.default_tags
 }
 
 module "ec2_efs" {
@@ -88,16 +84,15 @@ module "ec2_efs" {
   aws_efs_zone_mapping            = var.aws_efs_zone_mapping
   aws_efs_ec2_mount_point         = var.aws_efs_ec2_mount_point
   # Other
-  ha_zone_mapping  = local.ha_zone_mapping
-  ec2_zone_mapping = local.ec2_zone_mapping
-  # EC2
-  aws_security_group_ec2_sg_id    = data.aws_security_group.ec2_security_group.id
+  ha_zone_mapping                 = local.ha_zone_mapping
+  ec2_zone_mapping                = local.ec2_zone_mapping
   # Docker
   docker_efs_mount_target         = var.docker_efs_mount_target
   # Data inputs
   aws_region_current_name         = data.aws_region.current.name #
+  aws_security_group_efs_id       = module.efs[0].aws_security_group_efs_id
+  aws_efs_fs_id                   = module.efs[0].aws_efs_fs_id
   # Others
-  aws_resource_identifier         = var.aws_resource_identifier
   common_tags                     = local.default_tags
   # Not exposed
   app_install_root                = var.app_install_root
@@ -105,6 +100,7 @@ module "ec2_efs" {
   # Dependencies
   depends_on = [module.efs]
 }
+
 
 module "aurora_rds" {
   source = "../../modules/aws/aurora"

@@ -15,25 +15,25 @@ locals {
 
 resource "aws_efs_mount_target" "efs_mount_target" {
   for_each        = local.create_mount_targets
-  file_system_id  = data.aws_efs_file_system.efs[0].id
+  file_system_id  = var.aws_efs_fs_id
   subnet_id       = each.value["subnet_id"]
-  security_groups = [data.aws_security_group.efs_security_group.id]
+  security_groups = [var.aws_security_group_efs_id]
 }
 
-data "aws_efs_file_system" "efs" {
-  count  = local.create_ec2_efs ? 1 : 0
-  tags = {
-    Name = "${var.aws_resource_identifier}-efs-modular"
-  }
-}
-
-# We can remove this exposing the security group from EFS 
-data "aws_security_group" "efs_security_group" {
-  filter {
-    name   = "tag:Name"
-    values = ["${var.aws_resource_identifier}-efs-sg"]
-  }
-}
+#data "aws_efs_file_system" "efs" {
+#  count  = local.create_ec2_efs ? 1 : 0
+#  tags = {
+#    Name = "${var.aws_resource_identifier}-efs-modular"
+#  }
+#}
+#
+## We can remove this exposing the security group from EFS 
+#data "aws_security_group" "efs_security_group" {
+#  filter {
+#    name   = "tag:Name"
+#    values = ["${var.aws_resource_identifier}-efs-sg"]
+#  }
+#}
 
 data "aws_efs_file_system" "mount_efs" {
   count          = var.aws_efs_mount_id != null ? 1 : 0
