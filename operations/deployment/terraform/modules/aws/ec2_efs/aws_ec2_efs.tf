@@ -59,6 +59,10 @@ output "mount_efs" {
   value = local.mount_efs
 }
 
+#output "efs_url" {
+#  value = try(data.aws_efs_file_system.efs[0].dns_name,data.aws_efs_file_system.mount_efs[0].dns_name)
+#}
+
 output "efs_url" {
-  value = try(data.aws_efs_file_system.efs[0].dns_name,data.aws_efs_file_system.mount_efs[0].dns_name)
+  value = try(aws_efs_mount_target.efs_mount_target.mount_target_dns_name,data.aws_efs_file_system.mount_efs[0].dns_name)
 }
