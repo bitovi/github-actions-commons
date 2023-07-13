@@ -18,7 +18,7 @@ resource "aws_efs_mount_target" "efs_mount_target" {
   file_system_id  = data.aws_efs_file_system.efs[0].id
   subnet_id       = each.value["subnet_id"]
   #security_groups = [aws_security_group_ec2_sg_id]
-  security_groups = [data.aws_security_group.efs_security_group]
+  security_groups = [data.aws_security_group.efs_security_group.id]
 }
 
 data "aws_efs_file_system" "efs" {
