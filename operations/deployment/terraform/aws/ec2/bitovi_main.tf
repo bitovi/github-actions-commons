@@ -64,17 +64,9 @@ module "efs" {
   aws_efs_enable_backup_policy    = var.aws_efs_enable_backup_policy
   aws_efs_create_replica          = var.aws_efs_create_replica
   aws_efs_mount_security_group_id = var.aws_efs_mount_security_group_id
-  # EC2
-  #aws_ec2_instance_type           = var.aws_ec2_instance_type
-  #aws_elb_target_sg_id            = aws_security_group.ec2_security_group.id
-  # Data    
-  #aws_security_group_default_id   = data.aws_security_group.default.id # 
-  #aws_security_group_ec2_sg_name  = data.aws_security_group.ec2_security_group.name # 
+
   aws_security_group_ec2_sg_id    = data.aws_security_group.ec2_security_group.id
   aws_ec2_vpc_cidr_block          = data.aws_vpc.default.cidr_block
-
-  # Not exposed
-  #availability_zone               = var.availability_zone 
 
   # EC2
   aws_ec2_instance_create = var.aws_ec2_instance_create
@@ -99,7 +91,7 @@ module "ec2_efs" {
   ha_zone_mapping  = local.ha_zone_mapping
   ec2_zone_mapping = local.ec2_zone_mapping
   # EC2
-  aws_elb_target_sg_id            = aws_security_group.ec2_security_group.id
+  aws_security_group_ec2_sg_id    = data.aws_security_group.ec2_security_group.id
   # Docker
   docker_efs_mount_target         = var.docker_efs_mount_target
   # Data inputs

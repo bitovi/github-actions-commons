@@ -7,7 +7,7 @@ variable "aws_efs_ec2_mount_point" {}
 variable "ha_zone_mapping" {}
 variable "ec2_zone_mapping" {}
 # EC2
-variable "aws_elb_target_sg_id" {}
+variable "aws_security_group_ec2_sg_id" {}
 # Docker
 variable "docker_efs_mount_target" {}
 # Data inputs

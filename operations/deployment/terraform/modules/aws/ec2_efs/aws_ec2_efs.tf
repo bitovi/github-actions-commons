@@ -17,7 +17,8 @@ resource "aws_efs_mount_target" "efs_mount_target" {
   for_each        = local.create_mount_targets
   file_system_id  = data.aws_efs_file_system.efs[0].id
   subnet_id       = each.value["subnet_id"]
-  security_groups = [var.aws_elb_target_sg_id]
+  #security_groups = [aws_security_group_ec2_sg_id]
+  security_groups = [data.aws_security_group.efs_security_group]
 }
 
 data "aws_efs_file_system" "efs" {
@@ -25,6 +26,15 @@ data "aws_efs_file_system" "efs" {
   tags = {
     Name = "${var.aws_resource_identifier}-efs-modular"
   }
+}
+
+# We can remove this exposing the security group from EFS 
+data "aws_security_group" "efs_security_group" {
+  filter {
+    name   = "tag:Name"
+    values = ["${var.aws_resource_identifier}-efs-sg"]
+  }
+  depends_on = [ aws_security_group.efs_security_group ]
 }
 
 # ----------------------------------------------------- #
