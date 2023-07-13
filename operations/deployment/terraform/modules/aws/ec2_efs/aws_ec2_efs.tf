@@ -35,9 +35,10 @@ resource "aws_efs_mount_target" "efs_mount_target" {
 #  }
 #}
 
+# TODO: Add check for EFS/EFSHA vs. Provided Mount id.
+
 data "aws_efs_file_system" "mount_efs" {
-  count          = var.aws_efs_mount_id != null ? 1 : 0
-  file_system_id = var.aws_efs_mount_id
+  file_system_id = var.aws_efs_mount_id != null ? var.aws_efs_mount_id : var.aws_efs_fs_id
 }
 
 resource "local_file" "efs-dotenv" {
@@ -64,5 +65,5 @@ output "mount_efs" {
 #}
 
 output "efs_url" {
-  value = try(aws_efs_mount_target.efs_mount_target[0].dns_name,data.aws_efs_file_system.mount_efs[0].dns_name)
+  value = data.aws_efs_file_system.mount_efs.dns_name
 }
