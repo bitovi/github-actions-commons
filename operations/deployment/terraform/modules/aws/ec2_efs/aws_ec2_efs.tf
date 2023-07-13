@@ -20,21 +20,6 @@ resource "aws_efs_mount_target" "efs_mount_target" {
   security_groups = [var.aws_security_group_efs_id]
 }
 
-#data "aws_efs_file_system" "efs" {
-#  count  = local.create_ec2_efs ? 1 : 0
-#  tags = {
-#    Name = "${var.aws_resource_identifier}-efs-modular"
-#  }
-#}
-#
-## We can remove this exposing the security group from EFS 
-#data "aws_security_group" "efs_security_group" {
-#  filter {
-#    name   = "tag:Name"
-#    values = ["${var.aws_resource_identifier}-efs-sg"]
-#  }
-#}
-
 # TODO: Add check for EFS/EFSHA vs. Provided Mount id.
 
 data "aws_efs_file_system" "mount_efs" {
@@ -59,10 +44,6 @@ locals {
 output "mount_efs" {
   value = local.mount_efs
 }
-
-#output "efs_url" {
-#  value = try(data.aws_efs_file_system.efs[0].dns_name,data.aws_efs_file_system.mount_efs[0].dns_name)
-#}
 
 output "efs_url" {
   value = data.aws_efs_file_system.mount_efs.dns_name
