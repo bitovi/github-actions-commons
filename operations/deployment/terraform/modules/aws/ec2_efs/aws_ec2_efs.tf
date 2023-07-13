@@ -34,7 +34,7 @@ data "aws_security_group" "efs_security_group" {
     name   = "tag:Name"
     values = ["${var.aws_resource_identifier}-efs-sg"]
   }
-  depends_on = [ aws_security_group.efs_security_group ]
+  #depends_on = [ aws_security_group.efs_security_group ]
 }
 
 # ----------------------------------------------------- #
