@@ -17,7 +17,6 @@ resource "aws_efs_mount_target" "efs_mount_target" {
   for_each        = local.create_mount_targets
   file_system_id  = data.aws_efs_file_system.efs[0].id
   subnet_id       = each.value["subnet_id"]
-  #security_groups = [aws_security_group_ec2_sg_id]
   security_groups = [data.aws_security_group.efs_security_group.id]
 }
 
@@ -34,12 +33,8 @@ data "aws_security_group" "efs_security_group" {
     name   = "tag:Name"
     values = ["${var.aws_resource_identifier}-efs-sg"]
   }
-  #depends_on = [ aws_security_group.efs_security_group ]
 }
 
-# ----------------------------------------------------- #
-
-# ---------------------MOUNT--------------------------- #
 data "aws_efs_file_system" "mount_efs" {
   count          = var.aws_efs_mount_id != null ? 1 : 0
   file_system_id = var.aws_efs_mount_id
@@ -56,10 +51,6 @@ EOT
 }
 
 locals {
-  create_efs_url = local.create_ec2_efs ? data.aws_efs_file_system.efs[0].dns_name : ""
-  mount_efs_url  = var.aws_efs_mount_id != null ? data.aws_efs_file_system.mount_efs[0].dns_name : ""
-  efs_url        = local.create_efs_url != "" ? local.create_efs_url : local.mount_efs_url
-
   # no_zone_mapping: Creates a empty zone mapping object list
   no_zone_mapping  = { "" : { "subnet_id" : "", "security_groups" : [""] } }
 }
@@ -71,11 +62,3 @@ output "mount_efs" {
 output "efs_url" {
   value = try(data.aws_efs_file_system.efs[0].dns_name,data.aws_efs_file_system.mount_efs[0].dns_name)
 }
-
-#output "efs_url" {
-#  value = try(data.aws_efs_file_system.efs[0].dns_name,"")
-#}
-#
-#output "mount_id_efs_url" {
-#  value = try(data.aws_efs_file_system.mount_efs[0].dns_name,"")
-#}
