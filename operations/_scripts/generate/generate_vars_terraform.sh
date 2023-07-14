@@ -242,10 +242,10 @@ lb_access_bucket_name=$(generate_var lb_access_bucket_name $LB_LOGS_BUCKET)
 
 # -------------------------------------------------- #
 
-echo "
-$aws_ec2_ami_update
-
-" > "${GITHUB_ACTION_PATH}/operations/deployment/generators/terraform.tfvars"
+#echo "
+#$aws_ec2_ami_update
+#
+#" > "${GITHUB_ACTION_PATH}/operations/deployment/generators/terraform.tfvars"
 
 # -------------------------------------------------- #
 
@@ -357,14 +357,14 @@ $app_repo_name
 $app_branch_name
 $app_install_root
 
-" > "${GITHUB_ACTION_PATH}/operations/deployment/terraform/aws/ec2/terraform.tfvars"
+" > "${GITHUB_ACTION_PATH}/operations/deployment/terraform/aws/terraform.tfvars"
 
 # We might want to pass only the variables needed and not all of them. 
 
 # TODO: templatize this
-#cp  "${GITHUB_ACTION_PATH}/operations/deployment/terraform/aws/ec2/terraform.tfvars"  "${GITHUB_ACTION_PATH}/operations/deployment/terraform/aws/rds/terraform.tfvars"
-#cp  "${GITHUB_ACTION_PATH}/operations/deployment/terraform/aws/ec2/terraform.tfvars"  "${GITHUB_ACTION_PATH}/operations/deployment/terraform/aws/efs/terraform.tfvars"
-#cp  "${GITHUB_ACTION_PATH}/operations/deployment/terraform/aws/ec2/terraform.tfvars"  "${GITHUB_ACTION_PATH}/operations/deployment/terraform/aws/eks/terraform.tfvars"
+#cp  "${GITHUB_ACTION_PATH}/operations/deployment/terraform/aws/terraform.tfvars"  "${GITHUB_ACTION_PATH}/operations/deployment/terraform/aws/rds/terraform.tfvars"
+#cp  "${GITHUB_ACTION_PATH}/operations/deployment/terraform/aws/terraform.tfvars"  "${GITHUB_ACTION_PATH}/operations/deployment/terraform/aws/efs/terraform.tfvars"
+#cp  "${GITHUB_ACTION_PATH}/operations/deployment/terraform/aws/terraform.tfvars"  "${GITHUB_ACTION_PATH}/operations/deployment/terraform/aws/eks/terraform.tfvars"
 # -------------------------------------------------- #
 
 echo "Done with generate_vars_terraform.sh"

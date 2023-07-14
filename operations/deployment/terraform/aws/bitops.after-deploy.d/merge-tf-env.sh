@@ -6,7 +6,7 @@ set -e
 echo "BitOps Ansible before script: Merge Terraform Enviornment Variables..."
 
 ANSIBLE_DIR=ansible/clone_repo
-TERRAFORM_PATH=terraform/aws/ec2
+TERRAFORM_PATH=terraform/aws
 
 # Merging order
 order=ec2,efs,postgres,repo,ghv,ghs,aws
@@ -15,7 +15,7 @@ order=ec2,efs,postgres,repo,ghv,ghs,aws
 ENV_OUT_FILE="${BITOPS_ENVROOT}/${ANSIBLE_DIR}/app.env"
 
 # TF dotenv file
-ENV_EC2_FILE="${BITOPS_ENVROOT}/terraform/aws/ec2/ec2.env"
+ENV_EC2_FILE="${BITOPS_ENVROOT}/${TERRAFORM_PATH}/ec2.env"
 
 # EFS dotenv file
 ENV_EFS_FILE="${BITOPS_ENVROOT}/${TERRAFORM_PATH}/efs.env"
@@ -33,7 +33,7 @@ ENV_GHV_FILE="${BITOPS_ENVROOT}/env-files/ghv.env"
 ENV_GHS_FILE="${BITOPS_ENVROOT}/env-files/ghs.env"
 
 # TF AWS dotenv file
-ENV_AWS_SECRET_FILE="${BITOPS_ENVROOT}/terraform/aws/ec2/aws.env"
+ENV_AWS_SECRET_FILE="${BITOPS_ENVROOT}/${TERRAFORM_PATH}/aws.env"
 
 # Make sure app.env is empty, if not, delete it and create one.
 

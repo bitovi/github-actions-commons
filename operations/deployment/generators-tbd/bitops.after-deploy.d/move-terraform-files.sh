@@ -9,9 +9,9 @@ echo ""
 
 ## TODO: Rewrite this to a function
 
-rm "${BITOPS_ENVROOT}/generators/generator.tf"
-rm "${BITOPS_ENVROOT}/generators/variables.tf"
-rm "${BITOPS_ENVROOT}/generators/terraform.tfvars"
+#rm "${BITOPS_ENVROOT}/generators/generator.tf"
+#rm "${BITOPS_ENVROOT}/generators/variables.tf"
+#rm "${BITOPS_ENVROOT}/generators/terraform.tfvars"
 
 #if [ $(find "$BITOPS_ENVROOT/generators/." -iname "bitovi_*postgres.tf" | wc -l) -gt 0 ]; then 
   #mv "${BITOPS_ENVROOT}"/generators/bitovi_*postgres.tf "${BITOPS_ENVROOT}"/terraform/aws/rds/.
@@ -35,5 +35,5 @@ fi
 #  cat "${BITOPS_ENVROOT}/generators/modules/aws/aws_terraform.tfvars" >> $terraform_folder/terraform.tfvars
 #done
 
-rm -rf "${BITOPS_ENVROOT}/generators"
+#rm -rf "${BITOPS_ENVROOT}/generators"
 cp -r "${BITOPS_ENVROOT}" /opt/bitops_deployment/generated_code

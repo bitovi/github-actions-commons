@@ -1,3 +1,29 @@
+module "aws_ec2" {
+  source = "../../modules/aws/ec2"
+  count  = var.aws_ec2_instance_create ? 1 : 0 
+  # EC2
+  aws_ec2_ami_filter                  = var.aws_ec2_ami_filter
+  aws_ec2_ami_owner                   = var.aws_ec2_ami_owner
+  aws_ec2_ami_update                  = var.aws_ec2_ami_update
+  aws_ec2_ami_id                      = var.aws_ec2_ami_id
+  aws_ec2_instance_type               = var.aws_ec2_instance_type
+  aws_ec2_instance_public_ip          = var.aws_ec2_instance_public_ip
+  aws_ec2_user_data_replace_on_change = var.aws_ec2_user_data_replace_on_change
+  aws_ec2_instance_root_vol_size      = var.aws_ec2_instance_root_vol_size
+  aws_ec2_instance_root_vol_preserve  = var.aws_ec2_instance_root_vol_preserve
+  aws_ec2_create_keypair_sm           = var.aws_ec2_create_keypair_sm 
+  aws_ec2_security_group_name         = var.aws_ec2_security_group_name
+  aws_ec2_port_list                   = var.aws_ec2_port_list
+  # Data inputs
+  aws_ec2_selected_vpc_id             = data.aws_vpc.default.id
+  aws_subnet_selected_id              = data.aws_subnet.selected[0].id
+  preferred_az                        = local.preferred_az
+  # Others
+  aws_resource_identifier             = var.aws_resource_identifier
+  aws_resource_identifier_supershort  = var.aws_resource_identifier_supershort
+  common_tags                         = local.default_tags
+}
+
 module "aws_certificates" {
   source = "../../modules/aws/certificates"
   count  = var.aws_r53_enable_cert && var.aws_r53_domain_name != "" ? 1 : 0
@@ -17,37 +43,37 @@ module "aws_route53" {
   source = "../../modules/aws/route53"
   count  = var.aws_r53_enable && var.aws_r53_domain_name != "" ? 1 : 0
   # R53 values
-  aws_r53_domain_name        = var.aws_r53_domain_name
-  aws_r53_sub_domain_name    = var.aws_r53_sub_domain_name
-  aws_r53_root_domain_deploy = var.aws_r53_root_domain_deploy
-  aws_r53_enable_cert        = var.aws_r53_enable_cert
+  aws_r53_domain_name           = var.aws_r53_domain_name
+  aws_r53_sub_domain_name       = var.aws_r53_sub_domain_name
+  aws_r53_root_domain_deploy    = var.aws_r53_root_domain_deploy
+  aws_r53_enable_cert           = var.aws_r53_enable_cert
   # ELB
-  aws_elb_dns_name           = module.aws_elb.aws_elb_dns_name
-  aws_elb_zone_id            = module.aws_elb.aws_elb_zone_id
-  aws_elb_listen_port        = var.aws_elb_listen_port
+  aws_elb_dns_name              = module.aws_elb.aws_elb_dns_name
+  aws_elb_zone_id               = module.aws_elb.aws_elb_zone_id
+  aws_elb_listen_port           = var.aws_elb_listen_port
   # Certs
   aws_certificates_selected_arn = var.aws_r53_enable_cert && var.aws_r53_domain_name != "" ? module.aws_certificates[0].selected_arn : ""
   # Others
-  fqdn_provided              = local.fqdn_provided
-  common_tags                = local.default_tags
+  fqdn_provided                 = local.fqdn_provided
+  common_tags                   = local.default_tags
 }
 
 module "aws_elb" {
   source = "../../modules/aws/elb"
   # We should have a count here, right? 
-  aws_elb_security_group_name = var.aws_elb_security_group_name
-  aws_elb_app_port            = var.aws_elb_app_port
-  aws_elb_app_protocol        = var.aws_elb_app_protocol
-  aws_elb_listen_port         = var.aws_elb_listen_port
-  aws_elb_listen_protocol     = var.aws_elb_listen_protocol
-  aws_elb_healthcheck         = var.aws_elb_healthcheck
-  lb_access_bucket_name       = var.lb_access_bucket_name
+  aws_elb_security_group_name        = var.aws_elb_security_group_name
+  aws_elb_app_port                   = var.aws_elb_app_port
+  aws_elb_app_protocol               = var.aws_elb_app_protocol
+  aws_elb_listen_port                = var.aws_elb_listen_port
+  aws_elb_listen_protocol            = var.aws_elb_listen_protocol
+  aws_elb_healthcheck                = var.aws_elb_healthcheck
+  lb_access_bucket_name              = var.lb_access_bucket_name
   # EC2
-  aws_instance_server_az = [aws_instance.server.availability_zone]
-  aws_instance_server_id = [aws_instance.server.id]
-  aws_elb_target_sg_id   = aws_security_group.ec2_security_group.id
+  aws_instance_server_az             = [local.preferred_az]
+  aws_instance_server_id             = [aws_instance.server.id]
+  aws_elb_target_sg_id               = module.aws_ec2.aws_security_group_ec2_sg_id 
   # Certs
-  aws_certificates_selected_arn = var.aws_r53_enable_cert && var.aws_r53_domain_name != "" ? module.aws_certificates[0].selected_arn : ""
+  aws_certificates_selected_arn      = var.aws_r53_enable_cert && var.aws_r53_domain_name != "" ? module.aws_certificates[0].selected_arn : ""
   # Others
   aws_resource_identifier            = var.aws_resource_identifier
   aws_resource_identifier_supershort = var.aws_resource_identifier_supershort
@@ -121,13 +147,13 @@ module "aurora_rds" {
   aws_postgres_database_protection     = var.aws_postgres_database_protection
   aws_postgres_database_final_snapshot = var.aws_postgres_database_final_snapshot
   # Data inputs
+  aws_vpc_default_id                   = data.aws_vpc.default.id
+  aws_subnets_vpc_subnets_ids          = data.aws_subnets.vpc_subnets.ids
+  aws_region_current_name              = data.aws_region.current.name
   # Others
-  aws_resource_identifier            = var.aws_resource_identifier
-  aws_resource_identifier_supershort = var.aws_resource_identifier_supershort
-  aws_vpc_default_id                 = data.aws_vpc.default.id
-  aws_subnets_vpc_subnets_ids        = data.aws_subnets.vpc_subnets.ids
-  aws_region_current_name            = data.aws_region.current.name
-  common_tags                        = local.default_tags
+  aws_resource_identifier              = var.aws_resource_identifier
+  aws_resource_identifier_supershort   = var.aws_resource_identifier_supershort
+  common_tags                          = local.default_tags
   # Dependencies
   depends_on = [data.aws_subnets.vpc_subnets]
 }
@@ -164,6 +190,19 @@ module "eks" {
   common_tags             = local.default_tags
 }
 
+module "ansible" {
+  source = "../../modules/aws/ansible"
+  count  = var.aws_ec2_instance_create ? 1 : 0
+  aws_efs_enable          = var.aws_efs_enable
+  app_repo_name           = var.app_repo_name
+  app_install_root        = var.app_install_root
+  aws_resource_identifier = var.aws_resource_identifier
+  aws_efs_ec2_mount_point = var.aws_efs_ec2_mount_point
+  aws_efs_mount_target    = var.aws_efs_mount_target
+  docker_efs_mount_target = var.docker_efs_mount_target
+  aws_ec2_efs_url         = try(module.ec2_efs[0].efs_url,"")
+}
+
 locals {
   default_tags = merge(local.aws_tags, var.aws_additional_tags)
   fqdn_provided = (
@@ -177,10 +216,19 @@ locals {
   create_efs = var.aws_efs_create == true ? true : (var.aws_efs_create_ha == true ? true : false)
 }
 
+output "instance_public_dns" {
+  description = "Public DNS address of the EC2 instance"
+  value       = try(module.aws_ec2.instance_public_dns,"")
+}
+
+output "instance_public_ip" {
+  description = "Public IP address of the EC2 instance"
+  value       = try(module.aws_ec2.instance_public_ip,"")
+}
+
 output "lb_public_dns" {
   description = "Public DNS address of the LB"
   value       = try(module.aws_elb.aws_elb_dns_name,"")
-  #  efs_url           = [for efs in module.ec2_efs : efs.efs_url]
 }
 
 output "application_public_dns" {

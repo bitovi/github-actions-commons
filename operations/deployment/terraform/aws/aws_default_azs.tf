@@ -45,12 +45,11 @@ data "aws_ec2_instance_type_offerings" "region_azs" {
   location_type = "availability-zone"
 }
 
-# Dupe from EC2, but needed to avoid passing a bunch of vars
-#data "aws_subnet" "selected" {
-#  count             = contains(data.aws_availability_zones.all.names, local.preferred_az) ? 1 : 0
-#  availability_zone = local.preferred_az
-#  default_for_az    = true
-#}
+data "aws_subnet" "selected" {
+  count             = contains(data.aws_availability_zones.all.names, local.preferred_az) ? 1 : 0
+  availability_zone = local.preferred_az
+  default_for_az    = true
+}
 
 resource "random_integer" "az_select" {
   count = length(data.aws_ec2_instance_type_offerings.region_azs.locations) > 0 ? 1 : 0

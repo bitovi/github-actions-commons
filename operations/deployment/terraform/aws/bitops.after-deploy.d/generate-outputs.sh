@@ -25,13 +25,13 @@ if [ "$BITOPS_TERRAFORM_COMMAND" != "destroy" ]; then
 #### EC2 values  deployments:
 AWS_INSTANCE_URL="$BITOPS_EC2_PUBLIC_URL"
 
-" > $BITOPS_ENVROOT/terraform/aws/ec2/ec2.env
+" > $BITOPS_ENVROOT/terraform/aws/ec2.env
   fi
   if [ -n "$BITOPS_EC2_PUBLIC_IP" ] && [ "$BITOPS_ANSIBLE_SKIP_DEPLOY" != "true" ]; then
-      sed -i "s/BITOPS_EC2_PUBLIC_IP/$(echo $BITOPS_EC2_PUBLIC_IP)/" ${BITOPS_ENVROOT}/terraform/aws/ec2/inventory.yaml
+      sed -i "s/BITOPS_EC2_PUBLIC_IP/$(echo $BITOPS_EC2_PUBLIC_IP)/" ${BITOPS_ENVROOT}/terraform/aws/inventory.yaml
   fi
 fi
 
-cat ${BITOPS_ENVROOT}/terraform/aws/ec2/inventory.yaml
+cat ${BITOPS_ENVROOT}/terraform/aws/inventory.yaml
 
 echo "end terraform output for bo-out"
