@@ -72,7 +72,7 @@ resource "aws_security_group_rule" "incoming_elb_ports" {
 resource "aws_elb" "vm_lb" {
   name               = var.aws_resource_identifier_supershort
   security_groups    = [aws_security_group.elb_security_group.id]
-  availability_zones = [var.aws_instance_server_az]
+  availability_zones = var.aws_instance_server_az
   # TODO - ADD VPC Handling
   # availability_zones = var.create_vpc == "true" ? null : [aws_instance.server.availability_zone]
   # subnets            = var.create_vpc == "true" ? aws_subnet.public.*.id : null
