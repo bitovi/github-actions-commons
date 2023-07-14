@@ -239,3 +239,7 @@ output "application_public_dns" {
   description = "Public DNS address for the application or load balancer public DNS"
   value       = try(module.aws_route53[0].vm_url,"")
 }
+
+output "vm_url" {
+  value = try(module.aws_route53[0].vm_url,"")
+}
