@@ -33,9 +33,6 @@ resource "aws_instance" "server" {
   tags = {
     Name = "${var.aws_resource_identifier} - Instance"
   }
-  lifecycle {
-    ignore_changes = [""]
-  }
 }
 
 resource "aws_instance" "server_ignore_ami" {
@@ -59,7 +56,7 @@ resource "aws_instance" "server_ignore_ami" {
     Name = "${var.aws_resource_identifier} - Instance"
   }
   lifecycle {
-    ignore_changes = ["ami"]
+    ignore_changes = [ami]
   }
 }
 
