@@ -220,12 +220,12 @@ locals {
 
 output "instance_public_dns" {
   description = "Public DNS address of the EC2 instance"
-  value       = try(module.aws_ec2.instance_public_dns,"")
+  value       = try(module.ec2[0].instance_public_dns,"")
 }
 
 output "instance_public_ip" {
   description = "Public IP address of the EC2 instance"
-  value       = try(module.aws_ec2.instance_public_ip,"")
+  value       = try(module.ec2[0].instance_public_ip,"")
 }
 
 output "lb_public_dns" {
