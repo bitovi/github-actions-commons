@@ -204,7 +204,6 @@ module "ansible" {
   # Dependencies
   depends_on = [module.ec2]
 }
-}
 
 locals {
   default_tags = merge(local.aws_tags, var.aws_additional_tags)
