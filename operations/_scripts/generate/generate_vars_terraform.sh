@@ -85,11 +85,14 @@ if [ -n "${AWS_POSTGRES_SUBNETS}" ]; then
 fi
 echo "AWS Postgres subnets: $aws_postgres_subnets"
 
+# If the name is true, set it up to be the GH ID - If not, if it's not false, it's the snap name.
 if [ -n "$AWS_POSTGRES_DATABASE_FINAL_SNAPSHOT" ];then
   if [[ $(alpha_only "$AWS_POSTGRES_DATABASE_FINAL_SNAPSHOT") == "true" ]]; then
     aws_postgres_database_final_snapshot="aws_postgres_database_final_snapshot = \"${GITHUB_IDENTIFIER}\""
   else
-    aws_postgres_database_final_snapshot="aws_postgres_database_final_snapshot = \"${AWS_POSTGRES_DATABASE_FINAL_SNAPSHOT}\""
+    if [[ $(alpha_only "$AWS_POSTGRES_DATABASE_FINAL_SNAPSHOT") != "false" ]]; then
+      aws_postgres_database_final_snapshot="aws_postgres_database_final_snapshot = \"${AWS_POSTGRES_DATABASE_FINAL_SNAPSHOT}\""
+    fi
   fi
 fi
 
@@ -155,7 +158,8 @@ if [[ $(alpha_only "$AWS_ELB_CREATE") == true ]]; then
 fi
 
 #-- AWS EFS --#
-if [[ $(alpha_only "$AWS_EFS_CREATE") == true ]] || [[ $(alpha_only "$AWS_EFS_CREATE_HA") == true ]] || [[ $AWS_EFS_MOUNT_ID != "" ]]; then
+if [[ $(alpha_only "$AWS_EFS_ENABLE") == true ]]; then
+  aws_efs_enable=$(generate_var aws_efs_enable $AWS_EFS_ENABLE)
   aws_efs_create=$(generate_var aws_efs_create $AWS_EFS_CREATE)
   aws_efs_create_ha=$(generate_var aws_efs_create_ha $AWS_EFS_CREATE_HA)
   aws_efs_mount_id=$(generate_var aws_efs_mount_id $AWS_EFS_MOUNT_ID)
@@ -179,14 +183,19 @@ if [[ $(alpha_only "$AWS_POSTGRES_ENABLE") == true ]]; then
   aws_postgres_instance_class=$(generate_var aws_postgres_instance_class $AWS_POSTGRES_INSTANCE_CLASS)
   aws_postgres_security_group_name=$(generate_var aws_postgres_security_group_name $AWS_POSTGRES_SECURITY_GROUP_NAME )
   # aws_postgres_subnets=$(generate_var aws_postgres_subnets $AWS_POSTGRES_SUBNETS) - Special case
+  aws_postgres_cluster_name=$(generate_var aws_postgres_cluster_name $AWS_POSTGRES_CLUSTER_NAME)
   aws_postgres_database_name=$(generate_var aws_postgres_database_name $AWS_POSTGRES_DATABASE_NAME)
   aws_postgres_database_port=$(generate_var aws_postgres_database_port $AWS_POSTGRES_DATABASE_PORT)
+  aws_postgres_restore_snapshot=$(generate_var aws_postgres_restore_snapshot $AWS_POSTGRES_RESTORE_SNAPSHOT)
+  aws_postgres_snapshot_name=$(generate_var aws_postgres_snapshot_name $AWS_POSTGRES_SNAPSHOT_NAME)
+  aws_postgres_snapshot_overwrite=$(generate_var aws_postgres_snapshot_overwrite $AWS_POSTGRES_SNAPSHOT_OVERWRITE)
   aws_postgres_database_protection=$(generate_var aws_postgres_database_protection $AWS_POSTGRES_DATABASE_PROTECTION )
   # aws_postgres_database_final_snapshot=$(generate_var aws_postgres_database_final_snapshot $AWS_POSTGRES_DATABASE_FINAL_SNAPSHOT ) - Special case
 fi
 
 #-- EKS Cluster --#
 if [[ $(alpha_only "$AWS_EKS_CREATE") == true ]]; then
+  aws_eks_create=$(generate_var aws_eks_create $AWS_EKS_CREATE)
   aws_eks_region=$(generate_var aws_eks_region $AWS_EKS_REGION)
   aws_eks_security_group_name_master=$(generate_var aws_eks_security_group_name_master $AWS_EKS_SECURITY_GROUP_NAME_MASTER)
   aws_eks_security_group_name_worker=$(generate_var aws_eks_security_group_name_worker $AWS_EKS_SECURITY_GROUP_NAME_WORKER)
@@ -232,26 +241,6 @@ fi
 lb_access_bucket_name=$(generate_var lb_access_bucket_name $LB_LOGS_BUCKET)
 
 # -------------------------------------------------- #
-
-echo "
-$ansible_skip
-$aws_r53_enable_cert
-$aws_ec2_instance_create
-$aws_ec2_ami_update
-$aws_ec2_instance_public_ip
-$aws_efs_create
-$aws_efs_create_ha
-$aws_efs_mount_id
-$aws_elb_create
-$env_aws_secret
-$aws_postgres_enable
-$aws_r53_enable
-$docker_install
-
-" > "${GITHUB_ACTION_PATH}/operations/deployment/generators/terraform.tfvars"
-
-# -------------------------------------------------- #
-
 echo "
 #-- AWS --#
 $aws_resource_identifier
@@ -262,6 +251,7 @@ $aws_additional_tags
 $env_aws_secret
 
 #-- EC2 --#
+$aws_ec2_instance_create
 $aws_ec2_ami_filter
 $aws_ec2_ami_owner
 $aws_ec2_ami_id
@@ -276,6 +266,7 @@ $aws_ec2_instance_public_ip
 $aws_ec2_user_data_replace_on_change
 
 #-- R53 --#
+$aws_r53_enable
 $aws_r53_domain_name
 $aws_r53_sub_domain_name
 $aws_r53_root_domain_deploy
@@ -294,6 +285,7 @@ $aws_elb_healthcheck
 $lb_access_bucket_name
 
 #-- EFS --#
+$aws_efs_enable
 $aws_efs_create
 $aws_efs_create_ha
 $aws_efs_mount_id
@@ -315,12 +307,17 @@ $aws_postgres_database_group_family
 $aws_postgres_instance_class
 $aws_postgres_security_group_name
 $aws_postgres_subnets
+$aws_postgres_cluster_name
 $aws_postgres_database_name
 $aws_postgres_database_port
+$aws_postgres_restore_snapshot
+$aws_postgres_snapshot_name
+$aws_postgres_snapshot_overwrite
 $aws_postgres_database_protection
 $aws_postgres_database_final_snapshot
 
 #-- EKS --#
+$aws_eks_create
 $aws_eks_region
 $aws_eks_security_group_name_master
 $aws_eks_security_group_name_worker
@@ -352,12 +349,8 @@ $app_repo_name
 $app_branch_name
 $app_install_root
 
-" > "${GITHUB_ACTION_PATH}/operations/deployment/terraform/ec2/terraform.tfvars"
+" > "${GITHUB_ACTION_PATH}/operations/deployment/terraform/aws/terraform.tfvars"
 
-# TODO: templatize this
-cp  "${GITHUB_ACTION_PATH}/operations/deployment/terraform/ec2/terraform.tfvars"  "${GITHUB_ACTION_PATH}/operations/deployment/terraform/rds/terraform.tfvars"
-cp  "${GITHUB_ACTION_PATH}/operations/deployment/terraform/ec2/terraform.tfvars"  "${GITHUB_ACTION_PATH}/operations/deployment/terraform/efs/terraform.tfvars"
-cp  "${GITHUB_ACTION_PATH}/operations/deployment/terraform/ec2/terraform.tfvars"  "${GITHUB_ACTION_PATH}/operations/deployment/terraform/eks/terraform.tfvars"
-# -------------------------------------------------- #
+# We might want to pass only the variables needed and not all of them. 
 
 echo "Done with generate_vars_terraform.sh"

@@ -274,11 +274,23 @@ inputs:
   aws_postgres_subnets:
     description: 'Specify which subnets to use as a list of strings.  Example: `i-1234,i-5678,i-9101`'
     required: false
+  aws_postgres_cluster_name:
+    description: 'Specify a cluster name. Will be created if it does not exist'
+    required: false
   aws_postgres_database_name:
     description: 'Specify a database name. Will be created if it does not exist'
     required: false
   aws_postgres_database_port:
     description: 'Postgres database port'
+    required: false
+  aws_postgres_restore_snapshot:
+    description: 'Restore a snapshot to the DB. Should be used only once. Changes in this value will destroy and recreate the database completely.'
+    required: false
+  aws_postgres_snapshot_name:
+    description: 'Takes a snapshot of the cluster using that name. If none definded, no snapshot will be made. If snap already exists, no new one will be created.'
+    required: false
+  aws_postgres_snapshot_overwrite:
+    description: 'If the snapshot name is the same as an existing one, will destroy and create a new one.'
     required: false
   aws_postgres_database_protection:
     description: 'Protects the database from deletion.'
@@ -492,8 +504,12 @@ runs:
         AWS_POSTGRES_INSTANCE_CLASS: ${{ inputs.aws_postgres_instance_class }}
         AWS_POSTGRES_SECURITY_GROUP_NAME: ${{ inputs.aws_postgres_security_group_name }}
         AWS_POSTGRES_SUBNETS: ${{ inputs.aws_postgres_subnets }}
+        AWS_POSTGRES_CLUSTER_NAME: ${{ inputs.aws_postgres_cluster_name }}
         AWS_POSTGRES_DATABASE_NAME: ${{ inputs.aws_postgres_database_name }}
         AWS_POSTGRES_DATABASE_PORT: ${{ inputs.aws_postgres_database_port}}
+        AWS_POSTGRES_RESTORE_SNAPSHOT: ${{ inputs.aws_postgres_restore_snapshot }}
+        AWS_POSTGRES_SNAPSHOT_NAME: ${{ inputs.aws_postgres_snapshot_name }}
+        AWS_POSTGRES_SNAPSHOT_OVERWRITE: ${{ inputs.aws_postgres_snapshot_overwrite }}
         AWS_POSTGRES_DATABASE_PROTECTION: ${{ inputs.aws_postgres_database_protection }}
         AWS_POSTGRES_DATABASE_FINAL_SNAPSHOT: ${{ inputs.aws_postgres_database_final_snapshot }}
 
@@ -535,53 +551,20 @@ runs:
         $GITHUB_ACTION_PATH/operations/_scripts/deploy/export_vars.sh
         echo "Finished executions - Now to print results"
 
-    # output results to GitHub
-    - if: ${{ success() && steps.deploy.outputs.vm_url != '' }}
-      name: Print result created
+    # always output results to GitHub Summary UI
+    - name: Generate Summary Output
+      if: ${{ always() }}
       shell: bash
-      run: |
-        echo "## VM Created! :rocket:" >> $GITHUB_STEP_SUMMARY
-        echo " ${{ steps.deploy.outputs.vm_url }}" >> $GITHUB_STEP_SUMMARY
-    - if: ${{ success() && steps.deploy.outputs.vm_url == '' && inputs.bitops_code_only == 'true' && inputs.bitops_code_store == 'true' }}
-      name: Print code generated and archived
-      shell: bash
-      run: |
-        echo "## BitOps Code generated. :tada: " >> $GITHUB_STEP_SUMMARY
-        echo "Download the code artifact. Will be there for 5 days." >> $GITHUB_STEP_SUMMARY
-        echo "Keep in mind that for creation, EFS should be created before EC2."
-        echo "While destroying, EC2 should be destroyed before EFS. (Due to resources being in use)."
-        echo "You can change that in the bitops.config.yaml file, or regenerate the code with destroy set."
-    - if: ${{ success() && steps.deploy.outputs.vm_url == '' && inputs.bitops_code_only == 'true' && inputs.bitops_code_store != 'true' }}
-      name: Print code built not archived
-      shell: bash
-      run: |
-        echo "## BitOps Code generated. :tada: " >> $GITHUB_STEP_SUMMARY
-    - if: ${{ success() && steps.deploy.outputs.vm_url == '' && inputs.tf_stack_destroy != 'true' && inputs.bitops_code_only != 'true' }}
-      name: Print result deploy finished but no URL.
-      shell: bash
-      run: |
-        echo "## Deploy finished! But no URL found. :thinking: " >> $GITHUB_STEP_SUMMARY
-        echo "If expecting an URL, please check the logs for possible  errors." >> $GITHUB_STEP_SUMMARY
-        echo "If you consider this is a bug in the Github Action, please submit an issue to our repo." >> $GITHUB_STEP_SUMMARY
-    - if: ${{ success() && steps.deploy.outputs.vm_url == '' && inputs.tf_stack_destroy == 'true' && inputs.tf_state_bucket_destroy != 'true' }}
-      name: Print result destroyed no bucket
-      shell: bash
-      run: |
-        echo "## VM Destroyed! :boom:" >> $GITHUB_STEP_SUMMARY
-        echo "Infrastructure should be gone now!" >> $GITHUB_STEP_SUMMARY
-    - if: ${{ success() && steps.deploy.outputs.vm_url == '' && inputs.tf_stack_destroy == 'true' && inputs.tf_state_bucket_destroy == 'true' }}
-      name: Print result destroyed with bucket
-      shell: bash
-      run: |
-        echo "## VM Destroyed! :boom:" >> $GITHUB_STEP_SUMMARY
-        echo "Buckets and infrastructure should be gone now!" >> $GITHUB_STEP_SUMMARY
-    - if: ${{ failure() }} 
-      name: Print error result
-      shell: bash
-      run: |
-        echo "## Workflow failed to run :fire:" >> $GITHUB_STEP_SUMMARY
-        echo "Please check the logs for possible errors." >> $GITHUB_STEP_SUMMARY
-        echo "If you consider this is a bug in the Github Action, please submit an issue to our repo." >> $GITHUB_STEP_SUMMARY
+      env: 
+        SUCCESS: ${{ job.status }} # success, failure, cancelled
+        URL_OUTPUT: ${{ steps.deploy.outputs.vm_url }}
+        BITOPS_CODE_ONLY: ${{ inputs.bitops_code_only }}
+        BITOPS_CODE_STORE: ${{ inputs.bitops_code_store }}
+        TF_STACK_DESTROY: ${{ inputs.tf_stack_destroy }}
+        TF_STATE_BUCKET_DESTROY: ${{ inputs.tf_state_bucket_destroy }}
+      run: $GITHUB_ACTION_PATH/operations/_scripts/deploy/summary.sh
+
+    # upload generated artifacts to GitHub if enabled
     - if: ${{ inputs.bitops_code_store == 'true' }}
       name: Archive production artifacts
       uses: actions/upload-artifact@v3

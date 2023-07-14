@@ -30,6 +30,36 @@ terraform:
 " > $GITHUB_ACTION_PATH/operations/deployment/terraform/$1/bitops.config.yaml
 }
 
+function check_aws_bucket_for_file() {
+  bucket="$1"
+  file_key="$2"
+  aws s3 ls "s3://$bucket/$file_key" --summarize &>/dev/null
+  return $?
+}
+
+function check_statefile() {
+  provider="$1"
+  bucket="$TF_STATE_BUCKET"
+  commons_module="$2"
+  if [[ "$provider" == "aws" ]]; then
+    check_aws_bucket_for_file $bucket "tf-state-$commons_module"
+    return $?
+  fi 
+}
+
+function add_terraform_module (){
+    echo -en "
+    terraform/$1:
+      plugin: terraform
+" >> $BITOPS_CONFIG_TEMP
+}
+
+function add_ansible_module (){
+    echo -en "
+    ansible/$1:
+      plugin: ansible
+" >> $BITOPS_CONFIG_TEMP
+}
 ### End functions
 
 if [[ "$(alpha_only $TF_STACK_DESTROY)" == "true" ]]; then
@@ -50,24 +80,20 @@ targets="$targets
     - random_integer.az_select"
 targets_attribute="$targets_attribute $targets"
 
-#Will create bitops.config.yaml for that terraform folder
-create_bitops_terraform_config rds $AWS_POSTGRES_ENABLE
-create_bitops_terraform_config efs $AWS_EFS_ENABLE
-create_bitops_terraform_config ec2 $AWS_EC2_INSTANCE_CREATE targets
-create_bitops_terraform_config eks $AWS_EKS_CREATE
+create_bitops_terraform_config aws $AWS_EC2_INSTANCE_CREATE targets
 
 #Will add the user_data file into the EC2 Terraform folder
 if [[ $(alpha_only "$AWS_EC2_INSTANCE_CREATE") == true ]]; then
   if [ -s "$GITHUB_WORKSPACE/$AWS_EC2_USER_DATA_FILE" ] && [ -f "$GITHUB_WORKSPACE/$AWS_EC2_USER_DATA_FILE" ]; then
       echo "Moving $AWS_EC2_USER_DATA_FILE to be used by Terraform during EC2 creation"
-      mv "$GITHUB_WORKSPACE/$AWS_EC2_USER_DATA_FILE" "$GITHUB_ACTION_PATH/operations/deployment/terraform/ec2/aws_ec2_incoming_user_data_script.sh"
+      mv "$GITHUB_WORKSPACE/$AWS_EC2_USER_DATA_FILE" "$GITHUB_ACTION_PATH/operations/deployment/terraform/aws/aws_ec2_incoming_user_data_script.sh"
   fi
 fi
 #Will add the user_data file into the EKS Terraform folder
 if [[ $(alpha_only "$AWS_EKS_CREATE") == true ]]; then
   if [ -s "$GITHUB_WORKSPACE/$AWS_EKS_INSTANCE_USER_DATA_FILE" ] && [ -f "$GITHUB_WORKSPACE/$AWS_EKS_INSTANCE_USER_DATA_FILE" ]; then
       echo "Moving $AWS_EKS_INSTANCE_USER_DATA_FILE to be used by Terraform during EKS Nodes creation"
-      mv "$GITHUB_WORKSPACE/$AWS_EKS_INSTANCE_USER_DATA_FILE" "$GITHUB_ACTION_PATH/operations/deployment/terraform/eks/aws_eks_incoming_user_data_script.sh"
+      mv "$GITHUB_WORKSPACE/$AWS_EKS_INSTANCE_USER_DATA_FILE" "$GITHUB_ACTION_PATH/operations/deployment/terraform/aws/aws_eks_incoming_user_data_script.sh"
   fi
 fi
 # Below we will be creating the config file, one for the action itself, other to store as an artifact after. 
@@ -85,92 +111,38 @@ BITOPS_CONFIG_TEMP="/tmp/bitops.config.yaml"
 echo -en "
 bitops:
   deployments:
-    generators:
-      plugin: terraform
-" > $BITOPS_DEPLOY_FILE
+" > $BITOPS_CONFIG_TEMP
 
-# BitOps Generated Code
-echo -en "
-bitops:
-  deployments:
-" > $BITOPS_CODE_FILE
-
-# BitOps Config Temp file
-  # If to add ec2 in the begginning or the end, depending on aplly or destroy. 
-  if [[ $(alpha_only "$AWS_EC2_INSTANCE_CREATE") == true ]] && [[ $(alpha_only "$AWS_EFS_ENABLE") == true ]] && ! [[ $(alpha_only "$TF_STACK_DESTROY") == true ]] ; then
-  # Terraform - Generate infra
-    echo -en "
-    terraform/rds:
-      plugin: terraform
-    terraform/efs:
-      plugin: terraform
-    terraform/eks:
-      plugin: terraform
-    terraform/ec2:
-      plugin: terraform
-" >> $BITOPS_CONFIG_TEMP
-  else
-    echo -en "
-    terraform/ec2:
-      plugin: terraform
-    terraform/eks:
-      plugin: terraform
-    terraform/rds:
-      plugin: terraform
-    terraform/efs:
-      plugin: terraform
-" >> $BITOPS_CONFIG_TEMP
-  fi
+add_terraform_module aws
+  
   # Ansible Code part
 
   if [[ "$(alpha_only $ANSIBLE_SKIP)" != "true" ]] && [[ "$(alpha_only $AWS_EC2_INSTANCE_CREATE)" == "true" ]] && [[ "$(alpha_only $AWS_EC2_INSTANCE_PUBLIC_IP)" == "true" ]]; then
     # Ansible - Docker cleanup
     if [[ $(alpha_only "$DOCKER_FULL_CLEANUP") == true ]]; then
-        echo -en "
-    ansible/docker_cleanup:
-      plugin: ansible
-" >> $BITOPS_CONFIG_TEMP
+      add_ansible_module docker_cleanup
     fi
-
     # Ansible - Instance cleanup
     if [[ $(alpha_only "$DOCKER_REPO_APP_DIRECTORY_CLEANUP") == true ]]; then
-        echo -en "
-    ansible/ec2_cleanup:
-      plugin: ansible
-" >> $BITOPS_CONFIG_TEMP
+      add_ansible_module ec2_cleanup
     fi
-
     # Ansible - Fetch repo
-    echo -en "
-    ansible/clone_repo:
-      plugin: ansible
-" >> $BITOPS_CONFIG_TEMP
-    
+    add_ansible_module clone_repo
     # Ansible - Install EFS
     if [[ $(alpha_only "$AWS_EFS_CREATE") == true ]] || [[ $(alpha_only "$AWS_EFS_CREATE_HA") == true ]] || [[ "$AWS_EFS_MOUNT_ID" != "" ]]; then
-    echo -en "
-    ansible/efs:
-      plugin: ansible
-" >> $BITOPS_CONFIG_TEMP
+      add_ansible_module efs
     fi
-    
     # Ansible - Install Docker
     if [[ $(alpha_only "$DOCKER_INSTALL") == true ]]; then
-    echo -en "
-    ansible/docker:
-      plugin: ansible
-" >> $BITOPS_CONFIG_TEMP
+      add_ansible_module docker
     fi
   fi
 
 # Helm part
 
-
-#
-if [[ "$(alpha_only $BITOPS_CODE_ONLY)" != "true" ]]; then
-  cat $BITOPS_CONFIG_TEMP >> $BITOPS_DEPLOY_FILE
-fi
-cat $BITOPS_CONFIG_TEMP >> $BITOPS_CODE_FILE
+cp $BITOPS_CONFIG_TEMP $BITOPS_DEPLOY_FILE
+cp $BITOPS_CONFIG_TEMP $BITOPS_CODE_FILE
 rm $BITOPS_CONFIG_TEMP
 
 echo "Done with generate_bitops_config.sh"
+exit 0

@@ -1,4 +1,0 @@
-terraform:
-  cli:
-    stack-action: apply
-  options: {}
