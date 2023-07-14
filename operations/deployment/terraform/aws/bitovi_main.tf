@@ -1,5 +1,5 @@
 module "ec2" {
-  source = "..//modules/aws/ec2"
+  source = "../modules/aws/ec2"
   count  = var.aws_ec2_instance_create ? 1 : 0 
   # EC2
   aws_ec2_ami_filter                  = var.aws_ec2_ami_filter
@@ -25,7 +25,7 @@ module "ec2" {
 }
 
 module "aws_certificates" {
-  source = "..//modules/aws/certificates"
+  source = "../modules/aws/certificates"
   count  = var.aws_r53_enable_cert && var.aws_r53_domain_name != "" ? 1 : 0
   # Cert
   aws_r53_cert_arn         = var.aws_r53_cert_arn
@@ -40,7 +40,7 @@ module "aws_certificates" {
 }
 
 module "aws_route53" {
-  source = "..//modules/aws/route53"
+  source = "../modules/aws/route53"
   count  = var.aws_r53_enable && var.aws_r53_domain_name != "" ? 1 : 0
   # R53 values
   aws_r53_domain_name           = var.aws_r53_domain_name
@@ -59,7 +59,7 @@ module "aws_route53" {
 }
 
 module "aws_elb" {
-  source = "..//modules/aws/elb"
+  source = "../modules/aws/elb"
   # We should have a count here, right? 
   aws_elb_security_group_name        = var.aws_elb_security_group_name
   aws_elb_app_port                   = var.aws_elb_app_port
@@ -81,7 +81,7 @@ module "aws_elb" {
 }
 
 module "efs" {
-  source = "..//modules/aws/efs"
+  source = "../modules/aws/efs"
   count  = local.create_efs ? 1 : 0
 # EFS
   aws_efs_replication_destination = var.aws_efs_replication_destination
@@ -101,7 +101,7 @@ module "efs" {
 }
 
 module "ec2_efs" {
-  source = "..//modules/aws/ec2_efs"
+  source = "../modules/aws/ec2_efs"
   count  = local.create_efs ? var.aws_efs_mount_id != "" ? 1 : 0 : 0
   # EFS
   aws_efs_create                  = var.aws_efs_create
@@ -129,7 +129,7 @@ module "ec2_efs" {
 
 
 module "aurora_rds" {
-  source = "..//modules/aws/aurora"
+  source = "../modules/aws/aurora"
   count  = var.aws_postgres_enable ? 1 : 0
   # RDS
   aws_postgres_engine                  = var.aws_postgres_engine
@@ -159,7 +159,7 @@ module "aurora_rds" {
 }
 
 module "eks" {
-  source = "..//modules/aws/eks"
+  source = "../modules/aws/eks"
   count  = var.aws_eks_create ? 1 : 0
   # EKS
   aws_eks_region                     = var.aws_eks_region
@@ -191,7 +191,7 @@ module "eks" {
 }
 
 module "ansible" {
-  source = "..//modules/aws/ansible"
+  source = "../modules/aws/ansible"
   count  = var.aws_ec2_instance_create ? 1 : 0
   aws_efs_enable          = var.aws_efs_enable
   app_repo_name           = var.app_repo_name
