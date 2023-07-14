@@ -87,7 +87,7 @@ if [ -s "$GITHUB_WORKSPACE/$ENV_REPO" ] && [ -n "$ENV_REPO" ]; then
   cp "$GITHUB_WORKSPACE/$ENV_REPO" "${GITHUB_ACTION_PATH}/operations/deployment/env-files/repo.env"
 fi
 
-cp -r "$GITHUB_ACTION_PATH)/operations" /opt/bitops_deployment/generated_code
+cp -r "$GITHUB_ACTION_PATH/operations" /opt/bitops_deployment/generated_code
 
 if [[ $(alpha_only "$BITOPS_SKIP_RUN") == true ]]; then
   echo "BitOps skip run is set to true. Reached end of the line."
