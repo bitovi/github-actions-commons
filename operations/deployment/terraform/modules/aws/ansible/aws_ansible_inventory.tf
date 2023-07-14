@@ -1,9 +1,3 @@
-resource "local_sensitive_file" "private_key" {
-  content         = tls_private_key.key.private_key_pem
-  filename        = format("%s/%s/%s", abspath(path.root), ".ssh", "bitops-ssh-key.pem")
-  file_permission = "0600"
-}
-
 resource "local_file" "ansible_inventor_no_efs" {
   count    = var.aws_efs_enable ? 0 : 1
   filename = format("%s/%s", abspath(path.root), "inventory.yaml")
@@ -12,7 +6,7 @@ bitops_servers:
  hosts: BITOPS_EC2_PUBLIC_IP
  vars:
    ansible_ssh_user: ubuntu
-   ansible_ssh_private_key_file: ${local_sensitive_file.private_key.filename}
+   ansible_ssh_private_key_file: bitops-ssh-key.pem
    app_repo_name: ${var.app_repo_name}
    app_install_root: ${var.app_install_root}
    resource_identifier: ${var.aws_resource_identifier}
@@ -27,7 +21,7 @@ bitops_servers:
  hosts: BITOPS_EC2_PUBLIC_IP
  vars:
    ansible_ssh_user: ubuntu
-   ansible_ssh_private_key_file: ${local_sensitive_file.private_key.filename}
+   ansible_ssh_private_key_file: bitops-ssh-key.pem
    app_repo_name: ${var.app_repo_name}
    app_install_root: ${var.app_install_root}
    resource_identifier: ${var.aws_resource_identifier}

@@ -1,4 +1,4 @@
-module "aws_ec2" {
+module "ec2" {
   source = "..//modules/aws/ec2"
   count  = var.aws_ec2_instance_create ? 1 : 0 
   # EC2
@@ -70,8 +70,8 @@ module "aws_elb" {
   lb_access_bucket_name              = var.lb_access_bucket_name
   # EC2
   aws_instance_server_az             = [local.preferred_az]
-  aws_instance_server_id             = [aws_instance.server.id]
-  aws_elb_target_sg_id               = module.aws_ec2.aws_security_group_ec2_sg_id 
+  aws_instance_server_id             = module.ec2[0].aws_instance_server_id
+  aws_elb_target_sg_id               = module.ec2[0].aws_security_group_ec2_sg_id 
   # Certs
   aws_certificates_selected_arn      = var.aws_r53_enable_cert && var.aws_r53_domain_name != "" ? module.aws_certificates[0].selected_arn : ""
   # Others
@@ -201,6 +201,9 @@ module "ansible" {
   aws_efs_mount_target    = var.aws_efs_mount_target
   docker_efs_mount_target = var.docker_efs_mount_target
   aws_ec2_efs_url         = try(module.ec2_efs[0].efs_url,"")
+  # Dependencies
+  depends_on = [module.ec2]
+}
 }
 
 locals {

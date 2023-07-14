@@ -65,6 +65,12 @@ resource "tls_private_key" "key" {
   rsa_bits  = 4096
 }
 
+resource "local_sensitive_file" "private_key" {
+  content         = tls_private_key.key.private_key_pem
+  filename        = format("%s/%s/%s", abspath(path.root), ".ssh", "bitops-ssh-key.pem")
+  file_permission = "0600"
+}
+
 // Creates an ec2 key pair using the tls_private_key.key public key
 resource "aws_key_pair" "aws_key" {
   key_name   = "${var.aws_resource_identifier_supershort}-ec2kp-${random_string.random.result}"
@@ -102,14 +108,14 @@ resource "random_string" "random" {
 
 output "instance_public_dns" {
   description = "Public DNS address of the EC2 instance"
-  value       = var.aws_ec2_instance_public_ip ? try(aws_instance.server.public_dns,aws_instance.server_ignore_ami.public_dns) : "EC2 Instance doesn't have public IP address"
+  value       = var.aws_ec2_instance_public_ip ? try(aws_instance.server[0].public_dns,aws_instance.server_ignore_ami[0].public_dns) : "EC2 Instance doesn't have public IP address"
 }
 
 output "instance_public_ip" {
   description = "Public IP address of the EC2 instance"
-  value       = try(aws_instance.server.public_ip,aws_instance.server_ignore_ami.public_ip)
+  value       = try(aws_instance.server[0].public_ip,aws_instance.server_ignore_ami[0].public_ip)
 }
 
 output "aws_instance_server_id" {
-  value = try(aws_instance.server.id,aws_instance.server_ignore_ami.id)
+  value = try(aws_instance.server[0].id,aws_instance.server_ignore_ami[0].id)
 }
