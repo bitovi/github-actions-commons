@@ -6,7 +6,7 @@ bitops_servers:
  hosts: BITOPS_EC2_PUBLIC_IP
  vars:
    ansible_ssh_user: ubuntu
-   ansible_ssh_private_key_file: bitops-ssh-key.pem
+   ansible_ssh_private_key_file: ${var.private_key_filename}
    app_repo_name: ${var.app_repo_name}
    app_install_root: ${var.app_install_root}
    resource_identifier: ${var.aws_resource_identifier}
@@ -21,7 +21,7 @@ bitops_servers:
  hosts: BITOPS_EC2_PUBLIC_IP
  vars:
    ansible_ssh_user: ubuntu
-   ansible_ssh_private_key_file: bitops-ssh-key.pem
+   ansible_ssh_private_key_file: ${var.private_key_filename}
    app_repo_name: ${var.app_repo_name}
    app_install_root: ${var.app_install_root}
    resource_identifier: ${var.aws_resource_identifier}

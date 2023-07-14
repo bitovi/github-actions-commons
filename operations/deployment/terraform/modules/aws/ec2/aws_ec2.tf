@@ -119,3 +119,7 @@ output "instance_public_ip" {
 output "aws_instance_server_id" {
   value = try(aws_instance.server[0].id,aws_instance.server_ignore_ami[0].id)
 }
+
+output "private_key_filename" {
+  value = local_sensitive_file.private_key.filename
+}

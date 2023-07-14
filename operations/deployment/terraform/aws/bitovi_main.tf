@@ -201,6 +201,8 @@ module "ansible" {
   aws_efs_mount_target    = var.aws_efs_mount_target
   docker_efs_mount_target = var.docker_efs_mount_target
   aws_ec2_efs_url         = try(module.ec2_efs[0].efs_url,"")
+  # Data inputs
+  private_key_filename    = module.ec2[0].private_key_filename
   # Dependencies
   depends_on = [module.ec2]
 }

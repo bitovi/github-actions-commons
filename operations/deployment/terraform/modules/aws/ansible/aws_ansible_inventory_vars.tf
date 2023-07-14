@@ -6,3 +6,4 @@ variable "aws_efs_ec2_mount_point" {}
 variable "aws_efs_mount_target" {}
 variable "docker_efs_mount_target" {}
 variable "aws_ec2_efs_url" {}
+variable "private_key_filename" {}
