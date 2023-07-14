@@ -241,14 +241,6 @@ fi
 lb_access_bucket_name=$(generate_var lb_access_bucket_name $LB_LOGS_BUCKET)
 
 # -------------------------------------------------- #
-
-#echo "
-#$aws_ec2_ami_update
-#
-#" > "${GITHUB_ACTION_PATH}/operations/deployment/generators/terraform.tfvars"
-
-# -------------------------------------------------- #
-
 echo "
 #-- AWS --#
 $aws_resource_identifier
@@ -360,11 +352,5 @@ $app_install_root
 " > "${GITHUB_ACTION_PATH}/operations/deployment/terraform/aws/terraform.tfvars"
 
 # We might want to pass only the variables needed and not all of them. 
-
-# TODO: templatize this
-#cp  "${GITHUB_ACTION_PATH}/operations/deployment/terraform/aws/terraform.tfvars"  "${GITHUB_ACTION_PATH}/operations/deployment/terraform/aws/rds/terraform.tfvars"
-#cp  "${GITHUB_ACTION_PATH}/operations/deployment/terraform/aws/terraform.tfvars"  "${GITHUB_ACTION_PATH}/operations/deployment/terraform/aws/efs/terraform.tfvars"
-#cp  "${GITHUB_ACTION_PATH}/operations/deployment/terraform/aws/terraform.tfvars"  "${GITHUB_ACTION_PATH}/operations/deployment/terraform/aws/eks/terraform.tfvars"
-# -------------------------------------------------- #
 
 echo "Done with generate_vars_terraform.sh"

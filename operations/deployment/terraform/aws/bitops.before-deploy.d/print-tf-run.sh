@@ -3,6 +3,6 @@
 set -e
 echo ""
 echo "###########################################################################"
-echo "                BitOps --> Executing Terraform EC2 code"
+echo "                BitOps --> Executing Terraform code"
 echo "###########################################################################"
 echo ""

@@ -80,11 +80,7 @@ targets="$targets
     - random_integer.az_select"
 targets_attribute="$targets_attribute $targets"
 
-#Will create bitops.config.yaml for that terraform folder
-#create_bitops_terraform_config aws rds $AWS_POSTGRES_ENABLE
-#create_bitops_terraform_config aws efs $AWS_EFS_ENABLE
 create_bitops_terraform_config aws $AWS_EC2_INSTANCE_CREATE targets
-#create_bitops_terraform_config aws eks $AWS_EKS_CREATE
 
 #Will add the user_data file into the EC2 Terraform folder
 if [[ $(alpha_only "$AWS_EC2_INSTANCE_CREATE") == true ]]; then
@@ -110,20 +106,6 @@ BITOPS_DEPLOY_FILE="${GITHUB_ACTION_PATH}/operations/deployment/bitops.config.ya
 BITOPS_CODE_FILE="${GITHUB_ACTION_PATH}/operations/generated_code/bitops.config.yaml"
 # BitOps Temp file
 BITOPS_CONFIG_TEMP="/tmp/bitops.config.yaml"
-
-## Global Bitops Config
-#echo -en "
-#bitops:
-#  deployments:
-#    generators:
-#      plugin: terraform
-#" > $BITOPS_DEPLOY_FILE
-#
-## BitOps Generated Code
-#echo -en "
-#bitops:
-#  deployments:
-#" > $BITOPS_CODE_FILE
 
 # Global Bitops Config
 echo -en "
@@ -157,13 +139,6 @@ add_terraform_module aws
   fi
 
 # Helm part
-
-### #
-### #if [[ "$(alpha_only $BITOPS_CODE_ONLY)" != "true" ]]; then
-###   cat $BITOPS_CONFIG_TEMP >> $BITOPS_DEPLOY_FILE
-### #fi
-### cat $BITOPS_CONFIG_TEMP >> $BITOPS_CODE_FILE
-### rm $BITOPS_CONFIG_TEMP
 
 cp $BITOPS_CONFIG_TEMP $BITOPS_DEPLOY_FILE
 cp $BITOPS_CONFIG_TEMP $BITOPS_CODE_FILE
