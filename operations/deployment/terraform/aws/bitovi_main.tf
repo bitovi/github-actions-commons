@@ -162,7 +162,7 @@ module "eks" {
   source = "../modules/aws/eks"
   count  = var.aws_eks_create ? 1 : 0
   providers = {
-    kubernetes = kubernetes.eks
+    kubernetes = hashicorp/kubernetes.eks
   }
   # EKS
   aws_eks_region                     = var.aws_eks_region

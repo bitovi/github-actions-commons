@@ -35,7 +35,7 @@ provider \"aws\" {
 }
 
 provider \"hashicorp/kubernetes\" {
-  alias                  = \"eks\"
+  alias                  = eks
   host                   = module.eks.aws_eks_cluster_endpoint
   cluster_ca_certificate = module.eks.aws_eks_cluster_ca_certificate
   token                  = module.eks.aws_eks_cluster_auth_token
