@@ -36,6 +36,18 @@ data "aws_eks_cluster_auth" "cluster_auth" {
   name = aws_eks_cluster.main.id
 }
 
+output "aws_eks_cluster_endpoint" {
+  value = data.aws_eks_cluster.eks_cluster.endpoint
+}
+
+output "aws_eks_cluster_ca_certificate" {
+  value = base64decode(data.aws_eks_cluster.eks_cluster.certificate_authority.0.data)
+}
+
+output "aws_eks_cluster_auth_token" {
+  value = data.aws_eks_cluster_auth.cluster_auth.token
+}
+
 #provider "kubernetes" {
 #  host                   = data.aws_eks_cluster.eks_cluster.endpoint
 #  cluster_ca_certificate = base64decode(data.aws_eks_cluster.eks_cluster.certificate_authority.0.data)
