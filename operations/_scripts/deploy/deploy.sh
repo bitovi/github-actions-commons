@@ -88,7 +88,7 @@ if [ -s "$GITHUB_WORKSPACE/$ENV_REPO" ] && [ -n "$ENV_REPO" ]; then
 fi
 
 # TODO: fix this below
-cp -r "${GITHUB_ACTION_PATH}/operations/deployment /opt/bitops_deployment/generated_code"
+cp -r "${GITHUB_ACTION_PATH}/operations/deployment" "/opt/bitops_deployment/generated_code"
 
 
 if [[ $(alpha_only "$BITOPS_SKIP_RUN") == true ]]; then
