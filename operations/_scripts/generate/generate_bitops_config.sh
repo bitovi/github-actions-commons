@@ -81,6 +81,8 @@ targets="$targets
 targets_attribute="$targets_attribute $targets"
 
 create_bitops_terraform_config aws $AWS_EC2_INSTANCE_CREATE targets
+create_bitops_terraform_config aws_eks $AWS_EKS_CREATE
+
 
 #Will add the user_data file into the EC2 Terraform folder
 if [[ $(alpha_only "$AWS_EC2_INSTANCE_CREATE") == true ]]; then
@@ -93,7 +95,7 @@ fi
 if [[ $(alpha_only "$AWS_EKS_CREATE") == true ]]; then
   if [ -s "$GITHUB_WORKSPACE/$AWS_EKS_INSTANCE_USER_DATA_FILE" ] && [ -f "$GITHUB_WORKSPACE/$AWS_EKS_INSTANCE_USER_DATA_FILE" ]; then
       echo "Moving $AWS_EKS_INSTANCE_USER_DATA_FILE to be used by Terraform during EKS Nodes creation"
-      mv "$GITHUB_WORKSPACE/$AWS_EKS_INSTANCE_USER_DATA_FILE" "$GITHUB_ACTION_PATH/operations/deployment/terraform/aws/aws_eks_incoming_user_data_script.sh"
+      mv "$GITHUB_WORKSPACE/$AWS_EKS_INSTANCE_USER_DATA_FILE" "$GITHUB_ACTION_PATH/operations/deployment/terraform/aws_eks/aws_eks_incoming_user_data_script.sh"
   fi
 fi
 # Below we will be creating the config file, one for the action itself, other to store as an artifact after. 
@@ -113,7 +115,30 @@ bitops:
   deployments:
 " > $BITOPS_CONFIG_TEMP
 
-add_terraform_module aws
+#add_terraform_module aws
+#if [[ $(alpha_only "$AWS_EKS_CREATE") == true ]]; then
+#  add_terraform_module aws_eks
+#fi
+
+
+# BitOps Config Temp file
+  # Terraform - Generate infra
+  # If to add ec2 in the begginning or the end, depending on aplly or destroy. 
+  if [[ $(alpha_only "$TF_STACK_DESTROY") == true ]]; then 
+    if check_statefile aws ec2; then
+      add_terraform_module aws
+    fi
+    if check_statefile aws eks; then
+      add_terraform_module aws_eks
+    fi
+  else
+    if [[ "$(alpha_only $AWS_EC2_INSTANCE_CREATE)" == "true" ]]; then
+      add_terraform_module aws ec2
+    fi
+    if [[ "$(alpha_only $AWS_EKS_CREATE)" == "true" ]]; then
+      add_terraform_module aws_eks
+    fi
+  fi
   
   # Ansible Code part
 

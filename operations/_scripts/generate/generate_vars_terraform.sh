@@ -351,6 +351,8 @@ $app_install_root
 
 " > "${GITHUB_ACTION_PATH}/operations/deployment/terraform/aws/terraform.tfvars"
 
+cp "${GITHUB_ACTION_PATH}/operations/deployment/terraform/aws/terraform.tfvars" "${GITHUB_ACTION_PATH}/operations/deployment/terraform/aws_eks/terraform.tfvars"
+
 # We might want to pass only the variables needed and not all of them. 
 
 echo "Done with generate_vars_terraform.sh"

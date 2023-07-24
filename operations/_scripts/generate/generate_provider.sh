@@ -26,7 +26,7 @@ terraform {
   backend \"s3\" {
     region  = \"${AWS_DEFAULT_REGION}\"
     bucket  = \"${TF_STATE_BUCKET}\"
-    key     = \"tf-state\"
+    key     = \"tf-state-$1\"
     encrypt = true #AES-256encryption
   }
 }
@@ -38,11 +38,10 @@ provider \"aws\" {
   }
 }
 
-" > "${GITHUB_ACTION_PATH}/operations/deployment/terraform/aws/bitovi_provider.tf"
+" > "${GITHUB_ACTION_PATH}/operations/deployment/terraform/$1/bitovi_provider.tf"
 }
 
-generate_provider_aws
-
-cat "${GITHUB_ACTION_PATH}/operations/deployment/terraform/aws/bitovi_provider.tf"
+generate_provider_aws aws
+generate_provider_aws aws_eks
 
 echo "Done with generate_provider.sh"
