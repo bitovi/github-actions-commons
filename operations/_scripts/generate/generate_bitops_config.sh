@@ -113,7 +113,7 @@ BITOPS_CONFIG_TEMP="/tmp/bitops.config.yaml"
 echo -en "
 bitops:
   deployments:
-" > $BITOPS_CONFIG_TEMP
+" > $BITOPS_DEPLOY_FILE
 
 #add_terraform_module aws
 #if [[ $(alpha_only "$AWS_EKS_CREATE") == true ]]; then
@@ -125,12 +125,12 @@ bitops:
   # Terraform - Generate infra
   # If to add ec2 in the begginning or the end, depending on aplly or destroy. 
   if [[ $(alpha_only "$TF_STACK_DESTROY") == true ]]; then 
-    #if check_statefile aws aws; then
+    if check_statefile aws aws; then
       add_terraform_module aws
-    #fi
-    #if check_statefile aws aws_eks; then
+    fi
+    if check_statefile aws aws_eks; then
       add_terraform_module aws_eks
-    #fi
+    fi
   else
     if [[ $(alpha_only "$AWS_EC2_INSTANCE_CREATE") == true ]]; then
       add_terraform_module aws
@@ -165,9 +165,13 @@ bitops:
 
 # Helm part
 
-cp $BITOPS_CONFIG_TEMP $BITOPS_DEPLOY_FILE
-#####cp $BITOPS_CONFIG_TEMP $BITOPS_CODE_FILE
-rm $BITOPS_CONFIG_TEMP
+if [ ! -s "$BITOPS_CONFIG_TEMP" ]; then
+  echo "There is nothing to be created or destroyed. Exiting."
+  exit 0
+else
+  cat $$BITOPS_CONFIG_TEMP >> $BITOPS_DEPLOY_FILE
+  rm $BITOPS_CONFIG_TEMP
+fi
 
 echo "Done with generate_bitops_config.sh"
 exit 0
