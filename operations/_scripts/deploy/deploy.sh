@@ -98,7 +98,7 @@ for i in $(env | grep BITOPS_); do
   BITOPS_EXTRA_ENV_VARS="${BITOPS_EXTRA_ENV_VARS} -e ${i}"
 done
 
-if [[ "$(alpha_only $BITOPS_CODE_ONLY)" != "true" ]]; then
+if [[ $(alpha_only "$BITOPS_CODE_ONLY") == "true" ]]; then
    exit 0
 fi
 
