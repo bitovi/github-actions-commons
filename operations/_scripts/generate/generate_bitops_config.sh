@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -e
+set -ex
 
 echo "In generate_bitops_config.sh"
 
@@ -105,7 +105,7 @@ mkdir -p "${GITHUB_ACTION_PATH}/operations/generated_code"
 # BitOps Deployment Config file
 BITOPS_DEPLOY_FILE="${GITHUB_ACTION_PATH}/operations/deployment/bitops.config.yaml"
 # BitOps Code Config File
-BITOPS_CODE_FILE="${GITHUB_ACTION_PATH}/operations/generated_code/bitops.config.yaml"
+##BITOPS_CODE_FILE="${GITHUB_ACTION_PATH}/operations/generated_code/bitops.config.yaml"
 # BitOps Temp file
 BITOPS_CONFIG_TEMP="/tmp/bitops.config.yaml"
 
@@ -166,7 +166,7 @@ bitops:
 # Helm part
 
 cp $BITOPS_CONFIG_TEMP $BITOPS_DEPLOY_FILE
-cp $BITOPS_CONFIG_TEMP $BITOPS_CODE_FILE
+#####cp $BITOPS_CONFIG_TEMP $BITOPS_CODE_FILE
 rm $BITOPS_CONFIG_TEMP
 
 echo "Done with generate_bitops_config.sh"
