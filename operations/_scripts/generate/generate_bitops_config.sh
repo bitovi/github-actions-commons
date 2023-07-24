@@ -125,12 +125,12 @@ bitops:
   # Terraform - Generate infra
   # If to add ec2 in the begginning or the end, depending on aplly or destroy. 
   if [[ $(alpha_only "$TF_STACK_DESTROY") == true ]]; then 
-    if check_statefile aws aws; then
+    #if check_statefile aws aws; then
       add_terraform_module aws
-    fi
-    if check_statefile aws aws_eks; then
+    #fi
+    #if check_statefile aws aws_eks; then
       add_terraform_module aws_eks
-    fi
+    #fi
   else
     if [[ $(alpha_only "$AWS_EC2_INSTANCE_CREATE") == true ]]; then
       add_terraform_module aws
