@@ -166,9 +166,8 @@ bitops:
 # Helm part
 
 if [ ! -s "$BITOPS_CONFIG_TEMP" ]; then
-  echo "There is nothing to be created or destroyed. Exiting."
-  exit 0
-else
+  rm $BITOPS_DEPLOY_FILE
+ else
   cat $$BITOPS_CONFIG_TEMP >> $BITOPS_DEPLOY_FILE
   rm $BITOPS_CONFIG_TEMP
 fi
