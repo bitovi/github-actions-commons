@@ -44,4 +44,6 @@ provider \"kubernetes\" {
 
 generate_provider_aws
 
+cat "${GITHUB_ACTION_PATH}/operations/deployment/terraform/aws/bitovi_provider.tf"
+
 echo "Done with generate_provider.sh"
