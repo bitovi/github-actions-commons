@@ -29,7 +29,7 @@ locals {
 }
 
 output "aws_eks_cluster_main_id" {
-  name = aws_eks_cluster.main.id
+  value = aws_eks_cluster.main.id
 }
 
 #data "aws_eks_cluster" "eks_cluster" {
