@@ -133,7 +133,7 @@ bitops:
     fi
   else
     if [[ "$(alpha_only $AWS_EC2_INSTANCE_CREATE)" == "true" ]]; then
-      add_terraform_module aws ec2
+      add_terraform_module aws
     fi
     if [[ "$(alpha_only $AWS_EKS_CREATE)" == "true" ]]; then
       add_terraform_module aws_eks
@@ -166,7 +166,7 @@ bitops:
 # Helm part
 
 cp $BITOPS_CONFIG_TEMP $BITOPS_DEPLOY_FILE
-#cp $BITOPS_CONFIG_TEMP $BITOPS_CODE_FILE
+cp $BITOPS_CONFIG_TEMP $BITOPS_CODE_FILE
 rm $BITOPS_CONFIG_TEMP
 
 echo "Done with generate_bitops_config.sh"
