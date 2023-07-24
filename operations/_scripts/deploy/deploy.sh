@@ -88,7 +88,8 @@ if [ -s "$GITHUB_WORKSPACE/$ENV_REPO" ] && [ -n "$ENV_REPO" ]; then
 fi
 
 # TODO: fix this below
-cp -r "$GITHUB_ACTION_PATH/operations" /opt/bitops_deployment/generated_code
+cp -r "${GITHUB_ACTION_PATH}/operations/deployment /opt/bitops_deployment/generated_code"
+
 
 if [[ $(alpha_only "$BITOPS_SKIP_RUN") == true ]]; then
   echo "BitOps skip run is set to true. Reached end of the line."
@@ -101,6 +102,9 @@ for i in $(env | grep BITOPS_); do
   BITOPS_EXTRA_ENV_VARS="${BITOPS_EXTRA_ENV_VARS} -e ${i}"
 done
 
+if [[ "$(alpha_only $BITOPS_CODE_ONLY)" != "true" ]]; then
+   exit 0
+fi
 
 echo "::group::BitOps Excecution"  
 echo "Running BitOps for env: $BITOPS_ENVIRONMENT"
