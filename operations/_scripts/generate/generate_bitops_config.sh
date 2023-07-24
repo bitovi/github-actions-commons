@@ -124,7 +124,7 @@ bitops:
 # BitOps Config Temp file
   # Terraform - Generate infra
   # If to add ec2 in the begginning or the end, depending on aplly or destroy. 
-  if [[ "$(alpha_only $TF_STACK_DESTROY)" == "true" ]]; then 
+  if [[ $(alpha_only "$TF_STACK_DESTROY") == true ]]; then 
     if check_statefile aws aws; then
       add_terraform_module aws
     fi
@@ -132,10 +132,10 @@ bitops:
       add_terraform_module aws_eks
     fi
   else
-    if [[ "$(alpha_only $AWS_EC2_INSTANCE_CREATE)" == "true" ]]; then
+    if [[ $(alpha_only "$AWS_EC2_INSTANCE_CREATE") == true ]]; then
       add_terraform_module aws
     fi
-    if [[ "$(alpha_only $AWS_EKS_CREATE)" == "true" ]]; then
+    if [[ $(alpha_only "$AWS_EKS_CREATE") == true ]]; then
       add_terraform_module aws_eks
     fi
   fi
