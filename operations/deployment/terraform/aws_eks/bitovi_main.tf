@@ -27,3 +27,18 @@ module "eks" {
   aws_resource_identifier = var.aws_resource_identifier
   common_tags             = local.default_tags
 }
+
+
+locals {
+  aws_tags = {
+    OperationsRepo            = "bitovi/github-actions-commons/operations/${var.ops_repo_environment}"
+    AWSResourceIdentifier     = "${var.aws_resource_identifier}"
+    GitHubOrgName             = "${var.app_org_name}"
+    GitHubRepoName            = "${var.app_repo_name}"
+    GitHubBranchName          = "${var.app_branch_name}"
+    GitHubAction              = "bitovi/github-actions-commons"
+    OperationsRepoEnvironment = "${var.ops_repo_environment}"
+    Created_with              = "Bitovi-BitOps"
+  }
+  default_tags = merge(local.aws_tags, var.aws_additional_tags)
+}
