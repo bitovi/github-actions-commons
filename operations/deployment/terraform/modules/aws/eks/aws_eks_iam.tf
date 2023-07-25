@@ -1,12 +1,12 @@
 resource "aws_iam_instance_profile" "eks_inst_profile" {
-  name = "${var.aws_eks_environment}-eks-inst-profile"
+  name = "EKS-${var.aws_eks_environment}-eks-inst-profile"
   path = "/"
   role = aws_iam_role.iam_role_worker.id
   depends_on  = [aws_iam_role.iam_role_worker]
   }
 
 resource "aws_iam_role" "iam_role_master" {
-  name               = "${var.aws_eks_environment}-eksmaster"
+  name               = "EKS-${var.aws_eks_environment}-eksmaster"
   assume_role_policy = jsonencode({
     Version: "2012-10-17"
     Statement: [
@@ -22,7 +22,7 @@ resource "aws_iam_role" "iam_role_master" {
 }
 
 resource "aws_iam_role" "iam_role_worker" {
-  name               = "${var.aws_eks_environment}-eksworker"
+  name               = "EKS-${var.aws_eks_environment}-eksworker"
   assume_role_policy = jsonencode({
     Version: "2012-10-17"
     Statement: [
@@ -62,7 +62,7 @@ resource "aws_iam_role_policy_attachment" "managed_policies_worker" {
 
 
 resource "aws_iam_role_policy" "iam_role_policy_master" {
-  name   = "${var.aws_eks_environment}-eksmaster"
+  name   = "EKS-${var.aws_eks_environment}-eksmaster"
   role   = aws_iam_role.iam_role_master.id
   policy = <<EOF
 {
@@ -92,7 +92,7 @@ EOF
 }
 
 resource "aws_iam_role_policy" "iam_role_policy_worker" {
-  name   = "${var.aws_eks_environment}-eksworker"
+  name   = "EKS-${var.aws_eks_environment}-eksworker"
   role   = aws_iam_role.iam_role_worker.id
   policy = <<EOF
 {

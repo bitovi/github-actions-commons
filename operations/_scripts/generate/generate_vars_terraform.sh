@@ -351,7 +351,45 @@ $app_install_root
 
 " > "${GITHUB_ACTION_PATH}/operations/deployment/terraform/aws/terraform.tfvars"
 
-cp "${GITHUB_ACTION_PATH}/operations/deployment/terraform/aws/terraform.tfvars" "${GITHUB_ACTION_PATH}/operations/deployment/terraform/aws_eks/terraform.tfvars"
+
+# -------------------------------------------------- #
+echo "
+#-- AWS --#
+$aws_resource_identifier
+$aws_resource_identifier_supershort
+$aws_additional_tags
+
+#-- EKS --#
+$aws_eks_create
+$aws_eks_region
+$aws_eks_security_group_name_master
+$aws_eks_security_group_name_worker
+$aws_eks_environment
+$aws_eks_stackname
+$aws_eks_cidr_block
+$aws_eks_workstation_cidr
+$aws_eks_availability_zones
+$aws_eks_private_subnets
+$aws_eks_public_subnets
+$aws_eks_cluster_name
+$aws_eks_cluster_log_types
+$aws_eks_cluster_version
+$aws_eks_instance_type
+$aws_eks_instance_ami_id
+$aws_eks_instance_user_data_file
+$aws_eks_ec2_key_pair
+$aws_eks_store_keypair_sm
+$aws_eks_desired_capacity
+$aws_eks_max_size
+$aws_eks_min_size
+
+#-- Application --#
+$ops_repo_environment
+$app_org_name
+$app_repo_name
+$app_branch_name
+
+" > "${GITHUB_ACTION_PATH}/operations/deployment/terraform/eks/terraform.tfvars"
 
 # We might want to pass only the variables needed and not all of them. 
 

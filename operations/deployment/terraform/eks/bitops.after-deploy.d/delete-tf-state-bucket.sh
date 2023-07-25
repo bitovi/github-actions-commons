@@ -4,7 +4,7 @@
 
 echo ""
 
-tf_state_file="tf-state-ec2"
+tf_state_file="tf-state-eks"
 bucket="$TF_STATE_BUCKET"
 
 function check_aws_bucket_for_file() {

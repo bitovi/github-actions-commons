@@ -93,11 +93,6 @@ if [ -s "$GITHUB_WORKSPACE/$ENV_REPO" ] && [ -n "$ENV_REPO" ]; then
   cp "$GITHUB_WORKSPACE/$ENV_REPO" "${GITHUB_ACTION_PATH}/operations/deployment/env-files/repo.env"
 fi
 
-# TODO: fix this below
-#cp -r "${GITHUB_ACTION_PATH}/operations/deployment" "/opt/bitops_deployment/generated_code"
-
-
-
 # Bypass all the 'BITOPS_' ENV vars to docker
 BITOPS_EXTRA_ENV_VARS=""
 for i in $(env | grep BITOPS_); do
