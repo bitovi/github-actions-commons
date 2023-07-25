@@ -128,13 +128,16 @@ bitops:
     if check_statefile aws aws; then
       add_terraform_module aws
     fi
-    if check_statefile aws aws_eks; then
-      add_terraform_module aws_eks
-    fi
   else
     if [[ $(alpha_only "$AWS_EC2_INSTANCE_CREATE") == true ]]; then
       add_terraform_module aws
     fi
+  fi
+  if [[ $(alpha_only "$AWS_EKS_CREATE") != true ]]; then
+    if check_statefile aws aws_eks; then
+      add_terraform_module aws_eks
+    fi
+  else
     if [[ $(alpha_only "$AWS_EKS_CREATE") == true ]]; then
       add_terraform_module aws_eks
     fi
