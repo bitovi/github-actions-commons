@@ -1,5 +1,5 @@
 module "ec2" {
-  source = "..//modules/aws/ec2"
+  source = "../modules/aws/ec2"
   count  = var.aws_ec2_instance_create ? 1 : 0 
   # EC2
   aws_ec2_ami_filter                  = var.aws_ec2_ami_filter
@@ -25,7 +25,7 @@ module "ec2" {
 }
 
 module "aws_certificates" {
-  source = "..//modules/aws/certificates"
+  source = "../modules/aws/certificates"
   count  = var.aws_r53_enable_cert && var.aws_r53_domain_name != "" ? 1 : 0
   # Cert
   aws_r53_cert_arn         = var.aws_r53_cert_arn
@@ -40,7 +40,7 @@ module "aws_certificates" {
 }
 
 module "aws_route53" {
-  source = "..//modules/aws/route53"
+  source = "../modules/aws/route53"
   count  = var.aws_r53_enable && var.aws_r53_domain_name != "" ? 1 : 0
   # R53 values
   aws_r53_domain_name           = var.aws_r53_domain_name
@@ -59,7 +59,7 @@ module "aws_route53" {
 }
 
 module "aws_elb" {
-  source = "..//modules/aws/elb"
+  source = "../modules/aws/elb"
   # We should have a count here, right? 
   aws_elb_security_group_name        = var.aws_elb_security_group_name
   aws_elb_app_port                   = var.aws_elb_app_port
@@ -81,7 +81,7 @@ module "aws_elb" {
 }
 
 module "efs" {
-  source = "..//modules/aws/efs"
+  source = "../modules/aws/efs"
   count  = local.create_efs ? 1 : 0
 # EFS
   aws_efs_replication_destination = var.aws_efs_replication_destination
@@ -101,7 +101,7 @@ module "efs" {
 }
 
 module "ec2_efs" {
-  source = "..//modules/aws/ec2_efs"
+  source = "../modules/aws/ec2_efs"
   count  = local.create_efs ? var.aws_efs_mount_id != "" ? 1 : 0 : 0
   # EFS
   aws_efs_create                  = var.aws_efs_create
@@ -129,7 +129,7 @@ module "ec2_efs" {
 
 
 module "aurora_rds" {
-  source = "..//modules/aws/aurora"
+  source = "../modules/aws/aurora"
   count  = var.aws_postgres_enable ? 1 : 0
   # RDS
   aws_postgres_engine                  = var.aws_postgres_engine
@@ -158,40 +158,41 @@ module "aurora_rds" {
   depends_on = [data.aws_subnets.vpc_subnets]
 }
 
-module "eks" {
-  source = "..//modules/aws/eks"
-  count  = var.aws_eks_create ? 1 : 0
-  # EKS
-  aws_eks_region                     = var.aws_eks_region
-  aws_eks_security_group_name_master = var.aws_eks_security_group_name_master
-  aws_eks_security_group_name_worker = var.aws_eks_security_group_name_worker
-  aws_eks_environment                = var.aws_eks_environment
-  aws_eks_stackname                  = var.aws_eks_stackname
-  aws_eks_cidr_block                 = var.aws_eks_cidr_block
-  aws_eks_workstation_cidr           = var.aws_eks_workstation_cidr
-  aws_eks_availability_zones         = var.aws_eks_availability_zones
-  aws_eks_private_subnets            = var.aws_eks_private_subnets
-  aws_eks_public_subnets             = var.aws_eks_public_subnets
-  aws_eks_cluster_name               = var.aws_eks_cluster_name
-  aws_eks_cluster_log_types          = var.aws_eks_cluster_log_types
-  aws_eks_cluster_version            = var.aws_eks_cluster_version
-  aws_eks_instance_type              = var.aws_eks_instance_type
-  aws_eks_instance_ami_id            = var.aws_eks_instance_ami_id
-  aws_eks_instance_user_data_file    = var.aws_eks_instance_user_data_file
-  aws_eks_ec2_key_pair               = var.aws_eks_ec2_key_pair
-  aws_eks_store_keypair_sm           = var.aws_eks_store_keypair_sm
-  aws_eks_desired_capacity           = var.aws_eks_desired_capacity
-  aws_eks_max_size                   = var.aws_eks_max_size
-  aws_eks_min_size                   = var.aws_eks_min_size
-  # Hidden
-  aws_eks_vpc_name = var.aws_eks_vpc_name
-  # Others
-  aws_resource_identifier = var.aws_resource_identifier
-  common_tags             = local.default_tags
-}
+#module "eks" {
+#  source = "../modules/aws/eks"
+#  count  = var.aws_eks_create ? 1 : 0
+#  # EKS
+#  #aws_eks_create                     = var.aws_eks_create
+#  aws_eks_region                     = var.aws_eks_region
+#  aws_eks_security_group_name_master = var.aws_eks_security_group_name_master
+#  aws_eks_security_group_name_worker = var.aws_eks_security_group_name_worker
+#  aws_eks_environment                = var.aws_eks_environment
+#  aws_eks_stackname                  = var.aws_eks_stackname
+#  aws_eks_cidr_block                 = var.aws_eks_cidr_block
+#  aws_eks_workstation_cidr           = var.aws_eks_workstation_cidr
+#  aws_eks_availability_zones         = var.aws_eks_availability_zones
+#  aws_eks_private_subnets            = var.aws_eks_private_subnets
+#  aws_eks_public_subnets             = var.aws_eks_public_subnets
+#  aws_eks_cluster_name               = var.aws_eks_cluster_name
+#  aws_eks_cluster_log_types          = var.aws_eks_cluster_log_types
+#  aws_eks_cluster_version            = var.aws_eks_cluster_version
+#  aws_eks_instance_type              = var.aws_eks_instance_type
+#  aws_eks_instance_ami_id            = var.aws_eks_instance_ami_id
+#  aws_eks_instance_user_data_file    = var.aws_eks_instance_user_data_file
+#  aws_eks_ec2_key_pair               = var.aws_eks_ec2_key_pair
+#  aws_eks_store_keypair_sm           = var.aws_eks_store_keypair_sm
+#  aws_eks_desired_capacity           = var.aws_eks_desired_capacity
+#  aws_eks_max_size                   = var.aws_eks_max_size
+#  aws_eks_min_size                   = var.aws_eks_min_size
+#  # Hidden
+#  aws_eks_vpc_name = var.aws_eks_vpc_name
+#  # Others
+#  aws_resource_identifier = var.aws_resource_identifier
+#  common_tags             = local.default_tags
+#}
 
 module "ansible" {
-  source = "..//modules/aws/ansible"
+  source = "../modules/aws/ansible"
   count  = var.aws_ec2_instance_create ? 1 : 0
   aws_efs_enable          = var.aws_efs_enable
   app_repo_name           = var.app_repo_name

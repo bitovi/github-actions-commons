@@ -56,6 +56,12 @@ export LB_LOGS_BUCKET="$(/bin/bash $GITHUB_ACTION_PATH/operations/_scripts/gener
 # Generate bitops incoming repos config if any
 /bin/bash $GITHUB_ACTION_PATH/operations/_scripts/generate/generate_bitops_incoming.sh
 
+
+if [ ! -s "$GITHUB_ACTION_PATH/operations/deployment/bitops.config.yaml" ]; then
+  echo "There is nothing to be created or destroyed. Exiting."
+  exit 0
+fi
+
 # Generate bitops incoming repos config
 if [ -n "$GH_ACTION_REPO" ] && [ -n "$BITOPS_EXTRA_ENV_VARS_FILE" ]; then
   if [ -s $GH_ACTION_REPO/$BITOPS_EXTRA_ENV_VARS_FILE ]; then
@@ -87,19 +93,20 @@ if [ -s "$GITHUB_WORKSPACE/$ENV_REPO" ] && [ -n "$ENV_REPO" ]; then
   cp "$GITHUB_WORKSPACE/$ENV_REPO" "${GITHUB_ACTION_PATH}/operations/deployment/env-files/repo.env"
 fi
 
-cp -r "$GITHUB_ACTION_PATH/operations" /opt/bitops_deployment/generated_code
-
-if [[ $(alpha_only "$BITOPS_SKIP_RUN") == true ]]; then
-  echo "BitOps skip run is set to true. Reached end of the line."
-  exit 0
-fi
-
 # Bypass all the 'BITOPS_' ENV vars to docker
 BITOPS_EXTRA_ENV_VARS=""
 for i in $(env | grep BITOPS_); do
   BITOPS_EXTRA_ENV_VARS="${BITOPS_EXTRA_ENV_VARS} -e ${i}"
 done
 
+if [[ $(alpha_only "$BITOPS_CODE_ONLY") == "true" ]]; then
+   exit 0
+fi
+
+if [[ $(alpha_only "$BITOPS_SKIP_RUN") == true ]]; then
+  echo "BitOps skip run is set to true. Reached end of the line."
+  exit 0
+fi
 
 echo "::group::BitOps Excecution"  
 echo "Running BitOps for env: $BITOPS_ENVIRONMENT"
