@@ -1,4 +1,3 @@
-
 resource "aws_iam_instance_profile" "ec2_profile" {
   name = var.aws_resource_identifier
   role = aws_iam_role.ec2_role.name
@@ -73,14 +72,16 @@ resource "local_sensitive_file" "private_key" {
 
 // Creates an ec2 key pair using the tls_private_key.key public key
 resource "aws_key_pair" "aws_key" {
-  key_name   = "${var.aws_resource_identifier_supershort}-ec2kp-${random_string.random.result}"
+  #key_name   = "${var.aws_resource_identifier_supershort}-ec2kp-${random_string.random.result}"
+  key_name   = "${var.aws_resource_identifier_supershort}-ec2kp"
   public_key = tls_private_key.key.public_key_openssh
 }
 
 // Creates a secret manager secret for the public key
 resource "aws_secretsmanager_secret" "keys_sm_secret" {
   count  = var.aws_ec2_create_keypair_sm ? 1 : 0
-  name   = "${var.aws_resource_identifier_supershort}-sm-${random_string.random.result}"
+  #name   = "${var.aws_resource_identifier_supershort}-sm-${random_string.random.result}"
+  name   = "${var.aws_resource_identifier_supershort}-sm"
 }
  
 resource "aws_secretsmanager_secret_version" "keys_sm_secret_version" {
@@ -98,12 +99,12 @@ resource "aws_secretsmanager_secret_version" "keys_sm_secret_version" {
 EOF
 }
 
-resource "random_string" "random" {
-  length    = 5
-  lower     = true
-  special   = false
-  numeric   = false
-}
+#resource "random_string" "random" {
+#  length    = 5
+#  lower     = true
+#  special   = false
+#  numeric   = false
+#}
 
 
 output "instance_public_dns" {
