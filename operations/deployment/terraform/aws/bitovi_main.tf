@@ -103,7 +103,7 @@ module "efs" {
 
 module "ec2_efs" {
   source = "../modules/aws/ec2_efs"
-  count  = local.create_efs ? var.aws_efs_mount_id != "" ? 1 : 0 : 0
+  count  = var.aws_ec2_instance_create && local.create_efs ? var.aws_efs_mount_id != "" ? 1 : 0 : 0
   # EFS
   aws_efs_create                  = var.aws_efs_create
   aws_efs_create_ha               = var.aws_efs_create_ha
