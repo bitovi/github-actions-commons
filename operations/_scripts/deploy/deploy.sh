@@ -64,8 +64,8 @@ fi
 # Generate bitops incoming repos config
 if [ -n "$GH_ACTION_REPO" ] && [ -n "$BITOPS_EXTRA_ENV_VARS_FILE" ]; then
   if [ -s $GH_ACTION_REPO/$BITOPS_EXTRA_ENV_VARS_FILE ]; then
-    BITOPS_EXTRA_ENV_VARS_FILE="--env-file $GH_ACTION_REPO/$BITOPS_EXTRA_ENV_VARS_FILE"
     cat $GH_ACTION_REPO/$BITOPS_EXTRA_ENV_VARS_FILE
+    BITOPS_EXTRA_ENV_VARS_FILE="--env-file $GH_ACTION_REPO/$BITOPS_EXTRA_ENV_VARS_FILE"
   else
     echo "File $BITOPS_EXTRA_ENV_VARS_FILE missing or empty"
   fi
