@@ -37,6 +37,8 @@ module "aws_certificates" {
   # Others
   fqdn_provided             = local.fqdn_provided
   common_tags               = local.default_tags
+  # Dependencies
+  depends_on = [module.aws_route53]
 }
 
 module "aws_route53" {
@@ -56,6 +58,8 @@ module "aws_route53" {
   # Others
   fqdn_provided                 = local.fqdn_provided
   common_tags                   = local.default_tags
+  # Dependencies
+  depends_on = [module.aws_elb]
 }
 
 module "aws_elb" {
