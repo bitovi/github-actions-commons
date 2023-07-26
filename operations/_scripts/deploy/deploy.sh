@@ -93,7 +93,6 @@ if [ -s "$GITHUB_WORKSPACE/$ENV_REPO" ] && [ -n "$ENV_REPO" ]; then
 fi
 
 # Bypass all the 'BITOPS_' ENV vars to docker
-BITOPS_EXTRA_ENV_VARS=""
 for i in $(env | grep BITOPS_); do
   BITOPS_EXTRA_ENV_VARS="${BITOPS_EXTRA_ENV_VARS} -e ${i}"
 done
