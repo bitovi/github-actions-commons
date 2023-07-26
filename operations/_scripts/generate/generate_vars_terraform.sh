@@ -83,7 +83,6 @@ aws_postgres_subnets=
 if [ -n "${AWS_POSTGRES_SUBNETS}" ]; then
   aws_postgres_subnets="aws_postgres_subnets = \"$(comma_str_to_tf_array $AWS_POSTGRES_SUBNETS)\""
 fi
-echo "AWS Postgres subnets: $aws_postgres_subnets"
 
 # If the name is true, set it up to be the GH ID - If not, if it's not false, it's the snap name.
 if [ -n "$AWS_POSTGRES_DATABASE_FINAL_SNAPSHOT" ];then

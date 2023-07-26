@@ -52,15 +52,14 @@ export LB_LOGS_BUCKET="$(/bin/bash $GITHUB_ACTION_PATH/operations/_scripts/gener
 
 # Generate bitops config
 /bin/bash $GITHUB_ACTION_PATH/operations/_scripts/generate/generate_bitops_config.sh
-
-# Generate bitops incoming repos config if any
-/bin/bash $GITHUB_ACTION_PATH/operations/_scripts/generate/generate_bitops_incoming.sh
-
-
+# If nothing was generated, then we don't have an instance or cluster to connect. Exit.
 if [ ! -s "$GITHUB_ACTION_PATH/operations/deployment/bitops.config.yaml" ]; then
   echo "There is nothing to be created or destroyed. Exiting."
   exit 0
 fi
+
+# Generate bitops incoming repos config if any
+/bin/bash $GITHUB_ACTION_PATH/operations/_scripts/generate/generate_bitops_incoming.sh
 
 # Generate bitops incoming repos config
 if [ -n "$GH_ACTION_REPO" ] && [ -n "$BITOPS_EXTRA_ENV_VARS_FILE" ]; then
