@@ -52,21 +52,20 @@ export LB_LOGS_BUCKET="$(/bin/bash $GITHUB_ACTION_PATH/operations/_scripts/gener
 
 # Generate bitops config
 /bin/bash $GITHUB_ACTION_PATH/operations/_scripts/generate/generate_bitops_config.sh
-
-# Generate bitops incoming repos config if any
-/bin/bash $GITHUB_ACTION_PATH/operations/_scripts/generate/generate_bitops_incoming.sh
-
-
+# If nothing was generated, then we don't have an instance or cluster to connect. Exit.
 if [ ! -s "$GITHUB_ACTION_PATH/operations/deployment/bitops.config.yaml" ]; then
   echo "There is nothing to be created or destroyed. Exiting."
   exit 0
 fi
 
+# Generate bitops incoming repos config if any
+/bin/bash $GITHUB_ACTION_PATH/operations/_scripts/generate/generate_bitops_incoming.sh
+
 # Generate bitops incoming repos config
 if [ -n "$GH_ACTION_REPO" ] && [ -n "$BITOPS_EXTRA_ENV_VARS_FILE" ]; then
   if [ -s $GH_ACTION_REPO/$BITOPS_EXTRA_ENV_VARS_FILE ]; then
-    BITOPS_EXTRA_ENV_VARS_FILE="--env-file $GH_ACTION_REPO/$BITOPS_EXTRA_ENV_VARS_FILE"
     cat $GH_ACTION_REPO/$BITOPS_EXTRA_ENV_VARS_FILE
+    BITOPS_EXTRA_ENV_VARS_FILE="--env-file $GH_ACTION_REPO/$BITOPS_EXTRA_ENV_VARS_FILE"
   else
     echo "File $BITOPS_EXTRA_ENV_VARS_FILE missing or empty"
   fi
@@ -94,7 +93,6 @@ if [ -s "$GITHUB_WORKSPACE/$ENV_REPO" ] && [ -n "$ENV_REPO" ]; then
 fi
 
 # Bypass all the 'BITOPS_' ENV vars to docker
-BITOPS_EXTRA_ENV_VARS=""
 for i in $(env | grep BITOPS_); do
   BITOPS_EXTRA_ENV_VARS="${BITOPS_EXTRA_ENV_VARS} -e ${i}"
 done

@@ -77,11 +77,8 @@ if [ -n "$GH_ACTION_REPO" ]; then
       # Move incoming Ansible folder from action
       mv "$GH_ACTION_INPUT_ANSIBLE_PATH" "$GITHUB_ACTION_PATH/operations/deployment/ansible/action"
 
-      # Add Ansible - Incoming GH to main bitops.config.yaml and the generated code one
-      if [[ "$(alpha_only $BITOPS_CODE_ONLY)" != "true" ]]; then
-        /tmp/yq ".bitops.deployments.ansible/action.plugin = \"ansible\"" -i $GITHUB_ACTION_PATH/operations/deployment/bitops.config.yaml
-      fi
-      /tmp/yq ".bitops.deployments.ansible/action.plugin = \"ansible\"" -i $GITHUB_ACTION_PATH/operations/generated_code/bitops.config.yaml
+      # Add Ansible - Incoming GH to main bitops.config.yaml
+      /tmp/yq ".bitops.deployments.ansible/action.plugin = \"ansible\"" -i $GITHUB_ACTION_PATH/operations/deployment/bitops.config.yaml
     else
       echo "::error::Couldn't find $GH_ACTION_INPUT_ANSIBLE_PLAYBOOK inside incoming Action Ansible folder."
     fi
@@ -120,11 +117,8 @@ if [ -n "$GH_DEPLOYMENT_INPUT_ANSIBLE" ] && [[ "$(alpha_only $ANSIBLE_SKIP)" != 
     # Move incoming Ansible folder from deployment
     mv "$GH_DEPLOYMENT_INPUT_ANSIBLE_PATH" "$GITHUB_ACTION_PATH/operations/deployment/ansible/deployment"
 
-    # Add Ansible - Incoming GH to main bitops.config.yaml and the generated code one
-    if [[ "$(alpha_only $BITOPS_CODE_ONLY)" != "true" ]]; then
-      /tmp/yq ".bitops.deployments.ansible/deployment.plugin = \"ansible\"" -i $GITHUB_ACTION_PATH/operations/deployment/bitops.config.yaml
-    fi
-    /tmp/yq ".bitops.deployments.ansible/deployment.plugin = \"ansible\"" -i $GITHUB_ACTION_PATH/operations/generated_code/bitops.config.yaml
+    # Add Ansible - Incoming GH to main bitops.config.yaml
+    /tmp/yq ".bitops.deployments.ansible/deployment.plugin = \"ansible\"" -i $GITHUB_ACTION_PATH/operations/deployment/bitops.config.yaml
   else
     echo "::error::Couldn't find $GH_DEPLOYMENT_INPUT_ANSIBLE_PLAYBOOK inside incoming Deployment Ansible folder."
   fi
@@ -201,11 +195,8 @@ if [[ "$(alpha_only $AWS_EKS_CREATE)" == "true" ]]; then
       echo "GH_DEPLOYMENT_INPUT_HELM_CHARTS_PATH $GH_DEPLOYMENT_INPUT_HELM_CHARTS_PATH"
       helm_move_content_prepend $GH_DEPLOYMENT_INPUT_HELM_CHARTS_PATH ${GITHUB_ACTION_PATH}/operations/deployment/helm 1
   fi
-  
-  if [[ "$(alpha_only $BITOPS_CODE_ONLY)" != "true" ]]; then
-    /tmp/yq ".bitops.deployments.helm.plugin = \"helm\"" -i $GITHUB_ACTION_PATH/operations/deployment/bitops.config.yaml
-  fi
-  /tmp/yq ".bitops.deployments.helm.plugin = \"helm\"" -i $GITHUB_ACTION_PATH/operations/generated_code/bitops.config.yaml
+  # Add Ansible - Incoming GH to main bitops.config.yaml
+  /tmp/yq ".bitops.deployments.helm.plugin = \"helm\"" -i $GITHUB_ACTION_PATH/operations/deployment/bitops.config.yaml
   
   tree ${GITHUB_ACTION_PATH}/operations/deployment/helm
 fi
