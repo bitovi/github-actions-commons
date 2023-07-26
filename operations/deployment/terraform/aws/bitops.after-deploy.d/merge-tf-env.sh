@@ -95,7 +95,7 @@ function process {
 IFS=',' read -r -a options <<< "$order"
 
 # Loop through the array and call the process function for each element
-if [ -n "$BITOPS_EC2_PUBLIC_IP" ] && [ "$BITOPS_ANSIBLE_SKIP_DEPLOY" != "true" ]; then
+if [ "$BITOPS_TERRAFORM_COMMAND" != "destroy" ]; then
   for option in "${options[@]}"; do
     process "$option"
   done
