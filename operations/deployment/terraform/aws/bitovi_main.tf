@@ -60,6 +60,7 @@ module "aws_route53" {
 
 module "aws_elb" {
   source = "../modules/aws/elb"
+  count  = var.aws_ec2_instance_create ? 1 : 0 
   # We should have a count here, right? 
   aws_elb_security_group_name        = var.aws_elb_security_group_name
   aws_elb_app_port                   = var.aws_elb_app_port
