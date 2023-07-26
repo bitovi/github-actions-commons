@@ -117,6 +117,6 @@ locals {
 #  value = local.ec2_zone_mapping
 #}
 
-output "ha_zone_mapping" {
-  value = local.ha_zone_mapping
-}
+#output "ha_zone_mapping" {
+#  value = local.ha_zone_mapping
+#}
