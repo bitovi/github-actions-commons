@@ -26,7 +26,7 @@ module "ec2" {
 
 module "aws_certificates" {
   source = "../modules/aws/certificates"
-  count  = var.aws_r53_enable_cert && var.aws_r53_domain_name != "" ? 1 : 0
+  count  = var.aws_ec2_instance_create && var.aws_r53_enable && var.aws_r53_domain_name != "" ? 1 : 0
   # Cert
   aws_r53_cert_arn         = var.aws_r53_cert_arn
   aws_r53_create_root_cert = var.aws_r53_create_root_cert
@@ -37,29 +37,25 @@ module "aws_certificates" {
   # Others
   fqdn_provided             = local.fqdn_provided
   common_tags               = local.default_tags
-  # Dependencies
-  depends_on = [module.aws_route53]
 }
 
 module "aws_route53" {
   source = "../modules/aws/route53"
-  count  = var.aws_r53_enable && var.aws_r53_domain_name != "" ? 1 : 0
+  count  = var.aws_ec2_instance_create && var.aws_r53_enable && var.aws_r53_domain_name != "" ? 1 : 0
   # R53 values
   aws_r53_domain_name           = var.aws_r53_domain_name
   aws_r53_sub_domain_name       = var.aws_r53_sub_domain_name
   aws_r53_root_domain_deploy    = var.aws_r53_root_domain_deploy
   aws_r53_enable_cert           = var.aws_r53_enable_cert
   # ELB
-  aws_elb_dns_name              = module.aws_elb.aws_elb_dns_name
-  aws_elb_zone_id               = module.aws_elb.aws_elb_zone_id
+  aws_elb_dns_name              = try(module.aws_elb.aws_elb_dns_name,"")
+  aws_elb_zone_id               = try(module.aws_elb.aws_elb_zone_id,"")
   aws_elb_listen_port           = var.aws_elb_listen_port
   # Certs
   aws_certificates_selected_arn = var.aws_r53_enable_cert && var.aws_r53_domain_name != "" ? module.aws_certificates[0].selected_arn : ""
   # Others
   fqdn_provided                 = local.fqdn_provided
   common_tags                   = local.default_tags
-  # Dependencies
-  depends_on = [module.aws_elb]
 }
 
 module "aws_elb" {
