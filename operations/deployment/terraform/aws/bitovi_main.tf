@@ -112,7 +112,7 @@ module "ec2_efs" {
   aws_efs_ec2_mount_point         = var.aws_efs_ec2_mount_point
   # Other
   ha_zone_mapping                 = local.ha_zone_mapping
-  ec2_zone_mapping                = local.ec2_zone_mapping
+  ec2_zone_mapping                = try(local.ec2_zone_mapping,"")
   # Docker
   docker_efs_mount_target         = var.docker_efs_mount_target
   # Data inputs
