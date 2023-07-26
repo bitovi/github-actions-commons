@@ -34,9 +34,8 @@ AWS_INSTANCE_DNS="$BITOPS_EC2_PUBLIC_DNS"
   fi
   if [ -n "$BITOPS_EC2_PUBLIC_IP" ] && [ "$BITOPS_ANSIBLE_SKIP_DEPLOY" != "true" ]; then
       sed -i "s/BITOPS_EC2_PUBLIC_IP/$(echo $BITOPS_EC2_PUBLIC_IP)/" ${BITOPS_ENVROOT}/terraform/aws/inventory.yaml
+      cat ${BITOPS_ENVROOT}/terraform/aws/inventory.yaml
   fi
 fi
-
-cat ${BITOPS_ENVROOT}/terraform/aws/inventory.yaml
 
 echo "end terraform output for bo-out"

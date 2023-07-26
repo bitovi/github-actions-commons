@@ -95,6 +95,8 @@ function process {
 IFS=',' read -r -a options <<< "$order"
 
 # Loop through the array and call the process function for each element
-for option in "${options[@]}"; do
-  process "$option"
-done
+if [ "$BITOPS_TERRAFORM_COMMAND" != "destroy" ]; then
+  for option in "${options[@]}"; do
+    process "$option"
+  done
+fi
