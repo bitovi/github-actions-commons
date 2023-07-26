@@ -123,7 +123,7 @@ bitops:
       add_terraform_module aws
     fi
   else
-    if [[ $(alpha_only "$AWS_EC2_INSTANCE_CREATE") == true ]]; then
+    if [[ $(alpha_only "$AWS_EC2_INSTANCE_CREATE") == true ]] || [[ $(alpha_only "$AWS_EFS_CREATE") == true ]] || [[ "$AWS_POSTGRES_ENABLE" != "" ]]; then
       add_terraform_module aws
     fi
   fi
