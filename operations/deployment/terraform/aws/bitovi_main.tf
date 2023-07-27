@@ -221,6 +221,8 @@ locals {
     false
   )
   create_efs = var.aws_efs_create == true ? true : (var.aws_efs_create_ha == true ? true : false)
+  ec2_no_dns_url = try(module.aws_elb[0].aws_elb_dns_name,module.ec2[0].instance_public_dns,module.ec2[0].instance_public_ip,"")
+  ec2_no_dns_url_fqdn = local.ec2_no_dns_url != "" ? "http://${local.ec2_no_dns_url}" : ""
 }
 
 output "instance_public_dns" {
@@ -244,5 +246,5 @@ output "application_public_dns" {
 }
 
 output "vm_url" {
-  value = try(module.aws_route53[0].vm_url,module.aws_elb[0].aws_elb_dns_name,module.ec2[0].instance_public_dns,module.ec2[0].instance_public_ip,"")
+  value = try(module.aws_route53[0].vm_url,local.ec2_no_dns_url_fqdn)
 }
