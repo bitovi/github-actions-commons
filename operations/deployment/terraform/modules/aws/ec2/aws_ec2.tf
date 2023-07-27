@@ -35,10 +35,7 @@ resource "aws_instance" "server" {
 }
 
 data "aws_instance" "server_ip" {
-  count                       = var.aws_ec2_ami_update ? 1 : 0
-  lifecycle {
-    replace_triggered_by = [ aws_instance.server[0].public_ip ]
-  }
+  count      = var.aws_ec2_ami_update ? 1 : 0
   depends_on = [ aws_instance.server ]
 }
 
@@ -68,10 +65,7 @@ resource "aws_instance" "server_ignore_ami" {
 }
 
 data "aws_instance" "server_ignore_ami_ip" {
-  count                       = var.aws_ec2_ami_update ? 0 : 1
-  lifecycle {
-    replace_triggered_by = [ aws_instance.server_ignore_ami[0].public_ip ]
-  }
+  count      = var.aws_ec2_ami_update ? 0 : 1
   depends_on = [ aws_instance.server_ignore_ami ]
 }
 
