@@ -368,6 +368,12 @@ variable "docker_efs_mount_target" {
   default     = "/data"
 }
 
+variable "docker_remove_orphans" {
+  type        = bool
+  description = "ddefine if ansible should clean orphans"
+  default     = false
+}
+
 # EKS
 variable "aws_eks_create" {
   type        = bool
