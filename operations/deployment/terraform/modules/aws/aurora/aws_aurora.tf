@@ -1,6 +1,6 @@
-resource "aws_security_group" "pg_security_group" {
-  name        = var.aws_aurora_security_group_name != "" ? var.aws_aurora_security_group_name : "SG for ${var.aws_resource_identifier} - PG"
-  description = "SG for ${var.aws_resource_identifier} - PG"
+resource "aws_security_group" "aurora_security_group" {
+  name        = var.aws_aurora_security_group_name != "" ? var.aws_aurora_security_group_name : "SG for ${var.aws_resource_identifier} - Aurora"
+  description = "SG for ${var.aws_resource_identifier} - Aurora"
   egress {
     from_port   = 0
     to_port     = 0
@@ -8,21 +8,21 @@ resource "aws_security_group" "pg_security_group" {
     cidr_blocks = ["0.0.0.0/0"]
   }
   tags = {
-    Name = "${var.aws_resource_identifier}-pg"
+    Name = "${var.aws_resource_identifier}-aurora"
   }
 }
 
-resource "aws_security_group_rule" "ingress_postgres" {
+resource "aws_security_group_rule" "ingress_aurora" {
   type              = "ingress"
-  description       = "${var.aws_resource_identifier} - pgPort"
+  description       = "${var.aws_resource_identifier} - Aurora Port"
   from_port         = tonumber(var.aws_aurora_database_port)
   to_port           = tonumber(var.aws_aurora_database_port)
   protocol          = "tcp"
   cidr_blocks       = ["0.0.0.0/0"]
-  security_group_id = aws_security_group.pg_security_group.id
+  security_group_id = aws_security_group.aurora_security_group.id
 }
 
-module "rds_cluster" {
+module "aurora_cluster" {
   source         = "terraform-aws-modules/rds-aurora/aws"
   version        = "v7.7.1"
   name           = var.aws_aurora_cluster_name != "" ? var.aws_aurora_cluster_name : var.aws_resource_identifier
@@ -47,9 +47,9 @@ module "rds_cluster" {
   storage_encrypted      = true
   monitoring_interval    = 60
   create_db_subnet_group = true
-  db_subnet_group_name   = "${var.aws_resource_identifier}-pg"
+  db_subnet_group_name   = "${var.aws_resource_identifier}-aurora"
   create_security_group  = false
-  vpc_security_group_ids = [aws_security_group.pg_security_group.id]
+  vpc_security_group_ids = [aws_security_group.aurora_security_group.id]
 
   # TODO: take advantage of iam database auth
   iam_database_authentication_enabled    = true
@@ -95,7 +95,7 @@ module "rds_cluster" {
   ] : []
   enabled_cloudwatch_logs_exports = var.aws_aurora_engine == "aurora-postgresql" ? ["postgresql"] : ["audit","error","general","slowquery"]
   tags = {
-    Name = "${var.aws_resource_identifier}-RDS"
+    Name = "${var.aws_resource_identifier} - Aurora"
   }
 }
 
