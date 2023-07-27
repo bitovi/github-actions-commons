@@ -26,7 +26,7 @@ module "ec2" {
 
 module "aws_certificates" {
   source = "../modules/aws/certificates"
-  count  = var.aws_r53_enable_cert && var.aws_r53_domain_name != "" ? 1 : 0
+  count  = var.aws_ec2_instance_create && var.aws_r53_enable && var.aws_r53_domain_name != "" ? 1 : 0
   # Cert
   aws_r53_cert_arn         = var.aws_r53_cert_arn
   aws_r53_create_root_cert = var.aws_r53_create_root_cert
@@ -41,15 +41,15 @@ module "aws_certificates" {
 
 module "aws_route53" {
   source = "../modules/aws/route53"
-  count  = var.aws_r53_enable && var.aws_r53_domain_name != "" ? 1 : 0
+  count  = var.aws_ec2_instance_create && var.aws_r53_enable && var.aws_r53_domain_name != "" ? 1 : 0
   # R53 values
   aws_r53_domain_name           = var.aws_r53_domain_name
   aws_r53_sub_domain_name       = var.aws_r53_sub_domain_name
   aws_r53_root_domain_deploy    = var.aws_r53_root_domain_deploy
   aws_r53_enable_cert           = var.aws_r53_enable_cert
   # ELB
-  aws_elb_dns_name              = module.aws_elb.aws_elb_dns_name
-  aws_elb_zone_id               = module.aws_elb.aws_elb_zone_id
+  aws_elb_dns_name              = try(module.aws_elb.aws_elb_dns_name,"")
+  aws_elb_zone_id               = try(module.aws_elb.aws_elb_zone_id,"")
   aws_elb_listen_port           = var.aws_elb_listen_port
   # Certs
   aws_certificates_selected_arn = var.aws_r53_enable_cert && var.aws_r53_domain_name != "" ? module.aws_certificates[0].selected_arn : ""
@@ -60,6 +60,7 @@ module "aws_route53" {
 
 module "aws_elb" {
   source = "../modules/aws/elb"
+  count  = var.aws_ec2_instance_create ? 1 : 0 
   # We should have a count here, right? 
   aws_elb_security_group_name        = var.aws_elb_security_group_name
   aws_elb_app_port                   = var.aws_elb_app_port
@@ -102,7 +103,7 @@ module "efs" {
 
 module "ec2_efs" {
   source = "../modules/aws/ec2_efs"
-  count  = local.create_efs ? var.aws_efs_mount_id != "" ? 1 : 0 : 0
+  count  = var.aws_ec2_instance_create && local.create_efs ? var.aws_efs_mount_id != "" ? 1 : 0 : 0
   # EFS
   aws_efs_create                  = var.aws_efs_create
   aws_efs_create_ha               = var.aws_efs_create_ha
@@ -111,7 +112,7 @@ module "ec2_efs" {
   aws_efs_ec2_mount_point         = var.aws_efs_ec2_mount_point
   # Other
   ha_zone_mapping                 = local.ha_zone_mapping
-  ec2_zone_mapping                = local.ec2_zone_mapping
+  ec2_zone_mapping                = try(local.ec2_zone_mapping,"")
   # Docker
   docker_efs_mount_target         = var.docker_efs_mount_target
   # Data inputs

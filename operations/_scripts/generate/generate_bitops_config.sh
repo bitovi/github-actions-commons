@@ -80,10 +80,6 @@ targets="$targets
     - random_integer.az_select"
 targets_attribute="$targets_attribute $targets"
 
-create_bitops_terraform_config aws $AWS_EC2_INSTANCE_CREATE targets
-create_bitops_terraform_config eks $AWS_EKS_CREATE
-
-
 #Will add the user_data file into the EC2 Terraform folder
 if [[ $(alpha_only "$AWS_EC2_INSTANCE_CREATE") == true ]]; then
   if [ -s "$GITHUB_WORKSPACE/$AWS_EC2_USER_DATA_FILE" ] && [ -f "$GITHUB_WORKSPACE/$AWS_EC2_USER_DATA_FILE" ]; then
@@ -121,19 +117,23 @@ bitops:
   if [[ $(alpha_only "$TF_STACK_DESTROY") == true ]]; then 
     if check_statefile aws aws; then
       add_terraform_module aws
+      create_bitops_terraform_config aws false targets
     fi
   else
-    if [[ $(alpha_only "$AWS_EC2_INSTANCE_CREATE") == true ]]; then
+    if [[ $(alpha_only "$AWS_EC2_INSTANCE_CREATE") == true ]] || [[ $(alpha_only "$AWS_EFS_CREATE") == true ]] || [[ "$AWS_POSTGRES_ENABLE" != "" ]]; then
       add_terraform_module aws
+      create_bitops_terraform_config aws true targets
     fi
   fi
   if [[ $(alpha_only "$AWS_EKS_CREATE") != true ]]; then
     if check_statefile aws eks; then
       add_terraform_module eks
+      create_bitops_terraform_config eks false
     fi
   else
     if [[ $(alpha_only "$AWS_EKS_CREATE") == true ]]; then
       add_terraform_module eks
+      create_bitops_terraform_config eks true
     fi
   fi
   
