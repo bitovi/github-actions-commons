@@ -34,6 +34,14 @@ resource "aws_instance" "server" {
   }
 }
 
+resource "aws_instance" "server_ip" {
+  count                       = var.aws_ec2_ami_update ? 1 : 0
+  lifecycle {
+    replace_triggered_by = [ aws_instance.server[0].public_ip ]
+  }
+  depends_on = [ aws_instance.server ]
+}
+
 resource "aws_instance" "server_ignore_ami" {
   count                       = var.aws_ec2_ami_update ? 0 : 1
   ami                         = var.aws_ec2_ami_id != "" ? var.aws_ec2_ami_id : data.aws_ami.image_selected.id
@@ -57,6 +65,14 @@ resource "aws_instance" "server_ignore_ami" {
   lifecycle {
     ignore_changes = [ami]
   }
+}
+
+resource "aws_instance" "server_ignore_ami_ip" {
+  count                       = var.aws_ec2_ami_update ? 0 : 1
+  lifecycle {
+    replace_triggered_by = [ aws_instance.server_ignore_ami[0].public_ip ]
+  }
+  depends_on = [ aws_instance.server_ignore_ami ]
 }
 
 resource "tls_private_key" "key" {
@@ -106,19 +122,18 @@ EOF
 #  numeric   = false
 #}
 
-
 output "instance_public_dns" {
   description = "Public DNS address of the EC2 instance"
-  value       = var.aws_ec2_instance_public_ip ? try(aws_instance.server[0].public_dns,aws_instance.server_ignore_ami[0].public_dns) : "EC2 Instance doesn't have public IP address"
+  value       = var.aws_ec2_instance_public_ip ? try(aws_instance.server_ip[0].public_dns,aws_instance.server_ignore_ami_ip[0].public_dns) : "EC2 Instance doesn't have public IP address"
 }
 
 output "instance_public_ip" {
   description = "Public IP address of the EC2 instance"
-  value       = try(aws_instance.server[0].public_ip,aws_instance.server_ignore_ami[0].public_ip)
+  value       = try(aws_instance.server_ip[0].public_ip,aws_instance.server_ignore_ami_ip[0].public_ip)
 }
 
 output "aws_instance_server_id" {
-  value = try(aws_instance.server[0].id,aws_instance.server_ignore_ami[0].id)
+  value = try(aws_instance.server_ip[0].id,aws_instance.server_ignore_ami_ip[0].id)
 }
 
 output "private_key_filename" {
