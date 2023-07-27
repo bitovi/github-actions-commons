@@ -26,6 +26,8 @@
     nocache: yes
     pull: true
   register: output
+  async: 300
+  poll: 5
   when: existing_files | length > 0
 
 - ansible.builtin.debug:

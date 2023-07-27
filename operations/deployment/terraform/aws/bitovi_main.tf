@@ -112,7 +112,7 @@ module "ec2_efs" {
   aws_efs_ec2_mount_point         = var.aws_efs_ec2_mount_point
   # Other
   ha_zone_mapping                 = local.ha_zone_mapping
-  ec2_zone_mapping                = try(local.ec2_zone_mapping,"")
+  ec2_zone_mapping                = local.ec2_zone_mapping
   # Docker
   docker_efs_mount_target         = var.docker_efs_mount_target
   # Data inputs
@@ -131,22 +131,22 @@ module "ec2_efs" {
 
 module "aurora_rds" {
   source = "../modules/aws/aurora"
-  count  = var.aws_postgres_enable ? 1 : 0
+  count  = var.aws_aurora_enable ? 1 : 0
   # RDS
-  aws_postgres_engine                  = var.aws_postgres_engine
-  aws_postgres_engine_version          = var.aws_postgres_engine_version
-  aws_postgres_database_group_family   = var.aws_postgres_database_group_family
-  aws_postgres_instance_class          = var.aws_postgres_instance_class
-  aws_postgres_security_group_name     = var.aws_postgres_security_group_name
-  aws_postgres_subnets                 = var.aws_postgres_subnets
-  aws_postgres_cluster_name            = var.aws_postgres_cluster_name
-  aws_postgres_database_name           = var.aws_postgres_database_name
-  aws_postgres_database_port           = var.aws_postgres_database_port
-  aws_postgres_restore_snapshot        = var.aws_postgres_restore_snapshot
-  aws_postgres_snapshot_name           = var.aws_postgres_snapshot_name
-  aws_postgres_snapshot_overwrite      = var.aws_postgres_snapshot_overwrite
-  aws_postgres_database_protection     = var.aws_postgres_database_protection
-  aws_postgres_database_final_snapshot = var.aws_postgres_database_final_snapshot
+  aws_aurora_engine                  = var.aws_aurora_engine
+  aws_aurora_engine_version          = var.aws_aurora_engine_version
+  aws_aurora_database_group_family   = var.aws_aurora_database_group_family
+  aws_aurora_instance_class          = var.aws_aurora_instance_class
+  aws_aurora_security_group_name     = var.aws_aurora_security_group_name
+  aws_aurora_subnets                 = var.aws_aurora_subnets
+  aws_aurora_cluster_name            = var.aws_aurora_cluster_name
+  aws_aurora_database_name           = var.aws_aurora_database_name
+  aws_aurora_database_port           = var.aws_aurora_database_port
+  aws_aurora_restore_snapshot        = var.aws_aurora_restore_snapshot
+  aws_aurora_snapshot_name           = var.aws_aurora_snapshot_name
+  aws_aurora_snapshot_overwrite      = var.aws_aurora_snapshot_overwrite
+  aws_aurora_database_protection     = var.aws_aurora_database_protection
+  aws_aurora_database_final_snapshot = var.aws_aurora_database_final_snapshot
   # Data inputs
   aws_vpc_default_id                   = data.aws_vpc.default.id
   aws_subnets_vpc_subnets_ids          = data.aws_subnets.vpc_subnets.ids

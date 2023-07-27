@@ -253,49 +253,49 @@ inputs:
     required: false
   
   # AWS RDS
-  aws_postgres_enable:
+  aws_aurora_enable:
     description: 'Set to "true" to enable a postgres database'
     required: false
-  aws_postgres_engine: 
+  aws_aurora_engine: 
     description: 'Which Database engine to use'
     required: false
-  aws_postgres_engine_version:
+  aws_aurora_engine_version:
     description: 'Specify Postgres version'
     required: false
-  aws_postgres_database_group_family:
+  aws_aurora_database_group_family:
     description: 'Postgres database group family'
     required: false 
-  aws_postgres_instance_class:
+  aws_aurora_instance_class:
     description: 'Define the size of the instances in the DB cluster'
     required: false
-  aws_postgres_security_group_name:
+  aws_aurora_security_group_name:
     description:  'The name of the Postgres security group'
     required: false
-  aws_postgres_subnets:
+  aws_aurora_subnets:
     description: 'Specify which subnets to use as a list of strings.  Example: `i-1234,i-5678,i-9101`'
     required: false
-  aws_postgres_cluster_name:
+  aws_aurora_cluster_name:
     description: 'Specify a cluster name. Will be created if it does not exist'
     required: false
-  aws_postgres_database_name:
+  aws_aurora_database_name:
     description: 'Specify a database name. Will be created if it does not exist'
     required: false
-  aws_postgres_database_port:
+  aws_aurora_database_port:
     description: 'Postgres database port'
     required: false
-  aws_postgres_restore_snapshot:
+  aws_aurora_restore_snapshot:
     description: 'Restore a snapshot to the DB. Should be used only once. Changes in this value will destroy and recreate the database completely.'
     required: false
-  aws_postgres_snapshot_name:
+  aws_aurora_snapshot_name:
     description: 'Takes a snapshot of the cluster using that name. If none definded, no snapshot will be made. If snap already exists, no new one will be created.'
     required: false
-  aws_postgres_snapshot_overwrite:
+  aws_aurora_snapshot_overwrite:
     description: 'If the snapshot name is the same as an existing one, will destroy and create a new one.'
     required: false
-  aws_postgres_database_protection:
+  aws_aurora_database_protection:
     description: 'Protects the database from deletion.'
     required: false
-  aws_postgres_database_final_snapshot:
+  aws_aurora_database_final_snapshot:
     description: 'Generates a snapshot of the database before deletion.'
     required: false
     
@@ -497,21 +497,21 @@ runs:
         AWS_EFS_EC2_MOUNT_POINT: ${{ inputs.aws_efs_ec2_mount_point }}
 
         # AWS RDS
-        AWS_POSTGRES_ENABLE: ${{ inputs.aws_postgres_enable }}
-        AWS_POSTGRES_ENGINE:  ${{ inputs.aws_postgres_engine }}
-        AWS_POSTGRES_ENGINE_VERSION:  ${{ inputs.aws_postgres_engine_version }}
-        AWS_POSTGRES_DATABASE_GROUP_FAMILY:  ${{ inputs.aws_postgres_database_group_family }}
-        AWS_POSTGRES_INSTANCE_CLASS: ${{ inputs.aws_postgres_instance_class }}
-        AWS_POSTGRES_SECURITY_GROUP_NAME: ${{ inputs.aws_postgres_security_group_name }}
-        AWS_POSTGRES_SUBNETS: ${{ inputs.aws_postgres_subnets }}
-        AWS_POSTGRES_CLUSTER_NAME: ${{ inputs.aws_postgres_cluster_name }}
-        AWS_POSTGRES_DATABASE_NAME: ${{ inputs.aws_postgres_database_name }}
-        AWS_POSTGRES_DATABASE_PORT: ${{ inputs.aws_postgres_database_port}}
-        AWS_POSTGRES_RESTORE_SNAPSHOT: ${{ inputs.aws_postgres_restore_snapshot }}
-        AWS_POSTGRES_SNAPSHOT_NAME: ${{ inputs.aws_postgres_snapshot_name }}
-        AWS_POSTGRES_SNAPSHOT_OVERWRITE: ${{ inputs.aws_postgres_snapshot_overwrite }}
-        AWS_POSTGRES_DATABASE_PROTECTION: ${{ inputs.aws_postgres_database_protection }}
-        AWS_POSTGRES_DATABASE_FINAL_SNAPSHOT: ${{ inputs.aws_postgres_database_final_snapshot }}
+        AWS_AURORA_ENABLE: ${{ inputs.aws_aurora_enable }}
+        AWS_AURORA_ENGINE:  ${{ inputs.aws_aurora_engine }}
+        AWS_AURORA_ENGINE_VERSION:  ${{ inputs.aws_aurora_engine_version }}
+        AWS_AURORA_DATABASE_GROUP_FAMILY:  ${{ inputs.aws_aurora_database_group_family }}
+        AWS_AURORA_INSTANCE_CLASS: ${{ inputs.aws_aurora_instance_class }}
+        AWS_AURORA_SECURITY_GROUP_NAME: ${{ inputs.aws_aurora_security_group_name }}
+        AWS_AURORA_SUBNETS: ${{ inputs.aws_aurora_subnets }}
+        AWS_AURORA_CLUSTER_NAME: ${{ inputs.aws_aurora_cluster_name }}
+        AWS_AURORA_DATABASE_NAME: ${{ inputs.aws_aurora_database_name }}
+        AWS_AURORA_DATABASE_PORT: ${{ inputs.aws_aurora_database_port}}
+        AWS_AURORA_RESTORE_SNAPSHOT: ${{ inputs.aws_aurora_restore_snapshot }}
+        AWS_AURORA_SNAPSHOT_NAME: ${{ inputs.aws_aurora_snapshot_name }}
+        AWS_AURORA_SNAPSHOT_OVERWRITE: ${{ inputs.aws_aurora_snapshot_overwrite }}
+        AWS_AURORA_DATABASE_PROTECTION: ${{ inputs.aws_aurora_database_protection }}
+        AWS_AURORA_DATABASE_FINAL_SNAPSHOT: ${{ inputs.aws_aurora_database_final_snapshot }}
 
         # Docker
         DOCKER_INSTALL: ${{ inputs.docker_install }}
