@@ -30,7 +30,7 @@ AURORA_CLUSTER_MASTER_USERNAME=${module.aurora_cluster.cluster_master_username}
 # The Route53 Hosted Zone ID of the endpoint
 AURORA_CLUSTER_HOSTED_ZONE_ID=${module.aurora_cluster.cluster_hosted_zone_id}
 # AURORA specific env vars
-DBA_ENGINE="${module.aurora_cluster.cluster_engine}
+DBA_ENGINE="${var.aws_aurora_engine}
 DBA_USER="${module.aurora_cluster.cluster_master_username}"
 DBA_PASSWORD="${module.aurora_cluster.cluster_master_password}"
 DBA_NAME=${module.aurora_cluster.cluster_database_name == null ? "" : module.aurora_cluster.cluster_database_name}
@@ -69,7 +69,7 @@ POSTGRES_CLUSTER_MASTER_USERNAME=${module.aurora_cluster.cluster_master_username
 # The Route53 Hosted Zone ID of the endpoint
 POSTGRES_CLUSTER_HOSTED_ZONE_ID=${module.aurora_cluster.cluster_hosted_zone_id}
 # POSTGRES specific env vars
-DBA_ENGINE="${module.aurora_cluster.cluster_engine} 
+DBA_ENGINE="${var.aws_aurora_engine} 
 PG_USER="${module.aurora_cluster.cluster_master_username}"
 PG_PASSWORD="${module.aurora_cluster.cluster_master_password}"
 PGDATABASE=${module.aurora_cluster.cluster_database_name == null ? "" : module.aurora_cluster.cluster_database_name}
