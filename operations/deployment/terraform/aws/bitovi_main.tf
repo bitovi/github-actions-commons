@@ -199,6 +199,7 @@ module "ansible" {
   app_repo_name           = var.app_repo_name
   app_install_root        = var.app_install_root
   aws_resource_identifier = var.aws_resource_identifier
+  docker_remove_orphans.  = var.docker_remove_orphans
   aws_efs_ec2_mount_point = var.aws_efs_ec2_mount_point
   aws_efs_mount_target    = var.aws_efs_mount_target
   docker_efs_mount_target = var.docker_efs_mount_target

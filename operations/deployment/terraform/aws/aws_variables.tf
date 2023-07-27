@@ -370,7 +370,7 @@ variable "docker_efs_mount_target" {
 
 variable "docker_remove_orphans" {
   type        = bool
-  description = "ddefine if ansible should clean orphans"
+  description = "define if ansible should clean orphans"
   default     = false
 }
 
