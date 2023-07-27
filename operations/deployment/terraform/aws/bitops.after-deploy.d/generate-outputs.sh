@@ -20,8 +20,9 @@ if [ "$BITOPS_TERRAFORM_COMMAND" != "destroy" ]; then
   # Generating ec2 terraform .env
   export BITOPS_EC2_PUBLIC_IP="$(cat $TARGET_FILE | grep instance_public_ip | awk -F"=" '{print $2}')"
   export BITOPS_EC2_PUBLIC_URL="$(cat $TARGET_FILE | grep instance_public_dns | awk -F"=" '{print $2}')"
-  export BITOPS_EC2_ELB_DNS="$(cat $TARGET_FILE | grep lb_public_dns | awk -F"=" '{print $2}')"
+  export BITOPS_EC2_ELB_DNS="$(cat $TARGET_FILE | grep aws_elb_dns_name | awk -F"=" '{print $2}')"
   export BITOPS_EC2_PUBLIC_DNS="$(cat $TARGET_FILE | grep application_public_dns | awk -F"=" '{print $2}')"
+  export BITOPS_EC2_VM_URL="$(cat $TARGET_FILE | grep vm_url | awk -F"=" '{print $2}')"
   if [ -n "$BITOPS_EC2_PUBLIC_URL" ]; then
     echo -en "
 #### EC2 values  deployments:
@@ -29,6 +30,7 @@ AWS_INSTANCE_IP="$BITOPS_EC2_PUBLIC_IP"
 AWS_INSTANCE_URL="$BITOPS_EC2_PUBLIC_URL"
 AWS_INSTANCE_ELB="$BITOPS_EC2_ELB_DNS"
 AWS_INSTANCE_DNS="$BITOPS_EC2_PUBLIC_DNS"
+AWS_INSTANCE_VM_URL="$BITOPS_EC2_VM_URL"
 
 " > $BITOPS_ENVROOT/terraform/aws/ec2.env
   fi

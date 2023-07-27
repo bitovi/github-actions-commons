@@ -225,6 +225,7 @@ fi
 
 if [[ $(alpha_only "$DOCKER_INSTALL") == true ]]; then
   docker_install=$(generate_var docker_install $DOCKER_INSTALL)
+  docker_remove_orphans=$(generate_var docker_remove_orphans $DOCKER_REMOVE_ORPHANS)
   docker_efs_mount_target=$(generate_var docker_efs_mount_target $DOCKER_EFS_MOUNT_TARGET)
 fi
 
@@ -340,6 +341,7 @@ $aws_eks_max_size
 $aws_eks_min_size
 
 $docker_efs_mount_target
+$docker_remove_orphans
 
 #-- Application --#
 $ops_repo_environment

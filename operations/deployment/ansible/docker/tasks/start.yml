@@ -25,7 +25,10 @@
     recreate: always
     nocache: yes
     pull: true
+    remove_orphans: "{{ docker_remove_orphans }}"
   register: output
+  async: 300
+  poll: 5
   when: existing_files | length > 0
 
 - ansible.builtin.debug:
