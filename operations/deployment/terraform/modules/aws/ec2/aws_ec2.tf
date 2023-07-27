@@ -118,16 +118,16 @@ EOF
 
 output "instance_public_dns" {
   description = "Public DNS address of the EC2 instance"
-  value       = var.aws_ec2_instance_public_ip ? try(aws_instance.server_ip[0].public_dns,aws_instance.server_ignore_ami_ip[0].public_dns) : "EC2 Instance doesn't have public IP address"
+  value       = var.aws_ec2_instance_public_ip ? try(data.aws_instance.server_ip[0].public_dns,data.aws_instance.server_ignore_ami_ip[0].public_dns) : "EC2 Instance doesn't have public IP address"
 }
 
 output "instance_public_ip" {
   description = "Public IP address of the EC2 instance"
-  value       = try(aws_instance.server_ip[0].public_ip,aws_instance.server_ignore_ami_ip[0].public_ip)
+  value       = try(data.aws_instance.server_ip[0].public_ip,data.aws_instance.server_ignore_ami_ip[0].public_ip)
 }
 
 output "aws_instance_server_id" {
-  value = try(aws_instance.server_ip[0].id,aws_instance.server_ignore_ami_ip[0].id)
+  value = try(data.aws_instance.server_ip[0].id,data.aws_instance.server_ignore_ami_ip[0].id)
 }
 
 output "private_key_filename" {
