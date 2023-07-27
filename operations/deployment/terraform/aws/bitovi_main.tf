@@ -48,8 +48,8 @@ module "aws_route53" {
   aws_r53_root_domain_deploy    = var.aws_r53_root_domain_deploy
   aws_r53_enable_cert           = var.aws_r53_enable_cert
   # ELB
-  aws_elb_dns_name              = try(module.aws_elb.aws_elb_dns_name,"")
-  aws_elb_zone_id               = try(module.aws_elb.aws_elb_zone_id,"")
+  aws_elb_dns_name              = try(module.aws_elb[0].aws_elb_dns_name,"")
+  aws_elb_zone_id               = try(module.aws_elb[0].aws_elb_zone_id,"")
   aws_elb_listen_port           = var.aws_elb_listen_port
   # Certs
   aws_certificates_selected_arn = var.aws_r53_enable_cert && var.aws_r53_domain_name != "" ? module.aws_certificates[0].selected_arn : ""
@@ -199,6 +199,7 @@ module "ansible" {
   app_repo_name           = var.app_repo_name
   app_install_root        = var.app_install_root
   aws_resource_identifier = var.aws_resource_identifier
+  docker_remove_orphans   = var.docker_remove_orphans
   aws_efs_ec2_mount_point = var.aws_efs_ec2_mount_point
   aws_efs_mount_target    = var.aws_efs_mount_target
   docker_efs_mount_target = var.docker_efs_mount_target
@@ -220,6 +221,8 @@ locals {
     false
   )
   create_efs = var.aws_efs_create == true ? true : (var.aws_efs_create_ha == true ? true : false)
+  ec2_no_dns_url = try(module.aws_elb[0].aws_elb_dns_name,module.ec2[0].instance_public_dns,module.ec2[0].instance_public_ip,"")
+  ec2_no_dns_url_fqdn = local.ec2_no_dns_url != "" ? "http://${local.ec2_no_dns_url}" : ""
 }
 
 output "instance_public_dns" {
@@ -232,9 +235,9 @@ output "instance_public_ip" {
   value       = try(module.ec2[0].instance_public_ip,"")
 }
 
-output "lb_public_dns" {
+output "aws_elb_dns_name" {
   description = "Public DNS address of the LB"
-  value       = try(module.aws_elb.aws_elb_dns_name,"")
+  value       = try(module.aws_elb[0].aws_elb_dns_name,"")
 }
 
 output "application_public_dns" {
@@ -243,5 +246,5 @@ output "application_public_dns" {
 }
 
 output "vm_url" {
-  value = try(module.aws_route53[0].vm_url,"")
+  value = try(module.aws_route53[0].vm_url,local.ec2_no_dns_url_fqdn)
 }
