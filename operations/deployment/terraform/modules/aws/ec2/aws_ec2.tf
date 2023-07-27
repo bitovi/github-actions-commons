@@ -35,8 +35,9 @@ resource "aws_instance" "server" {
 }
 
 data "aws_instance" "server_ip" {
-  count      = var.aws_ec2_ami_update ? 1 : 0
-  depends_on = [ aws_instance.server ]
+  count       = var.aws_ec2_ami_update ? 1 : 0
+  instance_id = aws_instance.server.id
+  depends_on  = [ aws_instance.server ]
 }
 
 resource "aws_instance" "server_ignore_ami" {
@@ -66,7 +67,8 @@ resource "aws_instance" "server_ignore_ami" {
 
 data "aws_instance" "server_ignore_ami_ip" {
   count      = var.aws_ec2_ami_update ? 0 : 1
-  depends_on = [ aws_instance.server_ignore_ami ]
+  instance_id = aws_instance.server_ignore_ami.id
+  depends_on  = [ aws_instance.server_ignore_ami ]
 }
 
 resource "tls_private_key" "key" {
