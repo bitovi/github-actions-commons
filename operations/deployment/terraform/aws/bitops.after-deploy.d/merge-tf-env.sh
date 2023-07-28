@@ -20,7 +20,7 @@ ENV_EC2_FILE="${BITOPS_ENVROOT}/${TERRAFORM_PATH}/ec2.env"
 # EFS dotenv file
 ENV_EFS_FILE="${BITOPS_ENVROOT}/${TERRAFORM_PATH}/efs.env"
 
-# Postgres dotenv file
+# Aurora dotenv file
 ENV_AURORA_FILE="${BITOPS_ENVROOT}/${TERRAFORM_PATH}/aurora.env"
 
 # Repo env file

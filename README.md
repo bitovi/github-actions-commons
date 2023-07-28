@@ -286,7 +286,9 @@ An example EFS Zone mapping;
 
 ## Adding external Aurora database (AWS RDS)
 
-If `aws_aurora_enable` is set to `true`, this action will deploy an RDS cluster for Postgres as a default. 
+If `aws_aurora_enable` is set to `true`, this action will deploy a RDS Aurora cluster using Postgres as a default. 
+
+See [this Terraform provider](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/rds_cluster) and [this other AWS doc](https://awscli.amazonaws.com/v2/documentation/api/latest/reference/rds/create-db-parameter-group.html) to set up most of the variables.
 
 ### Environment variables
 The following environment variables are added to the `.env` file in your app's `docker-compose.yaml` file.
