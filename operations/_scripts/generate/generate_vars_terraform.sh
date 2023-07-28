@@ -79,18 +79,18 @@ else
   aws_r53_sub_domain_name="aws_r53_sub_domain_name = \"${GITHUB_IDENTIFIER}\""
 fi
 
-aws_postgres_subnets=
-if [ -n "${AWS_POSTGRES_SUBNETS}" ]; then
-  aws_postgres_subnets="aws_postgres_subnets = \"$(comma_str_to_tf_array $AWS_POSTGRES_SUBNETS)\""
+aws_aurora_subnets=
+if [ -n "${AWS_AURORA_SUBNETS}" ]; then
+  aws_aurora_subnets="aws_aurora_subnets = \"$(comma_str_to_tf_array $AWS_AURORA_SUBNETS)\""
 fi
 
 # If the name is true, set it up to be the GH ID - If not, if it's not false, it's the snap name.
-if [ -n "$AWS_POSTGRES_DATABASE_FINAL_SNAPSHOT" ];then
-  if [[ $(alpha_only "$AWS_POSTGRES_DATABASE_FINAL_SNAPSHOT") == "true" ]]; then
-    aws_postgres_database_final_snapshot="aws_postgres_database_final_snapshot = \"${GITHUB_IDENTIFIER}\""
+if [ -n "$AWS_AURORA_DATABASE_FINAL_SNAPSHOT" ];then
+  if [[ $(alpha_only "$AWS_AURORA_DATABASE_FINAL_SNAPSHOT") == "true" ]]; then
+    aws_aurora_database_final_snapshot="aws_aurora_database_final_snapshot = \"${GITHUB_IDENTIFIER}\""
   else
-    if [[ $(alpha_only "$AWS_POSTGRES_DATABASE_FINAL_SNAPSHOT") != "false" ]]; then
-      aws_postgres_database_final_snapshot="aws_postgres_database_final_snapshot = \"${AWS_POSTGRES_DATABASE_FINAL_SNAPSHOT}\""
+    if [[ $(alpha_only "$AWS_AURORA_DATABASE_FINAL_SNAPSHOT") != "false" ]]; then
+      aws_aurora_database_final_snapshot="aws_aurora_database_final_snapshot = \"${AWS_AURORA_DATABASE_FINAL_SNAPSHOT}\""
     fi
   fi
 fi
@@ -174,22 +174,22 @@ if [[ $(alpha_only "$AWS_EFS_ENABLE") == true ]]; then
 fi
 
 #-- RDS --#
-if [[ $(alpha_only "$AWS_POSTGRES_ENABLE") == true ]]; then
-  aws_postgres_enable=$(generate_var aws_postgres_enable $AWS_POSTGRES_ENABLE)
-  aws_postgres_engine=$(generate_var aws_postgres_engine $AWS_POSTGRES_ENGINE)
-  aws_postgres_engine_version=$(generate_var aws_postgres_engine_version $AWS_POSTGRES_ENGINE_VERSION)
-  aws_postgres_database_group_family=$(generate_var aws_postgres_database_group_family $AWS_POSTGRES_DATABASE_GROUP_FAMILY)
-  aws_postgres_instance_class=$(generate_var aws_postgres_instance_class $AWS_POSTGRES_INSTANCE_CLASS)
-  aws_postgres_security_group_name=$(generate_var aws_postgres_security_group_name $AWS_POSTGRES_SECURITY_GROUP_NAME )
-  # aws_postgres_subnets=$(generate_var aws_postgres_subnets $AWS_POSTGRES_SUBNETS) - Special case
-  aws_postgres_cluster_name=$(generate_var aws_postgres_cluster_name $AWS_POSTGRES_CLUSTER_NAME)
-  aws_postgres_database_name=$(generate_var aws_postgres_database_name $AWS_POSTGRES_DATABASE_NAME)
-  aws_postgres_database_port=$(generate_var aws_postgres_database_port $AWS_POSTGRES_DATABASE_PORT)
-  aws_postgres_restore_snapshot=$(generate_var aws_postgres_restore_snapshot $AWS_POSTGRES_RESTORE_SNAPSHOT)
-  aws_postgres_snapshot_name=$(generate_var aws_postgres_snapshot_name $AWS_POSTGRES_SNAPSHOT_NAME)
-  aws_postgres_snapshot_overwrite=$(generate_var aws_postgres_snapshot_overwrite $AWS_POSTGRES_SNAPSHOT_OVERWRITE)
-  aws_postgres_database_protection=$(generate_var aws_postgres_database_protection $AWS_POSTGRES_DATABASE_PROTECTION )
-  # aws_postgres_database_final_snapshot=$(generate_var aws_postgres_database_final_snapshot $AWS_POSTGRES_DATABASE_FINAL_SNAPSHOT ) - Special case
+if [[ $(alpha_only "$AWS_AURORA_ENABLE") == true ]]; then
+  aws_aurora_enable=$(generate_var aws_aurora_enable $AWS_AURORA_ENABLE)
+  aws_aurora_engine=$(generate_var aws_aurora_engine $AWS_AURORA_ENGINE)
+  aws_aurora_engine_version=$(generate_var aws_aurora_engine_version $AWS_AURORA_ENGINE_VERSION)
+  aws_aurora_database_group_family=$(generate_var aws_aurora_database_group_family $AWS_AURORA_DATABASE_GROUP_FAMILY)
+  aws_aurora_instance_class=$(generate_var aws_aurora_instance_class $AWS_AURORA_INSTANCE_CLASS)
+  aws_aurora_security_group_name=$(generate_var aws_aurora_security_group_name $AWS_AURORA_SECURITY_GROUP_NAME )
+  # aws_aurora_subnets=$(generate_var aws_aurora_subnets $AWS_AURORA_SUBNETS) - Special case
+  aws_aurora_cluster_name=$(generate_var aws_aurora_cluster_name $AWS_AURORA_CLUSTER_NAME)
+  aws_aurora_database_name=$(generate_var aws_aurora_database_name $AWS_AURORA_DATABASE_NAME)
+  aws_aurora_database_port=$(generate_var aws_aurora_database_port $AWS_AURORA_DATABASE_PORT)
+  aws_aurora_restore_snapshot=$(generate_var aws_aurora_restore_snapshot $AWS_AURORA_RESTORE_SNAPSHOT)
+  aws_aurora_snapshot_name=$(generate_var aws_aurora_snapshot_name $AWS_AURORA_SNAPSHOT_NAME)
+  aws_aurora_snapshot_overwrite=$(generate_var aws_aurora_snapshot_overwrite $AWS_AURORA_SNAPSHOT_OVERWRITE)
+  aws_aurora_database_protection=$(generate_var aws_aurora_database_protection $AWS_AURORA_DATABASE_PROTECTION )
+  # aws_aurora_database_final_snapshot=$(generate_var aws_aurora_database_final_snapshot $AWS_AURORA_DATABASE_FINAL_SNAPSHOT ) - Special case
 fi
 
 #-- EKS Cluster --#
@@ -300,21 +300,21 @@ $aws_efs_mount_target
 $aws_efs_ec2_mount_point
 
 #-- RDS --#
-$aws_postgres_enable
-$aws_postgres_engine
-$aws_postgres_engine_version
-$aws_postgres_database_group_family
-$aws_postgres_instance_class
-$aws_postgres_security_group_name
-$aws_postgres_subnets
-$aws_postgres_cluster_name
-$aws_postgres_database_name
-$aws_postgres_database_port
-$aws_postgres_restore_snapshot
-$aws_postgres_snapshot_name
-$aws_postgres_snapshot_overwrite
-$aws_postgres_database_protection
-$aws_postgres_database_final_snapshot
+$aws_aurora_enable
+$aws_aurora_engine
+$aws_aurora_engine_version
+$aws_aurora_database_group_family
+$aws_aurora_instance_class
+$aws_aurora_security_group_name
+$aws_aurora_subnets
+$aws_aurora_cluster_name
+$aws_aurora_database_name
+$aws_aurora_database_port
+$aws_aurora_restore_snapshot
+$aws_aurora_snapshot_name
+$aws_aurora_snapshot_overwrite
+$aws_aurora_database_protection
+$aws_aurora_database_final_snapshot
 
 #-- EKS --#
 $aws_eks_create
