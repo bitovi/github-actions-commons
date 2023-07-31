@@ -89,7 +89,7 @@ locals {
   # no_zone_mapping: Creates a empty zone mapping object list
   no_zone_mapping  = { "" : { "subnet_id" : "", "security_groups" : [""] } }
   # ec2_zone_mapping: Creates a zone mapping object list based on default values (default sg, default subnet, etc)
-  ec2_zone_mapping =  { "${local.preferred_az}" : { "subnet_id" : "${data.aws_subnet.selected[0].id}", "security_groups" : var.aws_ec2_securitu_group_name } }
+ # ec2_zone_mapping =  { "${local.preferred_az}" : { "subnet_id" : "${data.aws_subnet.selected[0].id}", "security_groups" : var.aws_ec2_security_group_name } }
 
   # auto_ha_availability_zone*: Creates zone map objects for each available AZ in a region
   auto_ha_availability_zonea = {
@@ -131,9 +131,9 @@ locals {
   ha_zone_mapping = merge(local.auto_ha_availability_zonea, local.auto_ha_availability_zoneb, local.auto_ha_availability_zonec, local.auto_ha_availability_zoned, local.auto_ha_availability_zonee, local.auto_ha_availability_zonef)
 }
 
-output "ec2_zone_mapping" {
-  value = local.ec2_zone_mapping
-}
+#output "ec2_zone_mapping" {
+#  value = local.ec2_zone_mapping
+#}
 
 output "ha_zone_mapping" {
   value = local.ha_zone_mapping
