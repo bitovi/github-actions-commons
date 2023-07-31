@@ -161,30 +161,3 @@ locals {
 #output "ha_zone_mapping" {
 #  value = local.ha_zone_mapping
 #}
-
-
-
-output "aws_subnet_defaulta" {
-  value = data.aws_subnet.defaulta
-}
-output "aws_subnet_defaultb" {
-  value = data.aws_subnet.defaultb
-}
-output "aws_subnet_defaultc" {
-  value = data.aws_subnet.defaultc
-}
-output "aws_subnet_defaultd" {
-  value = data.aws_subnet.defaultd
-}
-output "aws_subnet_defaulte" {
-  value = data.aws_subnet.defaulte
-}
-output "aws_subnet_defaultf" {
-  value = data.aws_subnet.defaultf
-}
-output "aws_subnets_defaults" {
-  value = data.aws_subnets.defaults
-}
-output "aws_subnet_selected" {
-  value = data.aws_subnet.selected[0].id
-}
