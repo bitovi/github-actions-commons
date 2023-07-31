@@ -17,7 +17,7 @@ module "ec2" {
   # Data inputs
   aws_ec2_selected_vpc_id             = module.vpc.aws_selected_vpc_id
   aws_subnet_selected_id              = module.vpc.aws_vpc_subnet_selected
-  preferred_az                        = local.preferred_az
+  preferred_az                        = module.vpc.preferred_az
   # Others
   aws_resource_identifier             = var.aws_resource_identifier
   aws_resource_identifier_supershort  = var.aws_resource_identifier_supershort
@@ -70,7 +70,7 @@ module "aws_elb" {
   aws_elb_healthcheck                = var.aws_elb_healthcheck
   lb_access_bucket_name              = var.lb_access_bucket_name
   # EC2
-  aws_instance_server_az             = [local.preferred_az]
+  aws_instance_server_az             = [module.vpc.preferred_az]
   aws_instance_server_id             = module.ec2[0].aws_instance_server_id
   aws_elb_target_sg_id               = module.ec2[0].aws_security_group_ec2_sg_id 
   # Certs
@@ -111,8 +111,8 @@ module "ec2_efs" {
   aws_efs_zone_mapping            = var.aws_efs_zone_mapping
   aws_efs_ec2_mount_point         = var.aws_efs_ec2_mount_point
   # Other
-  ha_zone_mapping                 = local.ha_zone_mapping
-  ec2_zone_mapping                = local.ec2_zone_mapping
+  ha_zone_mapping                 = module.vpc.ha_zone_mapping
+  ec2_zone_mapping                = module.vpc.ec2_zone_mapping
   # Docker
   docker_efs_mount_target         = var.docker_efs_mount_target
   # Data inputs

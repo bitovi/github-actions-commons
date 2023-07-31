@@ -43,7 +43,7 @@ data "aws_subnet" "defaultf" {
 
 locals {
   aws_ec2_instance_type_offerings = sort(data.aws_ec2_instance_type_offerings.region_azs.locations)
-  preferred_az = var.availability_zone != null ? var.availability_zone : local.aws_ec2_instance_type_offerings[random_integer.az_select[0].result]
+  preferred_az = var.aws_vpc_availability_zones != null ? var.aws_vpc_availability_zones : local.aws_ec2_instance_type_offerings[random_integer.az_select[0].result]
 }
 
 data "aws_ec2_instance_type_offerings" "region_azs" {
@@ -142,10 +142,14 @@ locals {
   ha_zone_mapping = merge(local.auto_ha_availability_zonea, local.auto_ha_availability_zoneb, local.auto_ha_availability_zonec, local.auto_ha_availability_zoned, local.auto_ha_availability_zonee, local.auto_ha_availability_zonef)
 }
 
-#output "ec2_zone_mapping" {
-#  value = local.ec2_zone_mapping
-#}
+output "ec2_zone_mapping" {
+  value = local.ec2_zone_mapping
+}
 
-#output "ha_zone_mapping" {
-#  value = local.ha_zone_mapping
-#}
+output "ha_zone_mapping" {
+  value = local.ha_zone_mapping
+}
+
+output "preferred_az" {
+  value = local.preferred_az
+}
