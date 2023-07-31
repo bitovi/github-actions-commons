@@ -2,6 +2,18 @@
 
 data "aws_availability_zones" "all" {}
 
+data "aws_region" "current" {}
+
+data "aws_vpc" "default" {
+  count             = var.aws_vpc_create ? 0 : var.aws_vpc_id != "" ? 0 : 1
+  default = true
+}
+
+output "aws_region_current_name" {
+  description = "The AWS Current region name"
+  value       = data.aws_region.current.name
+}
+
 data "aws_subnet" "defaulta" {
   availability_zone = "${data.aws_region.current.name}a"
   default_for_az    = true
@@ -32,6 +44,11 @@ data "aws_subnet" "defaultf" {
   default_for_az    = true
 }
 
+data "aws_subnets" "defaults" {
+  vpc_id          = data.aws_vpc.default.id
+  default_for_az  = true
+}
+
 locals {
   aws_ec2_instance_type_offerings = sort(data.aws_ec2_instance_type_offerings.region_azs.locations)
   preferred_az = var.availability_zone != null ? var.availability_zone : local.aws_ec2_instance_type_offerings[random_integer.az_select[0].result]
@@ -49,6 +66,22 @@ data "aws_subnet" "selected" {
   count             = contains(data.aws_availability_zones.all.names, local.preferred_az) ? 1 : 0
   availability_zone = local.preferred_az
   default_for_az    = true
+}
+
+data "aws_security_group" "default" {
+  filter {
+    name   = "group-name"
+    values = ["default"]
+  }
+  filter {
+    name   = "vpc-id"
+    values = [data.aws_vpc.default.id]
+  }
+}
+
+output "aws_security_group_default_id" {
+  description = "The AWS Default SG Id"
+  value       = data.aws_security_group.default.id
 }
 
 resource "random_integer" "az_select" {
@@ -120,3 +153,27 @@ locals {
 #output "ha_zone_mapping" {
 #  value = local.ha_zone_mapping
 #}
+
+
+
+output "aws_subnet_defaulta" {
+  value = data.aws_subnet.defaulta
+}
+output "aws_subnet_defaultb" {
+  value = data.aws_subnet.defaultb
+}
+output "aws_subnet_defaultc" {
+  value = data.aws_subnet.defaultc
+}
+output "aws_subnet_defaultd" {
+  value = data.aws_subnet.defaultd
+}
+output "aws_subnet_defaulte" {
+  value = data.aws_subnet.defaulte
+}
+output "aws_subnet_defaultf" {
+  value = data.aws_subnet.defaultf
+}
+output "aws_subnets_defaults" {
+  value = data.aws_subnets.defaults
+}

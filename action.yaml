@@ -165,7 +165,27 @@ inputs:
   aws_ec2_user_data_replace_on_change:
     description: 'If user_data file changes, instance will stop and start. Hence public IP will change. Defaults to true.'
     required: false
-  
+
+  # AWS VPC Inputs
+  aws_vpc_create:
+    description: 'Define if a VPC should be created'
+    required: false
+  aws_vpc_cidr_block:
+    description: 'Define Base CIDR block which is divided into subnet CIDR blocks. Defaults to 10.0.0.0/16.'
+    required: false
+  aws_vpc_public_subnets:
+    description: 'Comma separated list of public subnets. Defaults to 10.10.110.0/24'
+    required: false
+  aws_vpc_private_subnets:
+    description: 'Comma separated list of private subnets'
+    required: false
+  aws_vpc_availability_zones:
+    description: 'Comma separated list of availability zones. Defaults to `aws_default_region.'
+    required: false
+  aws_vpc_id:
+    description: 'AWS VPC ID. Accepts `vpc-###` values.'
+    required: false
+
   # AWS Route53 Domains abd Certificates
   aws_r53_enable:
     description: 'Enables the usage of Route53 to manage DNS records.'
@@ -465,6 +485,14 @@ runs:
         AWS_EC2_PORT_LIST: ${{ inputs.aws_ec2_port_list }}
         AWS_EC2_USER_DATA_FILE: ${{ inputs.aws_ec2_user_data_file }}
         AWS_EC2_USER_DATA_REPLACE_ON_CHANGE: ${{ inputs.aws_ec2_user_data_replace_on_change }}
+
+        ## AWS VPC
+        AWS_VPC_CREATE: ${{ inputs.aws_vpc_create }}
+        AWS_VPC_CIDR_BLOCK: ${{ inputs.aws_vpc_cidr_block }}
+        AWS_VPC_PUBLIC_SUBNETS: ${{ inputs.aws_vpc_public_subnets }}
+        AWS_VPC_PRIVATE_SUBNETS: ${{ inputs.aws_vpc_private_subnets }}
+        AWS_VPC_AVAILABILITY_ZONES: ${{ inputs.aws_vpc_availability_zones }}
+        AWS_VPC_ID: ${{ inputs.aws_vpc_id }}
 
         # AWS Route53 Domains abd Certificates
         AWS_R53_ENABLE: ${{ inputs.aws_r53_enable }}

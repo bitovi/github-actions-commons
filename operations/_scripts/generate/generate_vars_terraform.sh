@@ -130,6 +130,16 @@ if [[ $(alpha_only "$AWS_EC2_INSTANCE_CREATE") == true ]]; then
   aws_ec2_user_data_replace_on_change=$(generate_var aws_ec2_user_data_replace_on_change $AWS_EC2_USER_DATA_REPLACE_ON_CHANGE)
 fi
 
+#-- VPC Handling --# 
+if [[ $(alpha_only "$AWS_VPC_CREATE") == true ]]; then
+  aws_vpc_create=$(generate_var $AWS_VPC_CREATE)
+  aws_vpc_cidr_block=$(generate_var $AWS_VPC_CIDR_BLOCK)
+  aws_vpc_public_subnets=$(generate_var $AWS_VPC_PUBLIC_SUBNETS)
+  aws_vpc_private_subnets=$(generate_var $AWS_VPC_PRIVATE_SUBNETS)
+  aws_vpc_availability_zones=$(generate_var $AWS_VPC_AVAILABILITY_ZONES)
+fi
+aws_vpc_id=$(generate_var $AWS_VPC_ID)
+
 #-- AWS Route53 and certs --#
 if [[ $(alpha_only "$AWS_R53_ENABLE") == true ]]; then
   aws_r53_enable=$(generate_var aws_r53_enable $AWS_R53_ENABLE)
@@ -264,6 +274,14 @@ $aws_ec2_security_group_name
 $aws_ec2_create_keypair_sm
 $aws_ec2_instance_public_ip
 $aws_ec2_user_data_replace_on_change
+
+#-- VPC --# 
+$aws_vpc_create
+$aws_vpc_cidr_block
+$aws_vpc_public_subnets
+$aws_vpc_private_subnets
+$aws_vpc_availability_zones
+$aws_vpc_id
 
 #-- R53 --#
 $aws_r53_enable

@@ -109,6 +109,43 @@ variable "aws_ec2_user_data_replace_on_change"  {
   description = "Forces destruction of EC2 instance"
 }
 
+## AWS VPC
+variable "aws_vpc_create" {
+  type        = bool
+  description = "Toggle VPC creation"
+  default     = false
+}
+
+variable "aws_vpc_id" {
+  type = string
+  description = "aws vpc id"
+  default = ""
+}
+
+variable "aws_vpc_cidr_block" {
+  description = "CIDR of the VPC"
+  type        = string
+  default     = "10.10.0.0/16"
+}
+
+variable "aws_vpc_public_subnets" {
+  type        = string
+  default     = "10.10.110.0/24"
+  description = "A list of public subnets"
+}
+
+variable "aws_vpc_private_subnets" {
+  type        = string
+  default     = ""
+  description = "A list of private subnets"
+}
+
+variable "aws_vpc_availability_zones" {
+  type        = string
+  default     = ""
+  description = "A list of availability zones."
+}
+
 # AWS Route53 Domains abd Certificates
 variable "aws_r53_enable" {
   type        = bool

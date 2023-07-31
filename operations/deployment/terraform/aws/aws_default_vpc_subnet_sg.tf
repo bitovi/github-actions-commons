@@ -18,18 +18,6 @@ data "aws_subnets" "vpc_subnets" {
 
 data "aws_region" "current" {}
 
-
-data "aws_security_group" "default" {
-  filter {
-    name   = "group-name"
-    values = ["default"]
-  }
-  filter {
-    name   = "vpc-id"
-    values = [data.aws_vpc.default.id]
-  }
-}
-
 output "aws_default_subnet_ids" {
   description = "The subnet ids from the default vpc"
   value       = data.aws_subnets.vpc_subnets.ids

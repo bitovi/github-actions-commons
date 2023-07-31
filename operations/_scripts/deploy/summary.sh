@@ -25,11 +25,19 @@
 # 10 - cancelled
 
 SUMMARY_CODE=0
+#APP_PORT="3000,3001,3002"
+
 
 if [[ $SUCCESS == 'success' ]]; then
   if [[ $URL_OUTPUT != '' ]]; then
     result_string="## Deploy Complete! :rocket:
     $URL_OUTPUT"
+#IFS=',' read -ra PORTS <<< "$APP_PORT"
+
+# Iterate through each port and print the URL+PORT
+#for port in "${PORTS[@]}"; do
+#  echo "$URL:$port"
+#done
 
   elif [[ $BITOPS_CODE_ONLY == 'true' ]]; then
     if [[ $BITOPS_CODE_STORE == 'true' ]]; then
