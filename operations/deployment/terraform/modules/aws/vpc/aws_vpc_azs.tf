@@ -77,7 +77,7 @@ data "aws_subnet" "selected" {
 }
 
 output "aws_vpc_subnet_selected" {
-  value = data.aws_subnet.selected[0].id
+  value = try(data.aws_subnet.selected[0].id,"")
 }
 
 data "aws_security_group" "default" {
