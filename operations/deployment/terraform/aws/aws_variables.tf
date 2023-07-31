@@ -116,6 +116,12 @@ variable "aws_vpc_create" {
   default     = false
 }
 
+variable "aws_vpc_name" {
+  type = string
+  description = "Name for the aws vpc"
+  default = ""
+}
+
 variable "aws_vpc_id" {
   type = string
   description = "aws vpc id"

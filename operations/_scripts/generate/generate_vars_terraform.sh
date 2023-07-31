@@ -133,6 +133,7 @@ fi
 #-- VPC Handling --# 
 if [[ $(alpha_only "$AWS_VPC_CREATE") == true ]]; then
   aws_vpc_create=$(generate_var $AWS_VPC_CREATE)
+  aws_vpc_name=$(generate_var $AWS_VPC_NAME)
   aws_vpc_cidr_block=$(generate_var $AWS_VPC_CIDR_BLOCK)
   aws_vpc_public_subnets=$(generate_var $AWS_VPC_PUBLIC_SUBNETS)
   aws_vpc_private_subnets=$(generate_var $AWS_VPC_PRIVATE_SUBNETS)
@@ -277,6 +278,7 @@ $aws_ec2_user_data_replace_on_change
 
 #-- VPC --# 
 $aws_vpc_create
+$aws_vpc_name
 $aws_vpc_cidr_block
 $aws_vpc_public_subnets
 $aws_vpc_private_subnets

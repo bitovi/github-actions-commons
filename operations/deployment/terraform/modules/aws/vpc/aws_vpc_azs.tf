@@ -4,57 +4,44 @@ data "aws_availability_zones" "all" {}
 
 data "aws_region" "current" {}
 
-data "aws_vpc" "default" {
-  count             = var.aws_vpc_create ? 0 : var.aws_vpc_id != "" ? 0 : 1
-  default = true
-}
+data "aws_subnets" "vpc_subnets" {
+  filter {
+    name   = "vpc-id"
 
-output "aws_region_current_name" {
-  description = "The AWS Current region name"
-  value       = data.aws_region.current.name
+    # todo: support a specified vpc id
+    # values = [var.vpc_id ? var.vpc_id : data.aws_vpc.default.id]
+    values = [local.selected_vpc_id]
+  }
 }
 
 data "aws_subnet" "defaulta" {
   availability_zone = "${data.aws_region.current.name}a"
-  #default_for_az    = true
-  vpc_id = data.aws_vpc.default[0].id
+  vpc_id = local.selected_vpc_id
 }
 data "aws_subnet" "defaultb" {
   count             = contains(data.aws_availability_zones.all.names, "${data.aws_region.current.name}b") ? 1 : 0
   availability_zone = "${data.aws_region.current.name}b"
-  #default_for_az    = true
-  vpc_id = data.aws_vpc.default[0].id
+  vpc_id = local.selected_vpc_id
 }
 data "aws_subnet" "defaultc" {
   count             = contains(data.aws_availability_zones.all.names, "${data.aws_region.current.name}c") ? 1 : 0
   availability_zone = "${data.aws_region.current.name}c"
-  #default_for_az    = true
-  vpc_id = data.aws_vpc.default[0].id
+  vpc_id = local.selected_vpc_id
 }
 data "aws_subnet" "defaultd" {
   count             = contains(data.aws_availability_zones.all.names, "${data.aws_region.current.name}d") ? 1 : 0
   availability_zone = "${data.aws_region.current.name}d"
-  #default_for_az    = true
-  vpc_id = data.aws_vpc.default[0].id
+  vpc_id = local.selected_vpc_id
 }
 data "aws_subnet" "defaulte" {
   count             = contains(data.aws_availability_zones.all.names, "${data.aws_region.current.name}e") ? 1 : 0
   availability_zone = "${data.aws_region.current.name}e"
-  #default_for_az    = true
-  vpc_id = data.aws_vpc.default[0].id
+  vpc_id = local.selected_vpc_id
 }
 data "aws_subnet" "defaultf" {
   count             = contains(data.aws_availability_zones.all.names, "${data.aws_region.current.name}f") ? 1 : 0
   availability_zone = "${data.aws_region.current.name}f"
-  #default_for_az    = true
-  vpc_id = data.aws_vpc.default[0].id
-}
-
-data "aws_subnets" "defaults" {
-  filter {
-    name   = "vpc-id"
-    values = [data.aws_vpc.default[0].id]
-  }
+  vpc_id = local.selected_vpc_id
 }
 
 locals {
@@ -65,7 +52,7 @@ locals {
 data "aws_ec2_instance_type_offerings" "region_azs" {
   filter {
     name   = "instance-type"
-    values = [var.aws_ec2_instance_type]
+    values = [var.aws_ec2_instance_type] ## Change this to AWS Region ID
   }
   location_type = "availability-zone"
 }
@@ -76,6 +63,10 @@ data "aws_subnet" "selected" {
   #default_for_az    = true
 }
 
+output "aws_vpc_subnet_selected" {
+  value = data.aws_subnet.selected.id
+}
+
 data "aws_security_group" "default" {
   filter {
     name   = "group-name"
@@ -83,7 +74,7 @@ data "aws_security_group" "default" {
   }
   filter {
     name   = "vpc-id"
-    values = [data.aws_vpc.default[0].id]
+    values = [local.selected_vpc_id]
   }
 }
 
@@ -112,7 +103,7 @@ locals {
   # no_zone_mapping: Creates a empty zone mapping object list
   no_zone_mapping  = { "" : { "subnet_id" : "", "security_groups" : [""] } }
   # ec2_zone_mapping: Creates a zone mapping object list based on default values (default sg, default subnet, etc)
-  ec2_zone_mapping =  { "${local.preferred_az}" : { "subnet_id" : "${data.aws_subnet.selected[0].id}", "security_groups" : try([module.ec2[0].aws_security_group_ec2_sg_name],[""]) } }
+  ec2_zone_mapping =  { "${local.preferred_az}" : { "subnet_id" : "${data.aws_subnet.selected[0].id}", "security_groups" : var.aws_ec2_securitu_group_name } }
 
   # auto_ha_availability_zone*: Creates zone map objects for each available AZ in a region
   auto_ha_availability_zonea = {

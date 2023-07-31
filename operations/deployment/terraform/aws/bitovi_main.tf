@@ -15,8 +15,8 @@ module "ec2" {
   aws_ec2_security_group_name         = var.aws_ec2_security_group_name
   aws_ec2_port_list                   = var.aws_ec2_port_list
   # Data inputs
-  aws_ec2_selected_vpc_id             = data.aws_vpc.default[0].id
-  aws_subnet_selected_id              = data.aws_subnet.selected[0].id
+  aws_ec2_selected_vpc_id             = module.vpc.aws_selected_vpc_id
+  aws_subnet_selected_id              = module.vpc.aws_vpc_subnet_selected
   preferred_az                        = local.preferred_az
   # Others
   aws_resource_identifier             = var.aws_resource_identifier
@@ -93,9 +93,9 @@ module "efs" {
   # EC2
   aws_ec2_instance_create         = var.aws_ec2_instance_create
   # VPC inputs
-  aws_vpc_id                      = data.aws_vpc.default[0].id
-  aws_vpc_cidr_block_whitelist    = data.aws_vpc.default[0].cidr_block
-  aws_region_current_name         = data.aws_region.current.name
+  aws_vpc_id                      = module.vpc.aws_selected_vpc_id
+  aws_vpc_cidr_block_whitelist    = module.vpc.aws_vpc_cidr_block
+  aws_region_current_name         = module.vpc.aws_region_current_name
   # Others
   aws_resource_identifier         = var.aws_resource_identifier
   common_tags                     = local.default_tags
@@ -116,7 +116,7 @@ module "ec2_efs" {
   # Docker
   docker_efs_mount_target         = var.docker_efs_mount_target
   # Data inputs
-  aws_region_current_name         = data.aws_region.current.name #
+  aws_region_current_name         = module.vpc.aws_region_current_name #
   aws_security_group_efs_id       = module.efs[0].aws_security_group_efs_id
   aws_efs_fs_id                   = module.efs[0].aws_efs_fs_id
   # Others
@@ -148,15 +148,32 @@ module "aurora_rds" {
   aws_aurora_database_protection     = var.aws_aurora_database_protection
   aws_aurora_database_final_snapshot = var.aws_aurora_database_final_snapshot
   # Data inputs
-  aws_vpc_default_id                   = data.aws_vpc.default[0].id
-  aws_subnets_vpc_subnets_ids          = data.aws_subnets.vpc_subnets.ids
-  aws_region_current_name              = data.aws_region.current.name
+  aws_vpc_default_id                   = module.vpc.aws_selected_vpc_id
+  aws_subnets_vpc_subnets_ids          = module.vpc.aws_selected_vpc_subnets
+  aws_region_current_name              = module.vpc.aws_region_current_name
   # Others
   aws_resource_identifier              = var.aws_resource_identifier
   aws_resource_identifier_supershort   = var.aws_resource_identifier_supershort
   common_tags                          = local.default_tags
   # Dependencies
-  depends_on = [data.aws_subnets.vpc_subnets]
+  depends_on = [module.vpc]
+}
+
+module "vpc" {
+  source                      = "../modules/aws/vpc"
+  aws_vpc_create              = var.aws_vpc_create
+  aws_vpc_id                  = var.aws_vpc_id 
+  aws_vpc_cidr_block          = var.aws_vpc_cidr_block
+  aws_vpc_name                = var.aws_vpc_name
+  aws_vpc_public_subnets      = var.aws_vpc_public_subnets
+  aws_vpc_private_subnets     = var.aws_vpc_private_subnets
+  aws_vpc_availability_zones  = var.aws_vpc_availability_zones
+  # Data inputs
+  aws_ec2_instance_type       = var.aws_ec2_instance_type
+  aws_ec2_securitu_group_name = try([module.ec2[0].aws_security_group_ec2_sg_name],[""])
+  # Others
+  aws_resource_identifier     = var.aws_resource_identifier
+  common_tags                 = local.default_tags
 }
 
 #module "eks" {

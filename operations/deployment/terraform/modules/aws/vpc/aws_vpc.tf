@@ -101,8 +101,13 @@ resource "aws_route" "public" {
 locals {
   aws_vpc_public_subnets     = var.aws_vpc_public_subnets != "" ? [for n in split(",", var.aws_vpc_public_subnets) : (n)] : []
   aws_vpc_private_subnets    = var.aws_vpc_private_subnets != "" ? [for n in split(",", var.aws_vpc_private_subnets) : (n)] : []
-  aws_vpc_availability_zones = var.aws_vpc_availability_zones != "" ? [for n in split(",", var.aws_vpc_availability_zones) : (n)] : [data.aws_region.current.name] !!!### 
-  selected_vpc_id = var.aws_vpc_create ? aws_vpc.main[0].id : var.aws_vpc_id != "" ? var.aws_vpc_id : data.aws_vpc.default[0].id
+  aws_vpc_availability_zones = var.aws_vpc_availability_zones != "" ? [for n in split(",", var.aws_vpc_availability_zones) : (n)] : [data.aws_region.current.name]
+  selected_vpc_id            = var.aws_vpc_create ? aws_vpc.main[0].id : var.aws_vpc_id != "" ? var.aws_vpc_id : data.aws_vpc.default[0].id
+}
+
+# Get the VPC details
+data "aws_vpc" "selected" {
+  id    = local.selected_vpc_id
 }
 
 # Get the subnets 
@@ -110,7 +115,7 @@ locals {
 data "aws_subnets" "vpc_subnets" {
   filter {
     name   = "vpc-id"
-    values = [local.local.selected_vpc_id]
+    values = [local.selected_vpc_id]
   }
 }
 
@@ -124,4 +129,14 @@ output "aws_selected_vpc_id" {
 output "aws_selected_vpc_subnets" {
   description = "The subnet ids from the default vpc"
   value       = data.aws_subnets.vpc_subnets.ids
+}
+
+output "aws_region_current_name" {
+  description = "Current region name"
+  value = data.aws_region.current.name
+}
+
+output "aws_vpc_cidr_block" {
+  description = "CIDR block of chosen VPC"
+  value = data.aws_vpc.selected.cidr_block
 }
