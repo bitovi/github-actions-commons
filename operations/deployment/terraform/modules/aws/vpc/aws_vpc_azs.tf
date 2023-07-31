@@ -43,7 +43,7 @@ data "aws_subnet" "defaultf" {
 
 locals {
   aws_ec2_instance_type_offerings = sort(data.aws_ec2_instance_type_offerings.region_azs.locations)
-  preferred_az = var.aws_vpc_availability_zones != null ? var.aws_vpc_availability_zones : local.aws_ec2_instance_type_offerings[random_integer.az_select[0].result]
+  preferred_az = var.aws_vpc_availability_zones != null ? var.aws_vpc_availability_zones : local.aws_ec2_instance_type_offerings[var.random_integer]
 }
 
 data "aws_ec2_instance_type_offerings" "region_azs" {
@@ -78,17 +78,6 @@ data "aws_security_group" "default" {
 output "aws_security_group_default_id" {
   description = "The AWS Default SG Id"
   value       = data.aws_security_group.default.id
-}
-
-resource "random_integer" "az_select" {
-  count = length(data.aws_ec2_instance_type_offerings.region_azs.locations) > 0 ? 1 : 0
-  
-  min   = 0
-  max   = length(data.aws_ec2_instance_type_offerings.region_azs.locations) - 1
-
-  lifecycle {
-    ignore_changes = all
-  }
 }
 
 output "instance_type_available" {

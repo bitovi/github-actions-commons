@@ -172,6 +172,7 @@ module "vpc" {
   aws_ec2_instance_type       = var.aws_ec2_instance_type
   aws_ec2_securitu_group_name = try([module.ec2[0].aws_security_group_ec2_sg_name],[""])
   # Others
+  random_integer              = random_integer.az_select[0].result
   aws_resource_identifier     = var.aws_resource_identifier
   common_tags                 = local.default_tags
 }
@@ -225,6 +226,18 @@ module "ansible" {
   private_key_filename    = module.ec2[0].private_key_filename
   # Dependencies
   depends_on = [module.ec2]
+}
+
+
+resource "random_integer" "az_select" {
+  count = length(data.aws_ec2_instance_type_offerings.region_azs.locations) > 0 ? 1 : 0
+  
+  min   = 0
+  max   = length(data.aws_ec2_instance_type_offerings.region_azs.locations) - 1
+
+  lifecycle {
+    ignore_changes = all
+  }
 }
 
 locals {
