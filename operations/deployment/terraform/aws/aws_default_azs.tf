@@ -45,8 +45,10 @@ data "aws_subnet" "defaultf" {
 }
 
 data "aws_subnets" "defaults" {
-  vpc_id          = data.aws_vpc.default.id
-  default_for_az  = true
+  filter {
+    name   = "vpc-id"
+    values = [data.aws_vpc.default[0].id]
+  }
 }
 
 locals {
@@ -75,7 +77,7 @@ data "aws_security_group" "default" {
   }
   filter {
     name   = "vpc-id"
-    values = [data.aws_vpc.default.id]
+    values = [data.aws_vpc.default[0].id]
   }
 }
 

@@ -15,7 +15,7 @@ module "ec2" {
   aws_ec2_security_group_name         = var.aws_ec2_security_group_name
   aws_ec2_port_list                   = var.aws_ec2_port_list
   # Data inputs
-  aws_ec2_selected_vpc_id             = data.aws_vpc.default.id
+  aws_ec2_selected_vpc_id             = data.aws_vpc.default[0].id
   aws_subnet_selected_id              = data.aws_subnet.selected[0].id
   preferred_az                        = local.preferred_az
   # Others
@@ -93,8 +93,8 @@ module "efs" {
   # EC2
   aws_ec2_instance_create         = var.aws_ec2_instance_create
   # VPC inputs
-  aws_vpc_id                      = data.aws_vpc.default.id
-  aws_vpc_cidr_block_whitelist    = data.aws_vpc.default.cidr_block
+  aws_vpc_id                      = data.aws_vpc.default[0].id
+  aws_vpc_cidr_block_whitelist    = data.aws_vpc.default[0].cidr_block
   aws_region_current_name         = data.aws_region.current.name
   # Others
   aws_resource_identifier         = var.aws_resource_identifier
@@ -148,7 +148,7 @@ module "aurora_rds" {
   aws_aurora_database_protection     = var.aws_aurora_database_protection
   aws_aurora_database_final_snapshot = var.aws_aurora_database_final_snapshot
   # Data inputs
-  aws_vpc_default_id                   = data.aws_vpc.default.id
+  aws_vpc_default_id                   = data.aws_vpc.default[0].id
   aws_subnets_vpc_subnets_ids          = data.aws_subnets.vpc_subnets.ids
   aws_region_current_name              = data.aws_region.current.name
   # Others

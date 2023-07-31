@@ -12,7 +12,7 @@ data "aws_subnets" "vpc_subnets" {
 
     # todo: support a specified vpc id
     # values = [var.vpc_id ? var.vpc_id : data.aws_vpc.default.id]
-    values = [data.aws_vpc.default.id]
+    values = [data.aws_vpc.default[0].id]
   }
 }
 
