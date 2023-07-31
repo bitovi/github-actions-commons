@@ -1,7 +1,7 @@
 #### VPC DEFAULT
 
 data "aws_vpc" "default" {
-  count             = var.aws_vpc_create ? 0 : var.aws_vpc_id != "" ? 0 : 1
+  count   = var.aws_vpc_create ? 0 : var.aws_vpc_id != "" ? 0 : 1
   default = true
 }
 
@@ -110,14 +110,6 @@ data "aws_vpc" "selected" {
   id    = local.selected_vpc_id
 }
 
-# Get the subnets 
-
-data "aws_subnets" "vpc_subnets" {
-  filter {
-    name   = "vpc-id"
-    values = [local.selected_vpc_id]
-  }
-}
 
 ### Outputs
 

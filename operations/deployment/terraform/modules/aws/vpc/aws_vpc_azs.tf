@@ -7,9 +7,6 @@ data "aws_region" "current" {}
 data "aws_subnets" "vpc_subnets" {
   filter {
     name   = "vpc-id"
-
-    # todo: support a specified vpc id
-    # values = [var.vpc_id ? var.vpc_id : data.aws_vpc.default.id]
     values = [local.selected_vpc_id]
   }
 }
