@@ -79,6 +79,7 @@ module "aws_elb" {
   aws_resource_identifier            = var.aws_resource_identifier
   aws_resource_identifier_supershort = var.aws_resource_identifier_supershort
   common_tags                        = local.default_tags
+  depends_on = [module.vpc]
 }
 
 module "efs" {
