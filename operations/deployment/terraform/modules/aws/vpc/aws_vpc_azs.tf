@@ -49,9 +49,25 @@ locals {
 data "aws_ec2_instance_type_offerings" "region_azs" {
   filter {
     name   = "instance-type"
-    values = [var.aws_ec2_instance_type] ## Change this to AWS Region ID
+    values = [var.aws_ec2_instance_type]
   }
   location_type = "availability-zone"
+}
+
+output db_aws_avail_zones {
+  value = data.aws_availability_zones.all.names
+}
+
+output db_pref_az {
+  value = local.preferred_az
+}
+
+output db_vpc_avail_z {
+  value = var.aws_vpc_availability_zones
+}
+
+output db_aws_ec2_instance_type_offerings {
+  value = local.aws_ec2_instance_type_offerings
 }
 
 data "aws_subnet" "selected" {
