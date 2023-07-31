@@ -284,77 +284,77 @@ variable "aws_efs_ec2_mount_point" {
 
 # AWS RDS
 
-variable "aws_postgres_enable" {
+variable "aws_aurora_enable" {
   type        = bool
   description = "deploy a postgres database"
   default     = false
 }
-variable "aws_postgres_engine" {
+variable "aws_aurora_engine" {
   type        = string
   description = "The engine to use for postgres.  Defaults to `aurora-postgresql`.  For more details, see: https://aws.amazon.com/rds/, https://registry.terraform.io/modules/terraform-aws-modules/rds-aurora/aws/latest?tab=inputs"
   default     = "aurora-postgresql"
 }
-variable "aws_postgres_engine_version" {
+variable "aws_aurora_engine_version" {
   type        = string
   description = "The version of the engine to use for postgres.  Defaults to `11.17`."
   default     = "11.17"
 }
-variable "aws_postgres_database_group_family" {
+variable "aws_aurora_database_group_family" {
   type        = string
   default     = "aurora-postgresql11"
   description = "postgres group family"
 }
-variable "aws_postgres_instance_class" {
+variable "aws_aurora_instance_class" {
   type        = string
   description = "The size of the db instances.  For more details, see: https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Concepts.DBInstanceClass.html, https://registry.terraform.io/modules/terraform-aws-modules/rds-aurora/aws/latest?tab=inputs"
   default     = "db.t3.medium"
 }
-variable "aws_postgres_security_group_name" {
+variable "aws_aurora_security_group_name" {
   type        = string
   default     = ""
   description = "Name of the security group to use for postgres"
 }
-variable "aws_postgres_subnets" {
+variable "aws_aurora_subnets" {
   type        = list(string)
   description = "The list of subnet ids to use for postgres. For more details, see: https://registry.terraform.io/modules/terraform-aws-modules/rds-aurora/aws/latest?tab=inputs"
   default     = []
 }
-variable "aws_postgres_cluster_name" {
+variable "aws_aurora_cluster_name" {
   type        = string
   description = "The name of the cluster. will be created if it does not exist."
   default     = ""
 }
-variable "aws_postgres_database_name" {
+variable "aws_aurora_database_name" {
   type        = string
   description = "The name of the database. will be created if it does not exist."
   default     = "root"
 }
-variable "aws_postgres_database_port" {
+variable "aws_aurora_database_port" {
   type        = string
   default     = "5432"
   description = "database port"
 }
-variable "aws_postgres_restore_snapshot" {
+variable "aws_aurora_restore_snapshot" {
   type        = string
   default     = ""
   description = "Restore an initial snapshot of the DB."
 }
-variable "aws_postgres_snapshot_name" {
+variable "aws_aurora_snapshot_name" {
   type        = string
   default     = ""
   description = "Takes a snapshot of the DB."
 }
-variable "aws_postgres_snapshot_overwrite" {
+variable "aws_aurora_snapshot_overwrite" {
   type        = bool
   default     = false
   description = "Overwrites snapshot."
 }
-variable "aws_postgres_database_protection" {
+variable "aws_aurora_database_protection" {
   type        = bool
   default     = false
   description = "Protects the database from deletion."
 }
-variable "aws_postgres_database_final_snapshot" {
+variable "aws_aurora_database_final_snapshot" {
   type        = string
   default     = ""
   description = "Generates a snapshot of the database before deletion."
@@ -366,6 +366,12 @@ variable "docker_efs_mount_target" {
   type        = string
   description = "Directory path in efs to mount to"
   default     = "/data"
+}
+
+variable "docker_remove_orphans" {
+  type        = bool
+  description = "define if ansible should clean orphans"
+  default     = false
 }
 
 # EKS

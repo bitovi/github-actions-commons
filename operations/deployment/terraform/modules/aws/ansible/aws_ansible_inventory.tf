@@ -10,6 +10,7 @@ bitops_servers:
    app_repo_name: ${var.app_repo_name}
    app_install_root: ${var.app_install_root}
    resource_identifier: ${var.aws_resource_identifier}
+   docker_remove_orphans: ${var.docker_remove_orphans}
 EOT
 }
 
@@ -25,6 +26,7 @@ bitops_servers:
    app_repo_name: ${var.app_repo_name}
    app_install_root: ${var.app_install_root}
    resource_identifier: ${var.aws_resource_identifier}
+   docker_remove_orphans: ${var.docker_remove_orphans}
    mount_efs: true
    efs_url: ${var.aws_ec2_efs_url}
    aws_efs_ec2_mount_point: ${var.aws_efs_ec2_mount_point}
