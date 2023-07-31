@@ -180,5 +180,5 @@ output "aws_subnets_defaults" {
   value = data.aws_subnets.defaults
 }
 output "aws_subnet_selected" {
-  value = data.aws_subnet[0].selected.id
+  value = data.aws_subnet.selected[0].id
 }
