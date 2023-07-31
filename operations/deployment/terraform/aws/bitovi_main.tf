@@ -229,6 +229,16 @@ module "ansible" {
 }
 
 
+
+data "aws_ec2_instance_type_offerings" "region_azs" {
+  filter {
+    name   = "instance-type"
+    values = [var.aws_ec2_instance_type] ## Change this to AWS Region ID
+  }
+  location_type = "availability-zone"
+}
+
+
 resource "random_integer" "az_select" {
   count = length(data.aws_ec2_instance_type_offerings.region_azs.locations) > 0 ? 1 : 0
   
