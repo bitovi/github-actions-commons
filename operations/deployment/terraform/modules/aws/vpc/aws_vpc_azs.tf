@@ -69,7 +69,7 @@ resource "random_integer" "az_select" {
 data "aws_subnet" "selected" {
   count             = contains(data.aws_availability_zones.all.names, local.preferred_az) ? 1 : 0
   availability_zone = local.preferred_az
-  #default_for_az    = true  -  What happens if I have multiple subnets in the same az?
+  default_for_az    = true #-  What happens if I have multiple subnets in the same az?
 }
 
 output "aws_vpc_subnet_selected" {
