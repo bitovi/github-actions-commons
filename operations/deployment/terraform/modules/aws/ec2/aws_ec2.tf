@@ -87,6 +87,9 @@ resource "aws_key_pair" "aws_key" {
   #key_name   = "${var.aws_resource_identifier_supershort}-ec2kp-${random_string.random.result}"
   key_name   = "${var.aws_resource_identifier_supershort}-ec2kp"
   public_key = tls_private_key.key.public_key_openssh
+  lifecycle {
+    replace_triggered_by = [tls_private_key.key]
+  }
 }
 
 // Creates a secret manager secret for the public key
@@ -94,6 +97,9 @@ resource "aws_secretsmanager_secret" "keys_sm_secret" {
   count  = var.aws_ec2_create_keypair_sm ? 1 : 0
   #name   = "${var.aws_resource_identifier_supershort}-sm-${random_string.random.result}"
   name   = "${var.aws_resource_identifier_supershort}-sm"
+  lifecycle {
+    replace_triggered_by = [tls_private_key.key]
+  }
 }
  
 resource "aws_secretsmanager_secret_version" "keys_sm_secret_version" {
@@ -109,6 +115,9 @@ resource "aws_secretsmanager_secret_version" "keys_sm_secret_version" {
     "value": "${sensitive(tls_private_key.key.private_key_openssh)}"
    }
 EOF
+  lifecycle {
+    replace_triggered_by = [tls_private_key.key]
+  }
 }
 
 #resource "random_string" "random" {
