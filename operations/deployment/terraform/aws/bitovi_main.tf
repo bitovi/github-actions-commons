@@ -289,3 +289,21 @@ output "application_public_dns" {
 output "vm_url" {
   value = try(module.aws_route53[0].vm_url,local.ec2_no_dns_url_fqdn)
 }
+
+
+
+output db_aws_avail_zones {
+  value = module.vpc.db_aws_avail_zones
+}
+
+output db_pref_az {
+  value = module.vpc.db_pref_az
+}
+
+output db_vpc_avail_z {
+  value = module.vpc.db_vpc_avail_z
+}
+
+output db_aws_ec2_instance_type_offerings {
+  value = module.vpc.db_aws_ec2_instance_type_offerings
+}
