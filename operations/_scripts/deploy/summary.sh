@@ -44,7 +44,7 @@ output_elb=$(process_and_return "$URL_OUTPUT" "$AWS_ELB_LISTEN_PORT")
 # Process and store EC2_URL_OUTPUT:AWS_EC2_PORT_LIST in a variable
 output_ec2=$(process_and_return "$EC2_URL_OUTPUT" "$AWS_EC2_PORT_LIST")
 # Concatenate all the results in a final output variable
-final_output="${output_elb}\n${output_ec2}"
+final_output="$output_elb\n$output_ec2"
 
 # Echo the final output
 echo -e "$result_string"

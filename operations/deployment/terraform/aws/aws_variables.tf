@@ -264,13 +264,13 @@ variable "aws_efs_create_ha" {
 variable "aws_efs_mount_id" {
   type        = string
   description = "ID of existing EFS"
-  default     = null
+  default     = ""
 }
 
 variable "aws_efs_mount_security_group_id" {
   type        = string
   description = "ID of the primary security group used by the existing EFS"
-  default     = null
+  default     = ""
 }
 
 variable "aws_efs_security_group_name" {
@@ -309,7 +309,7 @@ variable "aws_efs_transition_to_inactive" {
 
 variable "aws_efs_replication_destination" {
   type        = string
-  default     = null
+  default     = ""
   description = "AWS Region to target for replication"
 }
 

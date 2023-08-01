@@ -22,6 +22,7 @@ module "ec2" {
   aws_resource_identifier             = var.aws_resource_identifier
   aws_resource_identifier_supershort  = var.aws_resource_identifier_supershort
   common_tags                         = local.default_tags
+  depends_on = [module.vpc]
 }
 
 module "aws_certificates" {
@@ -104,7 +105,7 @@ module "efs" {
 
 module "ec2_efs" {
   source = "../modules/aws/ec2_efs"
-  count  = var.aws_ec2_instance_create && local.create_efs ? var.aws_efs_mount_id != "" ? 1 : 0 : 0
+  count  = var.aws_ec2_instance_create ? var.aws_efs_mount_id != "" ? 1 : 0 : 0
   # EFS
   aws_efs_create                  = var.aws_efs_create
   aws_efs_create_ha               = var.aws_efs_create_ha

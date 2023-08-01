@@ -1,6 +1,6 @@
 locals {
   # replica_destination: Checks whether a replica destination exists otherwise sets a default
-  replica_destination  = var.aws_efs_replication_destination != null ? var.aws_efs_replication_destination : var.aws_region_current_name
+  replica_destination  = var.aws_efs_replication_destination != "" ? var.aws_efs_replication_destination : var.aws_region_current_name
 }
 
 # ---------------------CREATE--------------------------- #

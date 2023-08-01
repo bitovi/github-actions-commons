@@ -1,14 +1,14 @@
 locals {
   # user_zone_mapping: Create a zone mapping object list for all user specified zone_maps
-  user_zone_mapping = var.aws_efs_zone_mapping != null ? ({
+  user_zone_mapping = var.aws_efs_zone_mapping != "" ? ({
     for k, val in var.aws_efs_zone_mapping : "${var.aws_region_current_name}${k}" => val
   }) : local.no_zone_mapping
 
   create_ec2_efs    = var.aws_efs_create || var.aws_efs_create_ha ? true : false
   # mount_target: Fall-Through variable that checks multiple layers of EFS zone map selection
-  mount_target      = var.aws_efs_zone_mapping != null ? local.user_zone_mapping : (var.aws_efs_create_ha ? var.ha_zone_mapping : var.ec2_zone_mapping != "" ? var.ec2_zone_mapping : local.no_zone_mapping)
+  mount_target      = var.aws_efs_zone_mapping != "" ? local.user_zone_mapping : (var.aws_efs_create_ha ? var.ha_zone_mapping : var.ec2_zone_mapping != "" ? var.ec2_zone_mapping : local.no_zone_mapping)
   # mount_efs: Fall-Through variable that checks multiple layers of EFS creation and if any of them are active, sets creation to active.
-  mount_efs         = var.aws_efs_mount_id != null ? true : (local.create_ec2_efs ? true : false)
+  mount_efs         = var.aws_efs_mount_id != "" ? true : (local.create_ec2_efs ? true : false)
   # create_mount_targets: boolean on whether to create mount_targets
   create_mount_targets = var.aws_efs_create || var.aws_efs_create_ha ? local.mount_target : {}
 }
@@ -23,7 +23,7 @@ resource "aws_efs_mount_target" "efs_mount_target" {
 # TODO: Add check for EFS/EFSHA vs. Provided Mount id.
 
 data "aws_efs_file_system" "mount_efs" {
-  file_system_id = var.aws_efs_mount_id != null ? var.aws_efs_mount_id : var.aws_efs_fs_id
+  file_system_id = var.aws_efs_mount_id != "" ? var.aws_efs_mount_id : var.aws_efs_fs_id
 }
 
 resource "local_file" "efs-dotenv" {
