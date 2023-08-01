@@ -43,7 +43,7 @@ data "aws_subnet" "defaultf" {
 
 locals {
   aws_ec2_instance_type_offerings = sort(data.aws_ec2_instance_type_offerings.region_azs.locations)
-  preferred_az = var.aws_vpc_availability_zones != null ? var.aws_vpc_availability_zones : local.aws_ec2_instance_type_offerings[tonumber(var.random_integer)]
+  preferred_az = var.aws_vpc_availability_zones != "" ? var.aws_vpc_availability_zones : local.aws_ec2_instance_type_offerings[tonumber(var.random_integer)]
 }
 
 data "aws_ec2_instance_type_offerings" "region_azs" {
