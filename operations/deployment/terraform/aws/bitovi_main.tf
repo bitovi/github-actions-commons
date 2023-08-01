@@ -70,7 +70,7 @@ module "aws_elb" {
   aws_elb_healthcheck                = var.aws_elb_healthcheck
   lb_access_bucket_name              = var.lb_access_bucket_name
   # EC2
-  aws_instance_server_az             = [module.vpc.preferred_az]
+  aws_instance_server_az             = ["us-east-1d"] #[module.vpc.preferred_az]
   aws_instance_server_id             = module.ec2[0].aws_instance_server_id
   aws_elb_target_sg_id               = module.ec2[0].aws_security_group_ec2_sg_id 
   # Certs
