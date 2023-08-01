@@ -21,7 +21,7 @@ variable "aws_additional_tags" {
 variable "env_aws_secret" {
   type        = string
   description = "Secret name to pull env variables from AWS Secret Manager"
-  default     = null
+  default     = ""
 }
 
 # EC2 Instance
