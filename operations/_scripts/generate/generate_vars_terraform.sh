@@ -132,14 +132,14 @@ fi
 
 #-- VPC Handling --# 
 if [[ $(alpha_only "$AWS_VPC_CREATE") == true ]]; then
-  aws_vpc_create=$(generate_var $AWS_VPC_CREATE)
-  aws_vpc_name=$(generate_var $AWS_VPC_NAME)
-  aws_vpc_cidr_block=$(generate_var $AWS_VPC_CIDR_BLOCK)
-  aws_vpc_public_subnets=$(generate_var $AWS_VPC_PUBLIC_SUBNETS)
-  aws_vpc_private_subnets=$(generate_var $AWS_VPC_PRIVATE_SUBNETS)
-  aws_vpc_availability_zones=$(generate_var $AWS_VPC_AVAILABILITY_ZONES)
+  aws_vpc_create=$(generate_var aws_vpc_create $AWS_VPC_CREATE)
+  aws_vpc_name=$(generate_var aws_vpc_name $AWS_VPC_NAME)
+  aws_vpc_cidr_block=$(generate_var aws_vpc_cidr_block $AWS_VPC_CIDR_BLOCK)
+  aws_vpc_public_subnets=$(generate_var aws_vpc_public_subnets $AWS_VPC_PUBLIC_SUBNETS)
+  aws_vpc_private_subnets=$(generate_var aws_vpc_private_subnets $AWS_VPC_PRIVATE_SUBNETS)
+  aws_vpc_availability_zones=$(generate_var aws_vpc_availability_zones $AWS_VPC_AVAILABILITY_ZONES)
 fi
-aws_vpc_id=$(generate_var $AWS_VPC_ID)
+aws_vpc_id=$(generate_var aws_vpc_id $AWS_VPC_ID)
 
 #-- AWS Route53 and certs --#
 if [[ $(alpha_only "$AWS_R53_ENABLE") == true ]]; then
