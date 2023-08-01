@@ -43,7 +43,8 @@ data "aws_subnet" "defaultf" {
 
 locals {
   aws_ec2_instance_type_offerings = sort(data.aws_ec2_instance_type_offerings.region_azs.locations)
-  preferred_az = var.aws_vpc_availability_zones != "" ? var.aws_vpc_availability_zones : local.aws_ec2_instance_type_offerings[tonumber(var.random_integer)]
+  #preferred_az = var.aws_vpc_availability_zones != "" ? var.aws_vpc_availability_zones : local.aws_ec2_instance_type_offerings[tonumber(var.random_integer)]
+  preferred_az = var.aws_vpc_availability_zones != "" ? var.aws_vpc_availability_zones : local.aws_ec2_instance_type_offerings[random_integer.az_select[0].result]
 }
 
 data "aws_ec2_instance_type_offerings" "region_azs" {
@@ -54,20 +55,16 @@ data "aws_ec2_instance_type_offerings" "region_azs" {
   location_type = "availability-zone"
 }
 
-output db_aws_avail_zones {
-  value = data.aws_availability_zones.all.names
-}
 
-output db_pref_az {
-  value = local.preferred_az
-}
+resource "random_integer" "az_select" {
+  count = length(data.aws_ec2_instance_type_offerings.region_azs.locations) > 0 ? 1 : 0
+  
+  min   = 0
+  max   = length(data.aws_ec2_instance_type_offerings.region_azs.locations) - 1
 
-output db_vpc_avail_z {
-  value = var.aws_vpc_availability_zones
-}
-
-output db_aws_ec2_instance_type_offerings {
-  value = local.aws_ec2_instance_type_offerings
+  lifecycle {
+    ignore_changes = all
+  }
 }
 
 data "aws_subnet" "selected" {
@@ -103,9 +100,9 @@ output "instance_type_available" {
 ### 
 locals {
   # no_zone_mapping: Creates a empty zone mapping object list
-  no_zone_mapping  = { "" : { "subnet_id" : "", "security_groups" : [""] } }
+  # no_zone_mapping  = { "" : { "subnet_id" : "", "security_groups" : [""] } }
   # ec2_zone_mapping: Creates a zone mapping object list based on default values (default sg, default subnet, etc)
- # ec2_zone_mapping =  { "${local.preferred_az}" : { "subnet_id" : "${data.aws_subnet.selected[0].id}", "security_groups" : var.aws_ec2_security_group_name } }
+  # ec2_zone_mapping =  { "${local.preferred_az}" : { "subnet_id" : "${data.aws_subnet.selected[0].id}", "security_groups" : var.aws_ec2_security_group_name } }
 
   # auto_ha_availability_zone*: Creates zone map objects for each available AZ in a region
   auto_ha_availability_zonea = {

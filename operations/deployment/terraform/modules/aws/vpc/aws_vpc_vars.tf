@@ -7,7 +7,7 @@ variable "aws_vpc_private_subnets" {}
 variable "aws_vpc_availability_zones" {}
 variable "aws_ec2_instance_type" {}
 variable "aws_ec2_securitu_group_name" {}
-variable "random_integer" {}
+#variable "random_integer" {}
 variable "aws_resource_identifier" {}
 variable "common_tags" {
     type = map

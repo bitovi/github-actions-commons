@@ -70,7 +70,7 @@ module "aws_elb" {
   aws_elb_healthcheck                = var.aws_elb_healthcheck
   lb_access_bucket_name              = var.lb_access_bucket_name
   # EC2
-  aws_instance_server_az             = ["us-east-1d"] #[module.vpc.preferred_az]
+  aws_instance_server_az             = [module.vpc.preferred_az]
   aws_instance_server_id             = module.ec2[0].aws_instance_server_id
   aws_elb_target_sg_id               = module.ec2[0].aws_security_group_ec2_sg_id 
   # Certs
@@ -173,7 +173,7 @@ module "vpc" {
   aws_ec2_instance_type       = var.aws_ec2_instance_type
   aws_ec2_securitu_group_name = try([module.ec2[0].aws_security_group_ec2_sg_name],[""])
   # Others
-  random_integer              = random_integer.az_select[0].result
+  #random_integer              = random_integer.az_select[0].result
   aws_resource_identifier     = var.aws_resource_identifier
   common_tags                 = local.default_tags
 }
@@ -231,25 +231,25 @@ module "ansible" {
 
 
 
-data "aws_ec2_instance_type_offerings" "region_azs" {
-  filter {
-    name   = "instance-type"
-    values = [var.aws_ec2_instance_type] ## Change this to AWS Region ID
-  }
-  location_type = "availability-zone"
-}
-
-
-resource "random_integer" "az_select" {
-  count = length(data.aws_ec2_instance_type_offerings.region_azs.locations) > 0 ? 1 : 0
-  
-  min   = 0
-  max   = length(data.aws_ec2_instance_type_offerings.region_azs.locations) - 1
-
-  lifecycle {
-    ignore_changes = all
-  }
-}
+#data "aws_ec2_instance_type_offerings" "region_azs" {
+#  filter {
+#    name   = "instance-type"
+#    values = [var.aws_ec2_instance_type] ## Change this to AWS Region ID
+#  }
+#  location_type = "availability-zone"
+#}
+#
+#
+#resource "random_integer" "az_select" {
+#  count = length(data.aws_ec2_instance_type_offerings.region_azs.locations) > 0 ? 1 : 0
+#  
+#  min   = 0
+#  max   = length(data.aws_ec2_instance_type_offerings.region_azs.locations) - 1
+#
+#  lifecycle {
+#    ignore_changes = all
+#  }
+#}
 
 locals {
   default_tags = merge(local.aws_tags, var.aws_additional_tags)
@@ -288,22 +288,4 @@ output "application_public_dns" {
 
 output "vm_url" {
   value = try(module.aws_route53[0].vm_url,local.ec2_no_dns_url_fqdn)
-}
-
-
-
-output db_aws_avail_zones {
-  value = module.vpc.db_aws_avail_zones
-}
-
-output db_pref_az {
-  value = module.vpc.db_pref_az
-}
-
-output db_vpc_avail_z {
-  value = module.vpc.db_vpc_avail_z
-}
-
-output db_aws_ec2_instance_type_offerings {
-  value = module.vpc.db_aws_ec2_instance_type_offerings
 }
