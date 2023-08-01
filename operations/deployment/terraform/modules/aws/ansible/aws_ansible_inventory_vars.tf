@@ -1,3 +1,4 @@
+variable "aws_ec2_instance_ip" {}
 variable "aws_efs_enable" {}
 variable "app_repo_name" {}
 variable "app_install_root" {}
