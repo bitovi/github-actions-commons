@@ -130,7 +130,7 @@ locals {
   # Transform CSV values into arrays. ( Now variables will be called local.xx instead of var.xx )
   aws_elb_listen_port     = var.aws_elb_listen_port     != "" ? [for n in split(",", var.aws_elb_listen_port)     : tonumber(n)] : ( local.elb_ssl_available ? [443] : [80] )
   aws_elb_listen_protocol = var.aws_elb_listen_protocol != "" ? [for n in split(",", var.aws_elb_listen_protocol) : (n)] : ( local.elb_ssl_available ? ["ssl"] : ["tcp"] )
-  aws_elb_app_port        = var.aws_elb_app_port        != "" ? [for n in split(",", var.aws_elb_app_port)        : tonumber(n)] : []
+  aws_elb_app_port        = var.aws_elb_app_port        != "" ? [for n in split(",", var.aws_elb_app_port)        : tonumber(n)] : var.aws_elb_listen_port != "" ? local.aws_elb_listen_port : [3000] 
   aws_elb_app_protocol    = var.aws_elb_app_protocol    != "" ? [for n in split(",", var.aws_elb_app_protocol)    : (n)] : []
 
   # Store the lowest array length. (aws_elb_app_port will be at least 3000)

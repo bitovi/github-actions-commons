@@ -4,10 +4,13 @@
 ### coming into this we have env vars:
 # SUCCESS=${{ job.status }} # success, cancelled, failure
 # URL_OUTPUT=${{ steps.deploy.outputs.vm_url }}
+# EC2_URL_OUTPUT=${{ steps.deploy.outputs.ec2_url }}
 # BITOPS_CODE_ONLY
 # BITOPS_CODE_STORE
 # TF_STACK_DESTROY
 # TF_STATE_BUCKET_DESTROY
+# AWS_EC2_PORT_LIST
+# AWS_ELB_LISTEN_PORT
 
 # Create an error code mechanism so we don't have to check the actual static text,
 # just which case we fell into
@@ -25,8 +28,6 @@
 # 10 - cancelled
 
 SUMMARY_CODE=0
-#APP_PORT="3000,3001,3002"
-
 
 if [[ $SUCCESS == 'success' ]]; then
   if [[ $URL_OUTPUT != '' ]]; then

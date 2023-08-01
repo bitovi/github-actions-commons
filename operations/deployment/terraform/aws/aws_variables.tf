@@ -212,7 +212,7 @@ variable "aws_elb_security_group_name" {
 
 variable "aws_elb_app_port" {
   type        = string
-  default     = "3000"
+  default     = ""
   description = "app port"
 }
 
