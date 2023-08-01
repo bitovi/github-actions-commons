@@ -27,19 +27,34 @@
 # 9 - success, destroy infrastructure
 # 10 - cancelled
 
+# Function to process and return the result as a string
+process_and_return() {
+  local url="$1"
+  local ports="$2"
+  IFS=',' read -ra port_array <<< "$ports"
+  result=""
+  for p in "${port_array[@]}"; do
+    result+="$url:$p\n"
+  done
+  echo -e "$result\n"
+}
+
+# Process and store URL_OUTPUT:AWS_ELB_LISTEN_PORT in a variable
+output_elb=$(process_and_return "$URL_OUTPUT" "$AWS_ELB_LISTEN_PORT")
+# Process and store EC2_URL_OUTPUT:AWS_EC2_PORT_LIST in a variable
+output_ec2=$(process_and_return "$EC2_URL_OUTPUT" "$AWS_EC2_PORT_LIST")
+# Concatenate all the results in a final output variable
+final_output="${output_elb}\n${output_ec2}"
+
+# Echo the final output
+echo -e "$result_string"
+
 SUMMARY_CODE=0
 
 if [[ $SUCCESS == 'success' ]]; then
   if [[ $URL_OUTPUT != '' ]]; then
     result_string="## Deploy Complete! :rocket:
-    $URL_OUTPUT"
-#IFS=',' read -ra PORTS <<< "$APP_PORT"
-
-# Iterate through each port and print the URL+PORT
-#for port in "${PORTS[@]}"; do
-#  echo "$URL:$port"
-#done
-
+    $final_output"
   elif [[ $BITOPS_CODE_ONLY == 'true' ]]; then
     if [[ $BITOPS_CODE_STORE == 'true' ]]; then
       SUMMARY_CODE=6
