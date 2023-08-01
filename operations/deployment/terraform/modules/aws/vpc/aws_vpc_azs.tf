@@ -43,7 +43,6 @@ data "aws_subnet" "defaultf" {
 
 locals {
   aws_ec2_instance_type_offerings = sort(data.aws_ec2_instance_type_offerings.region_azs.locations)
-  #preferred_az = var.aws_vpc_availability_zones != "" ? var.aws_vpc_availability_zones : local.aws_ec2_instance_type_offerings[tonumber(var.random_integer)]
   preferred_az = var.aws_vpc_availability_zones != "" ? var.aws_vpc_availability_zones : local.aws_ec2_instance_type_offerings[random_integer.az_select[0].result]
 }
 
@@ -70,7 +69,7 @@ resource "random_integer" "az_select" {
 data "aws_subnet" "selected" {
   count             = contains(data.aws_availability_zones.all.names, local.preferred_az) ? 1 : 0
   availability_zone = local.preferred_az
-  #default_for_az    = true
+  #default_for_az    = true  -  What happens if I have multiple subnets in the same az?
 }
 
 output "aws_vpc_subnet_selected" {
@@ -99,11 +98,6 @@ output "instance_type_available" {
 
 ### 
 locals {
-  # no_zone_mapping: Creates a empty zone mapping object list
-  # no_zone_mapping  = { "" : { "subnet_id" : "", "security_groups" : [""] } }
-  # ec2_zone_mapping: Creates a zone mapping object list based on default values (default sg, default subnet, etc)
-  # ec2_zone_mapping =  { "${local.preferred_az}" : { "subnet_id" : "${data.aws_subnet.selected[0].id}", "security_groups" : var.aws_ec2_security_group_name } }
-
   # auto_ha_availability_zone*: Creates zone map objects for each available AZ in a region
   auto_ha_availability_zonea = {
     "${data.aws_region.current.name}a" : {
@@ -143,10 +137,6 @@ locals {
   # ha_zone_mapping: Creates a zone mapping object list for all available AZs in a region
   ha_zone_mapping = merge(local.auto_ha_availability_zonea, local.auto_ha_availability_zoneb, local.auto_ha_availability_zonec, local.auto_ha_availability_zoned, local.auto_ha_availability_zonee, local.auto_ha_availability_zonef)
 }
-
-#output "ec2_zone_mapping" {
-#  value = local.ec2_zone_mapping
-#}
 
 output "ha_zone_mapping" {
   value = local.ha_zone_mapping
