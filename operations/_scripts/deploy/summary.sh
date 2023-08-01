@@ -28,7 +28,7 @@
 # 10 - cancelled
 
 # Function to process and return the result as a string
-process_and_return() {
+function process_and_return() {
   local url="$1"
   local ports="$2"
   IFS=',' read -ra port_array <<< "$ports"
@@ -36,18 +36,15 @@ process_and_return() {
   for p in "${port_array[@]}"; do
     result+="$url:$p\n"
   done
-  echo -e "$result\n"
+  echo -e "$result"
 }
 
 # Process and store URL_OUTPUT:AWS_ELB_LISTEN_PORT in a variable
 output_elb=$(process_and_return "$URL_OUTPUT" "$AWS_ELB_LISTEN_PORT")
+final_output+="${output_elb}\n"
 # Process and store EC2_URL_OUTPUT:AWS_EC2_PORT_LIST in a variable
 output_ec2=$(process_and_return "$EC2_URL_OUTPUT" "$AWS_EC2_PORT_LIST")
-# Concatenate all the results in a final output variable
-final_output="$output_elb\n$output_ec2"
-
-# Echo the final output
-echo -e "$result_string"
+final_output+="${output_ec2}\n"
 
 SUMMARY_CODE=0
 
