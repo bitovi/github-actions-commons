@@ -3,7 +3,7 @@ resource "local_file" "ansible_inventor_no_efs" {
   filename = format("%s/%s", abspath(path.root), "inventory.yaml")
   content  = <<-EOT
 bitops_servers:
- hosts: BITOPS_EC2_PUBLIC_IP
+ hosts: ${var.aws_ec2_instance_ip}
  vars:
    ansible_ssh_user: ubuntu
    ansible_ssh_private_key_file: ${var.private_key_filename}
@@ -19,7 +19,7 @@ resource "local_file" "ansible_inventory_efs" {
   filename = format("%s/%s", abspath(path.root), "inventory.yaml")
   content  = <<-EOT
 bitops_servers:
- hosts: BITOPS_EC2_PUBLIC_IP
+ hosts: ${var.aws_ec2_instance_ip}
  vars:
    ansible_ssh_user: ubuntu
    ansible_ssh_private_key_file: ${var.private_key_filename}
