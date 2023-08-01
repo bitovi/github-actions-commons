@@ -98,6 +98,7 @@ output "instance_type_available" {
 
 ### 
 locals {
+  aws_ec2_security_group_name = var.aws_ec2_security_group_name != "" ? var.aws_ec2_security_group_name : "SG for ${var.aws_resource_identifier} - EC2"
   # auto_ha_availability_zone*: Creates zone map objects for each available AZ in a region
   auto_ha_availability_zonea = {
     "${data.aws_region.current.name}a" : {
@@ -136,10 +137,15 @@ locals {
   }) : null
   # ha_zone_mapping: Creates a zone mapping object list for all available AZs in a region
   ha_zone_mapping = merge(local.auto_ha_availability_zonea, local.auto_ha_availability_zoneb, local.auto_ha_availability_zonec, local.auto_ha_availability_zoned, local.auto_ha_availability_zonee, local.auto_ha_availability_zonef)
+  ec2_zone_mapping =  { "${local.preferred_az}" : { "subnet_id" : "${data.aws_subnet.selected[0].id}", "security_groups" : ["${local.aws_ec2_security_group_name}"] } }
 }
 
 output "ha_zone_mapping" {
   value = local.ha_zone_mapping
+}
+
+output "ec2_zone_mapping" {
+  value = local.ec2_zone_mapping
 }
 
 output "preferred_az" {

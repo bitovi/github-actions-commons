@@ -113,7 +113,7 @@ module "ec2_efs" {
   aws_efs_ec2_mount_point         = var.aws_efs_ec2_mount_point
   # Other
   ha_zone_mapping                 = module.vpc.ha_zone_mapping
-  ec2_zone_mapping                = { "${module.vpc.preferred_az}" : { "subnet_id" : "${module.vpc.aws_vpc_subnet_selected}", "security_groups" : var.aws_ec2_security_group_name != "" ? var.aws_ec2_security_group_name : "SG for ${var.aws_resource_identifier} - EC2" } }
+  ec2_zone_mapping                = module.vpc.ec2_zone_mapping
   # Docker
   docker_efs_mount_target         = var.docker_efs_mount_target
   # Data inputs
