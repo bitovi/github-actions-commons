@@ -284,3 +284,33 @@ output "application_public_dns" {
 output "vm_url" {
   value = try(module.aws_route53[0].vm_url,local.ec2_no_dns_url_fqdn)
 }
+
+
+
+output "debug_aws_vpc_create" {
+  value = module.vpc.debug_aws_vpc_create
+}
+output "debug_aws_vpc_id" {
+  value = module.vpc.debug_aws_vpc_id
+}
+output "debug_aws_vpc_name" {
+  value = module.vpc.debug_aws_vpc_name
+}
+output "debug_aws_vpc_public_subnets" {
+  value = module.vpc.debug_aws_vpc_public_subnets
+}
+output "debug_aws_vpc_private_subnets" {
+  value = module.vpc.debug_aws_vpc_private_subnets
+}
+output "debug_aws_vpc_availability_zones" {
+  value = module.vpc.debug_aws_vpc_availability_zones
+}
+output "debug_aws_ec2_instance_type" {
+  value = module.vpc.debug_aws_ec2_instance_type
+}
+output "debug_aws_ec2_security_group_name" {
+  value = module.vpc.debug_aws_ec2_security_group_name
+}
+output "debug_aws_resource_identifier" {
+  value = module.vpc.debug_aws_resource_identifier
+}
