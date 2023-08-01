@@ -173,9 +173,14 @@ module "vpc" {
   aws_ec2_instance_type       = var.aws_ec2_instance_type
   aws_ec2_securitu_group_name = try([module.ec2[0].aws_security_group_ec2_sg_name],[""])
   # Others
-  #random_integer              = random_integer.az_select[0].result
   aws_resource_identifier     = var.aws_resource_identifier
   common_tags                 = local.default_tags
+}
+
+module "secretmanager_get" {
+  source         = "../modules/aws/secretmanager_get"
+  count          = var.env_aws_secret != "" ? 1 : 0
+  env_aws_secret = var.env_aws_secret
 }
 
 #module "eks" {
@@ -229,29 +234,17 @@ module "ansible" {
   depends_on = [module.ec2]
 }
 
-
-
-#data "aws_ec2_instance_type_offerings" "region_azs" {
-#  filter {
-#    name   = "instance-type"
-#    values = [var.aws_ec2_instance_type] ## Change this to AWS Region ID
-#  }
-#  location_type = "availability-zone"
-#}
-#
-#
-#resource "random_integer" "az_select" {
-#  count = length(data.aws_ec2_instance_type_offerings.region_azs.locations) > 0 ? 1 : 0
-#  
-#  min   = 0
-#  max   = length(data.aws_ec2_instance_type_offerings.region_azs.locations) - 1
-#
-#  lifecycle {
-#    ignore_changes = all
-#  }
-#}
-
 locals {
+  aws_tags = {
+    OperationsRepo            = "bitovi/github-actions-commons/operations/${var.ops_repo_environment}"
+    AWSResourceIdentifier     = "${var.aws_resource_identifier}"
+    GitHubOrgName             = "${var.app_org_name}"
+    GitHubRepoName            = "${var.app_repo_name}"
+    GitHubBranchName          = "${var.app_branch_name}"
+    GitHubAction              = "bitovi/github-actions-commons"
+    OperationsRepoEnvironment = "${var.ops_repo_environment}"
+    Created_with              = "Bitovi-BitOps"
+  }
   default_tags = merge(local.aws_tags, var.aws_additional_tags)
   fqdn_provided = (
     (var.aws_r53_domain_name != "") ?
