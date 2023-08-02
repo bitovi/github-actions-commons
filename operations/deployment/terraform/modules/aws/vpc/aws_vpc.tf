@@ -101,7 +101,7 @@ resource "aws_route" "public" {
 locals {
   aws_vpc_public_subnets     = var.aws_vpc_public_subnets != "" ? [for n in split(",", var.aws_vpc_public_subnets) : (n)] : []
   aws_vpc_private_subnets    = var.aws_vpc_private_subnets != "" ? [for n in split(",", var.aws_vpc_private_subnets) : (n)] : []
-  aws_vpc_availability_zones = var.aws_vpc_availability_zones != "" ? [for n in split(",", var.aws_vpc_availability_zones) : (n)] : [data.aws_region.current.name]
+  aws_vpc_availability_zones = var.aws_vpc_availability_zones != "" ? [for n in split(",", var.aws_vpc_availability_zones) : (n)] : [local.preferred_az]
   selected_vpc_id            = var.aws_vpc_create ? aws_vpc.main[0].id : var.aws_vpc_id != "" ? var.aws_vpc_id : data.aws_vpc.default[0].id
 }
 
