@@ -9,7 +9,6 @@ data "aws_subnets" "vpc_subnets" {
     name   = "vpc-id"
     values = [local.selected_vpc_id]
   }
-  id = try(var.aws_vpc_subnet_id,null)
 }
 
 data "aws_subnet" "defaulta" {
@@ -77,7 +76,7 @@ data "aws_subnet" "default_selected" {
 
 data "aws_subnet" "selected" {
   count = local.use_default ? 0 : 1
-  id    = data.aws_subnets.vpc_subnets.ids[0]
+  id    = var.aws_vpc_subnet_id != "" ? var.aws_vpc_subnet_id : data.aws_subnets.vpc_subnets.ids[0]
 }
 
 output "aws_vpc_subnet_selected" {
@@ -111,40 +110,34 @@ locals {
   auto_ha_availability_zonea = length(data.aws_subnet.defaultb) > 0 ? ({
     "${data.aws_region.current.name}a" : {
       "subnet_id" : data.aws_subnet.defaulta[0].id,
-      "security_groups" : [data.aws_security_group.default.id]
+      "security_groups" : [data.aws_security_group.dlt.id]
     }
-  }) : null
-  auto_ha_availability_zoneb = length(data.aws_subnet.defaultb) > 0 ? ({
+  }) : nuto_ha_availability_zoneb = length(data.aws_subnet.defaultb) > 0 ? ({
     "${data.aws_region.current.name}b" : {
       "subnet_id" : data.aws_subnet.defaultb[0].id,
-      "security_groups" : [data.aws_security_group.default.id]
+      "security_groups" : [data.aws_security_group.dlt.id]
     }
-  }) : null
-  auto_ha_availability_zonec = length(data.aws_subnet.defaultc) > 0 ? ({
+  }) : nuto_ha_availability_zonec = length(data.aws_subnet.defaultc) > 0 ? ({
     "${data.aws_region.current.name}c" : {
       "subnet_id" : data.aws_subnet.defaultc[0].id,
-      "security_groups" : [data.aws_security_group.default.id]
+      "security_groups" : [data.aws_security_group.dlt.id]
     }
-  }) : null
-  auto_ha_availability_zoned = length(data.aws_subnet.defaultd) > 0 ? ({
+  }) : nuto_ha_availability_zoned = length(data.aws_subnet.defaultd) > 0 ? ({
     "${data.aws_region.current.name}d" : {
       "subnet_id" : data.aws_subnet.defaultd[0].id,
-      "security_groups" : [data.aws_security_group.default.id]
+      "security_groups" : [data.aws_security_group.dlt.id]
     }
-  }) : null
-  auto_ha_availability_zonee = length(data.aws_subnet.defaulte) > 0 ? ({
+  }) : nuto_ha_availability_zonee = length(data.aws_subnet.defaulte) > 0 ? ({
     "${data.aws_region.current.name}e" : {
       "subnet_id" : data.aws_subnet.defaulte[0].id,
-      "security_groups" : [data.aws_security_group.default.id]
+      "security_groups" : [data.aws_security_group.dlt.id]
     }
-  }) : null
-  auto_ha_availability_zonef = length(data.aws_subnet.defaultf) > 0 ? ({
+  }) : nuto_ha_availability_zonef = length(data.aws_subnet.defaultf) > 0 ? ({
     "${data.aws_region.current.name}f" : {
       "subnet_id" : data.aws_subnet.defaultf[0].id,
-      "security_groups" : [data.aws_security_group.default.id]
+      "security_groups" : [data.aws_security_group.dlt.id]
     }
-  }) : null
-  chosen_subnet_id = try(data.aws_subnet.default_selected[0].id,data.aws_subnets.vpc_subnets.ids[0])
+  }) : nhosen_subnet_id = try(data.aws_subnet.default_selected[0].id,data.aws_subnets.vpc_subnets.ids[0])
   # ha_zone_mapping: Creates a zone mapping object list for all available AZs in a region
   ha_zone_mapping = merge(local.auto_ha_availability_zonea, local.auto_ha_availability_zoneb, local.auto_ha_availability_zonec, local.auto_ha_availability_zoned, local.auto_ha_availability_zonee, local.auto_ha_availability_zonef)
   ec2_zone_mapping =  { "${local.preferred_az}" : { "subnet_id" : "${local.chosen_subnet_id}", "security_groups" : ["${local.aws_ec2_security_group_name}"] } }
