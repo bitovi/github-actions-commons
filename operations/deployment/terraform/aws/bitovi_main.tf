@@ -62,7 +62,7 @@ module "aws_route53" {
 module "aws_elb" {
   source = "../modules/aws/elb"
   count  = var.aws_ec2_instance_create ? 1 : 0 
-  # We should have a count here, right? 
+  # ELB Values
   aws_elb_security_group_name        = var.aws_elb_security_group_name
   aws_elb_app_port                   = var.aws_elb_app_port
   aws_elb_app_protocol               = var.aws_elb_app_protocol
@@ -72,6 +72,7 @@ module "aws_elb" {
   lb_access_bucket_name              = var.lb_access_bucket_name
   # EC2
   aws_instance_server_az             = [module.vpc.preferred_az]
+  aws_vpc_subnet_selected            = module.vpc.aws_vpc_subnet_selected
   aws_instance_server_id             = module.ec2[0].aws_instance_server_id
   aws_elb_target_sg_id               = module.ec2[0].aws_security_group_ec2_sg_id 
   # Certs
@@ -80,7 +81,7 @@ module "aws_elb" {
   aws_resource_identifier            = var.aws_resource_identifier
   aws_resource_identifier_supershort = var.aws_resource_identifier_supershort
   common_tags                        = local.default_tags
-  depends_on = [module.vpc]
+  depends_on = [module.vpc,module.ec2]
 }
 
 module "efs" {

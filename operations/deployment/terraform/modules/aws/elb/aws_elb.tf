@@ -73,9 +73,7 @@ resource "aws_elb" "vm_lb" {
   name               = var.aws_resource_identifier_supershort
   security_groups    = [aws_security_group.elb_security_group.id]
   availability_zones = var.aws_instance_server_az
-  # TODO - ADD VPC Handling
-  # availability_zones = var.create_vpc == "true" ? null : [aws_instance.server.availability_zone]
-  # subnets            = var.create_vpc == "true" ? aws_subnet.public.*.id : null
+  subnets            = [var.aws_vpc_subnet_selected]
 
   access_logs {
     bucket   = aws_s3_bucket.lb_access_logs.id
