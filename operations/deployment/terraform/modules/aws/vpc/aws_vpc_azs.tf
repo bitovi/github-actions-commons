@@ -111,32 +111,37 @@ locals {
   auto_ha_availability_zonea = length(data.aws_subnet.defaultb) > 0 ? ({
     "${data.aws_region.current.name}a" : {
       "subnet_id" : data.aws_subnet.defaulta[0].id,
-      "security_groups" : [data.aws_security_group.dlt.id]
+      "security_groups" : [data.aws_security_group.default.id]
     }
-  }) : nuto_ha_availability_zoneb = length(data.aws_subnet.defaultb) > 0 ? ({
+  }) : null
+  auto_ha_availability_zoneb = length(data.aws_subnet.defaultb) > 0 ? ({
     "${data.aws_region.current.name}b" : {
       "subnet_id" : data.aws_subnet.defaultb[0].id,
-      "security_groups" : [data.aws_security_group.dlt.id]
+      "security_groups" : [data.aws_security_group.default.id]
     }
-  }) : nuto_ha_availability_zonec = length(data.aws_subnet.defaultc) > 0 ? ({
+  }) : null
+  auto_ha_availability_zonec = length(data.aws_subnet.defaultc) > 0 ? ({
     "${data.aws_region.current.name}c" : {
       "subnet_id" : data.aws_subnet.defaultc[0].id,
-      "security_groups" : [data.aws_security_group.dlt.id]
+      "security_groups" : [data.aws_security_group.default.id]
     }
-  }) : nuto_ha_availability_zoned = length(data.aws_subnet.defaultd) > 0 ? ({
+  }) : null
+  auto_ha_availability_zoned = length(data.aws_subnet.defaultd) > 0 ? ({
     "${data.aws_region.current.name}d" : {
       "subnet_id" : data.aws_subnet.defaultd[0].id,
-      "security_groups" : [data.aws_security_group.dlt.id]
+      "security_groups" : [data.aws_security_group.default.id]
     }
-  }) : nuto_ha_availability_zonee = length(data.aws_subnet.defaulte) > 0 ? ({
+  }) : null
+  auto_ha_availability_zonee = length(data.aws_subnet.defaulte) > 0 ? ({
     "${data.aws_region.current.name}e" : {
       "subnet_id" : data.aws_subnet.defaulte[0].id,
-      "security_groups" : [data.aws_security_group.dlt.id]
+      "security_groups" : [data.aws_security_group.default.id]
     }
-  }) : nuto_ha_availability_zonef = length(data.aws_subnet.defaultf) > 0 ? ({
+  }) : null
+  auto_ha_availability_zonef = length(data.aws_subnet.defaultf) > 0 ? ({
     "${data.aws_region.current.name}f" : {
       "subnet_id" : data.aws_subnet.defaultf[0].id,
-      "security_groups" : [data.aws_security_group.dlt.id]
+      "security_groups" : [data.aws_security_group.default.id]
     }
   }) : null
   chosen_subnet_id = try(data.aws_subnet.default_selected[0].id,data.aws_subnets.vpc_subnets.ids[0])
