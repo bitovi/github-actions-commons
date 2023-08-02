@@ -9,6 +9,7 @@ data "aws_subnets" "vpc_subnets" {
     name   = "vpc-id"
     values = [local.selected_vpc_id]
   }
+  depends_on = [ aws_vpc.main ]
 }
 
 data "aws_subnet" "defaulta" {
