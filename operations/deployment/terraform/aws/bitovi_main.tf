@@ -165,6 +165,7 @@ module "vpc" {
   source                      = "../modules/aws/vpc"
   aws_vpc_create              = var.aws_vpc_create
   aws_vpc_id                  = var.aws_vpc_id 
+  aws_vpc_subnet_id           = var.aws_vpc_subnet_id
   aws_vpc_cidr_block          = var.aws_vpc_cidr_block
   aws_vpc_name                = var.aws_vpc_name
   aws_vpc_public_subnets      = var.aws_vpc_public_subnets

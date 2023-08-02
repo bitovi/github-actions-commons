@@ -9,7 +9,7 @@ data "aws_subnets" "vpc_subnets" {
     name   = "vpc-id"
     values = [local.selected_vpc_id]
   }
-  id = ""
+  id = try(var.aws_vpc_subnet_id,null)
 }
 
 data "aws_subnet" "defaulta" {

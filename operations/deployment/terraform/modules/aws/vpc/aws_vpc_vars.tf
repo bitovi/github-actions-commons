@@ -1,5 +1,6 @@
 variable "aws_vpc_create" {}
 variable "aws_vpc_id" {}
+variable "aws_vpc_subnet_id" {}
 variable "aws_vpc_cidr_block" {}
 variable "aws_vpc_name" {}
 variable "aws_vpc_public_subnets" {}
