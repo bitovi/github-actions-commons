@@ -12,36 +12,38 @@ data "aws_subnets" "vpc_subnets" {
 }
 
 data "aws_subnet" "defaulta" {
+  count             = contains(data.aws_availability_zones.all.names, "${data.aws_region.current.name}a") && local.use_default ? 1 : 0
   availability_zone = "${data.aws_region.current.name}a"
   vpc_id = local.selected_vpc_id
 }
 data "aws_subnet" "defaultb" {
-  count             = contains(data.aws_availability_zones.all.names, "${data.aws_region.current.name}b") ? 1 : 0
+  count             = contains(data.aws_availability_zones.all.names, "${data.aws_region.current.name}b") && local.use_default ? 1 : 0
   availability_zone = "${data.aws_region.current.name}b"
   vpc_id = local.selected_vpc_id
 }
 data "aws_subnet" "defaultc" {
-  count             = contains(data.aws_availability_zones.all.names, "${data.aws_region.current.name}c") ? 1 : 0
+  count             = contains(data.aws_availability_zones.all.names, "${data.aws_region.current.name}c") && local.use_default ? 1 : 0
   availability_zone = "${data.aws_region.current.name}c"
   vpc_id = local.selected_vpc_id
 }
 data "aws_subnet" "defaultd" {
-  count             = contains(data.aws_availability_zones.all.names, "${data.aws_region.current.name}d") ? 1 : 0
+  count             = contains(data.aws_availability_zones.all.names, "${data.aws_region.current.name}d") && local.use_default ? 1 : 0
   availability_zone = "${data.aws_region.current.name}d"
   vpc_id = local.selected_vpc_id
 }
 data "aws_subnet" "defaulte" {
-  count             = contains(data.aws_availability_zones.all.names, "${data.aws_region.current.name}e") ? 1 : 0
+  count             = contains(data.aws_availability_zones.all.names, "${data.aws_region.current.name}e") && local.use_default ? 1 : 0
   availability_zone = "${data.aws_region.current.name}e"
   vpc_id = local.selected_vpc_id
 }
 data "aws_subnet" "defaultf" {
-  count             = contains(data.aws_availability_zones.all.names, "${data.aws_region.current.name}f") ? 1 : 0
+  count             = contains(data.aws_availability_zones.all.names, "${data.aws_region.current.name}f") && local.use_default ? 1 : 0
   availability_zone = "${data.aws_region.current.name}f"
   vpc_id = local.selected_vpc_id
 }
 
 locals {
+  use_default = var.aws_vpc_create ? false : var.aws_vpc_id != "" ? false : true
   aws_ec2_instance_type_offerings = sort(data.aws_ec2_instance_type_offerings.region_azs.locations)
   preferred_az = var.aws_vpc_availability_zones != "" ? var.aws_vpc_availability_zones : local.aws_ec2_instance_type_offerings[random_integer.az_select[0].result]
 }
@@ -67,13 +69,13 @@ resource "random_integer" "az_select" {
 }
 
 data "aws_subnet" "selected" {
-  count             = contains(data.aws_availability_zones.all.names, local.preferred_az) ? 1 : 0
+  count             = contains(data.aws_availability_zones.all.names, local.preferred_az) && local.use_default ? 1 : 0
   availability_zone = local.preferred_az
   default_for_az    = true #-  What happens if I have multiple subnets in the same az?
 }
 
 output "aws_vpc_subnet_selected" {
-  value = try(data.aws_subnet.selected[0].id,"")
+  value = try(data.aws_subnet.selected[0].id,data.aws_subnets.vpc_subnets.subnets[0].id,"")
 }
 
 data "aws_security_group" "default" {
@@ -100,11 +102,12 @@ output "instance_type_available" {
 locals {
   aws_ec2_security_group_name = var.aws_ec2_security_group_name != "" ? var.aws_ec2_security_group_name : "SG for ${var.aws_resource_identifier} - EC2"
   # auto_ha_availability_zone*: Creates zone map objects for each available AZ in a region
-  auto_ha_availability_zonea = {
+  auto_ha_availability_zonea = length(data.aws_subnet.defaultb) > 0 ? ({
     "${data.aws_region.current.name}a" : {
-      "subnet_id" : data.aws_subnet.defaulta.id,
+      "subnet_id" : data.aws_subnet.defaulta[0].id,
       "security_groups" : [data.aws_security_group.default.id]
-  } }
+    }
+  }) : null
   auto_ha_availability_zoneb = length(data.aws_subnet.defaultb) > 0 ? ({
     "${data.aws_region.current.name}b" : {
       "subnet_id" : data.aws_subnet.defaultb[0].id,
