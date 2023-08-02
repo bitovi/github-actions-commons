@@ -45,7 +45,8 @@ data "aws_subnet" "defaultf" {
 locals {
   use_default = var.aws_vpc_create ? false : var.aws_vpc_id != "" ? false : true
   aws_ec2_instance_type_offerings = sort(data.aws_ec2_instance_type_offerings.region_azs.locations)
-  preferred_az = var.aws_vpc_availability_zones != "" ? var.aws_vpc_availability_zones : local.use_default || var.aws_vpc_create ? local.aws_ec2_instance_type_offerings[random_integer.az_select[0].result] : data.aws_subnet.selected[0].availability_zone
+  aws_ec2_zone_selected = local.aws_ec2_instance_type_offerings[random_integer.az_select[0].result]
+  preferred_az = var.aws_vpc_availability_zones != "" ? var.aws_vpc_availability_zones : var.aws_vpc_id != "" ? data.aws_subnet.selected[0].availability_zone : local.aws_ec2_zone_selected
 }
 
 data "aws_ec2_instance_type_offerings" "region_azs" {
