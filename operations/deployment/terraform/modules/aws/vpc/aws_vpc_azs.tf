@@ -9,6 +9,7 @@ data "aws_subnets" "vpc_subnets" {
     name   = "vpc-id"
     values = [local.selected_vpc_id]
   }
+  id = ""
 }
 
 data "aws_subnet" "defaulta" {
@@ -76,7 +77,7 @@ data "aws_subnet" "default_selected" {
 
 data "aws_subnet" "selected" {
   count = local.use_default ? 0 : 1
-  id    = local.chosen_subnet_id
+  id    = data.aws_subnets.vpc_subnets.ids[0]
 }
 
 output "aws_vpc_subnet_selected" {
