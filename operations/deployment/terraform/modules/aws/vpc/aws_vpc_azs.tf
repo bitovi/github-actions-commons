@@ -76,6 +76,7 @@ data "aws_subnet" "default_selected" {
 
 data "aws_subnet" "selected" {
   count = local.use_default ? 0 : 1
+
   id    = var.aws_vpc_subnet_id != "" ? var.aws_vpc_subnet_id : data.aws_subnets.vpc_subnets.ids[0]
 }
 
@@ -137,7 +138,8 @@ locals {
       "subnet_id" : data.aws_subnet.defaultf[0].id,
       "security_groups" : [data.aws_security_group.dlt.id]
     }
-  }) : nhosen_subnet_id = try(data.aws_subnet.default_selected[0].id,data.aws_subnets.vpc_subnets.ids[0])
+  }) : null
+  chosen_subnet_id = try(data.aws_subnet.default_selected[0].id,data.aws_subnets.vpc_subnets.ids[0])
   # ha_zone_mapping: Creates a zone mapping object list for all available AZs in a region
   ha_zone_mapping = merge(local.auto_ha_availability_zonea, local.auto_ha_availability_zoneb, local.auto_ha_availability_zonec, local.auto_ha_availability_zoned, local.auto_ha_availability_zonee, local.auto_ha_availability_zonef)
   ec2_zone_mapping =  { "${local.preferred_az}" : { "subnet_id" : "${local.chosen_subnet_id}", "security_groups" : ["${local.aws_ec2_security_group_name}"] } }
