@@ -158,6 +158,7 @@ The following inputs can be used as `step.with` keys
 | `aws_vpc_private_subnets` | String | Comma separated list of private subnets. If no input, no private subnet will be created. Defaults to `<none>`. |
 | `aws_vpc_availability_zones` | String | Comma separated list of availability zones. Defaults to `aws_default_region` value. |
 | `aws_vpc_id` | String | AWS VPC ID. Accepts `vpc-###` values. |
+| `aws_vpc_subnet_id` | String | AWS VPC Subnet ID. If none provided, will pick one. (Ideal when there's only one) |
 <hr/>
 <br/>
 

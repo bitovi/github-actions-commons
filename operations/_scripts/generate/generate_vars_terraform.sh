@@ -140,6 +140,7 @@ if [[ $(alpha_only "$AWS_VPC_CREATE") == true ]]; then
   aws_vpc_availability_zones=$(generate_var aws_vpc_availability_zones $AWS_VPC_AVAILABILITY_ZONES)
 fi
 aws_vpc_id=$(generate_var aws_vpc_id $AWS_VPC_ID)
+aws_vpc_subnet_id=$(generate_var aws_vpc_subnet_id $AWS_VPC_SUBNET_ID)
 
 #-- AWS Route53 and certs --#
 if [[ $(alpha_only "$AWS_R53_ENABLE") == true ]]; then
@@ -284,6 +285,7 @@ $aws_vpc_public_subnets
 $aws_vpc_private_subnets
 $aws_vpc_availability_zones
 $aws_vpc_id
+$aws_vpc_subnet_id
 
 #-- R53 --#
 $aws_r53_enable

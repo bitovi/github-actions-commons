@@ -188,8 +188,8 @@ inputs:
   aws_vpc_id:
     description: 'AWS VPC ID. Accepts `vpc-###` values.'
     required: false
-  aws_selected_vpc:
-    description: 'Specify a VPC to be used with the instance. If none provided, will pick one.'
+  aws_subnet_id:
+    description: 'Specify a Subnet to be used with the instance. If none provided, will pick one. (Ideal when there's only one)'
     required: false
 
   # AWS Route53 Domains abd Certificates
@@ -503,6 +503,7 @@ runs:
         AWS_VPC_PRIVATE_SUBNETS: ${{ inputs.aws_vpc_private_subnets }}
         AWS_VPC_AVAILABILITY_ZONES: ${{ inputs.aws_vpc_availability_zones }}
         AWS_VPC_ID: ${{ inputs.aws_vpc_id }}
+        AWS_VPC_SUBNET_ID: ${{ inputs.aws_vpc_subnet_id }}
 
         # AWS Route53 Domains abd Certificates
         AWS_R53_ENABLE: ${{ inputs.aws_r53_enable }}

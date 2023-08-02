@@ -128,6 +128,12 @@ variable "aws_vpc_id" {
   default = ""
 }
 
+variable "aws_vpc_subnet_id" {
+  type = string
+  description = "aws vpc subnet id"
+  default = ""
+}
+
 variable "aws_vpc_cidr_block" {
   description = "CIDR of the VPC"
   type        = string
