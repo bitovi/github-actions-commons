@@ -188,7 +188,7 @@ inputs:
   aws_vpc_id:
     description: 'AWS VPC ID. Accepts `vpc-###` values.'
     required: false
-  aws_subnet_id:
+  aws_vpc_subnet_id:
     description: 'Specify a Subnet to be used with the instance. If none provided, will pick one. (Ideal when there's only one)'
     required: false
 
