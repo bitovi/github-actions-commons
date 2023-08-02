@@ -69,7 +69,7 @@ resource "random_integer" "az_select" {
 }
 
 data "aws_subnet" "default_selected" {
-  count             = contains(data.aws_availability_zones.all.names, local.preferred_az) && local.use_default ? 1 : 0
+  count             = local.use_default ? contains(data.aws_availability_zones.all.names, local.preferred_az) ? 1 : 0 : 0
   availability_zone = local.preferred_az
   default_for_az    = true #-  What happens if I have multiple subnets in the same az?
 }
