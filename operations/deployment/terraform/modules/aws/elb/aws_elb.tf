@@ -73,7 +73,7 @@ resource "aws_security_group_rule" "incoming_elb_ports" {
 resource "aws_elb" "vm_lb" {
   name               = var.aws_resource_identifier_supershort
   security_groups    = [aws_security_group.elb_security_group.id]
-  availability_zones = var.aws_instance_server_az
+  #availability_zones = var.aws_instance_server_az
   subnets            = [var.aws_vpc_subnet_selected]
 
   access_logs {
