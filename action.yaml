@@ -180,13 +180,16 @@ inputs:
     description: 'Comma separated list of public subnets. Defaults to 10.10.110.0/24'
     required: false
   aws_vpc_private_subnets:
-    description: 'Comma separated list of private subnets'
+    description: 'Comma separated list of private subnets. If none, none will be created.'
     required: false
   aws_vpc_availability_zones:
     description: 'Comma separated list of availability zones. Defaults to `aws_default_region.'
     required: false
   aws_vpc_id:
     description: 'AWS VPC ID. Accepts `vpc-###` values.'
+    required: false
+  aws_selected_vpc:
+    description: 'Specify a VPC to be used with the instance. If none provided, will pick one.'
     required: false
 
   # AWS Route53 Domains abd Certificates

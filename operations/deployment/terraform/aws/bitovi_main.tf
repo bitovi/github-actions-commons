@@ -314,3 +314,7 @@ output "debug_aws_ec2_security_group_name" {
 output "debug_aws_resource_identifier" {
   value = module.vpc.debug_aws_resource_identifier
 }
+
+output "debug_aws_vpc_public_subnets" {
+  value = module.vpc.aws_subnets
+}

@@ -75,9 +75,9 @@ data "aws_subnet" "selected" {
 }
 
 output "aws_vpc_subnet_selected" {
-  value = try(data.aws_subnet.selected[0].id,data.aws_subnets.vpc_subnets.subnets[0].id,"")
+  value = try(data.aws_subnet.selected[0].id,"") #data.aws_subnets.vpc_subnets.subnets[0].id,"")
 }
-
+   
 data "aws_security_group" "default" {
   filter {
     name   = "group-name"
@@ -153,4 +153,8 @@ output "ec2_zone_mapping" {
 
 output "preferred_az" {
   value = local.preferred_az
+}
+
+output "aws_subnets" {
+  value = data.aws_subnets.vpc_subnets
 }
