@@ -46,6 +46,7 @@ resource "aws_security_group_rule" "incoming_elb" {
 resource "aws_security_group" "elb_security_group" {
   name        = var.aws_elb_security_group_name != "" ? var.aws_elb_security_group_name : "SG for ${var.aws_resource_identifier} - ELB"
   description = "SG for ${var.aws_resource_identifier} - ELB"
+  vpc         = var.aws_vpc_selected_id
   egress {
     from_port   = 0
     to_port     = 0
