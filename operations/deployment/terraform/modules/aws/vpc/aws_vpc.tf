@@ -110,18 +110,11 @@ data "aws_vpc" "selected" {
   id    = local.selected_vpc_id
 }
 
-# Get the EC2 Instance az (if there is an instance)
-
-data "aws_instance" "exisiting_ec2" {
-  count       = var.aws_ec2_existing_instance_id != "" ? 1 : 0
-  instance_id = var.aws_ec2_existing_instance_id
-}
-
 # Sort the AZ list, and ensure that the az from the existing EC2 instance is first in the list
 
 locals {
   sorted_availability_zones = sort(data.aws_availability_zones.all.names)
-  index_of_existing_az = var.aws_ec2_existing_instance_id != "" ? index(local.sorted_availability_zones, data.aws_instance.existing_ec2.availability_zone) : 0
+  index_of_existing_az = index(local.sorted_availability_zones, local.aws_ec2_zone_selected)
   reordered_availability_zones = concat(
     slice(local.sorted_availability_zones, local.index_of_existing_az, 1),
     remove(local.index_of_existing_az, 1, local.sorted_availability_zones)
