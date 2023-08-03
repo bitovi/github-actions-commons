@@ -232,7 +232,7 @@ module "ansible" {
   aws_efs_ec2_mount_point = var.aws_efs_ec2_mount_point
   aws_efs_mount_target    = var.aws_efs_mount_target
   docker_efs_mount_target = var.docker_efs_mount_target
-  aws_ec2_efs_url         = try(module.ec2_efs[0].efs_url,"")
+  aws_efs_fs_id           = var.aws_efs_enable ? local.create_efs ? module.efs[0].aws_efs_fs_id : var.aws_efs_mount_id : ""
   # Data inputs
   private_key_filename    = module.ec2[0].private_key_filename
   # Dependencies
@@ -286,12 +286,4 @@ output "application_public_dns" {
 
 output "vm_url" {
   value = try(module.aws_route53[0].vm_url,local.ec2_no_dns_url_fqdn)
-}
-
-output "aws_efs_fs_id" {
-  value = module.efs[0].aws_efs_fs_id
-}
-
-output "ansible_efs_url" {
-  value = try(module.ec2_efs[0].efs_url,"")
 }

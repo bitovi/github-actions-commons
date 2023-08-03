@@ -22,10 +22,6 @@ resource "aws_efs_mount_target" "efs_mount_target" {
 
 # TODO: Add check for EFS/EFSHA vs. Provided Mount id.
 
-data "aws_efs_file_system" "mount_efs" {
-  file_system_id = var.aws_efs_mount_id != "" ? var.aws_efs_mount_id : var.aws_efs_fs_id
-}
-
 resource "local_file" "efs-dotenv" {
   count    = local.create_ec2_efs ? 1 : 0
   filename = format("%s/%s", abspath(path.root), "efs.env")
@@ -43,8 +39,4 @@ locals {
 
 output "mount_efs" {
   value = local.mount_efs
-}
-
-output "efs_url" {
-  value = data.aws_efs_file_system.mount_efs.dns_name
 }
