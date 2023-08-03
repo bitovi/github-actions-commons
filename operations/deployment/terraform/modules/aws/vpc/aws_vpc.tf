@@ -116,8 +116,8 @@ locals {
   sorted_availability_zones = sort(data.aws_availability_zones.all.names)
   index_of_existing_az      = index(local.sorted_availability_zones, local.aws_ec2_zone_selected)
   
-  before_existing_az = slice(local.sorted_availability_zones, 0, local.index_of_existing_az)
-  after_existing_az  = slice(local.sorted_availability_zones, local.index_of_existing_az + 1, length(local.sorted_availability_zones) - local.index_of_existing_az - 1)
+  before_existing_az = local.index_of_existing_az == 0 ? [] : slice(local.sorted_availability_zones, 0, local.index_of_existing_az)
+  after_existing_az  = local.index_of_existing_az == length(local.sorted_availabiliy_zones) -1 ? [] : slice(local.sorted_availability_zones, local.index_of_existing_az + 1, length(local.sorted_availability_zones))
   
   reordered_availability_zones = concat(
     [element(local.sorted_availability_zones, local.index_of_existing_az)],
