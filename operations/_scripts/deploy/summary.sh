@@ -93,5 +93,5 @@ else
   If you consider this is a bug in the Github Action, please submit an issue to our repo."
 fi
 
-echo "$result_string" >> $GITHUB_STEP_SUMMARY
+echo -e "$result_string" >> $GITHUB_STEP_SUMMARY
 echo "SUMMARY_CODE=$SUMMARY_CODE" >> $GITHUB_OUTPUT
