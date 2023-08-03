@@ -147,31 +147,3 @@ output "aws_vpc_cidr_block" {
   description = "CIDR block of chosen VPC"
   value = data.aws_vpc.selected.cidr_block
 }
-
-output "debug_aws_vpc_create" {
-  value = var.aws_vpc_create
-}
-output "debug_aws_vpc_id" {
-  value = var.aws_vpc_id
-}
-output "debug_aws_vpc_name" {
-  value = var.aws_vpc_name
-}
-output "debug_aws_vpc_public_subnets" {
-  value = var.aws_vpc_public_subnets
-}
-output "debug_aws_vpc_private_subnets" {
-  value = var.aws_vpc_private_subnets
-}
-output "debug_aws_vpc_availability_zones" {
-  value = var.aws_vpc_availability_zones
-}
-output "debug_aws_ec2_instance_type" {
-  value = var.aws_ec2_instance_type
-}
-output "debug_aws_ec2_security_group_name" {
-  value = var.aws_ec2_security_group_name
-}
-output "debug_aws_resource_identifier" {
-  value = var.aws_resource_identifier
-}
