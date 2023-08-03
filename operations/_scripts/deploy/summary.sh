@@ -41,6 +41,10 @@ function process_and_return() {
 
 # Process and store URL_OUTPUT:AWS_ELB_LISTEN_PORT in a variable
 output_elb=$(process_and_return "$URL_OUTPUT" "$AWS_ELB_LISTEN_PORT")
+# Given the case where there is no port specified for the ELB, pass the URL directly
+if [[ -z "$output_elb" ]]; then
+  output_elb="$URL_OUTPUT"
+fi
 final_output+="${output_elb}\n"
 # Process and store EC2_URL_OUTPUT:AWS_EC2_PORT_LIST in a variable
 output_ec2=$(process_and_return "$EC2_URL_OUTPUT" "$AWS_EC2_PORT_LIST")
