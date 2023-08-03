@@ -287,3 +287,11 @@ output "application_public_dns" {
 output "vm_url" {
   value = try(module.aws_route53[0].vm_url,local.ec2_no_dns_url_fqdn)
 }
+
+output "aws_efs_fs_id" {
+  value = module.efs[0].aws_efs_fs_id
+}
+
+output "ansible_efs_url" {
+  value = try(module.ec2_efs[0].efs_url,"")
+}
