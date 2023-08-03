@@ -39,6 +39,14 @@ function process_and_return() {
   echo -e "$result"
 }
 
+# Function to echo each line of a given variable
+echo_lines() {
+  local input="$1"
+  while IFS= read -r line; do
+    echo -e "$line" >> $GITHUB_STEP_SUMMARY
+  done <<< "$input"
+}
+
 # Process and store URL_OUTPUT:AWS_ELB_LISTEN_PORT in a variable
 output_elb=$(process_and_return "$URL_OUTPUT" "$AWS_ELB_LISTEN_PORT")
 # Given the case where there is no port specified for the ELB, pass the URL directly
@@ -54,8 +62,7 @@ SUMMARY_CODE=0
 
 if [[ $SUCCESS == 'success' ]]; then
   if [[ $URL_OUTPUT != '' ]]; then
-    result_string="## Deploy Complete! :rocket:
-    $final_output"
+    result_string="## Deploy Complete! :rocket:"
   elif [[ $BITOPS_CODE_ONLY == 'true' ]]; then
     if [[ $BITOPS_CODE_STORE == 'true' ]]; then
       SUMMARY_CODE=6
@@ -98,4 +105,10 @@ else
 fi
 
 echo -e "$result_string" >> $GITHUB_STEP_SUMMARY
-echo "SUMMARY_CODE=$SUMMARY_CODE" >> $GITHUB_OUTPUT
+if [[ $SUCCESS == 'success' ]]; then
+  if [[ $URL_OUTPUT != '' ]]; then
+    while IFS= read -r line; do
+      echo -e "$line" >> $GITHUB_STEP_SUMMARY
+    done <<< "$final_output
+  fi
+fi
