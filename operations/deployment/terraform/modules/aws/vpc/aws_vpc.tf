@@ -124,11 +124,6 @@ locals {
     local.before_existing_az,
     local.after_existing_az
   )
-
-  #reordered_availability_zones = concat(
-  #  slice(local.sorted_availability_zones, local.index_of_existing_az, sum([1,local.index_of_existing_az])),
-  #  setsubtract(local.sorted_availability_zones, [local.sorted_availability_zones[local.index_of_existing_az]])
-  #)
 }
 
 ### Outputs
