@@ -117,7 +117,7 @@ locals {
   index_of_existing_az = index(local.sorted_availability_zones, local.aws_ec2_zone_selected)
   reordered_availability_zones = concat(
     slice(local.sorted_availability_zones, local.index_of_existing_az, sum([1,local.index_of_existing_az])),
-    setsubtract(local.sorted_availability_zones, local.sorted_availability_zones[local.index_of_existing_az])
+    setsubtract(local.sorted_availability_zones, [local.sorted_availability_zones[local.index_of_existing_az]])
   )
 }
 
