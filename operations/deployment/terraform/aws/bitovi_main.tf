@@ -174,8 +174,9 @@ module "vpc" {
   aws_vpc_private_subnets     = var.aws_vpc_private_subnets
   aws_vpc_availability_zones  = var.aws_vpc_availability_zones
   # Data inputs
-  aws_ec2_instance_type       = var.aws_ec2_instance_type
-  aws_ec2_security_group_name = var.aws_ec2_security_group_name
+  aws_ec2_instance_type        = var.aws_ec2_instance_type
+  aws_ec2_security_group_name  = var.aws_ec2_security_group_name
+  aws_ec2_existing_instance_id = try(module.ec2.aws_instance_server_id,"")
   # Others
   aws_resource_identifier     = var.aws_resource_identifier
   common_tags                 = local.default_tags
