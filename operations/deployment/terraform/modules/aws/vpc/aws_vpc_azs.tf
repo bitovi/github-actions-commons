@@ -9,38 +9,37 @@ data "aws_subnets" "vpc_subnets" {
     name   = "vpc-id"
     values = [local.selected_vpc_id]
   }
-  depends_on = [ aws_vpc.main ]
 }
 
 data "aws_subnet" "defaulta" {
   count             = contains(data.aws_availability_zones.all.names, "${data.aws_region.current.name}a") && local.use_default ? 1 : 0
   availability_zone = "${data.aws_region.current.name}a"
-  vpc_id = local.selected_vpc_id
+  default_for_az    = true
 }
 data "aws_subnet" "defaultb" {
   count             = contains(data.aws_availability_zones.all.names, "${data.aws_region.current.name}b") && local.use_default ? 1 : 0
   availability_zone = "${data.aws_region.current.name}b"
-  vpc_id = local.selected_vpc_id
+  default_for_az    = true
 }
 data "aws_subnet" "defaultc" {
   count             = contains(data.aws_availability_zones.all.names, "${data.aws_region.current.name}c") && local.use_default ? 1 : 0
   availability_zone = "${data.aws_region.current.name}c"
-  vpc_id = local.selected_vpc_id
+  default_for_az    = true
 }
 data "aws_subnet" "defaultd" {
   count             = contains(data.aws_availability_zones.all.names, "${data.aws_region.current.name}d") && local.use_default ? 1 : 0
   availability_zone = "${data.aws_region.current.name}d"
-  vpc_id = local.selected_vpc_id
+  default_for_az    = true
 }
 data "aws_subnet" "defaulte" {
   count             = contains(data.aws_availability_zones.all.names, "${data.aws_region.current.name}e") && local.use_default ? 1 : 0
   availability_zone = "${data.aws_region.current.name}e"
-  vpc_id = local.selected_vpc_id
+  default_for_az    = true
 }
 data "aws_subnet" "defaultf" {
   count             = contains(data.aws_availability_zones.all.names, "${data.aws_region.current.name}f") && local.use_default ? 1 : 0
   availability_zone = "${data.aws_region.current.name}f"
-  vpc_id = local.selected_vpc_id
+  default_for_az    = true
 }
 
 locals {
@@ -78,8 +77,7 @@ data "aws_subnet" "default_selected" {
 
 data "aws_subnet" "selected" {
   count = local.use_default ? 0 : 1
-  id    = var.aws_vpc_subnet_id != "" ? var.aws_vpc_subnet_id : data.aws_subnets.vpc_subnets.ids[0]
-  depends_on = [ aws_subnet.public ]
+  id    = var.aws_vpc_subnet_id != "" ? var.aws_vpc_subnet_id : var.aws_vpc_create ? aws_subnet.public.id : data.aws_subnets.vpc_subnets.ids[0]
 }
 
 output "aws_vpc_subnet_selected" {
