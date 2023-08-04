@@ -254,7 +254,7 @@ inputs:
     description: 'ID of the VPC for the EFS mount target. If aws_efs_create_ha is set to true, will create one mount target per subnet available in the VPC. If not, will pick one.'
     required: false
   aws_efs_subnet_ids:
-    description: 'ID or ID's of the subnet for the EFS mount target.'
+    description: 'ID or IDs of the subnet for the EFS mount target.'
   aws_efs_security_group_name:
     description:  'The name of the EFS security group'
     required: false
