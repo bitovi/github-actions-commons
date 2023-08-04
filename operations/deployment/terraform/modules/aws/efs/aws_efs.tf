@@ -68,7 +68,7 @@ resource "aws_security_group_rule" "efs_nfs_incoming_ports_defined" { # Incoming
   from_port         = 2049
   to_port           = 2049
   protocol          = "tcp"
-  cidr_blocks       = [data.aws_vpc.incoming[0].cidr]
+  cidr_blocks       = [data.aws_vpc.incoming[0].cidr_block]
   security_group_id = aws_security_group.efs_security_group_defined[0].id
   depends_on        = [ aws_security_group.efs_security_group_defined ]
 }
@@ -106,7 +106,7 @@ resource "aws_security_group_rule" "efs_nfs_incoming_ports_action" { # Selected 
   from_port         = 2049
   to_port           = 2049
   protocol          = "tcp"
-  cidr_blocks       = [data.aws_vpc.selected[0].cidr]
+  cidr_blocks       = [data.aws_vpc.selected[0].cidr_block]
   security_group_id = aws_security_group.efs_security_group_action[0].id
   depends_on        = [ aws_security_group.efs_security_group_action ]
 }
