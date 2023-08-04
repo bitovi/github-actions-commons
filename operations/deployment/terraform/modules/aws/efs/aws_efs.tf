@@ -1,8 +1,10 @@
 locals {
   # replica_destination: Checks whether a replica destination exists otherwise sets a default
-  replica_destination = var.aws_efs_replication_destination != "" ? var.aws_efs_replication_destination : var.aws_region_current_name
+  replica_destination = var.aws_efs_replication_destination != "" ? var.aws_efs_replication_destination : data.aws_region.current.name
   create_efs          = var.aws_efs_create ? true : (var.aws_efs_create_ha ? true : false)
 }
+
+data "aws_region" "current" {}
 
 # ---------------------CREATE--------------------------- #
 resource "aws_efs_file_system" "efs" {
@@ -67,15 +69,15 @@ resource "aws_security_group_rule" "efs_nfs_incoming_ports_defined" { # Incoming
   to_port           = 2049
   protocol          = "tcp"
   cidr_blocks       = [data.aws_vpc.incoming[0].cidr]
-  security_group_id = aws_security_group.efs_security_group_defined.id
-  depends_on        = [ aws_security_group.efs_security_group ]
+  security_group_id = aws_security_group.efs_security_group_defined[0].id
+  depends_on        = [ aws_security_group.efs_security_group_defined ]
 }
 
 resource "aws_efs_mount_target" "efs_mount_target_incoming" {
   count           = length(local.incoming_subnets)
   file_system_id  = data.aws_efs_file_system.efs.id
   subnet_id       = local.incoming_subnets[count.index]
-  security_groups = aws_security_group.efs_security_group_defined.id
+  security_groups = aws_security_group.efs_security_group_defined[0].id
 }
 ####
 
@@ -105,15 +107,15 @@ resource "aws_security_group_rule" "efs_nfs_incoming_ports_action" { # Selected 
   to_port           = 2049
   protocol          = "tcp"
   cidr_blocks       = [data.aws_vpc.selected[0].cidr]
-  security_group_id = aws_security_group.efs_security_group_action.id
-  depends_on        = [ aws_security_group.efs_security_group ]
+  security_group_id = aws_security_group.efs_security_group_action[0].id
+  depends_on        = [ aws_security_group.efs_security_group_action ]
 }
 
 resource "aws_efs_mount_target" "efs_mount_target_action" {
   count           = length(local.module_subnets)
   file_system_id  = data.aws_efs_file_system.efs.id
   subnet_id       = local.module_subnets[count.index]
-  security_groups = aws_security_group.efs_security_group_defined.id
+  security_groups = aws_security_group.efs_security_group_action[0].id
 }
 
 ######
@@ -131,7 +133,7 @@ data "aws_subnets" "selected_vpc_id"  {
 
 data "aws_vpc" "selected" {
   count = var.aws_selected_vpc_id != null ? 1 : 0
-  id    = local.selected_vpc_id
+  id    = var.aws_selected_vpc_id
 }
 
 # Data sources from EFS inputs
@@ -144,7 +146,7 @@ data "aws_subnets" "incoming_vpc" {
   }
 }
 
-data "aws_vpc" "inconming" {
+data "aws_vpc" "incoming" {
   count = local.incoming_set ? 1 : 0
   id    = local.incoming_vpc
 }

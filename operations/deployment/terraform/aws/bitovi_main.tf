@@ -250,7 +250,7 @@ module "ansible" {
   aws_efs_ec2_mount_point = var.aws_efs_ec2_mount_point
   aws_efs_mount_target    = var.aws_efs_mount_target
   docker_efs_mount_target = var.docker_efs_mount_target
-  aws_efs_fs_id           = var.aws_efs_enable ? local.create_efs ? module.efs[0].aws_efs_fs_id : var.aws_efs_mount_id : null
+  aws_efs_fs_id           = var.aws_efs_enable ? local.create_efs ? module.efs[0].aws_efs_fs_id : var.aws_efs_fs_id : null
   # Data inputs
   private_key_filename    = module.ec2[0].private_key_filename
   # Dependencies
