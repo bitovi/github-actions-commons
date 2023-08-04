@@ -173,14 +173,14 @@ if [[ $(alpha_only "$AWS_EFS_ENABLE") == true ]]; then
   aws_efs_enable=$(generate_var aws_efs_enable $AWS_EFS_ENABLE)
   aws_efs_create=$(generate_var aws_efs_create $AWS_EFS_CREATE)
   aws_efs_create_ha=$(generate_var aws_efs_create_ha $AWS_EFS_CREATE_HA)
-  aws_efs_mount_id=$(generate_var aws_efs_mount_id $AWS_EFS_MOUNT_ID)
-  aws_efs_mount_security_group_id=$(generate_var aws_efs_mount_security_group_id $AWS_EFS_MOUNT_SECURITY_GROUP_ID)
+  aws_efs_fs_id=$(generate_var aws_efs_fs_id $AWS_EFS_FS_ID)
+  aws_efs_vpc_id=$(generate_var aws_efs_vpc_id $AWS_EFS_VPC_ID)
+  aws_efs_subnet_ids=$(generate_var aws_efs_subnet_ids $AWS_EFS_SUBNET_IDS)
   aws_efs_security_group_name=$(generate_var aws_efs_security_group_name $AWS_EFS_SECURITY_GROUP_NAME)
   aws_efs_create_replica=$(generate_var aws_efs_create_replica $AWS_EFS_CREATE_REPLICA)
-  aws_efs_enable_backup_policy=$(generate_var aws_efs_enable_backup_policy $AWS_EFS_ENABLE_BACKUP_POLICY)
-  aws_efs_zone_mapping=$(generate_var aws_efs_zone_mapping $AWS_EFS_ZONE_MAPPING)
-  aws_efs_transition_to_inactive=$(generate_var aws_efs_transition_to_inactive $AWS_EFS_TRANSITION_TO_INACTIVE)
   aws_efs_replication_destination=$(generate_var aws_efs_replication_destination $AWS_EFS_REPLICATION_DESTINATION)
+  aws_efs_enable_backup_policy=$(generate_var aws_efs_enable_backup_policy $AWS_EFS_ENABLE_BACKUP_POLICY)
+  aws_efs_transition_to_inactive=$(generate_var aws_efs_transition_to_inactive $AWS_EFS_TRANSITION_TO_INACTIVE)
   aws_efs_mount_target=$(generate_var aws_efs_mount_target $AWS_EFS_MOUNT_TARGET)
   aws_efs_ec2_mount_point=$(generate_var aws_efs_ec2_mount_point $AWS_EFS_EC2_MOUNT_POINT)
 fi
@@ -310,14 +310,14 @@ $lb_access_bucket_name
 $aws_efs_enable
 $aws_efs_create
 $aws_efs_create_ha
-$aws_efs_mount_id
-$aws_efs_mount_security_group_id
+$aws_efs_fs_id
+$aws_efs_vpc_id
+$aws_efs_subnet_ids
 $aws_efs_security_group_name
 $aws_efs_create_replica
-$aws_efs_enable_backup_policy
-$aws_efs_zone_mapping
-$aws_efs_transition_to_inactive
 $aws_efs_replication_destination
+$aws_efs_enable_backup_policy
+$aws_efs_transition_to_inactive
 $aws_efs_mount_target
 $aws_efs_ec2_mount_point
 

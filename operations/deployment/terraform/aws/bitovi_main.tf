@@ -87,50 +87,68 @@ module "aws_elb" {
 
 module "efs" {
   source = "../modules/aws/efs"
-  count  = local.create_efs ? 1 : 0
-# EFS
-  aws_efs_replication_destination = var.aws_efs_replication_destination
-  aws_efs_transition_to_inactive  = var.aws_efs_transition_to_inactive
+  count  = var.aws_efs_enable ? 1 : 0
+  # EFS
+  aws_efs_create                  = var.aws_efs_create
+  aws_efs_create_ha               = var.aws_efs_create_ha
+  aws_efs_fs_id                   = var.aws_efs_fs_id
+  aws_efs_vpc_id                  = var.aws_efs_vpc_id
+  aws_efs_subnet_ids              = var.aws_efs_subnet_ids
   aws_efs_security_group_name     = var.aws_efs_security_group_name
-  aws_efs_enable_backup_policy    = var.aws_efs_enable_backup_policy
   aws_efs_create_replica          = var.aws_efs_create_replica
-  # EC2
-  aws_ec2_instance_create         = var.aws_ec2_instance_create
+  aws_efs_replication_destination = var.aws_efs_replication_destination
+  aws_efs_enable_backup_policy    = var.aws_efs_enable_backup_policy
+  aws_efs_transition_to_inactive  = var.aws_efs_transition_to_inactive
   # VPC inputs
-  aws_vpc_id                      = module.vpc.aws_selected_vpc_id
-  aws_vpc_cidr_block_whitelist    = module.vpc.aws_vpc_cidr_block
-  aws_region_current_name         = module.vpc.aws_region_current_name
+  aws_selected_vpc_id             = module.vpc.aws_selected_vpc_id
+  aws_selected_subnet_id          = module.vpc.aws_vpc_subnet_selected
+  aws_selected_az                 = module.vpc.preferred_az
   # Others
   aws_resource_identifier         = var.aws_resource_identifier
   common_tags                     = local.default_tags
 }
 
-module "ec2_efs" {
-  source = "../modules/aws/ec2_efs"
-  count  = var.aws_ec2_instance_create ? var.aws_efs_mount_id != "" ? 1 : 0 : 0
-  # EFS
-  aws_efs_create                  = var.aws_efs_create
-  aws_efs_create_ha               = var.aws_efs_create_ha
-  aws_efs_mount_id                = var.aws_efs_mount_id
-  aws_efs_zone_mapping            = var.aws_efs_zone_mapping
-  aws_efs_ec2_mount_point         = var.aws_efs_ec2_mount_point
-  # Other
-  ha_zone_mapping                 = module.vpc.ha_zone_mapping
-  ec2_zone_mapping                = module.vpc.ec2_zone_mapping
-  # Docker
-  docker_efs_mount_target         = var.docker_efs_mount_target
-  # Data inputs
-  aws_region_current_name         = module.vpc.aws_region_current_name #
-  aws_security_group_efs_id       = module.efs[0].aws_security_group_efs_id
-  aws_efs_fs_id                   = module.efs[0].aws_efs_fs_id
-  # Others
-  common_tags                     = local.default_tags
-  # Not exposed
-  app_install_root                = var.app_install_root
-  app_repo_name                   = var.app_repo_name
-  # Dependencies
-  depends_on = [module.efs]
-}
+#$aws_efs_enable
+#$aws_efs_create
+#$aws_efs_create_ha
+#$aws_efs_fs_id
+#$aws_efs_vpc_id
+#$aws_efs_subnet_id
+#$aws_efs_security_group_name
+#$aws_efs_create_replica
+#$aws_efs_replication_destination
+#$aws_efs_enable_backup_policy
+#$aws_efs_transition_to_inactive
+#$aws_efs_mount_target
+#$aws_efs_ec2_mount_point
+
+
+#module "ec2_efs" {
+#  source = "../modules/aws/ec2_efs"
+#  count  = var.aws_ec2_instance_create ? var.aws_efs_mount_id != "" ? 1 : 0 : 0
+#  # EFS
+#  aws_efs_create                  = var.aws_efs_create
+#  aws_efs_create_ha               = var.aws_efs_create_ha
+#  aws_efs_mount_id                = var.aws_efs_mount_id
+#  aws_efs_zone_mapping            = var.aws_efs_zone_mapping
+#  aws_efs_ec2_mount_point         = var.aws_efs_ec2_mount_point
+#  # Other
+#  ha_zone_mapping                 = module.vpc.ha_zone_mapping
+#  ec2_zone_mapping                = module.vpc.ec2_zone_mapping
+#  # Docker
+#  docker_efs_mount_target         = var.docker_efs_mount_target
+#  # Data inputs
+#  aws_region_current_name         = module.vpc.aws_region_current_name #
+#  aws_security_group_efs_id       = module.efs[0].aws_security_group_efs_id
+#  aws_efs_fs_id                   = module.efs[0].aws_efs_fs_id
+#  # Others
+#  common_tags                     = local.default_tags
+#  # Not exposed
+#  app_install_root                = var.app_install_root
+#  app_repo_name                   = var.app_repo_name
+#  # Dependencies
+#  depends_on = [module.efs]
+#}
 
 
 module "aurora_rds" {
@@ -232,7 +250,7 @@ module "ansible" {
   aws_efs_ec2_mount_point = var.aws_efs_ec2_mount_point
   aws_efs_mount_target    = var.aws_efs_mount_target
   docker_efs_mount_target = var.docker_efs_mount_target
-  aws_efs_fs_id           = var.aws_efs_enable ? local.create_efs ? module.efs[0].aws_efs_fs_id : var.aws_efs_mount_id : ""
+  aws_efs_fs_id           = var.aws_efs_enable ? local.create_efs ? module.efs[0].aws_efs_fs_id : var.aws_efs_mount_id : null
   # Data inputs
   private_key_filename    = module.ec2[0].private_key_filename
   # Dependencies

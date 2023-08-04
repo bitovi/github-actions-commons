@@ -267,16 +267,22 @@ variable "aws_efs_create_ha" {
   default     = false
 }
 
-variable "aws_efs_mount_id" {
+variable "aws_efs_fs_id" {
   type        = string
   description = "ID of existing EFS"
-  default     = ""
+  default     = null
 }
 
-variable "aws_efs_mount_security_group_id" {
+variable "aws_efs_vpc_id" {
   type        = string
-  description = "ID of the primary security group used by the existing EFS"
-  default     = ""
+  description = "ID of the VPC for the EFS mount target. If aws_efs_create_ha is set to true, will create one mount target per subnet available in the VPC."
+  default     = null
+}
+
+variable "aws_efs_subnet_ids" {
+  type        = string
+  description = "ID of the VPC for the EFS mount target. If aws_efs_create_ha is set to true, will create one mount target per subnet available in the VPC."
+  default     = null
 }
 
 variable "aws_efs_security_group_name" {
@@ -291,32 +297,22 @@ variable "aws_efs_create_replica" {
   default     = false
 }
 
+variable "aws_efs_replication_destination" {
+  type        = string
+  default     = ""
+  description = "AWS Region to target for replication"
+}
+
 variable "aws_efs_enable_backup_policy" {
   type        = bool
   default     = false
   description = "Toggle to indiciate whether the EFS should have a backup policy, default is `false`"
 }
 
-variable "aws_efs_zone_mapping" {
-  type = map(object({
-    subnet_id       = string
-    security_groups = list(string)
-  }))
-  description = "Zone Mapping in the form of {\"<availabillity zone>\":{\"subnet_id\":\"subnet-abc123\", \"security_groups\":[\"sg-abc123\"]} }"
-  nullable    = true
-  default     = null
-}
-
 variable "aws_efs_transition_to_inactive" {
   type        = string
   default     = "AFTER_30_DAYS"
   description = "https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/efs_file_system#transition_to_ia"
-}
-
-variable "aws_efs_replication_destination" {
-  type        = string
-  default     = ""
-  description = "AWS Region to target for replication"
 }
 
 variable "aws_efs_mount_target" {
