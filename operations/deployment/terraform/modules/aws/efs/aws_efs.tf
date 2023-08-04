@@ -77,7 +77,7 @@ resource "aws_efs_mount_target" "efs_mount_target_incoming" {
   count           = length(local.incoming_subnets)
   file_system_id  = data.aws_efs_file_system.efs.id
   subnet_id       = local.incoming_subnets[count.index]
-  security_groups = aws_security_group.efs_security_group_defined[0].id
+  security_groups = [aws_security_group.efs_security_group_defined[0].id]
 }
 ####
 
@@ -115,7 +115,7 @@ resource "aws_efs_mount_target" "efs_mount_target_action" {
   count           = length(local.module_subnets)
   file_system_id  = data.aws_efs_file_system.efs.id
   subnet_id       = local.module_subnets[count.index]
-  security_groups = aws_security_group.efs_security_group_action[0].id
+  security_groups = [aws_security_group.efs_security_group_action[0].id]
 }
 
 ######
