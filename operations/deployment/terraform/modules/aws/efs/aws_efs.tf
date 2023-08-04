@@ -201,10 +201,6 @@ locals {
   module_subnets = var.aws_efs_create_ha ? try(data.aws_subnets.selected_vpc_id[0].ids,[]) : try([var.aws_selected_subnet_id],[])
 }
 
-output "aws_security_group_efs_id" {
-  value = aws_security_group.efs_security_group.id
-}
-
 output "aws_efs_fs_id" {
   value = data.aws_efs_file_system.efs.id
 }
