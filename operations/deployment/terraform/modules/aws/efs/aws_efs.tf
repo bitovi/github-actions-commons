@@ -197,21 +197,21 @@ locals {
       element([
         for idx, subnet in data.aws_subnets.selected_vpc_id[0].*.ids : {
           id     = subnet,
-          az     = element(data.aws_subnet.selected_vpc_id[0].*.availability_zone, idx),
-          is_pub = element(data.aws_subnet.selected_vpc_id[0].*.map_public_ip_on_launch, idx),
+          az     = element(data.aws_subnets.selected_vpc_id[0].*.availability_zone, idx),
+          is_pub = element(data.aws_subnets.selected_vpc_id[0].*.map_public_ip_on_launch, idx),
         } 
-        if element(data.aws_subnet.selected_vpc_id[0].*.availability_zone, idx) == az && 
-           !element(data.aws_subnet.selected_vpc_id[0].*.map_public_ip_on_launch, idx)
+        if element(data.aws_subnets.selected_vpc_id[0].*.availability_zone, idx) == az && 
+           !element(data.aws_subnets.selected_vpc_id[0].*.map_public_ip_on_launch, idx)
         ],
         0
       ), 
       element([
         for idx, subnet in data.aws_subnets.selected_vpc_id[0].*.ids : {
           id     = subnet,
-          az     = element(data.aws_subnet.selected_vpc_id[0].*.availability_zone, idx),
-          is_pub = element(data.aws_subnet.selected_vpc_id[0].*.map_public_ip_on_launch, idx),
+          az     = element(data.aws_subnets.selected_vpc_id[0].*.availability_zone, idx),
+          is_pub = element(data.aws_subnets.selected_vpc_id[0].*.map_public_ip_on_launch, idx),
         } 
-        if element(data.aws_subnet.selected_vpc_id[0].*.availability_zone, idx) == az
+        if element(data.aws_subnets.selected_vpc_id[0].*.availability_zone, idx) == az
         ],
         0
       )
@@ -226,21 +226,21 @@ locals {
       element([
         for idx, subnet in data.aws_subnets.incoming_vpc[0].*.ids : {
           id     = subnet,
-          az     = element(data.aws_subnet.incoming_vpc[0].*.availability_zone, idx),
-          is_pub = element(data.aws_subnet.incoming_vpc[0].*.map_public_ip_on_launch, idx),
+          az     = element(data.aws_subnets.incoming_vpc[0].*.availability_zone, idx),
+          is_pub = element(data.aws_subnets.incoming_vpc[0].*.map_public_ip_on_launch, idx),
         } 
-        if element(data.aws_subnet.incoming_vpc[0].*.availability_zone, idx) == az && 
-           !element(data.aws_subnet.incoming_vpc[0].*.map_public_ip_on_launch, idx)
+        if element(data.aws_subnets.incoming_vpc[0].*.availability_zone, idx) == az && 
+           !element(data.aws_subnets.incoming_vpc[0].*.map_public_ip_on_launch, idx)
         ],
         0
       ), 
       element([
         for idx, subnet in data.aws_subnets.incoming_vpc[0].*.ids : {
           id     = subnet,
-          az     = element(data.aws_subnet.incoming_vpc[0].*.availability_zone, idx),
-          is_pub = element(data.aws_subnet.incoming_vpc[0].*.map_public_ip_on_launch, idx),
+          az     = element(data.aws_subnets.incoming_vpc[0].*.availability_zone, idx),
+          is_pub = element(data.aws_subnets.incoming_vpc[0].*.map_public_ip_on_launch, idx),
         } 
-        if element(data.aws_subnet.incoming_vpc[0].*.availability_zone, idx) == az
+        if element(data.aws_subnets.incoming_vpc[0].*.availability_zone, idx) == az
         ],
         0
       )
