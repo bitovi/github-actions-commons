@@ -182,6 +182,71 @@ data "aws_subnet" "incoming_subnet" {
 ####
 
 
+data "aws_availability_zones" "all" {
+  filter {
+    name   = "region-namme"
+    values = [data.aws_region.current.name]
+  }
+}
+
+
+locals {
+  selected_subnets_list = [
+    for az in data.aws_availability_zones.all.names :
+    coalesce(
+      element([
+        for idx, subnet in data.aws_subnets.selected_vpc_id.subnets : {
+          id     = subnet.id,
+          az     = subnet.availability_zone,
+          is_pub = subnet.map_public_ip_on_launch,
+        } 
+        if subnet.availability_zone == az && !subnet.map_public_ip_on_launch
+        ],
+        0
+      ), 
+      element([
+        for idx, subnet in data.aws_subnets.selected_vpc_id.subnets : {
+          id     = subnet.id,
+          az     = subnet.availability_zone,
+          is_pub = subnet.map_public_ip_on_launch,
+        } 
+        if subnet.availability_zone == az
+        ],
+        0
+      )
+    )
+  ]
+}
+
+locals {
+  incoming_subnets_list = [
+    for az in data.aws_availability_zones.all.names :
+    coalesce(
+      element([
+        for idx, subnet in data.aws_subnets.incoming_vpc.subnets : {
+          id     = subnet.id,
+          az     = subnet.availability_zone,
+          is_pub = subnet.map_public_ip_on_launch,
+        } 
+        if subnet.availability_zone == az && !subnet.map_public_ip_on_launch
+        ],
+        0
+      ), 
+      element([
+        for idx, subnet in data.aws_subnets.incoming_vpc.subnets : {
+          id     = subnet.id,
+          az     = subnet.availability_zone,
+          is_pub = subnet.map_public_ip_on_launch,
+        } 
+        if subnet.availability_zone == az
+        ],
+        0
+      )
+    )
+  ]
+}
+
+
 locals {
   ### Incoming definitions, need a VPC or a Subnet, if nothing, false
   incoming_set = var.aws_efs_vpc_id != null || var.aws_efs_subnet_ids != null ? true : false
@@ -193,12 +258,14 @@ locals {
   # Define the incoming VPC ID - Will try with the defined var, if not, will try to get it from the subnet. 
   incoming_vpc = var.aws_efs_vpc_id != null ? var.aws_efs_vpc_id : var.aws_efs_subnet_ids != null ? data.aws_subnet.incoming_subnet[0].vpc_id : null
   # Make a list with the subnets defined in the action - From the VPC
-  incoming_subnets_from_vpc = var.aws_efs_create_ha ? try(data.aws_subnets.incoming_vpc[0].ids,[]) : try([data.aws_subnet.no_ha[0].id],[]) # One or all subnets.
+  #incoming_subnets_from_vpc = var.aws_efs_create_ha ? try(data.aws_subnets.incoming_vpc[0].ids,[]) : try([data.aws_subnet.no_ha[0].id],[]) # One or all subnets.
+  incoming_subnets_from_vpc = var.aws_efs_create_ha ? try(local.incoming_subnets_list,[]) : try([data.aws_subnet.no_ha[0].id],[]) # One or all subnets.
   # If subnet was provided, use that as a list, if not, grab the one from the VPC. Will bring only one if no HA, or the whole set.
   incoming_subnets = var.aws_efs_subnet_ids != null ? local.aws_efs_subnet_ids : local.incoming_subnets_from_vpc
 
   # Get the subnets 
-  module_subnets = var.aws_efs_create_ha ? try(data.aws_subnets.selected_vpc_id[0].ids,[]) : try([var.aws_selected_subnet_id],[])
+  #module_subnets = var.aws_efs_create_ha ? try(data.aws_subnets.selected_vpc_id[0].ids,[]) : try([var.aws_selected_subnet_id],[])
+  module_subnets = var.aws_efs_create_ha ? try(local.selected_subnets_list,[]) : try([var.aws_selected_subnet_id],[])
 }
 
 output "aws_efs_fs_id" {
