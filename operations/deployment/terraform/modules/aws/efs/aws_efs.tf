@@ -195,7 +195,7 @@ locals {
     for az in data.aws_availability_zones.all.names :
     coalesce(
       element([
-        for idx, subnet in data.aws_subnets.selected_vpc_id.subnets : {
+        for idx, subnet in data.aws_subnets.selected_vpc_id[0].subnets : {
           id     = subnet.id,
           az     = subnet.availability_zone,
           is_pub = subnet.map_public_ip_on_launch,
@@ -205,7 +205,7 @@ locals {
         0
       ), 
       element([
-        for idx, subnet in data.aws_subnets.selected_vpc_id.subnets : {
+        for idx, subnet in data.aws_subnets.selected_vpc_id[0].subnets : {
           id     = subnet.id,
           az     = subnet.availability_zone,
           is_pub = subnet.map_public_ip_on_launch,
@@ -223,7 +223,7 @@ locals {
     for az in data.aws_availability_zones.all.names :
     coalesce(
       element([
-        for idx, subnet in data.aws_subnets.incoming_vpc.subnets : {
+        for idx, subnet in data.aws_subnets.incoming_vpc[0].subnets : {
           id     = subnet.id,
           az     = subnet.availability_zone,
           is_pub = subnet.map_public_ip_on_launch,
@@ -233,7 +233,7 @@ locals {
         0
       ), 
       element([
-        for idx, subnet in data.aws_subnets.incoming_vpc.subnets : {
+        for idx, subnet in data.aws_subnets.incoming_vpc[0].subnets : {
           id     = subnet.id,
           az     = subnet.availability_zone,
           is_pub = subnet.map_public_ip_on_launch,
