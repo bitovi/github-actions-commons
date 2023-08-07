@@ -1,6 +1,7 @@
 resource "aws_security_group" "aurora_security_group" {
   name        = var.aws_aurora_security_group_name != "" ? var.aws_aurora_security_group_name : "SG for ${var.aws_resource_identifier} - Aurora"
   description = "SG for ${var.aws_resource_identifier} - Aurora"
+  vpc_id      = var.aws_selected_vpc_id
   egress {
     from_port   = 0
     to_port     = 0
@@ -36,13 +37,14 @@ module "aurora_cluster" {
     }
   }
 
-  #allowed_security_groups = [var.aws_allowed_sg_id]
   #allowed_cidr_blocks     = [data.aws_vpc.selected[0].cidr_block]
 
   # Todo: handle vpc/networking explicitly
   vpc_id                 = var.aws_selected_vpc_id
-  allowed_cidr_blocks    = [data.aws_vpc.selected[0].cidr_block]
-  subnets                  = var.aws_aurora_subnets == null || length(var.aws_aurora_subnets) == 0 ? var.aws_subnets_vpc_subnets_ids : var.aws_aurora_subnets
+  subnets                = var.aws_aurora_subnets == null || length(var.aws_aurora_subnets) == 0 ? var.aws_subnets_vpc_subnets_ids : var.aws_aurora_subnets
+  
+  allowed_security_groups = [var.aws_allowed_sg_id]
+  allowed_cidr_blocks     = [data.aws_vpc.selected[0].cidr_block]
 
   database_name          = var.aws_aurora_database_name
   port                   = var.aws_aurora_database_port
