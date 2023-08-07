@@ -173,6 +173,7 @@ module "aurora_rds" {
   aws_aurora_database_final_snapshot = var.aws_aurora_database_final_snapshot
   # Data inputs
   aws_allowed_sg_id                    = module.ec2[0].aws_security_group_ec2_sg_id 
+  aws_selected_vpc_id                  = module.vpc.aws_selected_vpc_id
   aws_subnets_vpc_subnets_ids          = module.vpc.aws_selected_vpc_subnets
   aws_region_current_name              = module.vpc.aws_region_current_name
   # Others
