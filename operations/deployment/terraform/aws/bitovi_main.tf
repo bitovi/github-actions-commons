@@ -103,6 +103,7 @@ module "efs" {
   aws_selected_vpc_id             = module.vpc.aws_selected_vpc_id
   aws_selected_subnet_id          = module.vpc.aws_vpc_subnet_selected
   aws_selected_az                 = module.vpc.preferred_az
+  aws_selected_az_list            = module.vpc.availability_zones
   # Others
   aws_resource_identifier         = var.aws_resource_identifier
   common_tags                     = local.default_tags

@@ -12,6 +12,7 @@ variable "aws_efs_transition_to_inactive" {}
 variable "aws_selected_vpc_id" {}
 variable "aws_selected_subnet_id" {}
 variable "aws_selected_az" {}
+variable "aws_selected_az_list" {}
 # Others
 variable "aws_resource_identifier" {}
 variable "common_tags" {

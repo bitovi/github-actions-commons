@@ -123,14 +123,14 @@ resource "aws_efs_mount_target" "efs_mount_target_action" {
 
 data "aws_subnets" "selected_vpc_id"  {
   #for_each = var.aws_selected_vpc_id != null ? toset(data.aws_availability_zones.all.zone_ids) : []
-  count = var.aws_selected_vpc_id != null ? length(data.aws_availability_zones.all.zone_ids) : 0
+  count = var.aws_selected_vpc_id != null ? length(var.aws_selected_az_list) : 0
   filter {
     name   = "vpc-id"
     values = [var.aws_selected_vpc_id]
   }
   filter {
     name   = "availability-zone-id"
-    values = [data.aws_availability_zones.all.zone_ids[count.index]]
+    values = [var.aws_selected_az_list[count.index]]
     #values = ["${each.value}"]
   }
 }
@@ -144,14 +144,14 @@ data "aws_vpc" "selected" {
 
 data "aws_subnets" "incoming_vpc" {
   #for_each = local.incoming_set ? toset(data.aws_availability_zones.all.zone_ids) : []
-  count = local.incoming_set ? length(data.aws_availability_zones.all.zone_ids) : 0
+  count = local.incoming_set ? length(var.aws_selected_az_list) : 0
   filter {
     name   = "vpc-id"
     values = [local.incoming_vpc] 
   }
   filter {
     name   = "availability-zone-id"
-    values = [data.aws_availability_zones.all.zone_ids[count.index]]
+    values = [var.aws_selected_az_list[count.index]]
     #values = ["${each.value}"]
   }
 }
@@ -193,12 +193,12 @@ data "aws_subnet" "incoming_subnet" {
 
 data "aws_region" "current" {}
 
-data "aws_availability_zones" "all" {
-  filter {
-    name   = "region-name"
-    values = [data.aws_region.current.name]
-  }
-}
+#data "aws_availability_zones" "all" {
+#  filter {
+#    name   = "region-name"
+#    values = [data.aws_region.current.name]
+#  }
+#}
 
 
 

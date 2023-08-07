@@ -1,8 +1,13 @@
 # All regions have "a", skipping az validation
 
-data "aws_availability_zones" "all" {}
-
 data "aws_region" "current" {}
+
+data "aws_availability_zones" "all" {
+  filter {
+    name   = "region-name"
+    values = [data.aws_region.current.name]
+  }
+}
 
 data "aws_subnets" "vpc_subnets" {
   filter {
@@ -164,4 +169,8 @@ output "preferred_az" {
 
 output "aws_subnets" {
   value = data.aws_subnets.vpc_subnets
+}
+
+output "availability_zones" {
+  value = data.aws_availability_zones.all.zone_ids
 }
