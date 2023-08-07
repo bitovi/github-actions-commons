@@ -184,8 +184,8 @@ data "aws_subnet" "incoming_subnet" {
 
 data "aws_availability_zones" "all" {
   filter {
-    name   = "region-namme"
-    values = ["${data.aws_region.current.name}"]
+    name   = "region-name"
+    values = [data.aws_region.current.name]
   }
 }
 
