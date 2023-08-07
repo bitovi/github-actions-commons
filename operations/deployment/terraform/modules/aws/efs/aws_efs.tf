@@ -81,7 +81,7 @@ resource "aws_efs_mount_target" "efs_mount_target_incoming" {
 
 #### Action SG. Rules and Mount
 resource "aws_security_group" "efs_security_group_action" {
-  count        = local.defined_set ? 1 : 0
+  count       = var.aws_selected_vpc_id != null || var.aws_selected_subnet_id != null ? 1 : 0 ## (local.defined set)
   name        = var.aws_efs_security_group_name != "" ? var.aws_efs_security_group_name : "SG for ${var.aws_resource_identifier} - EFS - Action defined"
   description = "SG for ${var.aws_resource_identifier} - EFS - Action defined"
   vpc_id      = var.aws_selected_vpc_id
