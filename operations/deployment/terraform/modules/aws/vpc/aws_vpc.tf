@@ -130,7 +130,8 @@ locals {
 
 output "aws_selected_vpc_id" {
   description = "The subnet ids from the default vpc"
-  value       = local.selected_vpc_id
+  #value       = local.selected_vpc_id
+  value       = data.aws_vpc.selected.id
 }
 
 output "aws_selected_vpc_subnets" {
