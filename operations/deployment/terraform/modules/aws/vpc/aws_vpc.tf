@@ -139,6 +139,10 @@ output "aws_selected_vpc_subnets" {
   value       = data.aws_subnets.vpc_subnets.ids
 }
 
+output "aws_vpc_subnet_selected" {
+  value = local.use_default ? data.aws_subnet.default_selected[0].id : data.aws_subnet.selected[0].id
+}
+
 output "aws_region_current_name" {
   description = "Current region name"
   value = data.aws_region.current.name
