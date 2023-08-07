@@ -79,8 +79,9 @@ fi
 targets="$targets
     - module.vpc.random_integer.az_select
     - module.vpc.aws_vpc.main
-    - module.vpc.aws_vpc.default
-    - module.vpc.aws_vpc.existing"
+    - module.vpc.data.aws_subnets.vpc_subnets"
+    #- module.vpc.aws_vpc.default
+    #- module.vpc.aws_vpc.existing"
 targets_attribute="$targets_attribute $targets"
 
 #Will add the user_data file into the EC2 Terraform folder
