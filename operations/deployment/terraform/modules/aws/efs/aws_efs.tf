@@ -81,7 +81,7 @@ resource "aws_efs_mount_target" "efs_mount_target_incoming" {
 
 #### Action SG. Rules and Mount
 resource "aws_security_group" "efs_security_group_action" {
-  count       = var.aws_selected_vpc_id != null || var.aws_selected_subnet_id != null ? 1 : 0 ## (local.defined set)
+  count       = local.defined ? 1 : 0
   name        = var.aws_efs_security_group_name != "" ? var.aws_efs_security_group_name : "SG for ${var.aws_resource_identifier} - EFS - Action defined"
   description = "SG for ${var.aws_resource_identifier} - EFS - Action defined"
   vpc_id      = var.aws_selected_vpc_id
@@ -205,7 +205,8 @@ data "aws_region" "current" {}
 locals {
   ### Incoming definitions, need a VPC or a Subnet, if nothing, false
   incoming_set = var.aws_efs_vpc_id != null || var.aws_efs_subnet_ids != null ? true : false
-  defined_set  = var.aws_selected_vpc_id != null || var.aws_selected_subnet_id != null ? true : false
+  #defined_set  = var.aws_selected_vpc_id != null || var.aws_selected_subnet_id != null ? true : false
+  defined_set = true # It will always be true. If not creating a VPC, will use am existing one or the default one.
   # Convert incoming subnets to list
   aws_efs_subnet_ids = var.aws_efs_subnet_ids != null ? [for n in split(",", var.aws_efs_subnet_ids) : (n)] : []
   ### 
