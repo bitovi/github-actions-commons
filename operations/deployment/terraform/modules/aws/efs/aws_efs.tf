@@ -110,7 +110,7 @@ resource "aws_security_group_rule" "efs_nfs_incoming_ports_action" { # Selected 
 }
 
 resource "aws_efs_mount_target" "efs_mount_target_action" {
-  count           = length(local.module_subnets)
+  count           = length(var.aws_efs_create_ha ? compact([for k, v in data.aws_subnets.selected_vpc_id : try((v.ids[0]),null)]) :  [var.aws_selected_subnet_id] )
   file_system_id  = data.aws_efs_file_system.efs.id
   subnet_id       = local.module_subnets[count.index]
   security_groups = [aws_security_group.efs_security_group_action[0].id]
