@@ -106,6 +106,7 @@ module "efs" {
   # Others
   aws_resource_identifier         = var.aws_resource_identifier
   common_tags                     = local.default_tags
+  depends_on = [module.vpc]
 }
 
 #$aws_efs_enable
