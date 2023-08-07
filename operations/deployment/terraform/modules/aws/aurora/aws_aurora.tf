@@ -36,6 +36,9 @@ module "aurora_cluster" {
     }
   }
 
+  allowed_security_groups = [var.aws_allowed_sg_id]
+  allowed_cidr_blocks     = [data.aws_vpc.incoming[0].cidr_block]
+
   # Todo: handle vpc/networking explicitly
   # vpc_id                 = var.vpc_id
   # allowed_cidr_blocks    = [var.vpc_cidr]
@@ -143,4 +146,9 @@ resource "aws_db_cluster_snapshot" "overwrite_db_snapshot" {
   lifecycle {
     create_before_destroy = true
   }
+}
+
+data "aws_vpc" "selected" {
+  count = var.aws_selected_vpc_id != null ? 1 : 0
+  id    = var.aws_selected_vpc_id
 }
