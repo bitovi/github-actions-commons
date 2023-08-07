@@ -191,7 +191,8 @@ data "aws_availability_zones" "all" {
 
 
 locals {
-  selected_subnets_list = [  var.aws_selected_vpc_id != null ? ( for az in data.aws_availability_zones.all.names :
+  selected_subnets_list = var.aws_selected_vpc_id != null ? [
+    for az in data.aws_availability_zones.all.names :
     coalesce(
       element([
         for idx, subnet in data.aws_subnets.selected_vpc_id[0].*.ids : {
@@ -214,13 +215,13 @@ locals {
         ],
         0
       )
-    ))
-    : []
-  ]
+    )
+  ] : []
 }
 
 locals {
-  incoming_subnets_list = [ local.incoming_set ? ( for az in data.aws_availability_zones.all.names :
+  incoming_subnets_list = local.incoming_set ? [ 
+    for az in data.aws_availability_zones.all.names : 
     coalesce(
       element([
         for idx, subnet in data.aws_subnets.incoming_vpc[0].*.ids : {
@@ -243,9 +244,8 @@ locals {
         ],
         0
       )
-    )) 
-    : []
-  ]
+    ) 
+  ] : []
 }
 
 locals {
