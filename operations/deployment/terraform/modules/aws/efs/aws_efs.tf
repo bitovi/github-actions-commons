@@ -122,10 +122,14 @@ resource "aws_efs_mount_target" "efs_mount_target_action" {
 # Data sources from selected (Coming from VPC module)
 
 data "aws_subnets" "selected_vpc_id"  {
-  count = var.aws_selected_vpc_id != null ? 1 : 0
+  for_each = var.aws_selected_vpc_id != null ? toset(data.aws_availability_zones.all.zone_ids) : null
   filter {
     name   = "vpc-id"
     values = [var.aws_selected_vpc_id]
+  }
+  filter {
+    name   = "availability-zone-id"
+    values = ["${each.value}"]
   }
 }
 
@@ -137,10 +141,14 @@ data "aws_vpc" "selected" {
 # Data sources from EFS inputs
 
 data "aws_subnets" "incoming_vpc" {
-  count = local.incoming_set ? 1 : 0
+  for_each = local.incoming_set ? toset(data.aws_availability_zones.all.zone_ids) : null
   filter {
     name   = "vpc-id"
     values = [local.incoming_vpc] 
+  }
+  filter {
+    name   = "availability-zone-id"
+    values = ["${each.value}"]
   }
 }
 
@@ -179,6 +187,7 @@ data "aws_subnet" "incoming_subnet" {
 
 ####
 
+data "aws_region" "current" {}
 
 data "aws_availability_zones" "all" {
   filter {
@@ -186,7 +195,7 @@ data "aws_availability_zones" "all" {
     values = [data.aws_region.current.name]
   }
 }
-data "aws_region" "current" {}
+
 
 
 locals {
@@ -200,14 +209,21 @@ locals {
   # Define the incoming VPC ID - Will try with the defined var, if not, will try to get it from the subnet. 
   incoming_vpc = var.aws_efs_vpc_id != null ? var.aws_efs_vpc_id : var.aws_efs_subnet_ids != null ? data.aws_subnet.incoming_subnet[0].vpc_id : null
   # Make a list with the subnets defined in the action - From the VPC
-  incoming_subnets_from_vpc = var.aws_efs_create_ha ? try(data.aws_subnets.incoming_vpc[0].ids,[]) : try([data.aws_subnet.no_ha[0].id],[]) # One or all subnets.
+  incoming_subnets_from_vpc_ids = compact([for k, v in data.aws_subnets.incoming_vpc : try((v.ids[0]),null)])
+  incoming_subnets_from_vpc = var.aws_efs_create_ha ? local.incoming_subnets_from_vpc_ids : try([data.aws_subnet.no_ha[0].id],[]) # One or all subnets.
+  #incoming_subnets_from_vpc = var.aws_efs_create_ha ? try(data.aws_subnets.incoming_vpc[0].ids,[]) : try([data.aws_subnet.no_ha[0].id],[]) # One or all subnets.
   # If subnet was provided, use that as a list, if not, grab the one from the VPC. Will bring only one if no HA, or the whole set.
   incoming_subnets = var.aws_efs_subnet_ids != null ? local.aws_efs_subnet_ids : local.incoming_subnets_from_vpc
 
   # Get the subnets 
-  module_subnets = var.aws_efs_create_ha ? try(data.aws_subnets.selected_vpc_id[0].ids,[]) : try([var.aws_selected_subnet_id],[])
+  module_subnets_vpc_ids = compact([for k, v in data.aws_subnets.selected_vpc_id : try((v.ids[0]),null)])
+  module_subnets = var.aws_efs_create_ha ? local.module_subnets_vpc_ids : try([var.aws_selected_subnet_id],[])
+  #module_subnets = var.aws_efs_create_ha ? try(data.aws_subnets.selected_vpc_id[0].ids,[]) : try([var.aws_selected_subnet_id],[])
 }
 
 output "aws_efs_fs_id" {
   value = data.aws_efs_file_system.efs.id
 }
+
+  incoming_subnets_from_vpc_ids = compact([for k, v in data.aws_subnets.incoming_vpc : try((v.ids[0]),null)])
+  incoming_subnets_from_vpc = var.aws_efs_create_ha ? local.incoming_subnets_from_vpc_ids : try([data.aws_subnet.no_ha[0].id],[]) # One or all subnets.
