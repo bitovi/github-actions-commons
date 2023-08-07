@@ -78,11 +78,15 @@ fi
 # random_integer.az_select needs to be created before the "full stack" to avoid a potential state dependency locks
 targets="$targets
     - module.vpc.random_integer.az_select
-    - module.vpc.aws_vpc.main
-    - module.vpc.aws_vpc.default
-    - module.vpc.aws_vpc.existing
-    - module.vpc.aws_subnet.private
-    - module.vpc.aws_subnet.public"
+    - module.vpc"
+    #- module.vpc.random_integer.az_select
+    #- module.vpc.aws_vpc.main
+    #- 
+    #- module.vpc.aws_subnet.private
+    #- module.vpc.aws_subnet.public
+    #- module.vpc.data.aws_availability_zones"
+    #    - module.vpc.aws_vpc.default
+    #- module.vpc.aws_vpc.existing
 targets_attribute="$targets_attribute $targets"
 
 #Will add the user_data file into the EC2 Terraform folder
