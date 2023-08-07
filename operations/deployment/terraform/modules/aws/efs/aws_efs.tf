@@ -114,7 +114,7 @@ resource "aws_efs_mount_target" "efs_mount_target_action" {
   file_system_id  = data.aws_efs_file_system.efs.id
   subnet_id       = local.module_subnets[count.index]
   security_groups = [aws_security_group.efs_security_group_action[0].id]
-  depends_on = [ data.data.aws_subnets.selected_vpc_id ]
+  depends_on = [ data.aws_subnets.selected_vpc_id ]
 }
 
 ######
