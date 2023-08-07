@@ -37,7 +37,7 @@ module "aurora_cluster" {
   }
 
   allowed_security_groups = [var.aws_allowed_sg_id]
-  allowed_cidr_blocks     = [data.aws_vpc.incoming[0].cidr_block]
+  allowed_cidr_blocks     = [data.aws_vpc.selected[0].cidr_block]
 
   # Todo: handle vpc/networking explicitly
   # vpc_id                 = var.vpc_id
