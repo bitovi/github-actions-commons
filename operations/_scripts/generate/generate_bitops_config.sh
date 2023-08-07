@@ -77,9 +77,9 @@ if [ -n "$TF_TARGETS" ]; then
 fi
 # random_integer.az_select needs to be created before the "full stack" to avoid a potential state dependency locks
 targets="$targets
-    - module.vpc.random_integer.az_select
-    - module.vpc.aws_vpc.main
-    - module.vpc.data.aws_subnets.vpc_subnets"
+    - module.vpc.random_integer.az_select"
+    #- module.vpc.aws_vpc.main
+    #- module.vpc.data.aws_subnets.vpc_subnets"
     #- module.vpc.aws_vpc.default
     #- module.vpc.aws_vpc.existing"
 targets_attribute="$targets_attribute $targets"

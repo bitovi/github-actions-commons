@@ -122,14 +122,16 @@ resource "aws_efs_mount_target" "efs_mount_target_action" {
 # Data sources from selected (Coming from VPC module)
 
 data "aws_subnets" "selected_vpc_id"  {
-  for_each = var.aws_selected_vpc_id != null ? toset(data.aws_availability_zones.all.zone_ids) : []
+  #for_each = var.aws_selected_vpc_id != null ? toset(data.aws_availability_zones.all.zone_ids) : []
+  count = var.aws_selected_vpc_id != null ? length(data.aws_availability_zones.all.zone_ids) : 0
   filter {
     name   = "vpc-id"
     values = [var.aws_selected_vpc_id]
   }
   filter {
     name   = "availability-zone-id"
-    values = ["${each.value}"]
+    values = [data.aws_availability_zones.all.zone_ids[count.index]]
+    #values = ["${each.value}"]
   }
 }
 
@@ -141,14 +143,16 @@ data "aws_vpc" "selected" {
 # Data sources from EFS inputs
 
 data "aws_subnets" "incoming_vpc" {
-  for_each = local.incoming_set ? toset(data.aws_availability_zones.all.zone_ids) : []
+  #for_each = local.incoming_set ? toset(data.aws_availability_zones.all.zone_ids) : []
+  count = local.incoming_set ? length(data.aws_availability_zones.all.zone_ids) : 0
   filter {
     name   = "vpc-id"
     values = [local.incoming_vpc] 
   }
   filter {
     name   = "availability-zone-id"
-    values = ["${each.value}"]
+    values = [data.aws_availability_zones.all.zone_ids[count.index]]
+    #values = ["${each.value}"]
   }
 }
 
