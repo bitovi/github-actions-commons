@@ -122,7 +122,7 @@ resource "aws_efs_mount_target" "efs_mount_target_action" {
 # Data sources from selected (Coming from VPC module)
 
 data "aws_subnets" "selected_vpc_id"  {
-  for_each = var.aws_selected_vpc_id != null ? toset(data.aws_availability_zones.all.zone_ids) : null
+  for_each = var.aws_selected_vpc_id != null ? toset(data.aws_availability_zones.all.zone_ids) : []
   filter {
     name   = "vpc-id"
     values = [var.aws_selected_vpc_id]
@@ -141,7 +141,7 @@ data "aws_vpc" "selected" {
 # Data sources from EFS inputs
 
 data "aws_subnets" "incoming_vpc" {
-  for_each = local.incoming_set ? toset(data.aws_availability_zones.all.zone_ids) : null
+  for_each = local.incoming_set ? toset(data.aws_availability_zones.all.zone_ids) : []
   filter {
     name   = "vpc-id"
     values = [local.incoming_vpc] 
