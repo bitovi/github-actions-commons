@@ -171,9 +171,9 @@ module "aurora_rds" {
   aws_aurora_database_protection     = var.aws_aurora_database_protection
   aws_aurora_database_final_snapshot = var.aws_aurora_database_final_snapshot
   # Data inputs
-  aws_vpc_default_id                   = try(module.vpc.aws_selected_vpc_id,"")
-  aws_subnets_vpc_subnets_ids          = try(module.vpc.aws_selected_vpc_subnets,"")
-  aws_region_current_name              = try(module.vpc.aws_region_current_name,"")
+  aws_vpc_default_id                   = module.vpc.aws_selected_vpc_id
+  aws_subnets_vpc_subnets_ids          = module.vpc.aws_selected_vpc_subnets
+  aws_region_current_name              = module.vpc.aws_region_current_name
   # Others
   aws_resource_identifier              = var.aws_resource_identifier
   aws_resource_identifier_supershort   = var.aws_resource_identifier_supershort
