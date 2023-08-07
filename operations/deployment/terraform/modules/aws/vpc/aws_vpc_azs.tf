@@ -86,7 +86,7 @@ data "aws_subnet" "selected" {
 }
 
 output "aws_vpc_subnet_selected" {
-  value = try(data.aws_subnet.default_selected[0].id,data.aws_subnet.selected[0].id)
+  value = local.use_default ? data.aws_subnet.default_selected[0].id : data.aws_subnet.selected[0].id
 }
    
 data "aws_security_group" "default" {

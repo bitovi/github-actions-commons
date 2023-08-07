@@ -222,7 +222,8 @@ locals {
 
   # Get the subnets 
   module_vpc_ids = compact([for k, v in data.aws_subnets.selected_vpc_id : try((v.ids[0]),null)])
-  module_subnets = var.aws_efs_create_ha ? local.module_vpc_ids : try([var.aws_selected_subnet_id],[])
+  #module_subnets = var.aws_efs_create_ha ? local.module_vpc_ids : try([var.aws_selected_subnet_id],[])
+  module_subnets = var.aws_efs_create_ha ? local.module_vpc_ids : [var.aws_selected_subnet_id]
   #module_subnets = var.aws_efs_create_ha ? try(data.aws_subnets.selected_vpc_id[0].ids,[]) : try([var.aws_selected_subnet_id],[])
 }
 
