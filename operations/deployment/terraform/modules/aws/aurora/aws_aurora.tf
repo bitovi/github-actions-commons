@@ -11,12 +11,6 @@ resource "aws_security_group" "aurora_security_group" {
   tags = {
     Name = "${var.aws_resource_identifier}-aurora"
   }
-  lifecycle {
-    create_before_destroy = true
-  }
-  timeouts {
-    delete = "2m"
-  }
 }
 
 resource "aws_security_group_rule" "ingress_aurora" {
