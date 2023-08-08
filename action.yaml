@@ -165,7 +165,33 @@ inputs:
   aws_ec2_user_data_replace_on_change:
     description: 'If user_data file changes, instance will stop and start. Hence public IP will change. Defaults to true.'
     required: false
-  
+
+  # AWS VPC Inputs
+  aws_vpc_create:
+    description: 'Define if a VPC should be created'
+    required: false
+  aws_vpc_name:
+    description: 'Set a specific name for the VPC'
+    required: false
+  aws_vpc_cidr_block:
+    description: 'Define Base CIDR block which is divided into subnet CIDR blocks. Defaults to 10.0.0.0/16.'
+    required: false
+  aws_vpc_public_subnets:
+    description: 'Comma separated list of public subnets. Defaults to 10.10.110.0/24'
+    required: false
+  aws_vpc_private_subnets:
+    description: 'Comma separated list of private subnets. If none, none will be created.'
+    required: false
+  aws_vpc_availability_zones:
+    description: 'Comma separated list of availability zones. Defaults to `aws_default_region.'
+    required: false
+  aws_vpc_id:
+    description: 'AWS VPC ID. Accepts `vpc-###` values.'
+    required: false
+  aws_vpc_subnet_id:
+    description: 'Specify a Subnet to be used with the instance. If none provided, will pick one.'
+    required: false
+
   # AWS Route53 Domains abd Certificates
   aws_r53_enable:
     description: 'Enables the usage of Route53 to manage DNS records.'
@@ -221,29 +247,28 @@ inputs:
   aws_efs_create_ha:
     description: 'Toggle to indicate whether the EFS resource should be highly available (target mounts in all available zones within region)'
     required: false
-  aws_efs_mount_id:
+  aws_efs_fs_id:
     description: 'ID of existing EFS'
     required: false
-  aws_efs_mount_security_group_id:
-    description: 'ID of the primary security group used by the existing EFS'
+  aws_efs_vpc_id:
+    description: 'ID of the VPC for the EFS mount target. If aws_efs_create_ha is set to true, will create one mount target per subnet available in the VPC. If not, will pick one.'
     required: false
+  aws_efs_subnet_ids:
+    description: 'ID or IDs of the subnet for the EFS mount target.'
   aws_efs_security_group_name:
     description:  'The name of the EFS security group'
     required: false
   aws_efs_create_replica:
     description: 'Toggle to indiciate whether a read-only replica should be created for the EFS primary file system'
     required: false
+  aws_efs_replication_destination:
+    description: 'AWS Region to target for replication'
+    required: false
   aws_efs_enable_backup_policy:
     description: 'Toggle to indiciate whether the EFS should have a backup policy, default is false'
     required: false
-  aws_efs_zone_mapping:
-    description: 'Information on Zone Mapping can be found in the [README.md](README.md#efs-zone-mapping)'
-    required: false
   aws_efs_transition_to_inactive:
     description: 'Indicates how long it takes to transition files to the IA storage class.'
-    required: false
-  aws_efs_replication_destination:
-    description: 'AWS Region to target for replication'
     required: false
   aws_efs_mount_target: 
     description: 'Directory path in the EFS volume to mount directory to. Default is /.'
@@ -391,6 +416,9 @@ outputs:
   vm_url:
     description: "The URL of the generated app"
     value: ${{ steps.deploy.outputs.vm_url }}
+  ec2_url:
+    description: "The URL of the generated ec2 instance"
+    value: ${{ steps.deploy.outputs.instance_public_dns }}
 
 runs:
   using: 'composite'
@@ -466,6 +494,16 @@ runs:
         AWS_EC2_USER_DATA_FILE: ${{ inputs.aws_ec2_user_data_file }}
         AWS_EC2_USER_DATA_REPLACE_ON_CHANGE: ${{ inputs.aws_ec2_user_data_replace_on_change }}
 
+        ## AWS VPC
+        AWS_VPC_CREATE: ${{ inputs.aws_vpc_create }}
+        AWS_VPC_NAME: ${{ inputs.aws_vpc_name }}
+        AWS_VPC_CIDR_BLOCK: ${{ inputs.aws_vpc_cidr_block }}
+        AWS_VPC_PUBLIC_SUBNETS: ${{ inputs.aws_vpc_public_subnets }}
+        AWS_VPC_PRIVATE_SUBNETS: ${{ inputs.aws_vpc_private_subnets }}
+        AWS_VPC_AVAILABILITY_ZONES: ${{ inputs.aws_vpc_availability_zones }}
+        AWS_VPC_ID: ${{ inputs.aws_vpc_id }}
+        AWS_VPC_SUBNET_ID: ${{ inputs.aws_vpc_subnet_id }}
+
         # AWS Route53 Domains abd Certificates
         AWS_R53_ENABLE: ${{ inputs.aws_r53_enable }}
         AWS_R53_DOMAIN_NAME: ${{ inputs.aws_r53_domain_name }}
@@ -488,14 +526,14 @@ runs:
         # AWS EFS
         AWS_EFS_CREATE: ${{ inputs.aws_efs_create }}
         AWS_EFS_CREATE_HA: ${{ inputs.aws_efs_create_ha }}
-        AWS_EFS_MOUNT_ID: ${{ inputs.aws_efs_mount_id }}
-        AWS_EFS_MOUNT_SECURITY_GROUP_ID: ${{ inputs.aws_efs_mount_security_group_id }}
+        AWS_EFS_FS_ID: ${{ inputs.aws_efs_fs_id }}
+        AWS_EFS_VPC_ID: ${{ inputs.aws_efs_vpc_id }}
+        AWS_EFS_SUBNET_IDS: ${{ inputs.aws_efs_subnet_ids }}
         AWS_EFS_SECURITY_GROUP_NAME: ${{ inputs.aws_efs_security_group_name }}
         AWS_EFS_CREATE_REPLICA: ${{ inputs.aws_efs_create_replica }}
-        AWS_EFS_ENABLE_BACKUP_POLICY: ${{ inputs.aws_efs_enable_backup_policy }}
-        AWS_EFS_ZONE_MAPPING: ${{ inputs.aws_efs_zone_mapping }}
-        AWS_EFS_TRANSITION_TO_INACTIVE: ${{ inputs.aws_efs_transition_to_inactive }}
         AWS_EFS_REPLICATION_DESTINATION: ${{ inputs.aws_efs_replication_destination }}
+        AWS_EFS_ENABLE_BACKUP_POLICY: ${{ inputs.aws_efs_enable_backup_policy }}
+        AWS_EFS_TRANSITION_TO_INACTIVE: ${{ inputs.aws_efs_transition_to_inactive }}
         AWS_EFS_MOUNT_TARGET: ${{ inputs.aws_efs_mount_target }}
         AWS_EFS_EC2_MOUNT_POINT: ${{ inputs.aws_efs_ec2_mount_point }}
 
@@ -562,10 +600,13 @@ runs:
       env: 
         SUCCESS: ${{ job.status }} # success, failure, cancelled
         URL_OUTPUT: ${{ steps.deploy.outputs.vm_url }}
+        EC2_URL_OUTPUT: ${{ steps.deploy.outputs.ec2_url }}
         BITOPS_CODE_ONLY: ${{ inputs.bitops_code_only }}
         BITOPS_CODE_STORE: ${{ inputs.bitops_code_store }}
         TF_STACK_DESTROY: ${{ inputs.tf_stack_destroy }}
         TF_STATE_BUCKET_DESTROY: ${{ inputs.tf_state_bucket_destroy }}
+        AWS_EC2_PORT_LIST: ${{ inputs.aws_ec2_port_list }}
+        AWS_ELB_LISTEN_PORT: ${{ inputs.aws_elb_listen_port }}
       run: $GITHUB_ACTION_PATH/operations/_scripts/deploy/summary.sh
 
     # upload generated artifacts to GitHub if enabled

@@ -4,10 +4,13 @@
 ### coming into this we have env vars:
 # SUCCESS=${{ job.status }} # success, cancelled, failure
 # URL_OUTPUT=${{ steps.deploy.outputs.vm_url }}
+# EC2_URL_OUTPUT=${{ steps.deploy.outputs.ec2_url }}
 # BITOPS_CODE_ONLY
 # BITOPS_CODE_STORE
 # TF_STACK_DESTROY
 # TF_STATE_BUCKET_DESTROY
+# AWS_EC2_PORT_LIST
+# AWS_ELB_LISTEN_PORT
 
 # Create an error code mechanism so we don't have to check the actual static text,
 # just which case we fell into
@@ -24,13 +27,42 @@
 # 9 - success, destroy infrastructure
 # 10 - cancelled
 
+# Function to process and return the result as a string
+function process_and_return() {
+  local url="$1"
+  local ports="$2"
+  IFS=',' read -ra port_array <<< "$ports"
+  result=""
+  for p in "${port_array[@]}"; do
+    result+="$url:$p\n"
+  done
+  echo -e "$result"
+}
+
+# Function to echo each line of a given variable
+echo_lines() {
+  local input="$1"
+  while IFS= read -r line; do
+    echo -e "$line" >> $GITHUB_STEP_SUMMARY
+  done <<< "$input"
+}
+
+# Process and store URL_OUTPUT:AWS_ELB_LISTEN_PORT in a variable
+output_elb=$(process_and_return "$URL_OUTPUT" "$AWS_ELB_LISTEN_PORT")
+# Given the case where there is no port specified for the ELB, pass the URL directly
+if [[ -z "$output_elb" ]]; then
+  output_elb="$URL_OUTPUT"
+fi
+final_output+="${output_elb}\n"
+# Process and store EC2_URL_OUTPUT:AWS_EC2_PORT_LIST in a variable
+output_ec2=$(process_and_return "$EC2_URL_OUTPUT" "$AWS_EC2_PORT_LIST")
+final_output+="${output_ec2}\n"
+
 SUMMARY_CODE=0
 
 if [[ $SUCCESS == 'success' ]]; then
   if [[ $URL_OUTPUT != '' ]]; then
-    result_string="## Deploy Complete! :rocket:
-    $URL_OUTPUT"
-
+    result_string="## Deploy Complete! :rocket:"
   elif [[ $BITOPS_CODE_ONLY == 'true' ]]; then
     if [[ $BITOPS_CODE_STORE == 'true' ]]; then
       SUMMARY_CODE=6
@@ -72,5 +104,11 @@ else
   If you consider this is a bug in the Github Action, please submit an issue to our repo."
 fi
 
-echo "$result_string" >> $GITHUB_STEP_SUMMARY
-echo "SUMMARY_CODE=$SUMMARY_CODE" >> $GITHUB_OUTPUT
+echo -e "$result_string" >> $GITHUB_STEP_SUMMARY
+if [[ $SUCCESS == 'success' ]]; then
+  if [[ $URL_OUTPUT != '' ]]; then
+    while IFS= read -r line; do
+      echo -e "$line" >> $GITHUB_STEP_SUMMARY
+    done <<< "$final_output"
+  fi
+fi

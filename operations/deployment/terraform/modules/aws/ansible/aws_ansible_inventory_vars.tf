@@ -1,3 +1,4 @@
+variable "aws_ec2_instance_ip" {}
 variable "aws_efs_enable" {}
 variable "app_repo_name" {}
 variable "app_install_root" {}
@@ -6,5 +7,5 @@ variable "docker_remove_orphans" {}
 variable "aws_efs_ec2_mount_point" {}
 variable "aws_efs_mount_target" {}
 variable "docker_efs_mount_target" {}
-variable "aws_ec2_efs_url" {}
+variable "aws_efs_fs_id" {}
 variable "private_key_filename" {}

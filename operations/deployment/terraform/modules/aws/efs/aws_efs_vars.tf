@@ -1,15 +1,18 @@
-#EFS
-variable "aws_efs_replication_destination" {}
-variable "aws_efs_transition_to_inactive" {}
+variable "aws_efs_create" {}
+variable "aws_efs_create_ha" {}
+variable "aws_efs_fs_id" {}
+variable "aws_efs_vpc_id" {}
+variable "aws_efs_subnet_ids" {}
 variable "aws_efs_security_group_name" {}
-variable "aws_efs_enable_backup_policy" {}
 variable "aws_efs_create_replica" {}
-# EC2
-variable "aws_ec2_instance_create" {}
+variable "aws_efs_replication_destination" {}
+variable "aws_efs_enable_backup_policy" {}
+variable "aws_efs_transition_to_inactive" {}
 # VPC inputs
-variable "aws_vpc_id" {}
-variable "aws_vpc_cidr_block_whitelist" {}
-variable "aws_region_current_name" {}
+variable "aws_selected_vpc_id" {}
+variable "aws_selected_subnet_id" {}
+variable "aws_selected_az" {}
+variable "aws_selected_az_list" {}
 # Others
 variable "aws_resource_identifier" {}
 variable "common_tags" {

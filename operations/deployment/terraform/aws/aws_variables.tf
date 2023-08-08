@@ -21,7 +21,7 @@ variable "aws_additional_tags" {
 variable "env_aws_secret" {
   type        = string
   description = "Secret name to pull env variables from AWS Secret Manager"
-  default     = null
+  default     = ""
 }
 
 # EC2 Instance
@@ -109,6 +109,55 @@ variable "aws_ec2_user_data_replace_on_change"  {
   description = "Forces destruction of EC2 instance"
 }
 
+## AWS VPC
+variable "aws_vpc_create" {
+  type        = bool
+  description = "Toggle VPC creation"
+  default     = false
+}
+
+variable "aws_vpc_name" {
+  type = string
+  description = "Name for the aws vpc"
+  default = ""
+}
+
+variable "aws_vpc_id" {
+  type = string
+  description = "aws vpc id"
+  default = ""
+}
+
+variable "aws_vpc_subnet_id" {
+  type = string
+  description = "aws vpc subnet id"
+  default = ""
+}
+
+variable "aws_vpc_cidr_block" {
+  description = "CIDR of the VPC"
+  type        = string
+  default     = "10.10.0.0/16"
+}
+
+variable "aws_vpc_public_subnets" {
+  type        = string
+  default     = "10.10.110.0/24"
+  description = "A list of public subnets"
+}
+
+variable "aws_vpc_private_subnets" {
+  type        = string
+  default     = ""
+  description = "A list of private subnets"
+}
+
+variable "aws_vpc_availability_zones" {
+  type        = string
+  default     = ""
+  description = "A list of availability zones."
+}
+
 # AWS Route53 Domains abd Certificates
 variable "aws_r53_enable" {
   type        = bool
@@ -169,7 +218,7 @@ variable "aws_elb_security_group_name" {
 
 variable "aws_elb_app_port" {
   type        = string
-  default     = "3000"
+  default     = ""
   description = "app port"
 }
 
@@ -218,15 +267,21 @@ variable "aws_efs_create_ha" {
   default     = false
 }
 
-variable "aws_efs_mount_id" {
+variable "aws_efs_fs_id" {
   type        = string
   description = "ID of existing EFS"
   default     = null
 }
 
-variable "aws_efs_mount_security_group_id" {
+variable "aws_efs_vpc_id" {
   type        = string
-  description = "ID of the primary security group used by the existing EFS"
+  description = "ID of the VPC for the EFS mount target. If aws_efs_create_ha is set to true, will create one mount target per subnet available in the VPC."
+  default     = null
+}
+
+variable "aws_efs_subnet_ids" {
+  type        = string
+  description = "ID of the VPC for the EFS mount target. If aws_efs_create_ha is set to true, will create one mount target per subnet available in the VPC."
   default     = null
 }
 
@@ -242,32 +297,22 @@ variable "aws_efs_create_replica" {
   default     = false
 }
 
+variable "aws_efs_replication_destination" {
+  type        = string
+  default     = ""
+  description = "AWS Region to target for replication"
+}
+
 variable "aws_efs_enable_backup_policy" {
   type        = bool
   default     = false
   description = "Toggle to indiciate whether the EFS should have a backup policy, default is `false`"
 }
 
-variable "aws_efs_zone_mapping" {
-  type = map(object({
-    subnet_id       = string
-    security_groups = list(string)
-  }))
-  description = "Zone Mapping in the form of {\"<availabillity zone>\":{\"subnet_id\":\"subnet-abc123\", \"security_groups\":[\"sg-abc123\"]} }"
-  nullable    = true
-  default     = null
-}
-
 variable "aws_efs_transition_to_inactive" {
   type        = string
   default     = "AFTER_30_DAYS"
   description = "https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/efs_file_system#transition_to_ia"
-}
-
-variable "aws_efs_replication_destination" {
-  type        = string
-  default     = null
-  description = "AWS Region to target for replication"
 }
 
 variable "aws_efs_mount_target" {

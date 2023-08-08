@@ -8,6 +8,8 @@ variable "aws_elb_healthcheck" {}
 variable "lb_access_bucket_name" {}
 
 variable "aws_instance_server_az" {}
+variable "aws_vpc_selected_id" {}
+variable "aws_vpc_subnet_selected" {}
 variable "aws_instance_server_id" {}
 variable "aws_certificates_selected_arn" {}
 variable "aws_elb_target_sg_id" {}

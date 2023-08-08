@@ -46,6 +46,7 @@ resource "aws_security_group_rule" "incoming_elb" {
 resource "aws_security_group" "elb_security_group" {
   name        = var.aws_elb_security_group_name != "" ? var.aws_elb_security_group_name : "SG for ${var.aws_resource_identifier} - ELB"
   description = "SG for ${var.aws_resource_identifier} - ELB"
+  vpc_id      = var.aws_vpc_selected_id
   egress {
     from_port   = 0
     to_port     = 0
@@ -72,10 +73,8 @@ resource "aws_security_group_rule" "incoming_elb_ports" {
 resource "aws_elb" "vm_lb" {
   name               = var.aws_resource_identifier_supershort
   security_groups    = [aws_security_group.elb_security_group.id]
-  availability_zones = var.aws_instance_server_az
-  # TODO - ADD VPC Handling
-  # availability_zones = var.create_vpc == "true" ? null : [aws_instance.server.availability_zone]
-  # subnets            = var.create_vpc == "true" ? aws_subnet.public.*.id : null
+  #availability_zones = var.aws_instance_server_az
+  subnets            = [var.aws_vpc_subnet_selected]
 
   access_logs {
     bucket   = aws_s3_bucket.lb_access_logs.id
@@ -130,7 +129,7 @@ locals {
   # Transform CSV values into arrays. ( Now variables will be called local.xx instead of var.xx )
   aws_elb_listen_port     = var.aws_elb_listen_port     != "" ? [for n in split(",", var.aws_elb_listen_port)     : tonumber(n)] : ( local.elb_ssl_available ? [443] : [80] )
   aws_elb_listen_protocol = var.aws_elb_listen_protocol != "" ? [for n in split(",", var.aws_elb_listen_protocol) : (n)] : ( local.elb_ssl_available ? ["ssl"] : ["tcp"] )
-  aws_elb_app_port        = var.aws_elb_app_port        != "" ? [for n in split(",", var.aws_elb_app_port)        : tonumber(n)] : []
+  aws_elb_app_port        = var.aws_elb_app_port        != "" ? [for n in split(",", var.aws_elb_app_port)        : tonumber(n)] : var.aws_elb_listen_port != "" ? local.aws_elb_listen_port : [3000] 
   aws_elb_app_protocol    = var.aws_elb_app_protocol    != "" ? [for n in split(",", var.aws_elb_app_protocol)    : (n)] : []
 
   # Store the lowest array length. (aws_elb_app_port will be at least 3000)

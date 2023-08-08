@@ -53,11 +53,13 @@ jobs:
 1. [AWS Specific](#aws-specific)
 1. [Secrets and Environment Variables](#secrets-and-environment-variables-inputs)
 1. [EC2](#ec2-inputs)
+1. [VPC](#vpc-inputs)
 1. [Certificates](#certificate-inputs)
 1. [Load Balancer](#load-balancer-inputs)
 1. [EFS](#efs-inputs)
 1. [Amazon Aurora Inputs](#aurora-inputs)
 1. [Docker](#docker-inputs)
+1. [EKS](#eks-inputs)
 
 The following inputs can be used as `step.with` keys
 <br/>
@@ -146,6 +148,19 @@ The following inputs can be used as `step.with` keys
 <hr/>
 <br/>
 
+#### **VPC Inputs**
+| Name             | Type    | Description                        |
+|------------------|---------|------------------------------------|
+| `aws_vpc_create` | Boolean | Define if a VPC should be created |
+| `aws_vpc_name` | String | Define a name for the VPC. Defaults to `VPC for ${aws_resource_identifier}`. |
+| `aws_vpc_cidr_block` | String | Define Base CIDR block which is divided into subnet CIDR blocks. Defaults to `10.0.0.0/16`. |
+| `aws_vpc_public_subnets` | String | Comma separated list of public subnets. Defaults to `10.10.110.0/24`|
+| `aws_vpc_private_subnets` | String | Comma separated list of private subnets. If no input, no private subnet will be created. Defaults to `<none>`. |
+| `aws_vpc_availability_zones` | String | Comma separated list of availability zones. Defaults to `aws_default_region+<random>` value. If a list is defined, the first zone will be the one used for the EC2 instance. |
+| `aws_vpc_id` | String | AWS VPC ID. Accepts `vpc-###` values. |
+| `aws_vpc_subnet_id` | String | AWS VPC Subnet ID. If none provided, will pick one. (Ideal when there's only one) |
+<hr/>
+<br/>
 
 #### **Certificate Inputs**
 | Name             | Type    | Description                        |
@@ -179,14 +194,14 @@ The following inputs can be used as `step.with` keys
 |------------------|---------|------------------------------------|
 | `aws_efs_create` | Boolean | Toggle to indicate whether to create and EFS and mount it to the ec2 as a part of the provisioning. Note: The EFS will be managed by the stack and will be destroyed along with the stack |
 | `aws_efs_create_ha` | Boolean | Toggle to indicate whether the EFS resource should be highly available (target mounts in all available zones within region) |
-| `aws_efs_mount_id` | String | ID of existing EFS. |
-| `aws_efs_mount_security_group_id` | String | ID of the primary security group used by the existing EFS. |
+| `aws_efs_fs_id` | String | ID of existing EFS. |
+| `aws_efs_vpc_id` | String | ID of the VPC for the EFS mount target. If aws_efs_create_ha is set to true, will create one mount target per subnet available in the VPC. If not, will create one in an automated selected region. |
+| `aws_efs_subnet_ids` | String | ID (or ID's) of the subnet for the EFS mount target. (Comma separated string.) |
 | `aws_efs_security_group_name` | String | The name of the EFS security group. Defaults to `SG for ${aws_resource_identifier} - EFS`. |
 | `aws_efs_create_replica` | Boolean | Toggle to indiciate whether a read-only replica should be created for the EFS primary file system |
-| `aws_efs_enable_backup_policy` | Boolean | Toggle to indiciate whether the EFS should have a backup policy |
-| `aws_efs_zone_mapping` | JSON | Zone Mapping in the form of `{\"<availabillity zone>\":{\"subnet_id\":\"subnet-abc123\", \"security_groups\":\[\"sg-abc123\"\]} }` |
-| `aws_efs_transition_to_inactive` | String | Indicates how long it takes to transition files to the IA storage class. |
 | `aws_efs_replication_destination` | String | AWS Region to target for replication. |
+| `aws_efs_enable_backup_policy` | Boolean | Toggle to indiciate whether the EFS should have a backup policy |
+| `aws_efs_transition_to_inactive` | String | Indicates how long it takes to transition files to the IA storage class. |
 | `aws_efs_mount_target` | String | Directory path in efs to mount directory to. Default is `/`. |
 | `aws_efs_ec2_mount_point` | String | The aws_efs_ec2_mount_point input represents the folder path within the EC2 instance to the data directory. Default is `/user/ubuntu/<application_repo>/data`. Additionally this value is loaded into the docker-compose `.env` file as `HOST_DIR`. |
 <hr/>
@@ -222,6 +237,35 @@ The following inputs can be used as `step.with` keys
 | `docker_repo_app_directory` | String | Relative path for the directory of the app. (i.e. where the `docker-compose.yaml` file is located). This is the directory that is copied into the EC2 instance. Default is `/`, the root of the repository. Add a `.gha-ignore` file with a list of files to be exluded. (Using glob patterns). |
 | `docker_repo_app_directory_cleanup` | Boolean | Will generate a timestamped compressed file (in the home directory of the instance) and delete the app repo directory. Runs before `docker_install` and after `docker_full_cleanup`. |
 | `docker_efs_mount_target` | String | Directory path within docker env to mount directory to. Default is `/data`|
+<hr/>
+<br/>
+
+#### **EKS Inputs**
+| Name             | Type    | Description                        |
+|------------------|---------|------------------------------------|
+| `aws_eks_create` | Boolean | Define if an EKS cluster should be created |
+| `aws_eks_region` | String | Define the region where EKS cluster should be created. Defaults to `us-east-1`. |
+| `aws_eks_security_group_name_master` | String | Define the security group name master. Defaults to `SG for ${GITHUB_ORG_NAME}-${GITHUB_REPO_NAME}-${GITHUB_BRANCH_NAME} - ${aws_eks_environment} - EKS Master`. |
+| `aws_eks_security_group_name_worker` | String | Define the security group name worker. Defaults to `SG for ${GITHUB_ORG_NAME}-${GITHUB_REPO_NAME}-${GITHUB_BRANCH_NAME} - ${aws_eks_environment} - EKS Worker`. |
+| `aws_eks_environment` | String | Specify the eks environment name. Defaults to `env` |
+| `aws_eks_stackname` | String | Specify the eks stack name for your environment. Defaults to `eks-stack`.  |
+| `aws_eks_cidr_block` | String | Define Base CIDR block which is divided into subnet CIDR blocks. Defaults to `10.0.0.0/16`. |
+| `aws_eks_workstation_cidr` | String | Comma separated list of remote public CIDRs blocks to add it to Worker nodes security groups. |
+| `aws_eks_availability_zones` | String | Comma separated list of availability zones. Defaults to `us-east-1a,us-east-1b`.  |
+| `aws_eks_private_subnets` | String | Comma separated list of private subnets. Defaults to `10.0.1.0/24,10.0.2.0/24`. |
+| `aws_eks_public_subnets` | String | Comma separated list of public subnets. Defaults to `10.0.101.0/24,10.0.102.0/24`|
+| `aws_eks_cluster_name` | String | Specify the k8s cluster name. Defaults to `${GITHUB_ORG_NAME}-${GITHUB_REPO_NAME}-${GITHUB_BRANCH_NAME}-cluster` |
+| `aws_eks_cluster_log_types` | String | Comma separated list of cluster log type. See [this AWS doc](https://docs.aws.amazon.com/eks/latest/userguide/control-plane-logs.html). Defaults to `none`. |
+| `aws_eks_cluster_version` | String | Specify the k8s cluster version. Defaults to `1.27` |
+| `aws_eks_instance_type` | String | Define the EC2 instance type. See [this list](https://aws.amazon.com/ec2/instance-types/) for reference. Defaults to `t3a.medium`. |
+| `aws_eks_instance_ami_id` | String | AWS AMI ID. Will default to the latest Amazon EKS Node image for the cluster version. |
+| `aws_eks_instance_user_data_file` | String | Relative path in the repo for a user provided script to be executed with the EC2 Instance creation. See note. |
+| `aws_eks_ec2_key_pair` | String | Enter an existing ec2 key pair name for worker nodes. If none, will create one. |
+| `aws_eks_store_keypair_sm` | Boolean | If true, will store the newly created keys in Secret Manager. |
+| `aws_eks_desired_capacity` | String | Enter the desired capacity for the worker nodes. Defaults to `2`. |
+| `aws_eks_max_size` | String | Enter the max_size for the worker nodes. Defaults to `4`. |
+| `aws_eks_min_size` | String | Enter the min_size for the worker nodes. Defaults to `2`. |
+| `input_helm_charts` | String | Relative path to the folder from project containing Helm charts to be installed. Could be uncompressed or compressed (.tgz) files. |
 <hr/>
 <br/>
 <br/>

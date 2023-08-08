@@ -34,10 +34,6 @@ AWS_INSTANCE_VM_URL="$BITOPS_EC2_VM_URL"
 
 " > $BITOPS_ENVROOT/terraform/aws/ec2.env
   fi
-  if [ -n "$BITOPS_EC2_PUBLIC_IP" ] && [ "$BITOPS_ANSIBLE_SKIP_DEPLOY" != "true" ]; then
-      sed -i "s/BITOPS_EC2_PUBLIC_IP/$(echo $BITOPS_EC2_PUBLIC_IP)/" ${BITOPS_ENVROOT}/terraform/aws/inventory.yaml
-      cat ${BITOPS_ENVROOT}/terraform/aws/inventory.yaml
-  fi
 fi
 
 echo "end terraform output for bo-out"

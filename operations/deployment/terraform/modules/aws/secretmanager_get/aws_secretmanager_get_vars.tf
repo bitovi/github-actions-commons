@@ -1,0 +1,1 @@
+variable "env_aws_secret" {}

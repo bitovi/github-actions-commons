@@ -15,13 +15,14 @@ module "ec2" {
   aws_ec2_security_group_name         = var.aws_ec2_security_group_name
   aws_ec2_port_list                   = var.aws_ec2_port_list
   # Data inputs
-  aws_ec2_selected_vpc_id             = data.aws_vpc.default.id
-  aws_subnet_selected_id              = data.aws_subnet.selected[0].id
-  preferred_az                        = local.preferred_az
+  aws_ec2_selected_vpc_id             = module.vpc.aws_selected_vpc_id
+  aws_subnet_selected_id              = module.vpc.aws_vpc_subnet_selected
+  preferred_az                        = module.vpc.preferred_az
   # Others
   aws_resource_identifier             = var.aws_resource_identifier
   aws_resource_identifier_supershort  = var.aws_resource_identifier_supershort
   common_tags                         = local.default_tags
+  depends_on = [module.vpc]
 }
 
 module "aws_certificates" {
@@ -61,7 +62,7 @@ module "aws_route53" {
 module "aws_elb" {
   source = "../modules/aws/elb"
   count  = var.aws_ec2_instance_create ? 1 : 0 
-  # We should have a count here, right? 
+  # ELB Values
   aws_elb_security_group_name        = var.aws_elb_security_group_name
   aws_elb_app_port                   = var.aws_elb_app_port
   aws_elb_app_protocol               = var.aws_elb_app_protocol
@@ -70,7 +71,9 @@ module "aws_elb" {
   aws_elb_healthcheck                = var.aws_elb_healthcheck
   lb_access_bucket_name              = var.lb_access_bucket_name
   # EC2
-  aws_instance_server_az             = [local.preferred_az]
+  aws_instance_server_az             = [module.vpc.preferred_az]
+  aws_vpc_selected_id                = module.vpc.aws_selected_vpc_id
+  aws_vpc_subnet_selected            = module.vpc.aws_vpc_subnet_selected
   aws_instance_server_id             = module.ec2[0].aws_instance_server_id
   aws_elb_target_sg_id               = module.ec2[0].aws_security_group_ec2_sg_id 
   # Certs
@@ -79,55 +82,33 @@ module "aws_elb" {
   aws_resource_identifier            = var.aws_resource_identifier
   aws_resource_identifier_supershort = var.aws_resource_identifier_supershort
   common_tags                        = local.default_tags
+  depends_on = [module.vpc,module.ec2]
 }
 
 module "efs" {
   source = "../modules/aws/efs"
-  count  = local.create_efs ? 1 : 0
-# EFS
-  aws_efs_replication_destination = var.aws_efs_replication_destination
-  aws_efs_transition_to_inactive  = var.aws_efs_transition_to_inactive
-  aws_efs_security_group_name     = var.aws_efs_security_group_name
-  aws_efs_enable_backup_policy    = var.aws_efs_enable_backup_policy
-  aws_efs_create_replica          = var.aws_efs_create_replica
-  # EC2
-  aws_ec2_instance_create         = var.aws_ec2_instance_create
-  # VPC inputs
-  aws_vpc_id                      = data.aws_vpc.default.id
-  aws_vpc_cidr_block_whitelist    = data.aws_vpc.default.cidr_block
-  aws_region_current_name         = data.aws_region.current.name
-  # Others
-  aws_resource_identifier         = var.aws_resource_identifier
-  common_tags                     = local.default_tags
-}
-
-module "ec2_efs" {
-  source = "../modules/aws/ec2_efs"
-  count  = var.aws_ec2_instance_create && local.create_efs ? var.aws_efs_mount_id != "" ? 1 : 0 : 0
+  count  = var.aws_efs_enable ? 1 : 0
   # EFS
   aws_efs_create                  = var.aws_efs_create
   aws_efs_create_ha               = var.aws_efs_create_ha
-  aws_efs_mount_id                = var.aws_efs_mount_id
-  aws_efs_zone_mapping            = var.aws_efs_zone_mapping
-  aws_efs_ec2_mount_point         = var.aws_efs_ec2_mount_point
-  # Other
-  ha_zone_mapping                 = local.ha_zone_mapping
-  ec2_zone_mapping                = local.ec2_zone_mapping
-  # Docker
-  docker_efs_mount_target         = var.docker_efs_mount_target
-  # Data inputs
-  aws_region_current_name         = data.aws_region.current.name #
-  aws_security_group_efs_id       = module.efs[0].aws_security_group_efs_id
-  aws_efs_fs_id                   = module.efs[0].aws_efs_fs_id
+  aws_efs_fs_id                   = var.aws_efs_fs_id
+  aws_efs_vpc_id                  = var.aws_efs_vpc_id
+  aws_efs_subnet_ids              = var.aws_efs_subnet_ids
+  aws_efs_security_group_name     = var.aws_efs_security_group_name
+  aws_efs_create_replica          = var.aws_efs_create_replica
+  aws_efs_replication_destination = var.aws_efs_replication_destination
+  aws_efs_enable_backup_policy    = var.aws_efs_enable_backup_policy
+  aws_efs_transition_to_inactive  = var.aws_efs_transition_to_inactive
+  # VPC inputs
+  aws_selected_vpc_id             = module.vpc.aws_selected_vpc_id
+  aws_selected_subnet_id          = module.vpc.aws_vpc_subnet_selected
+  aws_selected_az                 = module.vpc.preferred_az
+  aws_selected_az_list            = module.vpc.availability_zones
   # Others
+  aws_resource_identifier         = var.aws_resource_identifier
   common_tags                     = local.default_tags
-  # Not exposed
-  app_install_root                = var.app_install_root
-  app_repo_name                   = var.app_repo_name
-  # Dependencies
-  depends_on = [module.efs]
+  depends_on = [module.vpc]
 }
-
 
 module "aurora_rds" {
   source = "../modules/aws/aurora"
@@ -148,15 +129,40 @@ module "aurora_rds" {
   aws_aurora_database_protection     = var.aws_aurora_database_protection
   aws_aurora_database_final_snapshot = var.aws_aurora_database_final_snapshot
   # Data inputs
-  aws_vpc_default_id                   = data.aws_vpc.default.id
-  aws_subnets_vpc_subnets_ids          = data.aws_subnets.vpc_subnets.ids
-  aws_region_current_name              = data.aws_region.current.name
+  aws_allowed_sg_id                    = module.ec2[0].aws_security_group_ec2_sg_id 
+  aws_selected_vpc_id                  = module.vpc.aws_selected_vpc_id
+  aws_subnets_vpc_subnets_ids          = module.vpc.aws_selected_vpc_subnets
+  aws_region_current_name              = module.vpc.aws_region_current_name
   # Others
   aws_resource_identifier              = var.aws_resource_identifier
   aws_resource_identifier_supershort   = var.aws_resource_identifier_supershort
   common_tags                          = local.default_tags
   # Dependencies
-  depends_on = [data.aws_subnets.vpc_subnets]
+  depends_on = [module.vpc]
+}
+
+module "vpc" {
+  source                      = "../modules/aws/vpc"
+  aws_vpc_create              = var.aws_vpc_create
+  aws_vpc_id                  = var.aws_vpc_id 
+  aws_vpc_subnet_id           = var.aws_vpc_subnet_id
+  aws_vpc_cidr_block          = var.aws_vpc_cidr_block
+  aws_vpc_name                = var.aws_vpc_name
+  aws_vpc_public_subnets      = var.aws_vpc_public_subnets
+  aws_vpc_private_subnets     = var.aws_vpc_private_subnets
+  aws_vpc_availability_zones  = var.aws_vpc_availability_zones
+  # Data inputs
+  aws_ec2_instance_type        = var.aws_ec2_instance_type
+  aws_ec2_security_group_name  = var.aws_ec2_security_group_name
+  # Others
+  aws_resource_identifier     = var.aws_resource_identifier
+  common_tags                 = local.default_tags
+}
+
+module "secretmanager_get" {
+  source         = "../modules/aws/secretmanager_get"
+  count          = var.env_aws_secret != "" ? 1 : 0
+  env_aws_secret = var.env_aws_secret
 }
 
 #module "eks" {
@@ -195,6 +201,7 @@ module "aurora_rds" {
 module "ansible" {
   source = "../modules/aws/ansible"
   count  = var.aws_ec2_instance_create ? 1 : 0
+  aws_ec2_instance_ip     = try(module.ec2[0].instance_public_ip,"")
   aws_efs_enable          = var.aws_efs_enable
   app_repo_name           = var.app_repo_name
   app_install_root        = var.app_install_root
@@ -203,7 +210,7 @@ module "ansible" {
   aws_efs_ec2_mount_point = var.aws_efs_ec2_mount_point
   aws_efs_mount_target    = var.aws_efs_mount_target
   docker_efs_mount_target = var.docker_efs_mount_target
-  aws_ec2_efs_url         = try(module.ec2_efs[0].efs_url,"")
+  aws_efs_fs_id           = var.aws_efs_enable ? local.create_efs ? module.efs[0].aws_efs_fs_id : var.aws_efs_fs_id : null
   # Data inputs
   private_key_filename    = module.ec2[0].private_key_filename
   # Dependencies
@@ -211,6 +218,16 @@ module "ansible" {
 }
 
 locals {
+  aws_tags = {
+    OperationsRepo            = "bitovi/github-actions-commons/operations/${var.ops_repo_environment}"
+    AWSResourceIdentifier     = "${var.aws_resource_identifier}"
+    GitHubOrgName             = "${var.app_org_name}"
+    GitHubRepoName            = "${var.app_repo_name}"
+    GitHubBranchName          = "${var.app_branch_name}"
+    GitHubAction              = "bitovi/github-actions-commons"
+    OperationsRepoEnvironment = "${var.ops_repo_environment}"
+    Created_with              = "Bitovi-BitOps"
+  }
   default_tags = merge(local.aws_tags, var.aws_additional_tags)
   fqdn_provided = (
     (var.aws_r53_domain_name != "") ?
