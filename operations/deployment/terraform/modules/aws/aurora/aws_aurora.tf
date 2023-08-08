@@ -11,6 +11,12 @@ resource "aws_security_group" "aurora_security_group" {
   tags = {
     Name = "${var.aws_resource_identifier}-aurora"
   }
+  lifecycle {
+    create_before_destroy = true
+  }
+  timeouts {
+    delete = "2m"
+  }
 }
 
 resource "aws_security_group_rule" "ingress_aurora" {
@@ -37,9 +43,6 @@ module "aurora_cluster" {
     }
   }
 
-  #allowed_cidr_blocks     = [data.aws_vpc.selected[0].cidr_block]
-
-  # Todo: handle vpc/networking explicitly
   vpc_id                 = var.aws_selected_vpc_id
   subnets                = var.aws_aurora_subnets == null || length(var.aws_aurora_subnets) == 0 ? var.aws_subnets_vpc_subnets_ids : var.aws_aurora_subnets
   

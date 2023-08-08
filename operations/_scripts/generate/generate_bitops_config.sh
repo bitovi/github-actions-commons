@@ -78,6 +78,7 @@ fi
 # random_integer.az_select needs to be created before the "full stack" to avoid a potential state dependency locks
 targets="$targets
     - module.vpc.random_integer.az_select"
+# In the case VPC creation is enabled, as it's a needed resource for the whole stack, will trigger creation first.
 if [[ $(alpha_only "$AWS_VPC_CREATE") == true ]]; then
 targets="$targets
     - module.vpc"
