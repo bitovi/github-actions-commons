@@ -77,8 +77,11 @@ if [ -n "$TF_TARGETS" ]; then
 fi
 # random_integer.az_select needs to be created before the "full stack" to avoid a potential state dependency locks
 targets="$targets
-    - module.vpc.random_integer.az_select
+    - module.vpc.random_integer.az_select"
+if [[ $(alpha_only "$AWS_VPC_CREATE") == true ]]; then
+targets="$targets
     - module.vpc"
+fi
 targets_attribute="$targets_attribute $targets"
 
 #Will add the user_data file into the EC2 Terraform folder

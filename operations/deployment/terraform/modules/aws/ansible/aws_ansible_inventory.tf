@@ -39,3 +39,13 @@ bitops_servers:
    docker_efs_mount_target: ${var.docker_efs_mount_target}
    EOT
 }
+
+resource "local_file" "efs-dotenv" {
+  count    = var.aws_efs_enable ? 1 : 0
+  filename = format("%s/%s", abspath(path.root), "efs.env")
+  content  = <<-EOT
+#### EFS
+HOST_DIR="${var.app_install_root}/${var.app_repo_name}/${var.aws_efs_ec2_mount_point}"
+TARGET_DIR="${var.docker_efs_mount_target}"
+EOT
+}
