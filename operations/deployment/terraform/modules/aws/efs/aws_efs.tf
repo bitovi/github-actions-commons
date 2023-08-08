@@ -117,8 +117,6 @@ resource "aws_efs_mount_target" "efs_mount_target_action" {
 }
 
 ######
-
-
 # Data sources from selected (Coming from VPC module)
 
 data "aws_subnets" "selected_vpc_id"  {
@@ -186,21 +184,9 @@ data "aws_subnet" "incoming_subnet" {
   id = local.aws_efs_subnet_ids[0]
 }
 
-# Needed for security group - Need to get the VPC CIDR Block
-
-
 ####
 
 data "aws_region" "current" {}
-
-#data "aws_availability_zones" "all" {
-#  filter {
-#    name   = "region-name"
-#    values = [data.aws_region.current.name]
-#  }
-#}
-
-
 
 locals {
   ### Incoming definitions, need a VPC or a Subnet, if nothing, false
