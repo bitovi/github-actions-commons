@@ -105,6 +105,10 @@ module "aurora_cluster" {
   tags = {
     Name = "${var.aws_resource_identifier} - Aurora"
   }
+  lifecycle {
+    # Reference the security group as a whole or individual attributes like `name`
+    replace_triggered_by = [aws_security_group.aurora_security_group]
+  }
 }
 
 resource "random_password" "rds" {
