@@ -21,7 +21,7 @@ module "ec2" {
   # Others
   aws_resource_identifier             = var.aws_resource_identifier
   aws_resource_identifier_supershort  = var.aws_resource_identifier_supershort
-  common_tags                         = local.default_tags
+  common_tags                         = merge(local.default_tags,var.aws_ec2_additional_tags)
   depends_on = [module.vpc]
 }
 
@@ -37,7 +37,7 @@ module "aws_certificates" {
   aws_r53_sub_domain_name   = var.aws_r53_sub_domain_name
   # Others
   fqdn_provided             = local.fqdn_provided
-  common_tags               = local.default_tags
+  common_tags               = merge(local.default_tags,var.aws_r53_additional_tags)
 }
 
 module "aws_route53" {
@@ -56,7 +56,7 @@ module "aws_route53" {
   aws_certificates_selected_arn = var.aws_r53_enable_cert && var.aws_r53_domain_name != "" ? module.aws_certificates[0].selected_arn : ""
   # Others
   fqdn_provided                 = local.fqdn_provided
-  common_tags                   = local.default_tags
+  common_tags                   = merge(local.default_tags,var.aws_r53_additional_tags)
 }
 
 module "aws_elb" {
@@ -81,7 +81,7 @@ module "aws_elb" {
   # Others
   aws_resource_identifier            = var.aws_resource_identifier
   aws_resource_identifier_supershort = var.aws_resource_identifier_supershort
-  common_tags                        = local.default_tags
+  common_tags                        = merge(local.default_tags,var.aws_elb_additional_tags)
   depends_on = [module.vpc,module.ec2]
 }
 
@@ -106,7 +106,7 @@ module "efs" {
   aws_selected_az_list            = module.vpc.availability_zones
   # Others
   aws_resource_identifier         = var.aws_resource_identifier
-  common_tags                     = local.default_tags
+  common_tags                     = merge(local.default_tags,var.aws_efs_additional_tags)
   depends_on = [module.vpc]
 }
 
@@ -129,14 +129,14 @@ module "aurora_rds" {
   aws_aurora_database_protection     = var.aws_aurora_database_protection
   aws_aurora_database_final_snapshot = var.aws_aurora_database_final_snapshot
   # Data inputs
-  aws_allowed_sg_id                    = module.ec2[0].aws_security_group_ec2_sg_id 
-  aws_selected_vpc_id                  = module.vpc.aws_selected_vpc_id
-  aws_subnets_vpc_subnets_ids          = module.vpc.aws_selected_vpc_subnets
-  aws_region_current_name              = module.vpc.aws_region_current_name
+  aws_allowed_sg_id                  = module.ec2[0].aws_security_group_ec2_sg_id 
+  aws_selected_vpc_id                = module.vpc.aws_selected_vpc_id
+  aws_subnets_vpc_subnets_ids        = module.vpc.aws_selected_vpc_subnets
+  aws_region_current_name            = module.vpc.aws_region_current_name
   # Others
-  aws_resource_identifier              = var.aws_resource_identifier
-  aws_resource_identifier_supershort   = var.aws_resource_identifier_supershort
-  common_tags                          = local.default_tags
+  aws_resource_identifier            = var.aws_resource_identifier
+  aws_resource_identifier_supershort = var.aws_resource_identifier_supershort
+  common_tags                        = merge(local.default_tags,var.aws_aurora_additional_tags)
   # Dependencies
   depends_on = [module.vpc]
 }
@@ -152,11 +152,11 @@ module "vpc" {
   aws_vpc_private_subnets     = var.aws_vpc_private_subnets
   aws_vpc_availability_zones  = var.aws_vpc_availability_zones
   # Data inputs
-  aws_ec2_instance_type        = var.aws_ec2_instance_type
-  aws_ec2_security_group_name  = var.aws_ec2_security_group_name
+  aws_ec2_instance_type       = var.aws_ec2_instance_type
+  aws_ec2_security_group_name = var.aws_ec2_security_group_name
   # Others
   aws_resource_identifier     = var.aws_resource_identifier
-  common_tags                 = local.default_tags
+  common_tags                 = merge(local.default_tags,var.aws_vpc_additional_tags)
 }
 
 module "secretmanager_get" {
