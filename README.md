@@ -145,7 +145,7 @@ The following inputs can be used as `step.with` keys
 | `aws_ec2_port_list` | String | Comma separated list of ports to be enabled in the EC2 instance security group. (NOT THE ELB) In a `xx,yy` format. |
 | `aws_ec2_user_data_file` | String | Relative path in the repo for a user provided script to be executed with Terraform EC2 Instance creation. See [this note](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/user-data.html#user-data-shell-scripts) |
 |`aws_ec2_user_data_replace_on_change`| Boolean | If `aws_ec2_user_data_file` file changes, instance will stop and start. Hence public IP will change. This will destroy and recreate the instance. Defaults to `true`. |
-| `aws_ec2_additional_tags` | JSON | Add additional tags to the terraform [default tags](https://www.hashicorp.com/blog/default-tags-in-the-terraform-aws-provider), any tags put here will be added to all provisioned resources.|
+| `aws_ec2_additional_tags` | JSON | Add additional tags to the terraform [default tags](https://www.hashicorp.com/blog/default-tags-in-the-terraform-aws-provider), any tags put here will be added to ec2 provisioned resources.|
 <hr/>
 <br/>
 
@@ -160,7 +160,7 @@ The following inputs can be used as `step.with` keys
 | `aws_vpc_availability_zones` | String | Comma separated list of availability zones. Defaults to `aws_default_region+<random>` value. If a list is defined, the first zone will be the one used for the EC2 instance. |
 | `aws_vpc_id` | String | AWS VPC ID. Accepts `vpc-###` values. |
 | `aws_vpc_subnet_id` | String | AWS VPC Subnet ID. If none provided, will pick one. (Ideal when there's only one) |
-| `aws_vpc_additional_tags` | JSON | Add additional tags to the terraform [default tags](https://www.hashicorp.com/blog/default-tags-in-the-terraform-aws-provider), any tags put here will be added to all provisioned resources.|
+| `aws_vpc_additional_tags` | JSON | Add additional tags to the terraform [default tags](https://www.hashicorp.com/blog/default-tags-in-the-terraform-aws-provider), any tags put here will be added to vpc provisioned resources.|
 <hr/>
 <br/>
 
@@ -175,7 +175,7 @@ The following inputs can be used as `step.with` keys
 | `aws_r53_cert_arn` | String | Define the certificate ARN to use for the application. **See note**. |
 | `aws_r53_create_root_cert` | Boolean | Generates and manage the root cert for the application. **See note**. Default is `false`. |
 | `aws_r53_create_sub_cert` | Boolean | Generates and manage the sub-domain certificate for the application. **See note**. Default is `false`. |
-| `aws_r53_additional_tags` | JSON | Add additional tags to the terraform [default tags](https://www.hashicorp.com/blog/default-tags-in-the-terraform-aws-provider), any tags put here will be added to all provisioned resources.|
+| `aws_r53_additional_tags` | JSON | Add additional tags to the terraform [default tags](https://www.hashicorp.com/blog/default-tags-in-the-terraform-aws-provider), any tags put here will be added to R53 provisioned resources.|
 <hr/>
 <br/>
 
@@ -189,7 +189,7 @@ The following inputs can be used as `step.with` keys
 | `aws_elb_listen_port` | String | Load balancer listening port. Default is `80` if NO FQDN provided, `443` if FQDN provided. |
 | `aws_elb_listen_protocol` | String | Protocol to enable. Could be HTTP, HTTPS, TCP or SSL. Defaults to `TCP` if NO FQDN provided, `SSL` if FQDN provided. |
 | `aws_elb_healthcheck` | String | Load balancer health check string. Default is `TCP:22`. |
-| `aws_elb_additional_tags` | JSON | Add additional tags to the terraform [default tags](https://www.hashicorp.com/blog/default-tags-in-the-terraform-aws-provider), any tags put here will be added to all provisioned resources.|
+| `aws_elb_additional_tags` | JSON | Add additional tags to the terraform [default tags](https://www.hashicorp.com/blog/default-tags-in-the-terraform-aws-provider), any tags put here will be added to elb provisioned resources.|
 <hr/>
 <br/>
 
@@ -208,7 +208,7 @@ The following inputs can be used as `step.with` keys
 | `aws_efs_transition_to_inactive` | String | Indicates how long it takes to transition files to the IA storage class. |
 | `aws_efs_mount_target` | String | Directory path in efs to mount directory to. Default is `/`. |
 | `aws_efs_ec2_mount_point` | String | The aws_efs_ec2_mount_point input represents the folder path within the EC2 instance to the data directory. Default is `/user/ubuntu/<application_repo>/data`. Additionally this value is loaded into the docker-compose `.env` file as `HOST_DIR`. |
-| `aws_efs_additional_tags` | JSON | Add additional tags to the terraform [default tags](https://www.hashicorp.com/blog/default-tags-in-the-terraform-aws-provider), any tags put here will be added to all provisioned resources.|
+| `aws_efs_additional_tags` | JSON | Add additional tags to the terraform [default tags](https://www.hashicorp.com/blog/default-tags-in-the-terraform-aws-provider), any tags put here will be added to efs provisioned resources.|
 <hr/>
 <br/>
 
@@ -230,7 +230,7 @@ The following inputs can be used as `step.with` keys
 | `aws_aurora_snapshot_overwrite` | Boolean | Set to true to overwrite the snapshot. |
 | `aws_aurora_database_protection` | Boolean | Protects the database from deletion. Default is `false`.|
 | `aws_aurora_database_final_snapshot` | Boolean | Creates a snapshot before deletion. If a string is passed, it will be used as snapsthot name. Defaults to `false`.|
-| `aws_aurora_additional_tags` | JSON | Add additional tags to the terraform [default tags](https://www.hashicorp.com/blog/default-tags-in-the-terraform-aws-provider), any tags put here will be added to all provisioned resources.|
+| `aws_aurora_additional_tags` | JSON | Add additional tags to the terraform [default tags](https://www.hashicorp.com/blog/default-tags-in-the-terraform-aws-provider), any tags put here will be added to aurora provisioned resources.|
 <hr/>
 <br/>
 
@@ -272,7 +272,7 @@ The following inputs can be used as `step.with` keys
 | `aws_eks_desired_capacity` | String | Enter the desired capacity for the worker nodes. Defaults to `2`. |
 | `aws_eks_max_size` | String | Enter the max_size for the worker nodes. Defaults to `4`. |
 | `aws_eks_min_size` | String | Enter the min_size for the worker nodes. Defaults to `2`. |
-| `aws_eks_additional_tags` | JSON | Add additional tags to the terraform [default tags](https://www.hashicorp.com/blog/default-tags-in-the-terraform-aws-provider), any tags put here will be added to all provisioned resources.|
+| `aws_eks_additional_tags` | JSON | Add additional tags to the terraform [default tags](https://www.hashicorp.com/blog/default-tags-in-the-terraform-aws-provider), any tags put here will be added to eks provisioned resources.|
 | `input_helm_charts` | String | Relative path to the folder from project containing Helm charts to be installed. Could be uncompressed or compressed (.tgz) files. |
 <hr/>
 <br/>
@@ -286,6 +286,11 @@ We limit this to a 60 characters string because some AWS resources have a length
 We use the kubernetes style for this. For example, kubernetes -> k(# of characters)s -> k8s. And so you might see some compressions are made.
 
 For some specific resources, we have a 32 characters limit. If the identifier length exceeds this number after compression, we remove the middle part and replace it for a hash made up from the string itself. 
+
+## Note about tagging
+
+There's the option to add any kind of defined tag's to each grouping module. Will be added to the commons tagging.
+An example of how to set them: `{"key1": "value1", "key2": "value2"}`'
 
 ## Note about AWS EC2 AMI image selection
 
