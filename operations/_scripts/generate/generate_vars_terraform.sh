@@ -388,7 +388,7 @@ $app_branch_name
 $app_install_root
 
 " > "${GITHUB_ACTION_PATH}/operations/deployment/terraform/aws/terraform.tfvars"
-
+cat "${GITHUB_ACTION_PATH}/operations/deployment/terraform/aws/terraform.tfvars"
 
 # -------------------------------------------------- #
 echo "
