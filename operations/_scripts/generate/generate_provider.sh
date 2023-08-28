@@ -42,8 +42,10 @@ provider \"aws\" {
   region = \"${AWS_DEFAULT_REGION}\"
   alias  = \"ec2\"
   default_tags {
-    tags = local.default_tags,
-           jsondecode(var.aws_ec2_additional_tags)
+    tags = merge(
+      local.default_tags,
+      jsondecode(var.aws_ec2_additional_tags)
+    )
   }
 }
 
