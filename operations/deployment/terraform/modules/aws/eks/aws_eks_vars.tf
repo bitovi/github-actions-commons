@@ -24,7 +24,7 @@ variable "aws_eks_min_size" {}
 variable "aws_eks_vpc_name" {}
 # Others
 variable "aws_resource_identifier" {}
-variable "common_tags" {
+variable "default_tags" {
     type = map
     default = {}
 }

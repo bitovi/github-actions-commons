@@ -6,7 +6,7 @@ variable "aws_r53_domain_name" {}
 variable "aws_r53_sub_domain_name" {}
 # Others
 variable "fqdn_provided" {}
-variable "common_tags" {
+variable "default_tags" {
     type = map
     default = {}
 }

@@ -9,7 +9,7 @@ variable "aws_vpc_availability_zones" {}
 variable "aws_ec2_instance_type" {}
 variable "aws_ec2_security_group_name" {}
 variable "aws_resource_identifier" {}
-variable "common_tags" {
+variable "default_tags" {
     type = map
     default = {}
 }

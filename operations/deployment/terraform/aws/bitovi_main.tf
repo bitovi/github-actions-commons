@@ -21,7 +21,7 @@ module "ec2" {
   # Others
   aws_resource_identifier             = var.aws_resource_identifier
   aws_resource_identifier_supershort  = var.aws_resource_identifier_supershort
-  common_tags                         = merge(local.default_tags,jsondecode(var.aws_ec2_additional_tags))
+  default_tags                         = merge(local.default_tags,jsondecode(var.aws_ec2_additional_tags))
   depends_on = [module.vpc]
 }
 
@@ -37,7 +37,7 @@ module "aws_certificates" {
   aws_r53_sub_domain_name   = var.aws_r53_sub_domain_name
   # Others
   fqdn_provided             = local.fqdn_provided
-  common_tags               = merge(local.default_tags,jsondecode(var.aws_r53_additional_tags))
+  default_tags               = merge(local.default_tags,jsondecode(var.aws_r53_additional_tags))
 }
 
 module "aws_route53" {
@@ -56,7 +56,7 @@ module "aws_route53" {
   aws_certificates_selected_arn = var.aws_r53_enable_cert && var.aws_r53_domain_name != "" ? module.aws_certificates[0].selected_arn : ""
   # Others
   fqdn_provided                 = local.fqdn_provided
-  common_tags                   = merge(local.default_tags,jsondecode(var.aws_r53_additional_tags))
+  default_tags                   = merge(local.default_tags,jsondecode(var.aws_r53_additional_tags))
 }
 
 module "aws_elb" {
@@ -81,7 +81,7 @@ module "aws_elb" {
   # Others
   aws_resource_identifier            = var.aws_resource_identifier
   aws_resource_identifier_supershort = var.aws_resource_identifier_supershort
-  common_tags                        = merge(local.default_tags,jsondecode(var.aws_elb_additional_tags))
+  default_tags                        = merge(local.default_tags,jsondecode(var.aws_elb_additional_tags))
   depends_on = [module.vpc,module.ec2]
 }
 
@@ -106,7 +106,7 @@ module "efs" {
   aws_selected_az_list            = module.vpc.availability_zones
   # Others
   aws_resource_identifier         = var.aws_resource_identifier
-  common_tags                     = merge(local.default_tags,jsondecode(var.aws_efs_additional_tags))
+  default_tags                     = merge(local.default_tags,jsondecode(var.aws_efs_additional_tags))
   depends_on = [module.vpc]
 }
 
@@ -136,7 +136,7 @@ module "aurora_rds" {
   # Others
   aws_resource_identifier            = var.aws_resource_identifier
   aws_resource_identifier_supershort = var.aws_resource_identifier_supershort
-  common_tags                        = merge(local.default_tags,jsondecode(var.aws_aurora_additional_tags))
+  default_tags                        = merge(local.default_tags,jsondecode(var.aws_aurora_additional_tags))
   # Dependencies
   depends_on = [module.vpc]
 }
@@ -156,7 +156,7 @@ module "vpc" {
   aws_ec2_security_group_name = var.aws_ec2_security_group_name
   # Others
   aws_resource_identifier     = var.aws_resource_identifier
-  common_tags                 = merge(local.default_tags,jsondecode(var.aws_vpc_additional_tags))
+  default_tags                 = merge(local.default_tags,jsondecode(var.aws_vpc_additional_tags))
 }
 
 module "secretmanager_get" {

@@ -25,7 +25,7 @@ module "eks" {
   aws_eks_vpc_name = var.aws_eks_vpc_name
   # Others
   aws_resource_identifier = var.aws_resource_identifier
-  common_tags             = merge(local.default_tags,jsondecode(var.aws_eks_additional_tags))
+  default_tags             = merge(local.default_tags,jsondecode(var.aws_eks_additional_tags))
 }
 
 

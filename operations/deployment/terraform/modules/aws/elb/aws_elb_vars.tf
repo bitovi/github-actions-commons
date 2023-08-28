@@ -16,7 +16,7 @@ variable "aws_elb_target_sg_id" {}
 
 variable "aws_resource_identifier" {}
 variable "aws_resource_identifier_supershort" {}
-variable "common_tags" {
+variable "default_tags" {
     type = map
     default = {}
 }

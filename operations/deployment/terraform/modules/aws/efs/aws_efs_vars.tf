@@ -15,7 +15,7 @@ variable "aws_selected_az" {}
 variable "aws_selected_az_list" {}
 # Others
 variable "aws_resource_identifier" {}
-variable "common_tags" {
+variable "default_tags" {
     type = map
     default = {}
 }
