@@ -24,8 +24,8 @@ module "ec2" {
   #default_tags                        = merge(local.default_tags,jsondecode(var.aws_ec2_additional_tags))
   depends_on = [module.vpc]
 
-  providers {
-    aws.ec2
+  providers = {
+    aws.src = aws.ec2
   }
 }
 
