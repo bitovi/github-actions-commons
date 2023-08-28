@@ -21,7 +21,7 @@ module "ec2" {
   # Others
   aws_resource_identifier             = var.aws_resource_identifier
   aws_resource_identifier_supershort  = var.aws_resource_identifier_supershort
-  common_tags                         = merge(local.default_tags,var.aws_ec2_additional_tags)
+  common_tags                         = merge(local.default_tags,jsondecode(var.aws_ec2_additional_tags))
   depends_on = [module.vpc]
 }
 
@@ -156,7 +156,7 @@ module "vpc" {
   aws_ec2_security_group_name = var.aws_ec2_security_group_name
   # Others
   aws_resource_identifier     = var.aws_resource_identifier
-  common_tags                 = merge(local.default_tags,var.aws_vpc_additional_tags)
+  common_tags                 = merge(local.default_tags,jsondecode(var.aws_vpc_additional_tags))
 }
 
 module "secretmanager_get" {
