@@ -136,3 +136,9 @@ output "aws_instance_server_id" {
 output "private_key_filename" {
   value = local_sensitive_file.private_key.filename
 }
+
+provider "aws" {
+  default_tags {
+    tags = var.default_tags
+  }
+}
