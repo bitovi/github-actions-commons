@@ -137,8 +137,8 @@ output "private_key_filename" {
   value = local_sensitive_file.private_key.filename
 }
 
- # provider "aws" {
- #   default_tags {
- #     tags = merge(local.default_tags,jsondecode(var.aws_ec2_additional_tags))
- #   } 
- # }
+provider "aws" {
+   default_tags {
+     tags = local.default_tags
+   }
+}
