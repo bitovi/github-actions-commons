@@ -4,11 +4,12 @@ terraform {
       source  = "hashicorp/aws"
       version = "~> 5.0"
     }
+    configuration_aliases = [ aws.ec2 ]
   }
 }
-
-provider "aws" {
-  default_tags {
-    tags = local.default_tags
-  }
-}
+#
+#provider "aws" {
+#  default_tags {
+#    tags = local.default_tags
+#  }
+#}
