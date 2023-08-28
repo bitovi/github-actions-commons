@@ -11,9 +11,9 @@ variable "aws_resource_identifier_supershort" {
 }
 
 variable "aws_additional_tags" {
-  type        = map(string)
+  type        = string
   description = "A list of strings that will be added to created resources"
-  default     = {}
+  default     = ""
 }
 
 # ENV Files
@@ -110,9 +110,9 @@ variable "aws_ec2_user_data_replace_on_change"  {
 }
 
 variable "aws_ec2_additional_tags" {
-  type        = map(string)
+  type        = string
   description = "A list of strings that will be added to created resources"
-  default     = {}
+  default     = ""
 }
 
 ## AWS VPC
@@ -165,9 +165,9 @@ variable "aws_vpc_availability_zones" {
 }
 
 variable "aws_vpc_additional_tags" {
-  type        = map(string)
+  type        = string
   description = "A list of strings that will be added to created resources"
-  default     = {}
+  default     = ""
 }
 
 # AWS Route53 Domains abd Certificates
@@ -221,9 +221,9 @@ variable "aws_r53_create_sub_cert" {
 }
 
 variable "aws_r53_additional_tags" {
-  type        = map(string)
+  type        = string
   description = "A list of strings that will be added to created resources"
-  default     = {}
+  default     = ""
 }
 
 # AWS ELB
@@ -264,9 +264,9 @@ variable "aws_elb_healthcheck" {
 }
 
 variable "aws_elb_additional_tags" {
-  type        = map(string)
+  type        = string
   description = "A list of strings that will be added to created resources"
-  default     = {}
+  default     = ""
 }
 
 # AWS EFS
@@ -347,13 +347,13 @@ variable "aws_efs_mount_target" {
 variable "aws_efs_ec2_mount_point" {
   type        = string
   description = "Directory path in application env to mount directory"
-  default = "data"
+  default     = "data"
 }
 
 variable "aws_efs_additional_tags" {
-  type        = map(string)
+  type        = string
   description = "A list of strings that will be added to created resources"
-  default     = {}
+  default     = ""
 }
 
 # AWS RDS
@@ -435,9 +435,9 @@ variable "aws_aurora_database_final_snapshot" {
 }
 
 variable "aws_aurora_additional_tags" {
-  type        = map(string)
+  type        = string
   description = "A list of strings that will be added to created resources"
-  default     = {}
+  default     = ""
 }
 
 # Docker
@@ -594,9 +594,9 @@ variable "aws_eks_min_size" {
 }
 
 variable "aws_eks_additional_tags" {
-  type        = map(string)
+  type        = string
   description = "A list of strings that will be added to created resources"
-  default     = {}
+  default     = ""
 }
 
 #### END OF ACTION VARIABLES INPUTS
