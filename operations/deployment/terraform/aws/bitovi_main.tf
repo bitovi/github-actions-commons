@@ -21,13 +21,11 @@ module "ec2" {
   # Others
   aws_resource_identifier             = var.aws_resource_identifier
   aws_resource_identifier_supershort  = var.aws_resource_identifier_supershort
-  #default_tags                        = merge(local.default_tags,jsondecode(var.aws_ec2_additional_tags))
+  default_tags                        = merge(local.default_tags,jsondecode(var.aws_ec2_additional_tags))
   depends_on = [module.vpc]
 
-  provider "aws" {
-    default_tags {
-      tags = merge(local.default_tags,jsondecode(var.aws_ec2_additional_tags))
-    } 
+  providers {
+    aws
   }
 }
 
