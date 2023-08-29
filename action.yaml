@@ -490,7 +490,7 @@ runs:
         AWS_SESSION_TOKEN: ${{ inputs.aws_session_token }}
         AWS_DEFAULT_REGION: ${{ inputs.aws_default_region }}
         AWS_RESOURCE_IDENTIFIER: ${{ inputs.aws_resource_identifier }}
-        AWS_ADDITIONAL_TAGS: ${{ inputs.additional_tags }}
+        AWS_ADDITIONAL_TAGS: ${{ inputs.aws_additional_tags }}
 
         # ENV Files
         ENV_AWS_SECRET: ${{ inputs.env_aws_secret }}
