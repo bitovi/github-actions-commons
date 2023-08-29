@@ -39,13 +39,13 @@ provider \"aws\" {
   }
 }
 
-#provider \"aws\" {
-#  alias  = \"ec2\"
-#  region = \"${AWS_DEFAULT_REGION}\"
-#  default_tags {
-#    tags = local.ec2_tags
-#  }
-#}
+provider \"aws\" {
+  alias  = \"ec2\"
+  region = \"${AWS_DEFAULT_REGION}\"
+  default_tags {
+    tags = local.ec2_tags
+  }
+}
 
 " > "${GITHUB_ACTION_PATH}/operations/deployment/terraform/$1/bitovi_provider.tf"
 }
