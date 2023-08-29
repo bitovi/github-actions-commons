@@ -42,6 +42,7 @@ jobs:
           aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws_default_region: us-east-1
           env_ghs: ${{ secrets.DOT_ENV }}
+          additional_tags: '{\"key\":\"value\",\"key2\":\"value2\"}'
 ```
 
 ## Customizing
