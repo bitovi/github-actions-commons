@@ -57,7 +57,6 @@ module "aws_route53" {
   # ELB
   aws_elb_dns_name              = try(module.aws_elb[0].aws_elb_dns_name,"")
   aws_elb_zone_id               = try(module.aws_elb[0].aws_elb_zone_id,"")
-  aws_elb_listen_port           = var.aws_elb_listen_port
   # Certs
   aws_certificates_selected_arn = var.aws_r53_enable_cert && var.aws_r53_domain_name != "" ? module.aws_certificates[0].selected_arn : ""
   # Others
