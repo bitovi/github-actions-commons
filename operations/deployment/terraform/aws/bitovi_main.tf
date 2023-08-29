@@ -233,6 +233,8 @@ locals {
     Created_with              = "Bitovi-BitOps"
   }
   default_tags = merge(local.aws_tags, jsondecode(var.aws_additional_tags))
+  ec2_tags     = merge(local.default_tags,jsondecode(var.aws_ec2_additional_tags))
+
   fqdn_provided = (
     (var.aws_r53_domain_name != "") ?
     (var.aws_r53_sub_domain_name != "" ?
