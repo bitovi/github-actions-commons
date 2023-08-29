@@ -165,6 +165,9 @@ inputs:
   aws_ec2_user_data_replace_on_change:
     description: 'If user_data file changes, instance will stop and start. Hence public IP will change. Defaults to true.'
     required: false
+  aws_ec2_additional_tags:
+    description: 'A JSON object of additional tags that will be included on created resources. Example: `{"key1": "value1", "key2": "value2"}`'
+    required: false
 
   # AWS VPC Inputs
   aws_vpc_create:
@@ -191,6 +194,9 @@ inputs:
   aws_vpc_subnet_id:
     description: 'Specify a Subnet to be used with the instance. If none provided, will pick one.'
     required: false
+  aws_vpc_additional_tags:
+    description: 'A JSON object of additional tags that will be included on created resources. Example: `{"key1": "value1", "key2": "value2"}`'
+    required: false
 
   # AWS Route53 Domains abd Certificates
   aws_r53_enable:
@@ -216,6 +222,9 @@ inputs:
   aws_r53_create_sub_cert: 
     description: 'Generates and manage the sub-domain certificate for the application'
     required: false
+  aws_r53_additional_tags:
+    description: 'A JSON object of additional tags that will be included on created resources. Example: `{"key1": "value1", "key2": "value2"}`'
+    required: false
 
   # AWS ELB
   aws_elb_create:
@@ -238,6 +247,9 @@ inputs:
     required: false
   aws_elb_healthcheck: 
     description: 'Load balancer health check string. Defaults to TCP:22'
+    required: false
+  aws_elb_additional_tags:
+    description: 'A JSON object of additional tags that will be included on created resources. Example: `{"key1": "value1", "key2": "value2"}`'
     required: false
   
   # AWS EFS
@@ -275,6 +287,9 @@ inputs:
     required: false
   aws_efs_ec2_mount_point:
     description: 'Directory path in EC2 Instance to mount the EFS volume. Default is `data`. Exported as `HOST_DIR` in `.env`'
+    required: false
+  aws_efs_additional_tags:
+    description: 'A JSON object of additional tags that will be included on created resources. Example: `{"key1": "value1", "key2": "value2"}`'
     required: false
   
   # AWS RDS
@@ -322,6 +337,9 @@ inputs:
     required: false
   aws_aurora_database_final_snapshot:
     description: 'Generates a snapshot of the database before deletion.'
+    required: false
+  aws_aurora_additional_tags:
+    description: 'A JSON object of additional tags that will be included on created resources. Example: `{"key1": "value1", "key2": "value2"}`'
     required: false
     
   # Docker 
@@ -411,6 +429,9 @@ inputs:
   aws_eks_min_size:
     description: 'Enter the min_size for the worker nodes'
     required: false
+  aws_eks_additional_tags:
+    description: 'A JSON object of additional tags that will be included on created resources. Example: `{"key1": "value1", "key2": "value2"}`'
+    required: false
 
 outputs:
   vm_url:
@@ -493,6 +514,7 @@ runs:
         AWS_EC2_PORT_LIST: ${{ inputs.aws_ec2_port_list }}
         AWS_EC2_USER_DATA_FILE: ${{ inputs.aws_ec2_user_data_file }}
         AWS_EC2_USER_DATA_REPLACE_ON_CHANGE: ${{ inputs.aws_ec2_user_data_replace_on_change }}
+        AWS_EC2_ADDITIONAL_TAGS: ${{ inputs.aws_ec2_additional_tags }}
 
         ## AWS VPC
         AWS_VPC_CREATE: ${{ inputs.aws_vpc_create }}
@@ -503,6 +525,7 @@ runs:
         AWS_VPC_AVAILABILITY_ZONES: ${{ inputs.aws_vpc_availability_zones }}
         AWS_VPC_ID: ${{ inputs.aws_vpc_id }}
         AWS_VPC_SUBNET_ID: ${{ inputs.aws_vpc_subnet_id }}
+        AWS_VPC_ADDITIONAL_TAGS: ${{ inputs.aws_vpc_additional_tags }}
 
         # AWS Route53 Domains abd Certificates
         AWS_R53_ENABLE: ${{ inputs.aws_r53_enable }}
@@ -513,6 +536,7 @@ runs:
         AWS_R53_CERT_ARN: ${{ inputs.aws_r53_cert_arn }}
         AWS_R53_CREATE_ROOT_CERT: ${{ inputs.aws_r53_create_root_cert }}
         AWS_R53_CREATE_SUB_CERT: ${{ inputs.aws_r53_create_sub_cert }}
+        AWS_R53_ADDITIONAL_TAGS: ${{ inputs.aws_r53_additional_tags }}
 
         # AWS ELB
         AWS_ELB_CREATE: ${{ inputs.aws_elb_create }}
@@ -522,6 +546,7 @@ runs:
         AWS_ELB_LISTEN_PORT: ${{ inputs.aws_elb_listen_port }}
         AWS_ELB_LISTEN_PROTOCOL: ${{ inputs.aws_elb_listen_protocol }}
         AWS_ELB_HEALTHCHECK: ${{ inputs.aws_elb_healthcheck }}
+        AWS_ELB_ADDITIONAL_TAGS: ${{ inputs.aws_elb_additional_tags }}
                 
         # AWS EFS
         AWS_EFS_CREATE: ${{ inputs.aws_efs_create }}
@@ -536,6 +561,7 @@ runs:
         AWS_EFS_TRANSITION_TO_INACTIVE: ${{ inputs.aws_efs_transition_to_inactive }}
         AWS_EFS_MOUNT_TARGET: ${{ inputs.aws_efs_mount_target }}
         AWS_EFS_EC2_MOUNT_POINT: ${{ inputs.aws_efs_ec2_mount_point }}
+        AWS_EFS_ADDITIONAL_TAGS: ${{ inputs.aws_efs_additional_tags }}
 
         # AWS RDS
         AWS_AURORA_ENABLE: ${{ inputs.aws_aurora_enable }}
@@ -553,6 +579,7 @@ runs:
         AWS_AURORA_SNAPSHOT_OVERWRITE: ${{ inputs.aws_aurora_snapshot_overwrite }}
         AWS_AURORA_DATABASE_PROTECTION: ${{ inputs.aws_aurora_database_protection }}
         AWS_AURORA_DATABASE_FINAL_SNAPSHOT: ${{ inputs.aws_aurora_database_final_snapshot }}
+        AWS_AURORA_ADDITIONAL_TAGS: ${{ inputs.aws_aurora_additional_tags }}
 
         # Docker
         DOCKER_INSTALL: ${{ inputs.docker_install }}
@@ -585,6 +612,7 @@ runs:
         AWS_EKS_DESIRED_CAPACITY: ${{ inputs.aws_eks_desired_capacity}}
         AWS_EKS_MAX_SIZE: ${{ inputs.aws_eks_max_size }}
         AWS_EKS_MIN_SIZE: ${{ inputs.aws_eks_min_size }}
+        AWS_EKS_ADDITIONAL_TAGS: ${{ inputs.aws_eks_additional_tags }}
 
       run: |
         echo "Running operations/_scripts/deploy/deploy.sh"

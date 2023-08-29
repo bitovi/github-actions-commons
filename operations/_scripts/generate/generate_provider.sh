@@ -38,6 +38,54 @@ provider \"aws\" {
   }
 }
 
+provider \"aws\" {
+  alias  = \"ec2\"
+  region = \"${AWS_DEFAULT_REGION}\"
+  default_tags {
+    tags = local.ec2_tags
+  }
+}
+
+provider \"aws\" {
+  alias  = \"r53\"
+  region = \"${AWS_DEFAULT_REGION}\"
+  default_tags {
+    tags = local.r53_tags
+  }
+}
+
+provider \"aws\" {
+  alias  = \"elb\"
+  region = \"${AWS_DEFAULT_REGION}\"
+  default_tags {
+    tags = local.elb_tags
+  }
+}
+
+provider \"aws\" {
+  alias  = \"efs\"
+  region = \"${AWS_DEFAULT_REGION}\"
+  default_tags {
+    tags = local.efs_tags
+  }
+}
+
+provider \"aws\" {
+  alias  = \"vpc\"
+  region = \"${AWS_DEFAULT_REGION}\"
+  default_tags {
+    tags = local.vpc_tags
+  }
+}
+
+provider \"aws\" {
+  alias  = \"aurora\"
+  region = \"${AWS_DEFAULT_REGION}\"
+  default_tags {
+    tags = local.aurora_tags
+  }
+}
+
 " > "${GITHUB_ACTION_PATH}/operations/deployment/terraform/$1/bitovi_provider.tf"
 }
 

@@ -128,6 +128,7 @@ if [[ $(alpha_only "$AWS_EC2_INSTANCE_CREATE") == true ]]; then
   aws_ec2_instance_public_ip=$(generate_var aws_ec2_instance_public_ip $AWS_EC2_INSTANCE_PUBLIC_IP)
   aws_ec2_port_list=$(generate_var aws_ec2_port_list $AWS_EC2_PORT_LIST)
   aws_ec2_user_data_replace_on_change=$(generate_var aws_ec2_user_data_replace_on_change $AWS_EC2_USER_DATA_REPLACE_ON_CHANGE)
+  aws_ec2_additional_tags=$(generate_var aws_ec2_additional_tags $AWS_EC2_ADDITIONAL_TAGS)
 fi
 
 #-- VPC Handling --# 
@@ -138,6 +139,7 @@ if [[ $(alpha_only "$AWS_VPC_CREATE") == true ]]; then
   aws_vpc_public_subnets=$(generate_var aws_vpc_public_subnets $AWS_VPC_PUBLIC_SUBNETS)
   aws_vpc_private_subnets=$(generate_var aws_vpc_private_subnets $AWS_VPC_PRIVATE_SUBNETS)
   aws_vpc_availability_zones=$(generate_var aws_vpc_availability_zones $AWS_VPC_AVAILABILITY_ZONES)
+  aws_vpc_additional_tags=$(generate_var aws_vpc_additional_tags $AWS_VPC_ADDITIONAL_TAGS)
 fi
 aws_vpc_id=$(generate_var aws_vpc_id $AWS_VPC_ID)
 aws_vpc_subnet_id=$(generate_var aws_vpc_subnet_id $AWS_VPC_SUBNET_ID)
@@ -149,7 +151,9 @@ if [[ $(alpha_only "$AWS_R53_ENABLE") == true ]]; then
   # aws_r53_sub_domain_name=$(generate_var aws_r53_sub_domain_name $AWs_R53_SUB_DOMAIN_NAME)  - Special case
   aws_r53_root_domain_deploy=$(generate_var aws_r53_root_domain_deploy $AWS_R53_ROOT_DOMAIN_DEPLOY)
 fi
-
+if [[ $(alpha_only "$AWS_R53_ENABLE") == true ]] || [[ $(alpha_only "$AWS_R53_ENABLE_CERT") == true ]]; then
+  aws_r53_additional_tags=$(generate_var aws_r53_additional_tags $AWS_R53_ADDITIONAL_TAGS)
+fi
 if [[ $(alpha_only "$AWS_R53_ENABLE_CERT") == true ]]; then
   aws_r53_enable_cert=$(generate_var aws_r53_enable_cert $AWS_R53_ENABLE_CERT)
   aws_r53_cert_arn=$(generate_var aws_r53_cert_arn $AWS_R53_CERT_ARN)
@@ -166,6 +170,7 @@ if [[ $(alpha_only "$AWS_ELB_CREATE") == true ]]; then
   aws_elb_listen_port=$(generate_var aws_elb_listen_port $AWS_ELB_LISTEN_PORT)
   aws_elb_listen_protocol=$(generate_var aws_elb_listen_protocol $AWS_ELB_LISTEN_PROTOCOL)
   aws_elb_healthcheck=$(generate_var aws_elb_healthcheck $AWS_ELB_HEALTHCHECK)
+  aws_elb_additional_tags=$(generate_var aws_elb_additional_tags $AWS_ELB_ADDITIONAL_TAGS)
 fi
 
 #-- AWS EFS --#
@@ -183,6 +188,7 @@ if [[ $(alpha_only "$AWS_EFS_ENABLE") == true ]]; then
   aws_efs_transition_to_inactive=$(generate_var aws_efs_transition_to_inactive $AWS_EFS_TRANSITION_TO_INACTIVE)
   aws_efs_mount_target=$(generate_var aws_efs_mount_target $AWS_EFS_MOUNT_TARGET)
   aws_efs_ec2_mount_point=$(generate_var aws_efs_ec2_mount_point $AWS_EFS_EC2_MOUNT_POINT)
+  aws_efs_additional_tags=$(generate_var aws_efs_additional_tags $AWS_EFS_ADDITIONAL_TAGS)
 fi
 
 #-- RDS --#
@@ -202,6 +208,7 @@ if [[ $(alpha_only "$AWS_AURORA_ENABLE") == true ]]; then
   aws_aurora_snapshot_overwrite=$(generate_var aws_aurora_snapshot_overwrite $AWS_AURORA_SNAPSHOT_OVERWRITE)
   aws_aurora_database_protection=$(generate_var aws_aurora_database_protection $AWS_AURORA_DATABASE_PROTECTION )
   # aws_aurora_database_final_snapshot=$(generate_var aws_aurora_database_final_snapshot $AWS_AURORA_DATABASE_FINAL_SNAPSHOT ) - Special case
+  aws_aurora_additional_tags=$(generate_var aws_aurora_additional_tags $AWS_AURORA_ADDITIONAL_TAGS)
 fi
 
 #-- EKS Cluster --#
@@ -228,6 +235,7 @@ if [[ $(alpha_only "$AWS_EKS_CREATE") == true ]]; then
   aws_eks_desired_capacity=$(generate_var aws_eks_desired_capacity $AWS_EKS_DESIRED_CAPACITY)
   aws_eks_max_size=$(generate_var aws_eks_max_size $AWS_EKS_MAX_SIZE)
   aws_eks_min_size=$(generate_var aws_eks_min_size $AWS_EKS_MIN_SIZE)
+  aws_eks_additional_tags=$(generate_var aws_eks_additional_tags $AWS_EKS_ADDITIONAL_TAGS)
 fi
 
 #-- ANSIBLE --#
@@ -276,6 +284,7 @@ $aws_ec2_security_group_name
 $aws_ec2_create_keypair_sm
 $aws_ec2_instance_public_ip
 $aws_ec2_user_data_replace_on_change
+$aws_ec2_additional_tags
 
 #-- VPC --# 
 $aws_vpc_create
@@ -286,6 +295,7 @@ $aws_vpc_private_subnets
 $aws_vpc_availability_zones
 $aws_vpc_id
 $aws_vpc_subnet_id
+$aws_vpc_additional_tags
 
 #-- R53 --#
 $aws_r53_enable
@@ -296,6 +306,7 @@ $aws_r53_enable_cert
 $aws_r53_cert_arn
 $aws_r53_create_root_cert
 $aws_r53_create_sub_cert
+$aws_r53_additional_tags
 
 #-- ELB --#
 $aws_elb_security_group_name
@@ -305,6 +316,7 @@ $aws_elb_listen_port
 $aws_elb_listen_protocol
 $aws_elb_healthcheck
 $lb_access_bucket_name
+$aws_elb_additional_tags
 
 #-- EFS --#
 $aws_efs_enable
@@ -320,6 +332,7 @@ $aws_efs_enable_backup_policy
 $aws_efs_transition_to_inactive
 $aws_efs_mount_target
 $aws_efs_ec2_mount_point
+$aws_efs_additional_tags
 
 #-- RDS --#
 $aws_aurora_enable
@@ -337,6 +350,7 @@ $aws_aurora_snapshot_name
 $aws_aurora_snapshot_overwrite
 $aws_aurora_database_protection
 $aws_aurora_database_final_snapshot
+$aws_aurora_additional_tags
 
 #-- EKS --#
 $aws_eks_create
@@ -361,6 +375,7 @@ $aws_eks_store_keypair_sm
 $aws_eks_desired_capacity
 $aws_eks_max_size
 $aws_eks_min_size
+$aws_eks_additional_tags
 
 $docker_efs_mount_target
 $docker_remove_orphans
@@ -373,7 +388,6 @@ $app_branch_name
 $app_install_root
 
 " > "${GITHUB_ACTION_PATH}/operations/deployment/terraform/aws/terraform.tfvars"
-
 
 # -------------------------------------------------- #
 echo "
@@ -405,6 +419,7 @@ $aws_eks_store_keypair_sm
 $aws_eks_desired_capacity
 $aws_eks_max_size
 $aws_eks_min_size
+$aws_eks_additional_tags
 
 #-- Application --#
 $ops_repo_environment

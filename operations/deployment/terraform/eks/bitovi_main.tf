@@ -25,7 +25,7 @@ module "eks" {
   aws_eks_vpc_name = var.aws_eks_vpc_name
   # Others
   aws_resource_identifier = var.aws_resource_identifier
-  common_tags             = local.default_tags
+  default_tags             = local.default_tags
 }
 
 
@@ -40,5 +40,5 @@ locals {
     OperationsRepoEnvironment = "${var.ops_repo_environment}"
     Created_with              = "Bitovi-BitOps"
   }
-  default_tags = merge(local.aws_tags, var.aws_additional_tags)
+  default_tags = merge(local.aws_tags, var.aws_additional_tags, jsondecode(var.aws_eks_additional_tags))
 }

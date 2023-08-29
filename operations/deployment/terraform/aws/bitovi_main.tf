@@ -21,8 +21,11 @@ module "ec2" {
   # Others
   aws_resource_identifier             = var.aws_resource_identifier
   aws_resource_identifier_supershort  = var.aws_resource_identifier_supershort
-  common_tags                         = local.default_tags
   depends_on = [module.vpc]
+
+  providers = {
+    aws = aws.ec2
+  }
 }
 
 module "aws_certificates" {
@@ -37,7 +40,10 @@ module "aws_certificates" {
   aws_r53_sub_domain_name   = var.aws_r53_sub_domain_name
   # Others
   fqdn_provided             = local.fqdn_provided
-  common_tags               = local.default_tags
+  
+  providers = {
+    aws = aws.r53
+  }
 }
 
 module "aws_route53" {
@@ -56,7 +62,10 @@ module "aws_route53" {
   aws_certificates_selected_arn = var.aws_r53_enable_cert && var.aws_r53_domain_name != "" ? module.aws_certificates[0].selected_arn : ""
   # Others
   fqdn_provided                 = local.fqdn_provided
-  common_tags                   = local.default_tags
+
+  providers = {
+    aws = aws.r53
+  }
 }
 
 module "aws_elb" {
@@ -81,8 +90,12 @@ module "aws_elb" {
   # Others
   aws_resource_identifier            = var.aws_resource_identifier
   aws_resource_identifier_supershort = var.aws_resource_identifier_supershort
-  common_tags                        = local.default_tags
+  # Module dependencies
   depends_on = [module.vpc,module.ec2]
+  
+  providers = {
+    aws = aws.elb
+  }
 }
 
 module "efs" {
@@ -106,8 +119,11 @@ module "efs" {
   aws_selected_az_list            = module.vpc.availability_zones
   # Others
   aws_resource_identifier         = var.aws_resource_identifier
-  common_tags                     = local.default_tags
   depends_on = [module.vpc]
+
+  providers = {
+    aws = aws.efs
+  }
 }
 
 module "aurora_rds" {
@@ -129,16 +145,19 @@ module "aurora_rds" {
   aws_aurora_database_protection     = var.aws_aurora_database_protection
   aws_aurora_database_final_snapshot = var.aws_aurora_database_final_snapshot
   # Data inputs
-  aws_allowed_sg_id                    = module.ec2[0].aws_security_group_ec2_sg_id 
-  aws_selected_vpc_id                  = module.vpc.aws_selected_vpc_id
-  aws_subnets_vpc_subnets_ids          = module.vpc.aws_selected_vpc_subnets
-  aws_region_current_name              = module.vpc.aws_region_current_name
+  aws_allowed_sg_id                  = module.ec2[0].aws_security_group_ec2_sg_id 
+  aws_selected_vpc_id                = module.vpc.aws_selected_vpc_id
+  aws_subnets_vpc_subnets_ids        = module.vpc.aws_selected_vpc_subnets
+  aws_region_current_name            = module.vpc.aws_region_current_name
   # Others
-  aws_resource_identifier              = var.aws_resource_identifier
-  aws_resource_identifier_supershort   = var.aws_resource_identifier_supershort
-  common_tags                          = local.default_tags
+  aws_resource_identifier            = var.aws_resource_identifier
+  aws_resource_identifier_supershort = var.aws_resource_identifier_supershort
   # Dependencies
   depends_on = [module.vpc]
+
+  providers = {
+    aws = aws.aurora
+  }
 }
 
 module "vpc" {
@@ -152,11 +171,14 @@ module "vpc" {
   aws_vpc_private_subnets     = var.aws_vpc_private_subnets
   aws_vpc_availability_zones  = var.aws_vpc_availability_zones
   # Data inputs
-  aws_ec2_instance_type        = var.aws_ec2_instance_type
-  aws_ec2_security_group_name  = var.aws_ec2_security_group_name
+  aws_ec2_instance_type       = var.aws_ec2_instance_type
+  aws_ec2_security_group_name = var.aws_ec2_security_group_name
   # Others
   aws_resource_identifier     = var.aws_resource_identifier
-  common_tags                 = local.default_tags
+
+  providers = {
+    aws = aws.vpc
+  }
 }
 
 module "secretmanager_get" {
@@ -228,7 +250,15 @@ locals {
     OperationsRepoEnvironment = "${var.ops_repo_environment}"
     Created_with              = "Bitovi-BitOps"
   }
-  default_tags = merge(local.aws_tags, var.aws_additional_tags)
+  default_tags = merge(local.aws_tags, jsondecode(var.aws_additional_tags))
+  # Module tagging
+  ec2_tags    = merge(local.default_tags,jsondecode(var.aws_ec2_additional_tags))
+  r53_tags    = merge(local.default_tags,jsondecode(var.aws_r53_additional_tags))
+  elb_tags    = merge(local.default_tags,jsondecode(var.aws_elb_additional_tags))
+  efs_tags    = merge(local.default_tags,jsondecode(var.aws_efs_additional_tags))
+  vpc_tags    = merge(local.default_tags,jsondecode(var.aws_vpc_additional_tags))
+  aurora_tags = merge(local.default_tags,jsondecode(var.aws_aurora_additional_tags))
+
   fqdn_provided = (
     (var.aws_r53_domain_name != "") ?
     (var.aws_r53_sub_domain_name != "" ?

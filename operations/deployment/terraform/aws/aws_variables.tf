@@ -11,9 +11,9 @@ variable "aws_resource_identifier_supershort" {
 }
 
 variable "aws_additional_tags" {
-  type        = map(string)
+  type        = string
   description = "A list of strings that will be added to created resources"
-  default     = {}
+  default     = "{}"
 }
 
 # ENV Files
@@ -109,6 +109,12 @@ variable "aws_ec2_user_data_replace_on_change"  {
   description = "Forces destruction of EC2 instance"
 }
 
+variable "aws_ec2_additional_tags" {
+  type        = string
+  description = "A list of strings that will be added to created resources"
+  default     = "{}"
+}
+
 ## AWS VPC
 variable "aws_vpc_create" {
   type        = bool
@@ -156,6 +162,12 @@ variable "aws_vpc_availability_zones" {
   type        = string
   default     = ""
   description = "A list of availability zones."
+}
+
+variable "aws_vpc_additional_tags" {
+  type        = string
+  description = "A list of strings that will be added to created resources"
+  default     = "{}"
 }
 
 # AWS Route53 Domains abd Certificates
@@ -208,6 +220,11 @@ variable "aws_r53_create_sub_cert" {
   default     = false
 }
 
+variable "aws_r53_additional_tags" {
+  type        = string
+  description = "A list of strings that will be added to created resources"
+  default     = "{}"
+}
 
 # AWS ELB
 variable "aws_elb_security_group_name" {
@@ -244,6 +261,12 @@ variable "aws_elb_healthcheck" {
   type        = string
   default     = "TCP:22"
   description = "Load balancer health check string. Defaults to TCP:22"
+}
+
+variable "aws_elb_additional_tags" {
+  type        = string
+  description = "A list of strings that will be added to created resources"
+  default     = "{}"
 }
 
 # AWS EFS
@@ -324,7 +347,13 @@ variable "aws_efs_mount_target" {
 variable "aws_efs_ec2_mount_point" {
   type        = string
   description = "Directory path in application env to mount directory"
-  default = "data"
+  default     = "data"
+}
+
+variable "aws_efs_additional_tags" {
+  type        = string
+  description = "A list of strings that will be added to created resources"
+  default     = "{}"
 }
 
 # AWS RDS
@@ -403,6 +432,12 @@ variable "aws_aurora_database_final_snapshot" {
   type        = string
   default     = ""
   description = "Generates a snapshot of the database before deletion."
+}
+
+variable "aws_aurora_additional_tags" {
+  type        = string
+  description = "A list of strings that will be added to created resources"
+  default     = "{}"
 }
 
 # Docker
@@ -556,6 +591,12 @@ variable "aws_eks_min_size" {
   description = "Enter the min_size for the worker nodes"
   type        = number
   default     = "2"
+}
+
+variable "aws_eks_additional_tags" {
+  type        = string
+  description = "A list of strings that will be added to created resources"
+  default     = "{}"
 }
 
 #### END OF ACTION VARIABLES INPUTS

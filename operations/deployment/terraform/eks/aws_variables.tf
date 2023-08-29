@@ -155,6 +155,11 @@ variable "aws_eks_min_size" {
   default     = "2"
 }
 
+variable "aws_eks_additional_tags" {
+  type        = string
+  description = "A list of strings that will be added to created resources"
+  default     = ""
+}
 #### END OF ACTION VARIABLES INPUTS
 #### The following are not being exposed directly to the end user
 
