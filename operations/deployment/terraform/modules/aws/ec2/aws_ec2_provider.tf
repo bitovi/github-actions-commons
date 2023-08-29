@@ -6,6 +6,9 @@ terraform {
       configuration_aliases = [ aws.ec2 ]
     }
   }
+}
+
+provider "aws" {
   default_tags {
     tags = var.default_tags
   }

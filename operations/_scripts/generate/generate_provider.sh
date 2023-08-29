@@ -32,7 +32,7 @@ terraform {
 }
 
 provider \"aws\" {
-  alias = \"aws\"
+  #alias = \"aws\"
   region = \"${AWS_DEFAULT_REGION}\"
   default_tags {
     tags = local.default_tags
