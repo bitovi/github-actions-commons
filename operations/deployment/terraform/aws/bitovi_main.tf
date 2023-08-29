@@ -21,7 +21,7 @@ module "ec2" {
   # Others
   aws_resource_identifier             = var.aws_resource_identifier
   aws_resource_identifier_supershort  = var.aws_resource_identifier_supershort
-  default_tags                        = merge(local.default_tags,jsondecode(var.aws_ec2_additional_tags))
+  #default_tags                        = merge(local.default_tags,jsondecode(var.aws_ec2_additional_tags))
   depends_on = [module.vpc]
 
   providers = {
@@ -233,8 +233,9 @@ locals {
     Created_with              = "Bitovi-BitOps"
   }
   default_tags = merge(local.aws_tags, jsondecode(var.aws_additional_tags))
+  # Module tagging
   ec2_tags     = merge(local.default_tags,jsondecode(var.aws_ec2_additional_tags))
-
+  
   fqdn_provided = (
     (var.aws_r53_domain_name != "") ?
     (var.aws_r53_sub_domain_name != "" ?
