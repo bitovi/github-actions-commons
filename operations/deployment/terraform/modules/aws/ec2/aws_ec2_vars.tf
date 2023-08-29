@@ -18,8 +18,3 @@ variable "preferred_az" {}
 # Others
 variable "aws_resource_identifier" {}
 variable "aws_resource_identifier_supershort" {}
-variable "default_tags" {
-    type = map
-    default = {}
-}
-
