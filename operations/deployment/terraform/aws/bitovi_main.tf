@@ -25,7 +25,7 @@ module "ec2" {
   depends_on = [module.vpc]
 
   providers = {
-    aws = aws.ec2
+    aws.ec2 = aws.ec2
   }
 }
 
