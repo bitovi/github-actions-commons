@@ -4,26 +4,6 @@ set -e
 
 echo "In generate_vars_terraform.sh"
 
-# convert 'a,b,c'
-# to '["a","b","c"]'
-function comma_str_to_tf_array () {
-  local IFS=','
-  local str=$1
-
-  local out=""
-  local first_item_flag="1"
-  for item in $str; do
-    if [ -z $first_item_flag ]; then
-      out="${out},"
-    fi
-    first_item_flag=""
-
-    item="$(echo $item | xargs)"
-    out="${out}\"${item}\""
-  done
-  echo "[${out}]"
-}
-
 GITHUB_ORG_NAME=$(echo $GITHUB_REPOSITORY | sed 's/\/.*//')
 GITHUB_REPO_NAME=$(echo $GITHUB_REPOSITORY | sed 's/^.*\///')
 
@@ -77,11 +57,6 @@ if [ -n "${AWS_R53_SUB_DOMAIN_NAME}" ]; then
   aws_r53_sub_domain_name="aws_r53_sub_domain_name = \"${AWS_R53_SUB_DOMAIN_NAME}\""
 else
   aws_r53_sub_domain_name="aws_r53_sub_domain_name = \"${GITHUB_IDENTIFIER}\""
-fi
-
-aws_aurora_subnets=
-if [ -n "${AWS_AURORA_SUBNETS}" ]; then
-  aws_aurora_subnets="aws_aurora_subnets = \"$(comma_str_to_tf_array $AWS_AURORA_SUBNETS)\""
 fi
 
 # If the name is true, set it up to be the GH ID - If not, if it's not false, it's the snap name.
@@ -199,7 +174,7 @@ if [[ $(alpha_only "$AWS_AURORA_ENABLE") == true ]]; then
   aws_aurora_database_group_family=$(generate_var aws_aurora_database_group_family $AWS_AURORA_DATABASE_GROUP_FAMILY)
   aws_aurora_instance_class=$(generate_var aws_aurora_instance_class $AWS_AURORA_INSTANCE_CLASS)
   aws_aurora_security_group_name=$(generate_var aws_aurora_security_group_name $AWS_AURORA_SECURITY_GROUP_NAME )
-  # aws_aurora_subnets=$(generate_var aws_aurora_subnets $AWS_AURORA_SUBNETS) - Special case
+  aws_aurora_subnets=$(generate_var aws_aurora_subnets $AWS_AURORA_SUBNETS)
   aws_aurora_cluster_name=$(generate_var aws_aurora_cluster_name $AWS_AURORA_CLUSTER_NAME)
   aws_aurora_database_name=$(generate_var aws_aurora_database_name $AWS_AURORA_DATABASE_NAME)
   aws_aurora_database_port=$(generate_var aws_aurora_database_port $AWS_AURORA_DATABASE_PORT)

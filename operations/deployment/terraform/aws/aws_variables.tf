@@ -389,9 +389,9 @@ variable "aws_aurora_security_group_name" {
   description = "Name of the security group to use for postgres"
 }
 variable "aws_aurora_subnets" {
-  type        = list(string)
+  type        = string
   description = "The list of subnet ids to use for postgres. For more details, see: https://registry.terraform.io/modules/terraform-aws-modules/rds-aurora/aws/latest?tab=inputs"
-  default     = []
+  default     = ""
 }
 variable "aws_aurora_cluster_name" {
   type        = string
