@@ -29,7 +29,7 @@ resource "aws_instance" "server" {
     volume_size           = tonumber(var.aws_ec2_instance_root_vol_size)
     delete_on_termination = var.aws_ec2_instance_root_vol_preserve ? false : true
     tags                  = merge(
-      var.additional_tags,
+      var.ec2_tags,
       {
         Name = "${var.aws_resource_identifier} - Disk"
       },
