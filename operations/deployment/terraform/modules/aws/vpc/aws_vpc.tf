@@ -157,5 +157,5 @@ output "aws_vpc_cidr_block" {
 }
 
 output "vpc_has_internet_gateway" {
-  value = data.aws_internet_gateway.igq.id != ""
+  value = data.aws_internet_gateway.igw.id != ""
 }
