@@ -36,7 +36,7 @@ resource "aws_instance" "server" {
 }
 
 output "ec2_tags" {
-  value = var.tags
+  value = var.ec2_tags
 }
 
 data "aws_instance" "server_ip" {
