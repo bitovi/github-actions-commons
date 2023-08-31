@@ -284,6 +284,7 @@ $aws_r53_create_sub_cert
 $aws_r53_additional_tags
 
 #-- ELB --#
+$aws_elb_create
 $aws_elb_security_group_name
 $aws_elb_app_port
 $aws_elb_app_protocol
