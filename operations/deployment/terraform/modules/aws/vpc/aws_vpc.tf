@@ -110,13 +110,6 @@ data "aws_vpc" "selected" {
   id    = local.selected_vpc_id
 }
 
-data "aws_internet_gateway" "igw" {
-  filter {
-    name   = "attachment.vpc-id"
-    values = [local.selected_vpc_id]
-  }
-}
-
 # Sort the AZ list, and ensure that the az from the existing EC2 instance is first in the list
 
 locals {
@@ -157,8 +150,4 @@ output "aws_region_current_name" {
 output "aws_vpc_cidr_block" {
   description = "CIDR block of chosen VPC"
   value = data.aws_vpc.selected.cidr_block
-}
-
-output "vpc_has_internet_gateway" {
-  value = try(data.aws_internet_gateway.igw.id != "", false)
 }

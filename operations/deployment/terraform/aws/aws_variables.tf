@@ -227,6 +227,12 @@ variable "aws_r53_additional_tags" {
 }
 
 # AWS ELB
+variable "aws_elb_create" {
+  type        = bool
+  description = "Global toggle for ELB creation"
+  default     = false
+}
+
 variable "aws_elb_security_group_name" {
   type        = string
   default     = ""
