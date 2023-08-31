@@ -21,7 +21,7 @@ module "ec2" {
   # Others
   aws_resource_identifier             = var.aws_resource_identifier
   aws_resource_identifier_supershort  = var.aws_resource_identifier_supershort
-  tags = local.ec2_tags
+  ec2_tags                            = local.ec2_tags
   depends_on = [module.vpc]
 
   providers = {
