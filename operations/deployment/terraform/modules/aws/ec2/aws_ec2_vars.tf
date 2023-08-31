@@ -15,6 +15,7 @@ variable "aws_ec2_port_list" {}
 variable "aws_ec2_selected_vpc_id" {}
 variable "aws_subnet_selected_id" {}
 variable "preferred_az" {}
+variable "tags" {}
 # Others
 variable "aws_resource_identifier" {}
 variable "aws_resource_identifier_supershort" {}
