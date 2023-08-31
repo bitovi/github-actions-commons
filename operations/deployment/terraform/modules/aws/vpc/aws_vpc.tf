@@ -111,7 +111,10 @@ data "aws_vpc" "selected" {
 }
 
 data "aws_internet_gateway" "igw" {
-  vpc_id = local.selected_vpc_id
+  filter {
+    name   = "attachment.vpc-id"
+    values = [local.selected_vpc_id]
+  }
 }
 
 # Sort the AZ list, and ensure that the az from the existing EC2 instance is first in the list
