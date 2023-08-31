@@ -28,11 +28,15 @@ resource "aws_instance" "server" {
   root_block_device {
     volume_size           = tonumber(var.aws_ec2_instance_root_vol_size)
     delete_on_termination = var.aws_ec2_instance_root_vol_preserve ? false : true
+    tags                  = "${var.tags}"
   }
   tags = {
     Name = "${var.aws_resource_identifier} - Instance"
   }
-  volume_tags = var.tags
+}
+
+output "ec2_tags" {
+  value = var.tags
 }
 
 data "aws_instance" "server_ip" {
