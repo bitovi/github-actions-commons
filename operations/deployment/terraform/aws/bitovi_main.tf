@@ -282,6 +282,11 @@ output "instance_public_ip" {
   value       = try(module.ec2[0].instance_public_ip,"")
 }
 
+output "instance_private_ip" {
+  description = "Private IP address of the EC2 instance"
+  value       = try(module.ec2[0].instance_private_ip,"")
+}
+
 output "aws_elb_dns_name" {
   description = "Public DNS address of the LB"
   value       = try(module.aws_elb[0].aws_elb_dns_name,"")
