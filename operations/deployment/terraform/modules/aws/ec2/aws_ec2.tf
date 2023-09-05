@@ -135,6 +135,11 @@ output "instance_public_ip" {
   value       = try(data.aws_instance.server_ip[0].public_ip,data.aws_instance.server_ignore_ami_ip[0].public_ip)
 }
 
+output "instance_private_ip" {
+  description = "Public IP address of the EC2 instance"
+  value       = try(data.aws_instance.server_ip[0].private_ip,data.aws_instance.server_ignore_ami_ip[0].private_ip)
+}
+
 output "aws_instance_server_id" {
   value = try(data.aws_instance.server_ip[0].id,data.aws_instance.server_ignore_ami_ip[0].id)
 }
