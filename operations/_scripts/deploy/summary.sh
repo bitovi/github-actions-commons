@@ -61,7 +61,7 @@ final_output+="${output_ec2}\n"
 SUMMARY_CODE=0
 
 if [[ $SUCCESS == 'success' ]]; then
-  if [[ $URL_OUTPUT != '' ]]; then
+  if [[ $URL_OUTPUT != '' ]] || [[ $EC2_URL_OUTPUT != '' ]]; then
     result_string="## Deploy Complete! :rocket:"
   elif [[ $BITOPS_CODE_ONLY == 'true' ]]; then
     if [[ $BITOPS_CODE_STORE == 'true' ]]; then
