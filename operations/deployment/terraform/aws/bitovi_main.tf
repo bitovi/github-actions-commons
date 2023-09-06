@@ -297,7 +297,7 @@ output "instance_private_ip" {
 
 output "instance_endpoint" {
   description = "Will print the best EC2 option, from public dns to private ip"
-  value       = local.ec2_endpoint
+  value       = "http://${local.ec2_endpoint}"
 }
 
 output "aws_elb_dns_name" {
