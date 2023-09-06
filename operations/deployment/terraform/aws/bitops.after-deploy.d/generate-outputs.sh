@@ -18,6 +18,8 @@ if [ "$BITOPS_TERRAFORM_COMMAND" != "destroy" ]; then
   # The sed command will make each variable be in it's line, and in case a list is present, will transform it into a line
   terraform output | sed -e ':a;/["\)]$/!N;s/\n//;ta' -e 's/ *= */=/g;s/[" ]//g;s/,\([]]\)/\1/g' > $TARGET_FILE
   # Generating ec2 terraform .env
+  export BITOPS_EC2_PRIVATE_IP="$(cat $TARGET_FILE | grep instance_private_ip | awk -F"=" '{print $2}')"
+  export BITOPS_EC2_PRIVATE_URL="$(cat $TARGET_FILE | grep instance_private_dns | awk -F"=" '{print $2}')"
   export BITOPS_EC2_PUBLIC_IP="$(cat $TARGET_FILE | grep instance_public_ip | awk -F"=" '{print $2}')"
   export BITOPS_EC2_PUBLIC_URL="$(cat $TARGET_FILE | grep instance_public_dns | awk -F"=" '{print $2}')"
   export BITOPS_EC2_ELB_DNS="$(cat $TARGET_FILE | grep aws_elb_dns_name | awk -F"=" '{print $2}')"
@@ -26,6 +28,8 @@ if [ "$BITOPS_TERRAFORM_COMMAND" != "destroy" ]; then
   if [ -n "$BITOPS_EC2_PUBLIC_URL" ]; then
     echo -en "
 #### EC2 values  deployments:
+AWS_INSTANCE_PRIVATE_IP="$BITOPS_EC2_PRIVATE_IP"
+AWS_INSTANCE_PRIVATE_URL="$BITOPS_EC2_PRIVATE_DNS"
 AWS_INSTANCE_IP="$BITOPS_EC2_PUBLIC_IP"
 AWS_INSTANCE_URL="$BITOPS_EC2_PUBLIC_URL"
 AWS_INSTANCE_ELB="$BITOPS_EC2_ELB_DNS"

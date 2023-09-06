@@ -442,7 +442,7 @@ outputs:
     value: ${{ steps.deploy.outputs.vm_url }}
   ec2_url:
     description: "The URL of the generated ec2 instance"
-    value: ${{ steps.deploy.outputs.instance_public_dns }}
+    value: ${{ steps.deploy.outputs.instance_endpoint }}
 
 runs:
   using: 'composite'
