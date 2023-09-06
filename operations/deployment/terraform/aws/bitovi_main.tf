@@ -271,8 +271,7 @@ locals {
   ec2_public_endpoint  = module.ec2[0].instance_public_dns != null ? module.ec2[0].instance_public_dns : module.ec2[0].instance_public_ip
   ec2_private_endpoint = module.ec2[0].instance_private_dns != null ? module.ec2[0].instance_private_dns : module.ec2[0].instance_private_ip
   ec2_endpoint         = local.ec2_public_endpoint != null ? local.ec2_public_endpoint : local.ec2_private_endpoint
-  ec2_no_dns_url       = try(module.aws_elb[0].aws_elb_dns_name,local.ec2_endpoint)
-  ec2_no_dns_url_fqdn  = local.ec2_no_dns_url != null ? "http://${local.ec2_no_dns_url}" : null
+  elb_url              = try(module.aws_elb[0].aws_elb_dns_name,null ) != null ? "http://${module.aws_elb[0].aws_elb_dns_name}" : null
 }
 
 output "instance_public_dns" {
@@ -311,5 +310,5 @@ output "application_public_dns" {
 }
 
 output "vm_url" {
-  value = try(module.aws_route53[0].vm_url,null)
+  value = try(module.aws_route53[0].vm_url,local.elb_url)
 }
