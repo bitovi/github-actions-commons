@@ -440,7 +440,7 @@ outputs:
   vm_url:
     description: "The URL of the generated app"
     value: ${{ steps.deploy.outputs.vm_url }}
-  ec2_url:
+  instance_endpoint:
     description: "The URL of the generated ec2 instance"
     value: ${{ steps.deploy.outputs.instance_endpoint }}
 
@@ -632,7 +632,7 @@ runs:
       env: 
         SUCCESS: ${{ job.status }} # success, failure, cancelled
         URL_OUTPUT: ${{ steps.deploy.outputs.vm_url }}
-        EC2_URL_OUTPUT: ${{ steps.deploy.outputs.ec2_url }}
+        EC2_URL_OUTPUT: ${{ steps.deploy.outputs.instance_endpoint }}
         BITOPS_CODE_ONLY: ${{ inputs.bitops_code_only }}
         BITOPS_CODE_STORE: ${{ inputs.bitops_code_store }}
         TF_STACK_DESTROY: ${{ inputs.tf_stack_destroy }}
