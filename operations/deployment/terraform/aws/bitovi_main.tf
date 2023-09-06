@@ -311,5 +311,5 @@ output "application_public_dns" {
 }
 
 output "vm_url" {
-  value = try(module.aws_route53[0].vm_url,local.ec2_no_dns_url_fqdn)
+  value = try(module.aws_route53[0].vm_url,null)
 }
