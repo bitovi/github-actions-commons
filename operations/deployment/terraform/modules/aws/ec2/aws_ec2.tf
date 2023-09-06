@@ -123,7 +123,6 @@ resource "random_string" "random" {
   lower     = true
   special   = false
   numeric   = false
-  test = data.aws_instance.server_ip[0].hostname
 }
 
 data "aws_vpc" "selected" {
