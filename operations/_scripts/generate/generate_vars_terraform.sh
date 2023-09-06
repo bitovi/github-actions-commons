@@ -216,6 +216,8 @@ fi
 #-- ANSIBLE --#
 if [[ "$(alpha_only $ANSIBLE_SKIP)" == "true" ]]; then
   ansible_skip=$(generate_var ansible_skip $ANSIBLE_SKIP)
+else
+  ansible_ssh_to_private_ip=$(generate_var ansible_ssh_to_private_ip $ANSIBLE_SSH_TO_PRIVATE_IP)
 fi
 
 if [[ $(alpha_only "$DOCKER_INSTALL") == true ]]; then
@@ -237,6 +239,9 @@ lb_access_bucket_name=$(generate_var lb_access_bucket_name $LB_LOGS_BUCKET)
 
 # -------------------------------------------------- #
 echo "
+#-- ANSIBLE --#
+$ansible_skip
+$ansible_ssh_to_private_ip
 #-- AWS --#
 $aws_resource_identifier
 $aws_resource_identifier_supershort

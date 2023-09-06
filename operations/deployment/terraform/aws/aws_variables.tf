@@ -1,3 +1,16 @@
+# Ansible vars
+variable "ansible_skip" {
+  type        = bool
+  description = "Skip Ansible inventory file generation."
+  default     = false
+}
+
+variable "ansible_ssh_to_private_ip" {
+  type        = bool
+  description = "Make Ansible connect to the private IP of the instance. Only usefull if using a hosted runner in the same network."
+  default     = false
+}
+
 # AWS Specific
 
 variable "aws_resource_identifier" {

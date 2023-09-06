@@ -222,8 +222,8 @@ module "secretmanager_get" {
 
 module "ansible" {
   source = "../modules/aws/ansible"
-  count  = var.aws_ec2_instance_create ? 1 : 0
-  aws_ec2_instance_ip     = module.ec2[0].instance_public_ip != "" ? module.ec2[0].instance_public_ip : module.ec2[0].instance_private_ip
+  count  = var.ansible_skip ? 0 : var.aws_ec2_instance_create ? 1 : 0
+  aws_ec2_instance_ip     = var.ansible_ssh_to_private_ip ? module.ec2[0].instance_private_ip : ( module.ec2[0].instance_public_ip != "" ? module.ec2[0].instance_public_ip : module.ec2[0].instance_private_ip )
   aws_efs_enable          = var.aws_efs_enable
   app_repo_name           = var.app_repo_name
   app_install_root        = var.app_install_root
