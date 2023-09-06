@@ -263,6 +263,7 @@ $aws_ec2_instance_root_vol_preserve
 $aws_ec2_security_group_name
 $aws_ec2_create_keypair_sm
 $aws_ec2_instance_public_ip
+$aws_ec2_port_list
 $aws_ec2_user_data_replace_on_change
 $aws_ec2_additional_tags
 
