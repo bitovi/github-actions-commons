@@ -270,7 +270,7 @@ locals {
   create_efs = var.aws_efs_create == true ? true : (var.aws_efs_create_ha == true ? true : false)
   ec2_endpoint   = try(module.ec2[0].instance_public_dns,module.ec2[0].instance_public_ip,module.ec2[0].instance_private_dns,module.ec2[0].instance_private_ip)
   ec2_no_dns_url = try(module.aws_elb[0].aws_elb_dns_name,local.ec2_endpoint)
-  ec2_no_dns_url_fqdn = local.ec2_no_dns_url != "" ? "http://${local.ec2_no_dns_url}" : ""
+  ec2_no_dns_url_fqdn = local.ec2_no_dns_url != null ? "http://${local.ec2_no_dns_url}" : null
 }
 
 output "instance_public_dns" {
