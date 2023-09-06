@@ -267,45 +267,56 @@ locals {
     ) :
     false
   )
-  create_efs = var.aws_efs_create == true ? true : (var.aws_efs_create_ha == true ? true : false)
-  ec2_endpoint   = try(module.ec2[0].instance_public_dns,module.ec2[0].instance_public_ip,module.ec2[0].instance_private_dns,module.ec2[0].instance_private_ip)
-  ec2_no_dns_url = try(module.aws_elb[0].aws_elb_dns_name,local.ec2_endpoint)
-  ec2_no_dns_url_fqdn = local.ec2_no_dns_url != null ? "http://${local.ec2_no_dns_url}" : null
+  create_efs           = var.aws_efs_create == true ? true : (var.aws_efs_create_ha == true ? true : false)
+  ec2_public_endpoint  = try(module.ec2[0].instance_public_dns,module.ec2[0].instance_public_ip)
+  ec2_private_endpoint = try(module.ec2[0].instance_private_dns,module.ec2[0].instance_private_ip)
+  ec2_no_dns_url       = try(module.aws_elb[0].aws_elb_dns_name,local.ec2_public_endpoint,local.ec2_private_endpoint)
+  ec2_no_dns_url_fqdn  = local.ec2_no_dns_url != null ? "http://${local.ec2_no_dns_url}" : null
 }
 
 output "instance_public_dns" {
   description = "Public DNS address of the EC2 instance"
-  value       = try(module.ec2[0].instance_public_dns,"")
+  value       = try(module.ec2[0].instance_public_dns,null)
 }
 
 output "instance_public_ip" {
   description = "Public IP address of the EC2 instance"
-  value       = try(module.ec2[0].instance_public_ip,"")
+  value       = try(module.ec2[0].instance_public_ip,null)
 }
 
 output "instance_private_dns" {
   description = "Public DNS address of the EC2 instance"
-  value       = try(module.ec2[0].instance_private_dns,"")
+  value       = try(module.ec2[0].instance_private_dns,null)
 }
 
 output "instance_private_ip" {
   description = "Private IP address of the EC2 instance"
-  value       = try(module.ec2[0].instance_private_ip,"")
+  value       = try(module.ec2[0].instance_private_ip,null)
 }
 
 output "instance_endpoint" {
   description = "Will print the best EC2 option, from public dns to private ip"
-  value       = local.ec2_endpoint
+  value       = try(local.ec2_public_endpoint,local.ec2_private_endpoint)
+}
+
+output "ec2_public_endpoint" {
+  description = "Will print the best EC2 option, from public dns to private ip"
+  value       = local.ec2_public_endpoint
+}
+
+output "ec2_private_endpoint" {
+  description = "Will print the best EC2 option, from public dns to private ip"
+  value       = local.ec2_private_endpoint
 }
 
 output "aws_elb_dns_name" {
   description = "Public DNS address of the LB"
-  value       = try(module.aws_elb[0].aws_elb_dns_name,"")
+  value       = try(module.aws_elb[0].aws_elb_dns_name,null)
 }
 
 output "application_public_dns" {
   description = "Public DNS address for the application or load balancer public DNS"
-  value       = try(module.aws_route53[0].vm_url,"")
+  value       = try(module.aws_route53[0].vm_url,null)
 }
 
 output "vm_url" {
