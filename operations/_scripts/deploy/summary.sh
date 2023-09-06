@@ -106,7 +106,7 @@ fi
 
 echo -e "$result_string" >> $GITHUB_STEP_SUMMARY
 if [[ $SUCCESS == 'success' ]]; then
-  if [[ $URL_OUTPUT != '' ]]; then
+  if [[ $URL_OUTPUT != '' ]] || [[ $EC2_URL_OUTPUT != '' ]]; then
     while IFS= read -r line; do
       echo -e "$line" >> $GITHUB_STEP_SUMMARY
     done <<< "$final_output"
