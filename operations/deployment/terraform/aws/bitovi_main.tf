@@ -268,9 +268,10 @@ locals {
     false
   )
   create_efs           = var.aws_efs_create == true ? true : (var.aws_efs_create_ha == true ? true : false)
-  ec2_public_endpoint  = try(module.ec2[0].instance_public_dns,module.ec2[0].instance_public_ip)
-  ec2_private_endpoint = try(module.ec2[0].instance_private_dns,module.ec2[0].instance_private_ip)
-  ec2_no_dns_url       = try(module.aws_elb[0].aws_elb_dns_name,local.ec2_public_endpoint,local.ec2_private_endpoint)
+  ec2_public_endpoint  = module.ec2[0].instance_public_dns != null ? module.ec2[0].instance_public_dns : module.ec2[0].instance_public_ip
+  ec2_private_endpoint = module.ec2[0].instance_private_dns != null ? module.ec2[0].instance_private_dns : module.ec2[0].instance_private_ip
+  ec2_endpoint         = local.ec2_public_endpoint != null ? local.ec2_public_endpoint : local.ec2_private_endpoint
+  ec2_no_dns_url       = module.aws_elb[0].aws_elb_dns_name != null ? module.aws_elb[0].aws_elb_dns_name : local.ec2_endpoint
   ec2_no_dns_url_fqdn  = local.ec2_no_dns_url != null ? "http://${local.ec2_no_dns_url}" : null
 }
 
@@ -296,17 +297,7 @@ output "instance_private_ip" {
 
 output "instance_endpoint" {
   description = "Will print the best EC2 option, from public dns to private ip"
-  value       = try(local.ec2_public_endpoint,local.ec2_private_endpoint)
-}
-
-output "ec2_public_endpoint" {
-  description = "Will print the best EC2 option, from public dns to private ip"
-  value       = local.ec2_public_endpoint
-}
-
-output "ec2_private_endpoint" {
-  description = "Will print the best EC2 option, from public dns to private ip"
-  value       = local.ec2_private_endpoint
+  value       = local.ec2_endpoint
 }
 
 output "aws_elb_dns_name" {
