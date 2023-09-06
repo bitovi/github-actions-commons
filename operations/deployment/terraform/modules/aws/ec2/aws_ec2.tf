@@ -127,8 +127,7 @@ resource "random_string" "random" {
 
 output "instance_public_dns" {
   description = "Public DNS address of the EC2 instance"
-  value       = var.aws_ec2_instance_public_ip ? try(data.aws_instance.server_ip[0].public_dns,data.aws_instance.server_ignore_ami_ip[0].public_dns) : (
-                                                (try(data.aws_instance.server_ip[0].private_ip,data.aws_instance.server_ignore_ami_ip[0].private_ip))  )
+  value       = var.aws_ec2_instance_public_ip ? try(data.aws_instance.server_ip[0].public_dns,data.aws_instance.server_ignore_ami_ip[0].public_dns) : (try(data.aws_instance.server_ip[0].private_ip,data.aws_instance.server_ignore_ami_ip[0].private_ip))
 }
 
 output "instance_public_ip" {
