@@ -4,7 +4,7 @@
 ### coming into this we have env vars:
 # SUCCESS=${{ job.status }} # success, cancelled, failure
 # URL_OUTPUT=${{ steps.deploy.outputs.vm_url }}
-# EC2_URL_OUTPUT=${{ steps.deploy.outputs.ec2_url }}
+# EC2_URL_OUTPUT=${{ steps.deploy.outputs.instance_endpoint }}
 # BITOPS_CODE_ONLY
 # BITOPS_CODE_STORE
 # TF_STACK_DESTROY
@@ -48,20 +48,27 @@ echo_lines() {
 }
 
 # Process and store URL_OUTPUT:AWS_ELB_LISTEN_PORT in a variable
-output_elb=$(process_and_return "$URL_OUTPUT" "$AWS_ELB_LISTEN_PORT")
-# Given the case where there is no port specified for the ELB, pass the URL directly
-if [[ -z "$output_elb" ]]; then
-  output_elb="$URL_OUTPUT"
+if [[ -n $URL_OUTPUT ]]; then
+  output_elb=$(process_and_return "$URL_OUTPUT" "$AWS_ELB_LISTEN_PORT")
+  # Given the case where there is no port specified for the ELB, pass the URL directly
+  if [[ -z "$output_elb" ]]; then
+    output_elb="$URL_OUTPUT"
+  fi
+  final_output+="${output_elb}\n"
 fi
-final_output+="${output_elb}\n"
 # Process and store EC2_URL_OUTPUT:AWS_EC2_PORT_LIST in a variable
-output_ec2=$(process_and_return "$EC2_URL_OUTPUT" "$AWS_EC2_PORT_LIST")
-final_output+="${output_ec2}\n"
+if [[ -n $AWS_EC2_PORT_LIST ]]; then
+  output_ec2=$(process_and_return "$EC2_URL_OUTPUT" "$AWS_EC2_PORT_LIST")
+  if [[ -z "$output_ec2" ]]; then
+    output_ec2="$EC2_URL_OUTPUT"
+  fi
+  final_output+="${output_ec2}\n"
+fi
 
 SUMMARY_CODE=0
 
 if [[ $SUCCESS == 'success' ]]; then
-  if [[ $URL_OUTPUT != '' ]]; then
+  if [[ -n $URL_OUTPUT ]] || [[ -n $EC2_URL_OUTPUT ]]; then
     result_string="## Deploy Complete! :rocket:"
   elif [[ $BITOPS_CODE_ONLY == 'true' ]]; then
     if [[ $BITOPS_CODE_STORE == 'true' ]]; then
@@ -106,7 +113,7 @@ fi
 
 echo -e "$result_string" >> $GITHUB_STEP_SUMMARY
 if [[ $SUCCESS == 'success' ]]; then
-  if [[ $URL_OUTPUT != '' ]]; then
+  if [[ -n $final_output ]]; then
     while IFS= read -r line; do
       echo -e "$line" >> $GITHUB_STEP_SUMMARY
     done <<< "$final_output"

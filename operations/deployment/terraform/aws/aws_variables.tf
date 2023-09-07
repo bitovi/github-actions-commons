@@ -1,3 +1,16 @@
+# Ansible vars
+variable "ansible_skip" {
+  type        = bool
+  description = "Skip Ansible inventory file generation."
+  default     = false
+}
+
+variable "ansible_ssh_to_private_ip" {
+  type        = bool
+  description = "Make Ansible connect to the private IP of the instance. Only usefull if using a hosted runner in the same network."
+  default     = false
+}
+
 # AWS Specific
 
 variable "aws_resource_identifier" {
@@ -227,6 +240,12 @@ variable "aws_r53_additional_tags" {
 }
 
 # AWS ELB
+variable "aws_elb_create" {
+  type        = bool
+  description = "Global toggle for ELB creation"
+  default     = false
+}
+
 variable "aws_elb_security_group_name" {
   type        = string
   default     = ""
@@ -389,9 +408,9 @@ variable "aws_aurora_security_group_name" {
   description = "Name of the security group to use for postgres"
 }
 variable "aws_aurora_subnets" {
-  type        = list(string)
+  type        = string
   description = "The list of subnet ids to use for postgres. For more details, see: https://registry.terraform.io/modules/terraform-aws-modules/rds-aurora/aws/latest?tab=inputs"
-  default     = []
+  default     = ""
 }
 variable "aws_aurora_cluster_name" {
   type        = string

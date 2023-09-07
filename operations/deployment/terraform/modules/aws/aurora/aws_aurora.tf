@@ -23,6 +23,10 @@ resource "aws_security_group_rule" "ingress_aurora" {
   security_group_id = aws_security_group.aurora_security_group.id
 }
 
+locals {
+  aws_aurora_subnets = var.aws_aurora_subnets != "" ? [for n in split(",", var.aws_aurora_subnets) : (n)] : []
+}
+
 module "aurora_cluster" {
   source         = "terraform-aws-modules/rds-aurora/aws"
   version        = "v7.7.1"
@@ -38,7 +42,7 @@ module "aurora_cluster" {
   }
 
   vpc_id                 = var.aws_selected_vpc_id
-  subnets                = var.aws_aurora_subnets == null || length(var.aws_aurora_subnets) == 0 ? var.aws_subnets_vpc_subnets_ids : var.aws_aurora_subnets
+  subnets                = length(local.aws_aurora_subnets) != 0 ? local.aws_aurora_subnets : var.aws_subnets_vpc_subnets_ids
   
   allowed_security_groups = [var.aws_allowed_sg_id]
   allowed_cidr_blocks     = [data.aws_vpc.selected[0].cidr_block]

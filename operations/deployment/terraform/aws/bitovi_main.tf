@@ -21,6 +21,7 @@ module "ec2" {
   # Others
   aws_resource_identifier             = var.aws_resource_identifier
   aws_resource_identifier_supershort  = var.aws_resource_identifier_supershort
+  ec2_tags                            = local.ec2_tags
   depends_on = [module.vpc]
 
   providers = {
@@ -57,7 +58,6 @@ module "aws_route53" {
   # ELB
   aws_elb_dns_name              = try(module.aws_elb[0].aws_elb_dns_name,"")
   aws_elb_zone_id               = try(module.aws_elb[0].aws_elb_zone_id,"")
-  aws_elb_listen_port           = var.aws_elb_listen_port
   # Certs
   aws_certificates_selected_arn = var.aws_r53_enable_cert && var.aws_r53_domain_name != "" ? module.aws_certificates[0].selected_arn : ""
   # Others
@@ -70,7 +70,7 @@ module "aws_route53" {
 
 module "aws_elb" {
   source = "../modules/aws/elb"
-  count  = var.aws_ec2_instance_create ? 1 : 0 
+  count  = var.aws_ec2_instance_create && var.aws_elb_create ? 1 : 0 
   # ELB Values
   aws_elb_security_group_name        = var.aws_elb_security_group_name
   aws_elb_app_port                   = var.aws_elb_app_port
@@ -222,8 +222,8 @@ module "secretmanager_get" {
 
 module "ansible" {
   source = "../modules/aws/ansible"
-  count  = var.aws_ec2_instance_create ? 1 : 0
-  aws_ec2_instance_ip     = try(module.ec2[0].instance_public_ip,"")
+  count  = var.ansible_skip ? 0 : var.aws_ec2_instance_create ? 1 : 0
+  aws_ec2_instance_ip     = var.ansible_ssh_to_private_ip ? module.ec2[0].instance_private_ip : ( module.ec2[0].instance_public_ip != "" ? module.ec2[0].instance_public_ip : module.ec2[0].instance_private_ip )
   aws_efs_enable          = var.aws_efs_enable
   app_repo_name           = var.app_repo_name
   app_install_root        = var.app_install_root
@@ -267,31 +267,48 @@ locals {
     ) :
     false
   )
-  create_efs = var.aws_efs_create == true ? true : (var.aws_efs_create_ha == true ? true : false)
-  ec2_no_dns_url = try(module.aws_elb[0].aws_elb_dns_name,module.ec2[0].instance_public_dns,module.ec2[0].instance_public_ip,"")
-  ec2_no_dns_url_fqdn = local.ec2_no_dns_url != "" ? "http://${local.ec2_no_dns_url}" : ""
+  create_efs           = var.aws_efs_create == true ? true : (var.aws_efs_create_ha == true ? true : false)
+  ec2_public_endpoint  = module.ec2[0].instance_public_dns != null ? module.ec2[0].instance_public_dns : module.ec2[0].instance_public_ip
+  ec2_private_endpoint = module.ec2[0].instance_private_dns != null ? module.ec2[0].instance_private_dns : module.ec2[0].instance_private_ip
+  ec2_endpoint         = local.ec2_public_endpoint != null ? local.ec2_public_endpoint : local.ec2_private_endpoint
+  elb_url              = try(module.aws_elb[0].aws_elb_dns_name,null ) != null ? "http://${module.aws_elb[0].aws_elb_dns_name}" : null
 }
 
 output "instance_public_dns" {
   description = "Public DNS address of the EC2 instance"
-  value       = try(module.ec2[0].instance_public_dns,"")
+  value       = try(module.ec2[0].instance_public_dns,null)
 }
 
 output "instance_public_ip" {
   description = "Public IP address of the EC2 instance"
-  value       = try(module.ec2[0].instance_public_ip,"")
+  value       = try(module.ec2[0].instance_public_ip,null)
+}
+
+output "instance_private_dns" {
+  description = "Public DNS address of the EC2 instance"
+  value       = try(module.ec2[0].instance_private_dns,null)
+}
+
+output "instance_private_ip" {
+  description = "Private IP address of the EC2 instance"
+  value       = try(module.ec2[0].instance_private_ip,null)
+}
+
+output "instance_endpoint" {
+  description = "Will print the best EC2 option, from public dns to private ip"
+  value       = "http://${local.ec2_endpoint}"
 }
 
 output "aws_elb_dns_name" {
   description = "Public DNS address of the LB"
-  value       = try(module.aws_elb[0].aws_elb_dns_name,"")
+  value       = try(module.aws_elb[0].aws_elb_dns_name,null)
 }
 
 output "application_public_dns" {
   description = "Public DNS address for the application or load balancer public DNS"
-  value       = try(module.aws_route53[0].vm_url,"")
+  value       = try(module.aws_route53[0].vm_url,null)
 }
 
 output "vm_url" {
-  value = try(module.aws_route53[0].vm_url,local.ec2_no_dns_url_fqdn)
+  value = try(module.aws_route53[0].vm_url,local.elb_url)
 }

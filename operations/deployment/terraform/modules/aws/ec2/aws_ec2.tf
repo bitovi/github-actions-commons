@@ -28,6 +28,7 @@ resource "aws_instance" "server" {
   root_block_device {
     volume_size           = tonumber(var.aws_ec2_instance_root_vol_size)
     delete_on_termination = var.aws_ec2_instance_root_vol_preserve ? false : true
+    tags                  = var.ec2_tags
   }
   tags = {
     Name = "${var.aws_resource_identifier} - Instance"
@@ -56,6 +57,7 @@ resource "aws_instance" "server_ignore_ami" {
   root_block_device {
     volume_size           = tonumber(var.aws_ec2_instance_root_vol_size)
     delete_on_termination = var.aws_ec2_instance_root_vol_preserve ? false : true
+    tags                  = var.ec2_tags
   }
   tags = {
     Name = "${var.aws_resource_identifier} - Instance"
@@ -119,14 +121,28 @@ resource "random_string" "random" {
   numeric   = false
 }
 
+data "aws_vpc" "selected" {
+  id    = var.aws_ec2_selected_vpc_id
+}
+
 output "instance_public_dns" {
   description = "Public DNS address of the EC2 instance"
-  value       = var.aws_ec2_instance_public_ip ? try(data.aws_instance.server_ip[0].public_dns,data.aws_instance.server_ignore_ami_ip[0].public_dns) : "EC2 Instance doesn't have public IP address"
+  value       = data.aws_vpc.selected.enable_dns_hostnames ? var.aws_ec2_instance_public_ip ? try(data.aws_instance.server_ip[0].public_dns,data.aws_instance.server_ignore_ami_ip[0].public_dns) :null : null
+}
+
+output "instance_private_dns" {
+  description = "Public DNS address of the EC2 instance"
+  value       = data.aws_vpc.selected.enable_dns_hostnames ? try(data.aws_instance.server_ip[0].private_dns,data.aws_instance.server_ignore_ami_ip[0].private_dns) : null
 }
 
 output "instance_public_ip" {
   description = "Public IP address of the EC2 instance"
-  value       = try(data.aws_instance.server_ip[0].public_ip,data.aws_instance.server_ignore_ami_ip[0].public_ip)
+  value       = var.aws_ec2_instance_public_ip ? try(data.aws_instance.server_ip[0].public_ip,data.aws_instance.server_ignore_ami_ip[0].public_ip) : null
+}
+
+output "instance_private_ip" {
+  description = "Public IP address of the EC2 instance"
+  value       = try(data.aws_instance.server_ip[0].private_ip,data.aws_instance.server_ignore_ami_ip[0].private_ip)
 }
 
 output "aws_instance_server_id" {

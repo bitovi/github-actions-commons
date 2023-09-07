@@ -144,7 +144,7 @@ bitops:
   
   # Ansible Code part
 
-  if [[ "$(alpha_only $ANSIBLE_SKIP)" != "true" ]] && [[ "$(alpha_only $AWS_EC2_INSTANCE_CREATE)" == "true" ]] && [[ "$(alpha_only $AWS_EC2_INSTANCE_PUBLIC_IP)" == "true" ]]; then
+  if [[ "$(alpha_only $ANSIBLE_SKIP)" != "true" ]] && [[ "$(alpha_only $AWS_EC2_INSTANCE_CREATE)" == "true" ]]; then
     # Ansible - Docker cleanup
     if [[ $(alpha_only "$DOCKER_FULL_CLEANUP") == true ]]; then
       add_ansible_module docker_cleanup

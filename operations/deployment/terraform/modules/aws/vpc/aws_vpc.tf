@@ -130,8 +130,7 @@ locals {
 
 output "aws_selected_vpc_id" {
   description = "The subnet ids from the default vpc"
-  #value       = local.selected_vpc_id
-  value       = var.aws_vpc_create ? aws_vpc.main[0].id : var.aws_vpc_id != "" ? var.aws_vpc_id : data.aws_vpc.default[0].id
+  value       = local.selected_vpc_id
 }
 
 output "aws_selected_vpc_subnets" {

@@ -44,6 +44,9 @@ inputs:
   ansible_skip:
     description: 'Skip Ansible execution after Terraform excecution.'
     required: false
+  ansible_ssh_to_private_ip:
+    description: 'Make Ansible connect to the private IP of the instance. Only usefull if using a hosted runner in the same network.'
+    required: false
 
   # GitHub Deployment repo inputs
   gh_deployment_input_terraform:
@@ -437,9 +440,9 @@ outputs:
   vm_url:
     description: "The URL of the generated app"
     value: ${{ steps.deploy.outputs.vm_url }}
-  ec2_url:
+  instance_endpoint:
     description: "The URL of the generated ec2 instance"
-    value: ${{ steps.deploy.outputs.instance_public_dns }}
+    value: ${{ steps.deploy.outputs.instance_endpoint }}
 
 runs:
   using: 'composite'
@@ -468,6 +471,7 @@ runs:
         TF_STATE_BUCKET_PROVIDER: ${{ inputs.tf_state_bucket_provider }}
         TF_TARGETS: ${{ inputs.tf_targets }}
         ANSIBLE_SKIP: ${{ inputs.ansible_skip }}
+        ANSIBLE_SSH_TO_PRIVATE_IP: ${{ inputs.ansible_ssh_to_private_ip }}
 
         # Deployment repo
         GH_DEPLOYMENT_INPUT_TERRAFORM: ${{ inputs.gh_deployment_input_terraform }}
@@ -628,7 +632,7 @@ runs:
       env: 
         SUCCESS: ${{ job.status }} # success, failure, cancelled
         URL_OUTPUT: ${{ steps.deploy.outputs.vm_url }}
-        EC2_URL_OUTPUT: ${{ steps.deploy.outputs.ec2_url }}
+        EC2_URL_OUTPUT: ${{ steps.deploy.outputs.instance_endpoint }}
         BITOPS_CODE_ONLY: ${{ inputs.bitops_code_only }}
         BITOPS_CODE_STORE: ${{ inputs.bitops_code_store }}
         TF_STACK_DESTROY: ${{ inputs.tf_stack_destroy }}
