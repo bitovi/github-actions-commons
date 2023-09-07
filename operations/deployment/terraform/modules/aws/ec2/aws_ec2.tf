@@ -35,10 +35,6 @@ resource "aws_instance" "server" {
   }
 }
 
-output "ec2_tags" {
-  value = var.ec2_tags
-}
-
 data "aws_instance" "server_ip" {
   count       = var.aws_ec2_ami_update ? 1 : 0
   instance_id = aws_instance.server[0].id
