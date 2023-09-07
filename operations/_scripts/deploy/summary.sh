@@ -48,7 +48,7 @@ echo_lines() {
 }
 
 # Process and store URL_OUTPUT:AWS_ELB_LISTEN_PORT in a variable
-if [[ -z "$URL_OUTPUT" ]]; then
+if [[ -n $URL_OUTPUT ]]; then
   output_elb=$(process_and_return "$URL_OUTPUT" "$AWS_ELB_LISTEN_PORT")
   # Given the case where there is no port specified for the ELB, pass the URL directly
   if [[ -z "$output_elb" ]]; then
@@ -57,13 +57,18 @@ if [[ -z "$URL_OUTPUT" ]]; then
   final_output+="${output_elb}\n"
 fi
 # Process and store EC2_URL_OUTPUT:AWS_EC2_PORT_LIST in a variable
-output_ec2=$(process_and_return "$EC2_URL_OUTPUT" "$AWS_EC2_PORT_LIST")
-final_output+="${output_ec2}\n"
+if [[ -n $AWS_EC2_PORT_LIST ]]; then
+  output_ec2=$(process_and_return "$EC2_URL_OUTPUT" "$AWS_EC2_PORT_LIST")
+  if [[ -z "$output_ec2" ]]; then
+    output_ec2="$EC2_URL_OUTPUT"
+  fi
+  final_output+="${output_ec2}\n"
+fi
 
 SUMMARY_CODE=0
 
 if [[ $SUCCESS == 'success' ]]; then
-  if [[ -z "$URL_OUTPUT" ]] || [[ -z "$EC2_URL_OUTPUT" ]]; then
+  if [[ -n $URL_OUTPUT ]] || [[ -n $EC2_URL_OUTPUT ]]; then
     result_string="## Deploy Complete! :rocket:"
   elif [[ $BITOPS_CODE_ONLY == 'true' ]]; then
     if [[ $BITOPS_CODE_STORE == 'true' ]]; then
@@ -108,7 +113,7 @@ fi
 
 echo -e "$result_string" >> $GITHUB_STEP_SUMMARY
 if [[ $SUCCESS == 'success' ]]; then
-  if [[ -z "$URL_OUTPUT" ]] || [[ -z "$EC2_URL_OUTPUT" ]]; then
+  if [[ -n $final_output ]]; then
     while IFS= read -r line; do
       echo -e "$line" >> $GITHUB_STEP_SUMMARY
     done <<< "$final_output"
