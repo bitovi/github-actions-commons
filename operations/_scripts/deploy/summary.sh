@@ -48,7 +48,7 @@ echo_lines() {
 }
 
 # Process and store URL_OUTPUT:AWS_ELB_LISTEN_PORT in a variable
-if [[ -z "$URL_OUTPUT "]]; then
+if [[ -z "$URL_OUTPUT" ]]; then
   output_elb=$(process_and_return "$URL_OUTPUT" "$AWS_ELB_LISTEN_PORT")
   # Given the case where there is no port specified for the ELB, pass the URL directly
   if [[ -z "$output_elb" ]]; then
