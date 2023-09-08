@@ -218,6 +218,7 @@ if [[ "$(alpha_only $ANSIBLE_SKIP)" == "true" ]]; then
   ansible_skip=$(generate_var ansible_skip $ANSIBLE_SKIP)
 else
   ansible_ssh_to_private_ip=$(generate_var ansible_ssh_to_private_ip $ANSIBLE_SSH_TO_PRIVATE_IP)
+  ansible_start_docker_timeout=$(generate_var ansible_start_docker_timeout $ANSIBLE_START_DOCKER_TIMEOUT)
 fi
 
 if [[ $(alpha_only "$DOCKER_INSTALL") == true ]]; then
@@ -242,6 +243,8 @@ echo "
 #-- ANSIBLE --#
 $ansible_skip
 $ansible_ssh_to_private_ip
+$ansible_start_docker_timeout
+
 #-- AWS --#
 $aws_resource_identifier
 $aws_resource_identifier_supershort

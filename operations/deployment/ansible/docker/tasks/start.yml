@@ -27,7 +27,7 @@
     pull: true
     remove_orphans: "{{ docker_remove_orphans }}"
   register: output
-  async: 300
+  async: "{{ ansible_start_docker_timeout }}"
   poll: 5
   when: existing_files | length > 0
 

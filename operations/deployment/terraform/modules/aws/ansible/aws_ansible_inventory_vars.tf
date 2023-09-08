@@ -1,4 +1,5 @@
 variable "aws_ec2_instance_ip" {}
+variable "ansible_start_docker_timeout" {}
 variable "aws_efs_enable" {}
 variable "app_repo_name" {}
 variable "app_install_root" {}

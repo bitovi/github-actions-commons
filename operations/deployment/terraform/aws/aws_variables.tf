@@ -11,6 +11,12 @@ variable "ansible_ssh_to_private_ip" {
   default     = false
 }
 
+variable "ansible_start_docker_timeout" {
+  type        = string
+  description = "Ammount of time in seconds it takes Ansible to mark as failed the startup of docker."
+  default     = "300"
+}
+
 # AWS Specific
 
 variable "aws_resource_identifier" {
