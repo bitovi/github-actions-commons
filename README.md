@@ -104,7 +104,7 @@ The following inputs can be used as `step.with` keys
 | `tf_targets` | List | A list of targets to create before the full stack creation. | 
 | `ansible_skip` | Boolean | Skip Ansible execution after Terraform excecution. Default is `false`.|
 | `ansible_ssh_to_private_ip` | Boolean | Make Ansible connect to the private IP of the instance. Only usefull if using a hosted runner in the same network.'  Default is `false`. | 
-| `ansible_start_docker_timeout`` | String | Ammount of time in seconds it takes Ansible to mark as failed the startup of docker. Defaults to `300`.|
+| `ansible_start_docker_timeout` | String | Ammount of time in seconds it takes Ansible to mark as failed the startup of docker. Defaults to `300`.|
 <hr/>
 <br/>
 
