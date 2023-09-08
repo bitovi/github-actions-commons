@@ -223,18 +223,19 @@ module "secretmanager_get" {
 module "ansible" {
   source = "../modules/aws/ansible"
   count  = var.ansible_skip ? 0 : var.aws_ec2_instance_create ? 1 : 0
-  aws_ec2_instance_ip     = var.ansible_ssh_to_private_ip ? module.ec2[0].instance_private_ip : ( module.ec2[0].instance_public_ip != "" ? module.ec2[0].instance_public_ip : module.ec2[0].instance_private_ip )
-  aws_efs_enable          = var.aws_efs_enable
-  app_repo_name           = var.app_repo_name
-  app_install_root        = var.app_install_root
-  aws_resource_identifier = var.aws_resource_identifier
-  docker_remove_orphans   = var.docker_remove_orphans
-  aws_efs_ec2_mount_point = var.aws_efs_ec2_mount_point
-  aws_efs_mount_target    = var.aws_efs_mount_target
-  docker_efs_mount_target = var.docker_efs_mount_target
-  aws_efs_fs_id           = var.aws_efs_enable ? local.create_efs ? module.efs[0].aws_efs_fs_id : var.aws_efs_fs_id : null
+  aws_ec2_instance_ip          = var.ansible_ssh_to_private_ip ? module.ec2[0].instance_private_ip : ( module.ec2[0].instance_public_ip != "" ? module.ec2[0].instance_public_ip : module.ec2[0].instance_private_ip )
+  ansible_start_docker_timeout = var.ansible_start_docker_timeout
+  aws_efs_enable               = var.aws_efs_enable
+  app_repo_name                = var.app_repo_name
+  app_install_root             = var.app_install_root
+  aws_resource_identifier      = var.aws_resource_identifier
+  docker_remove_orphans        = var.docker_remove_orphans
+  aws_efs_ec2_mount_point      = var.aws_efs_ec2_mount_point
+  aws_efs_mount_target         = var.aws_efs_mount_target
+  docker_efs_mount_target      = var.docker_efs_mount_target
+  aws_efs_fs_id                = var.aws_efs_enable ? local.create_efs ? module.efs[0].aws_efs_fs_id : var.aws_efs_fs_id : null
   # Data inputs
-  private_key_filename    = module.ec2[0].private_key_filename
+  private_key_filename         = module.ec2[0].private_key_filename
   # Dependencies
   depends_on = [module.ec2]
 }

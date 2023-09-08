@@ -7,6 +7,7 @@ bitops_servers:
  vars:
    ansible_ssh_user: ubuntu
    ansible_ssh_private_key_file: ${var.private_key_filename}
+   ansible_start_docker_timeout: ${var.ansible_start_docker_timeout}
    app_repo_name: ${var.app_repo_name}
    app_install_root: ${var.app_install_root}
    resource_identifier: ${var.aws_resource_identifier}
@@ -28,6 +29,7 @@ bitops_servers:
  vars:
    ansible_ssh_user: ubuntu
    ansible_ssh_private_key_file: ${var.private_key_filename}
+   ansible_start_docker_timeout: ${var.ansible_start_docker_timeout}
    app_repo_name: ${var.app_repo_name}
    app_install_root: ${var.app_install_root}
    resource_identifier: ${var.aws_resource_identifier}
