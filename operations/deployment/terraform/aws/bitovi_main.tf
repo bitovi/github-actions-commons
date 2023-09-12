@@ -302,8 +302,8 @@ locals {
     false
   )
   create_efs           = var.aws_efs_create == true ? true : (var.aws_efs_create_ha == true ? true : false)
-  ec2_public_endpoint  = try(module.ec2[0].instance_public_dns,null) != null ? module.ec2[0].instance_public_dns : module.ec2[0].instance_public_ip
-  ec2_private_endpoint = try(module.ec2[0].instance_private_dns,null) != null ? module.ec2[0].instance_private_dns : module.ec2[0].instance_private_ip
+  ec2_public_endpoint  = var.aws_ec2_instance_create ? ( module.ec2[0].instance_public_dns  != null ? module.ec2[0].instance_public_dns  : module.ec2[0].instance_public_ip  ) : null
+  ec2_private_endpoint = var.aws_ec2_instance_create ? ( module.ec2[0].instance_private_dns != null ? module.ec2[0].instance_private_dns : module.ec2[0].instance_private_ip ) : null
   ec2_endpoint         = local.ec2_public_endpoint != null ? local.ec2_public_endpoint : local.ec2_private_endpoint
   elb_url              = try(module.aws_elb[0].aws_elb_dns_name,null ) != null ? "http://${module.aws_elb[0].aws_elb_dns_name}" : null
 }
