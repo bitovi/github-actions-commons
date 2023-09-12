@@ -213,7 +213,7 @@ module "aws_ecr" {
   aws_ecr_registry_policy_input             = var.aws_ecr_registry_policy_input
   # Others
   aws_resource_identifier                   = var.aws_resource_identifier
-
+  
   providers = {
     aws = aws.ecr
   }

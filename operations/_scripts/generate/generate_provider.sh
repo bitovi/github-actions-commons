@@ -86,6 +86,14 @@ provider \"aws\" {
   }
 }
 
+provider \"aws\" {
+  alias  = \"ecr\"
+  region = \"${AWS_DEFAULT_REGION}\"
+  default_tags {
+    tags = local.ecr_tags
+  }
+}
+
 " > "${GITHUB_ACTION_PATH}/operations/deployment/terraform/$1/bitovi_provider.tf"
 }
 
