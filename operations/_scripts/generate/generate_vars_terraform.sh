@@ -186,6 +186,32 @@ if [[ $(alpha_only "$AWS_AURORA_ENABLE") == true ]]; then
   aws_aurora_additional_tags=$(generate_var aws_aurora_additional_tags $AWS_AURORA_ADDITIONAL_TAGS)
 fi
 
+#-- ECR --# 
+if [[ $(alpha_only "$AWS_ECR_REPO_CREATE") == true ]]; then
+  aws_ecr_repo_create=$(generate_var aws_ecr_repo_create $AWS_ECR_REPO_CREATE)
+  aws_ecr_repo_type=$(generate_var aws_ecr_repo_type $AWS_ECR_REPO_TYPE)
+  aws_ecr_repo_name=$(generate_var aws_ecr_repo_name $AWS_ECR_REPO_NAME)
+  aws_ecr_repo_mutable=$(generate_var aws_ecr_repo_mutable $AWS_ECR_REPO_MUTABLE)
+  aws_ecr_repo_encryption_type=$(generate_var aws_ecr_repo_encryption_type $AWS_ECR_REPO_ENCRYPTION_TYPE)
+  aws_ecr_repo_encryption_key_arn=$(generate_var aws_ecr_repo_encryption_key_arn $AWS_ECR_REPO_ENCRYPTION_KEY_ARN)
+  aws_ecr_repo_force_destroy=$(generate_var aws_ecr_repo_force_destroy $AWS_ECR_REPO_FORCE_DESTROY)
+  aws_ecr_repo_image_scan=$(generate_var aws_ecr_repo_image_scan $AWS_ECR_REPO_IMAGE_SCAN)
+  aws_ecr_registry_scan_rule=$(generate_var aws_ecr_registry_scan_rule $AWS_ECR_REGISTRY_SCAN_RULE)
+  aws_ecr_registry_pull_through_cache_rules=$(generate_var aws_ecr_registry_pull_through_cache_rules $AWS_ECR_REGISTRY_PULL_THROUGH_CACHE_RULES)
+  aws_ecr_registry_scan_config=$(generate_var aws_ecr_registry_scan_config $AWS_ECR_REGISTRY_SCAN_CONFIG)
+  aws_ecr_registry_replication_rules_input=$(generate_var aws_ecr_registry_replication_rules_input $AWS_ECR_REGISTRY_REPLICATION_RULES_INPUT)
+  aws_ecr_repo_policy_attach=$(generate_var aws_ecr_repo_policy_attach $AWS_ECR_REPO_POLICY_ATTACH)
+  aws_ecr_repo_policy_create=$(generate_var aws_ecr_repo_policy_create $AWS_ECR_REPO_POLICY_CREATE)
+  aws_ecr_repo_policy_input=$(generate_var aws_ecr_repo_policy_input $AWS_ECR_REPO_POLICY_INPUT)
+  aws_ecr_repo_read_arn=$(generate_var aws_ecr_repo_read_arn $AWS_ECR_REPO_READ_ARN)
+  aws_ecr_repo_write_arn=$(generate_var aws_ecr_repo_write_arn $AWS_ECR_REPO_WRITE_ARN)
+  aws_ecr_repo_read_arn_lambda=$(generate_var aws_ecr_repo_read_arn_lambda $AWS_ECR_REPO_READ_ARN_LAMBDA)
+  aws_ecr_lifecycle_policy_input=$(generate_var aws_ecr_lifecycle_policy_input $AWS_ECR_LIFECYCLE_POLICY_INPUT)
+  aws_ecr_public_repo_catalog=$(generate_var aws_ecr_public_repo_catalog $AWS_ECR_PUBLIC_REPO_CATALOG)
+  aws_ecr_registry_policy_input=$(generate_var aws_ecr_registry_policy_input $AWS_ECR_REGISTRY_POLICY_INPUT)
+  aws_ecr_additional_tags=$(generate_var aws_ecr_additional_tags $AWS_ECR_ADDITIONAL_TAGS)
+fi
+
 #-- EKS Cluster --#
 if [[ $(alpha_only "$AWS_EKS_CREATE") == true ]]; then
   aws_eks_create=$(generate_var aws_eks_create $AWS_EKS_CREATE)
@@ -336,6 +362,30 @@ $aws_aurora_snapshot_overwrite
 $aws_aurora_database_protection
 $aws_aurora_database_final_snapshot
 $aws_aurora_additional_tags
+
+#-- ECR --#
+$aws_ecr_repo_create
+$aws_ecr_repo_type
+$aws_ecr_repo_name
+$aws_ecr_repo_mutable
+$aws_ecr_repo_encryption_type
+$aws_ecr_repo_encryption_key_arn
+$aws_ecr_repo_force_destroy
+$aws_ecr_repo_image_scan
+$aws_ecr_registry_scan_rule
+$aws_ecr_registry_pull_through_cache_rules
+$aws_ecr_registry_scan_config
+$aws_ecr_registry_replication_rules_input
+$aws_ecr_repo_policy_attach
+$aws_ecr_repo_policy_create
+$aws_ecr_repo_policy_input
+$aws_ecr_repo_read_arn
+$aws_ecr_repo_write_arn
+$aws_ecr_repo_read_arn_lambda
+$aws_ecr_lifecycle_policy_input
+$aws_ecr_public_repo_catalog
+$aws_ecr_registry_policy_input
+$aws_ecr_additional_tags
 
 #-- EKS --#
 $aws_eks_create

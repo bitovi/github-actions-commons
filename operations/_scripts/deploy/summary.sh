@@ -11,6 +11,9 @@
 # TF_STATE_BUCKET_DESTROY
 # AWS_EC2_PORT_LIST
 # AWS_ELB_LISTEN_PORT
+# ECR_REPO_ARN
+# ECR_REPO_ID
+# ECR_REPO_URL
 
 # Create an error code mechanism so we don't have to check the actual static text,
 # just which case we fell into
@@ -25,7 +28,8 @@
 # 7 - success, code generated, archived, but no URL found # invalid case
 # 8 - success, destroy buckets and infrastructure
 # 9 - success, destroy infrastructure
-# 10 - cancelled
+# 10 - success, ECR created
+# 500 - cancelled
 
 # Function to process and return the result as a string
 function process_and_return() {
@@ -65,6 +69,12 @@ if [[ -n $AWS_EC2_PORT_LIST ]] && [[ -n $EC2_URL_OUTPUT ]]; then
   final_output+="${output_ec2}\n"
 fi
 
+if [[ -n $ECR_REPO_ARN ]] && [[ -n $ECR_REPO_ID ]] && [[ -n $ECR_REPO_URL ]]; then
+  ecr_output+="ECR Repo ARN: ${$ECR_REPO_ARN}\n"
+  ecr_output+="ECR Repo ID:  ${$ECR_REPO_ID}\n"
+  ecr_output+="ECR Repo URL: ${$ECR_REPO_URL}"
+fi
+
 SUMMARY_CODE=0
 
 if [[ $SUCCESS == 'success' ]]; then
@@ -101,7 +111,7 @@ if [[ $SUCCESS == 'success' ]]; then
     If you consider this is a bug in the Github Action, please submit an issue to our repo."
   fi
 elif [[ $SUCCESS == 'cancelled' ]]; then
-  SUMMARY_CODE=10
+  SUMMARY_CODE=500
   result_string="## Workflow cancelled :warning:"
 
 else
@@ -114,8 +124,15 @@ fi
 echo -e "$result_string" >> $GITHUB_STEP_SUMMARY
 if [[ $SUCCESS == 'success' ]]; then
   if [[ -n $final_output ]]; then
+    echo "# EC2 URL results #"
     while IFS= read -r line; do
       echo -e "$line" >> $GITHUB_STEP_SUMMARY
     done <<< "$final_output"
+  fi
+  if [[ -n $ecr_output ]]; then
+    echo "# ECR Results #"
+    while IFS= read -r line; do
+      echo -e "$line" >> $GITHUB_STEP_SUMMARY
+    done <<< "$ecr_output"
   fi
 fi
