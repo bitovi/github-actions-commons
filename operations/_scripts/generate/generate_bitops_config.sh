@@ -125,7 +125,7 @@ bitops:
       create_bitops_terraform_config aws false targets
     fi
   else
-    if [[ $(alpha_only "$AWS_EC2_INSTANCE_CREATE") == true ]] || [[ $(alpha_only "$AWS_EFS_CREATE") == true ]] || [[ "$AWS_AURORA_ENABLE" != "" ]] || [[ $(alpha_only "$AWS_ECR_CREATE") == true ]]; then
+    if [[ $(alpha_only "$AWS_EC2_INSTANCE_CREATE") == true ]] || [[ $(alpha_only "$AWS_EFS_CREATE") == true ]] || [[ "$AWS_AURORA_ENABLE" != "" ]] || [[ $(alpha_only "$AWS_ECR_REPO_CREATE") == true ]]; then
       add_terraform_module aws
       create_bitops_terraform_config aws true targets
     fi
