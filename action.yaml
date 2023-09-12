@@ -431,7 +431,7 @@ inputs:
     required: false
   aws_ecr_registry_policy_input:
     description: 'The policy document. This is a JSON formatted string'
-   required: false
+    required: false
   aws_ecr_additional_tags:
     description: 'A list of strings that will be added to created resources'
     required: false
