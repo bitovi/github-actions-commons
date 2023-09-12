@@ -213,7 +213,7 @@ module "aws_ecr" {
   aws_ecr_registry_policy_input             = var.aws_ecr_registry_policy_input
   # Others
   aws_resource_identifier                   = var.aws_resource_identifier
-  
+
   providers = {
     aws = aws.ecr
   }
@@ -302,8 +302,8 @@ locals {
     false
   )
   create_efs           = var.aws_efs_create == true ? true : (var.aws_efs_create_ha == true ? true : false)
-  ec2_public_endpoint  = module.ec2[0].instance_public_dns != null ? module.ec2[0].instance_public_dns : module.ec2[0].instance_public_ip
-  ec2_private_endpoint = module.ec2[0].instance_private_dns != null ? module.ec2[0].instance_private_dns : module.ec2[0].instance_private_ip
+  ec2_public_endpoint  = try(module.ec2[0].instance_public_dns,null) != null ? module.ec2[0].instance_public_dns : module.ec2[0].instance_public_ip
+  ec2_private_endpoint = try(module.ec2[0].instance_private_dns,null) != null ? module.ec2[0].instance_private_dns : module.ec2[0].instance_private_ip
   ec2_endpoint         = local.ec2_public_endpoint != null ? local.ec2_public_endpoint : local.ec2_private_endpoint
   elb_url              = try(module.aws_elb[0].aws_elb_dns_name,null ) != null ? "http://${module.aws_elb[0].aws_elb_dns_name}" : null
 }
