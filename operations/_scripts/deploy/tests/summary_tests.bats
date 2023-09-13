@@ -73,6 +73,19 @@ function runTest() {
   runTest 8
 }
 
+@test "SUCCESS is true, URL_OUTPUT is empty, TF_STACK_DESTROY is false, TF_STATE_BUCKET_DESTROY is true" {
+  export SUCCESS='success'
+  export URL_OUTPUT=''
+  export BITOPS_CODE_ONLY='false'
+  export TF_STACK_DESTROY='false'
+  export TF_STATE_BUCKET_DESTROY='true'
+  export ECR_REPO_ARN='something'
+  export ECR_REPO_ID='something'
+  export ECR_REPO_URL='something'
+
+  runTest 10
+}
+
 @test "SUCCESS is true, URL_OUTPUT is empty, BITOPS_CODE_ONLY is false, TF_STACK_DESTROY is false" {
   export SUCCESS='success'
   export URL_OUTPUT=''
@@ -93,5 +106,5 @@ function runTest() {
 @test "SUCCESS is 'cancelled'" {
   export SUCCESS='cancelled'
 
-  runTest 10
+  runTest 500
 }
