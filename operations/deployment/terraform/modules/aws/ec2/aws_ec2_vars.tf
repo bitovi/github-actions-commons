@@ -13,6 +13,7 @@ variable "aws_ec2_security_group_name" {}
 variable "aws_ec2_port_list" {}
 # Data inputs
 variable "aws_ec2_selected_vpc_id" {}
+variable "aws_vpc_dns_enabled" {}
 variable "aws_subnet_selected_id" {}
 variable "preferred_az" {}
 variable "ec2_tags" {
