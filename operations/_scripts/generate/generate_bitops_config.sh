@@ -77,7 +77,7 @@ if [ -n "$TF_TARGETS" ]; then
 fi
 
 # Making VPC Random creation first a must only if this modules are created. 
-if [[ $(alpha_only "$AWS_EC2_INSTANCE_CREATE") == true ]] && [[ $(alpha_only "$AWS_EFS_ENABLE") == true ]] && [[ $(alpha_only "$AWS_AURORA_ENABLE") == true ]] ; then
+if [[ $(alpha_only "$AWS_EC2_INSTANCE_CREATE") == true ]] || [[ $(alpha_only "$AWS_EFS_ENABLE") == true ]] || [[ $(alpha_only "$AWS_AURORA_ENABLE") == true ]] ; then
   # random_integer.az_select needs to be created before the "full stack" to avoid a potential state dependency locks
   targets="$targets
       - module.vpc.random_integer.az_select"
