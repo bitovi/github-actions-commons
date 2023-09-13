@@ -70,9 +70,9 @@ if [[ -n $AWS_EC2_PORT_LIST ]] && [[ -n $EC2_URL_OUTPUT ]]; then
 fi
 
 if [[ -n $ECR_REPO_ARN ]] && [[ -n $ECR_REPO_ID ]] && [[ -n $ECR_REPO_URL ]]; then
-  ecr_output+="ECR Repo ARN: ${$ECR_REPO_ARN}\n"
-  ecr_output+="ECR Repo ID:  ${$ECR_REPO_ID}\n"
-  ecr_output+="ECR Repo URL: ${$ECR_REPO_URL}"
+  ecr_output+="ECR Repo ARN: ${ECR_REPO_ARN}\n"
+  ecr_output+="ECR Repo ID:  ${ECR_REPO_ID}\n"
+  ecr_output+="ECR Repo URL: ${ECR_REPO_URL}"
 fi
 
 SUMMARY_CODE=0
