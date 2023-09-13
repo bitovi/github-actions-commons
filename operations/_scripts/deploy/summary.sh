@@ -69,12 +69,6 @@ if [[ -n $AWS_EC2_PORT_LIST ]] && [[ -n $EC2_URL_OUTPUT ]]; then
   final_output+="${output_ec2}\n"
 fi
 
-if [[ -n $ECR_REPO_ARN ]] && [[ -n $ECR_REPO_ID ]] && [[ -n $ECR_REPO_URL ]]; then
-  ecr_output+="ECR Repo ARN: ${ECR_REPO_ARN}\n"
-  ecr_output+="ECR Repo ID:  ${ECR_REPO_ID}\n"
-  ecr_output+="ECR Repo URL: ${ECR_REPO_URL}"
-fi
-
 SUMMARY_CODE=0
 
 if [[ $SUCCESS == 'success' ]]; then
@@ -83,7 +77,9 @@ if [[ $SUCCESS == 'success' ]]; then
   elif [[ -n $ECR_REPO_ARN ]] && [[ -n $ECR_REPO_ID ]] && [[ -n $ECR_REPO_URL ]]; then
     SUMMARY_CODE=10
     result_string="## Deploy Complete! :rocket:
-    $ecr_output"
+    ECR Repo ARN: ${ECR_REPO_ARN}
+    ECR Repo ID:  ${ECR_REPO_ID}
+    ECR Repo URL: ${ECR_REPO_URL}"
   elif [[ $BITOPS_CODE_ONLY == 'true' ]]; then
     if [[ $BITOPS_CODE_STORE == 'true' ]]; then
       SUMMARY_CODE=6
