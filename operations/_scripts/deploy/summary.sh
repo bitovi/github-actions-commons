@@ -80,6 +80,10 @@ SUMMARY_CODE=0
 if [[ $SUCCESS == 'success' ]]; then
   if [[ -n $URL_OUTPUT ]] || [[ -n $EC2_URL_OUTPUT ]]; then
     result_string="## Deploy Complete! :rocket:"
+  elif [[ -n $ECR_REPO_ARN ]] && [[ -n $ECR_REPO_ID ]] && [[ -n $ECR_REPO_URL ]]; then
+    SUMMARY_CODE=10
+    result_string="## Deploy Complete! :rocket:
+    $ecr_output"
   elif [[ $BITOPS_CODE_ONLY == 'true' ]]; then
     if [[ $BITOPS_CODE_STORE == 'true' ]]; then
       SUMMARY_CODE=6
@@ -128,11 +132,5 @@ if [[ $SUCCESS == 'success' ]]; then
     while IFS= read -r line; do
       echo -e "$line" >> $GITHUB_STEP_SUMMARY
     done <<< "$final_output"
-  fi
-  if [[ -n $ecr_output ]]; then
-    echo "# ECR Results #"
-    while IFS= read -r line; do
-      echo -e "$line" >> $GITHUB_STEP_SUMMARY
-    done <<< "$ecr_output"
   fi
 fi
