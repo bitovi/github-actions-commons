@@ -16,7 +16,7 @@ module "ec2" {
   aws_ec2_port_list                   = var.aws_ec2_port_list
   # Data inputs
   aws_ec2_selected_vpc_id             = try(module.vpc[0].aws_selected_vpc_id,"")
-  aws_vpc_dns_enabled                 = try(module.vpc[0].aws_vpc_dns_enabled,"")
+  aws_vpc_dns_enabled                 = try(module.vpc[0].aws_vpc_dns_enabled,false)
   aws_subnet_selected_id              = try(module.vpc[0].aws_vpc_subnet_selected,"")
   preferred_az                        = try(module.vpc[0].preferred_az,"")
   # Others
