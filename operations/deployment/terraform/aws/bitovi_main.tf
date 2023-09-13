@@ -15,9 +15,9 @@ module "ec2" {
   aws_ec2_security_group_name         = var.aws_ec2_security_group_name
   aws_ec2_port_list                   = var.aws_ec2_port_list
   # Data inputs
-  aws_ec2_selected_vpc_id             = module.vpc.aws_selected_vpc_id
-  aws_subnet_selected_id              = module.vpc.aws_vpc_subnet_selected
-  preferred_az                        = module.vpc.preferred_az
+  aws_ec2_selected_vpc_id             = module.vpc[0].aws_selected_vpc_id
+  aws_subnet_selected_id              = module.vpc[0].aws_vpc_subnet_selected
+  preferred_az                        = module.vpc[0].preferred_az
   # Others
   aws_resource_identifier             = var.aws_resource_identifier
   aws_resource_identifier_supershort  = var.aws_resource_identifier_supershort
@@ -80,9 +80,9 @@ module "aws_elb" {
   aws_elb_healthcheck                = var.aws_elb_healthcheck
   lb_access_bucket_name              = var.lb_access_bucket_name
   # EC2
-  aws_instance_server_az             = [module.vpc.preferred_az]
-  aws_vpc_selected_id                = module.vpc.aws_selected_vpc_id
-  aws_vpc_subnet_selected            = module.vpc.aws_vpc_subnet_selected
+  aws_instance_server_az             = [module.vpc[0].preferred_az]
+  aws_vpc_selected_id                = module.vpc[0].aws_selected_vpc_id
+  aws_vpc_subnet_selected            = module.vpc[0].aws_vpc_subnet_selected
   aws_instance_server_id             = module.ec2[0].aws_instance_server_id
   aws_elb_target_sg_id               = module.ec2[0].aws_security_group_ec2_sg_id 
   # Certs
@@ -113,10 +113,10 @@ module "efs" {
   aws_efs_enable_backup_policy    = var.aws_efs_enable_backup_policy
   aws_efs_transition_to_inactive  = var.aws_efs_transition_to_inactive
   # VPC inputs
-  aws_selected_vpc_id             = module.vpc.aws_selected_vpc_id
-  aws_selected_subnet_id          = module.vpc.aws_vpc_subnet_selected
-  aws_selected_az                 = module.vpc.preferred_az
-  aws_selected_az_list            = module.vpc.availability_zones
+  aws_selected_vpc_id             = module.vpc[0].aws_selected_vpc_id
+  aws_selected_subnet_id          = module.vpc[0].aws_vpc_subnet_selected
+  aws_selected_az                 = module.vpc[0].preferred_az
+  aws_selected_az_list            = module.vpc[0].availability_zones
   # Others
   aws_resource_identifier         = var.aws_resource_identifier
   depends_on = [module.vpc]
@@ -146,9 +146,9 @@ module "aurora_rds" {
   aws_aurora_database_final_snapshot = var.aws_aurora_database_final_snapshot
   # Data inputs
   aws_allowed_sg_id                  = module.ec2[0].aws_security_group_ec2_sg_id 
-  aws_selected_vpc_id                = module.vpc.aws_selected_vpc_id
-  aws_subnets_vpc_subnets_ids        = module.vpc.aws_selected_vpc_subnets
-  aws_region_current_name            = module.vpc.aws_region_current_name
+  aws_selected_vpc_id                = module.vpc[0].aws_selected_vpc_id
+  aws_subnets_vpc_subnets_ids        = module.vpc[0].aws_selected_vpc_subnets
+  aws_region_current_name            = module.vpc[0].aws_region_current_name
   # Others
   aws_resource_identifier            = var.aws_resource_identifier
   aws_resource_identifier_supershort = var.aws_resource_identifier_supershort
@@ -161,7 +161,9 @@ module "aurora_rds" {
 }
 
 module "vpc" {
-  source                      = "../modules/aws/vpc"
+  source = "../modules/aws/vpc"
+  count  = var.aws_ec2_instance_create && var.aws_efs_enable && var.aws_aurora_enable ? 1 : 0
+  # VPC
   aws_vpc_create              = var.aws_vpc_create
   aws_vpc_id                  = var.aws_vpc_id 
   aws_vpc_subnet_id           = var.aws_vpc_subnet_id
