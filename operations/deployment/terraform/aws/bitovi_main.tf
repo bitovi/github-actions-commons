@@ -15,9 +15,9 @@ module "ec2" {
   aws_ec2_security_group_name         = var.aws_ec2_security_group_name
   aws_ec2_port_list                   = var.aws_ec2_port_list
   # Data inputs
-  aws_ec2_selected_vpc_id             = try(module.vpc[0].aws_selected_vpc_id,null)
-  aws_subnet_selected_id              = try(module.vpc[0].aws_vpc_subnet_selected,null)
-  preferred_az                        = try(module.vpc[0].preferred_az,null)
+  aws_ec2_selected_vpc_id             = try(module.vpc[0].aws_selected_vpc_id,"")
+  aws_subnet_selected_id              = try(module.vpc[0].aws_vpc_subnet_selected,"")
+  preferred_az                        = try(module.vpc[0].preferred_az,"")
   # Others
   aws_resource_identifier             = var.aws_resource_identifier
   aws_resource_identifier_supershort  = var.aws_resource_identifier_supershort
