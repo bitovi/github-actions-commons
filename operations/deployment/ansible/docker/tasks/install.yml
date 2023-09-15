@@ -5,10 +5,10 @@
     state: present
 
 - name: Add Docker Repository
-  apt_repository:
-    repo: "{{ 'deb [arch=amd64] https://download.docker.com/linux/ubuntu ' + ansible_distribution_version }}/stable"
-    state: present
-
+  command: >
+    echo "deb [arch=\"$(dpkg --print-architecture)\" signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu \"$(. /etc/os-release && echo \"$VERSION_CODENAME\")\" stable" |
+    sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+    
 - name: Update apt and install docker-ce
   apt: update_cache=yes name=docker-ce state=latest
 
