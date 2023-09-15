@@ -75,13 +75,17 @@ if [ -n "$TF_TARGETS" ]; then
       - $item"
   done
 fi
-# random_integer.az_select needs to be created before the "full stack" to avoid a potential state dependency locks
-targets="$targets
-    - module.vpc.random_integer.az_select"
-# In the case VPC creation is enabled, as it's a needed resource for the whole stack, will trigger creation first.
-if [[ $(alpha_only "$AWS_VPC_CREATE") == true ]]; then
-targets="$targets
-    - module.vpc"
+
+# Making VPC Random creation first a must only if this modules are created. 
+if ([[ $(alpha_only "$AWS_EC2_INSTANCE_CREATE") == true ]] || [[ $(alpha_only "$AWS_EFS_ENABLE") == true ]] || [[ $(alpha_only "$AWS_AURORA_ENABLE") == true ]]) && [[ "$(alpha_only $TF_STACK_DESTROY)" != "true" ]]; then
+  # random_integer.az_select needs to be created before the "full stack" to avoid a potential state dependency locks
+  targets="$targets
+      - module.vpc.random_integer.az_select"
+  # In the case VPC creation is enabled, as it's a needed resource for the whole stack, will trigger creation first.
+  if [[ $(alpha_only "$AWS_VPC_CREATE") == true ]]; then
+  targets="$targets
+      - module.vpc"
+  fi
 fi
 targets_attribute="$targets_attribute $targets"
 
@@ -125,7 +129,7 @@ bitops:
       create_bitops_terraform_config aws false targets
     fi
   else
-    if [[ $(alpha_only "$AWS_EC2_INSTANCE_CREATE") == true ]] || [[ $(alpha_only "$AWS_EFS_CREATE") == true ]] || [[ "$AWS_AURORA_ENABLE" != "" ]]; then
+    if [[ $(alpha_only "$AWS_EC2_INSTANCE_CREATE") == true ]] || [[ $(alpha_only "$AWS_EFS_CREATE") == true ]] || [[ "$AWS_AURORA_ENABLE" != "" ]] || [[ $(alpha_only "$AWS_ECR_REPO_CREATE") == true ]]; then
       add_terraform_module aws
       create_bitops_terraform_config aws true targets
     fi

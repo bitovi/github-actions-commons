@@ -151,3 +151,8 @@ output "aws_vpc_cidr_block" {
   description = "CIDR block of chosen VPC"
   value = data.aws_vpc.selected.cidr_block
 }
+
+output "aws_vpc_dns_enabled" {
+  description = "Boolean of DNS enabled in VPC"
+  value = data.aws_vpc.selected.enable_dns_hostnames
+}

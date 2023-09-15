@@ -15,9 +15,10 @@ module "ec2" {
   aws_ec2_security_group_name         = var.aws_ec2_security_group_name
   aws_ec2_port_list                   = var.aws_ec2_port_list
   # Data inputs
-  aws_ec2_selected_vpc_id             = module.vpc.aws_selected_vpc_id
-  aws_subnet_selected_id              = module.vpc.aws_vpc_subnet_selected
-  preferred_az                        = module.vpc.preferred_az
+  aws_ec2_selected_vpc_id             = module.vpc[0].aws_selected_vpc_id
+  aws_vpc_dns_enabled                 = module.vpc[0].aws_vpc_dns_enabled
+  aws_subnet_selected_id              = module.vpc[0].aws_vpc_subnet_selected
+  preferred_az                        = module.vpc[0].preferred_az
   # Others
   aws_resource_identifier             = var.aws_resource_identifier
   aws_resource_identifier_supershort  = var.aws_resource_identifier_supershort
@@ -80,9 +81,9 @@ module "aws_elb" {
   aws_elb_healthcheck                = var.aws_elb_healthcheck
   lb_access_bucket_name              = var.lb_access_bucket_name
   # EC2
-  aws_instance_server_az             = [module.vpc.preferred_az]
-  aws_vpc_selected_id                = module.vpc.aws_selected_vpc_id
-  aws_vpc_subnet_selected            = module.vpc.aws_vpc_subnet_selected
+  aws_instance_server_az             = [module.vpc[0].preferred_az]
+  aws_vpc_selected_id                = module.vpc[0].aws_selected_vpc_id
+  aws_vpc_subnet_selected            = module.vpc[0].aws_vpc_subnet_selected
   aws_instance_server_id             = module.ec2[0].aws_instance_server_id
   aws_elb_target_sg_id               = module.ec2[0].aws_security_group_ec2_sg_id 
   # Certs
@@ -113,10 +114,10 @@ module "efs" {
   aws_efs_enable_backup_policy    = var.aws_efs_enable_backup_policy
   aws_efs_transition_to_inactive  = var.aws_efs_transition_to_inactive
   # VPC inputs
-  aws_selected_vpc_id             = module.vpc.aws_selected_vpc_id
-  aws_selected_subnet_id          = module.vpc.aws_vpc_subnet_selected
-  aws_selected_az                 = module.vpc.preferred_az
-  aws_selected_az_list            = module.vpc.availability_zones
+  aws_selected_vpc_id             = module.vpc[0].aws_selected_vpc_id
+  aws_selected_subnet_id          = module.vpc[0].aws_vpc_subnet_selected
+  aws_selected_az                 = module.vpc[0].preferred_az
+  aws_selected_az_list            = module.vpc[0].availability_zones
   # Others
   aws_resource_identifier         = var.aws_resource_identifier
   depends_on = [module.vpc]
@@ -146,9 +147,9 @@ module "aurora_rds" {
   aws_aurora_database_final_snapshot = var.aws_aurora_database_final_snapshot
   # Data inputs
   aws_allowed_sg_id                  = module.ec2[0].aws_security_group_ec2_sg_id 
-  aws_selected_vpc_id                = module.vpc.aws_selected_vpc_id
-  aws_subnets_vpc_subnets_ids        = module.vpc.aws_selected_vpc_subnets
-  aws_region_current_name            = module.vpc.aws_region_current_name
+  aws_selected_vpc_id                = module.vpc[0].aws_selected_vpc_id
+  aws_subnets_vpc_subnets_ids        = module.vpc[0].aws_selected_vpc_subnets
+  aws_region_current_name            = module.vpc[0].aws_region_current_name
   # Others
   aws_resource_identifier            = var.aws_resource_identifier
   aws_resource_identifier_supershort = var.aws_resource_identifier_supershort
@@ -161,7 +162,9 @@ module "aurora_rds" {
 }
 
 module "vpc" {
-  source                      = "../modules/aws/vpc"
+  source = "../modules/aws/vpc"
+  count  = var.aws_ec2_instance_create || var.aws_efs_enable || var.aws_aurora_enable ? 1 : 0
+  # VPC
   aws_vpc_create              = var.aws_vpc_create
   aws_vpc_id                  = var.aws_vpc_id 
   aws_vpc_subnet_id           = var.aws_vpc_subnet_id
@@ -185,6 +188,38 @@ module "secretmanager_get" {
   source         = "../modules/aws/secretmanager_get"
   count          = var.env_aws_secret != "" ? 1 : 0
   env_aws_secret = var.env_aws_secret
+}
+
+module "aws_ecr" {
+  source = "../modules/aws/ecr"
+  count  = var.aws_ecr_repo_create ? 1 : 0
+  # ECR
+  aws_ecr_repo_type                         = var.aws_ecr_repo_type
+  aws_ecr_repo_name                         = var.aws_ecr_repo_name
+  aws_ecr_repo_mutable                      = var.aws_ecr_repo_mutable
+  aws_ecr_repo_encryption_type              = var.aws_ecr_repo_encryption_type
+  aws_ecr_repo_encryption_key_arn           = var.aws_ecr_repo_encryption_key_arn
+  aws_ecr_repo_force_destroy                = var.aws_ecr_repo_force_destroy
+  aws_ecr_repo_image_scan                   = var.aws_ecr_repo_image_scan
+  aws_ecr_registry_scan_rule                = var.aws_ecr_registry_scan_rule
+  aws_ecr_registry_pull_through_cache_rules = var.aws_ecr_registry_pull_through_cache_rules
+  aws_ecr_registry_scan_config              = var.aws_ecr_registry_scan_config
+  aws_ecr_registry_replication_rules_input  = var.aws_ecr_registry_replication_rules_input
+  aws_ecr_repo_policy_attach                = var.aws_ecr_repo_policy_attach
+  aws_ecr_repo_policy_create                = var.aws_ecr_repo_policy_create
+  aws_ecr_repo_policy_input                 = var.aws_ecr_repo_policy_input
+  aws_ecr_repo_read_arn                     = var.aws_ecr_repo_read_arn
+  aws_ecr_repo_write_arn                    = var.aws_ecr_repo_write_arn
+  aws_ecr_repo_read_arn_lambda              = var.aws_ecr_repo_read_arn_lambda
+  aws_ecr_lifecycle_policy_input            = var.aws_ecr_lifecycle_policy_input
+  aws_ecr_public_repo_catalog               = var.aws_ecr_public_repo_catalog
+  aws_ecr_registry_policy_input             = var.aws_ecr_registry_policy_input
+  # Others
+  aws_resource_identifier                   = var.aws_resource_identifier
+
+  providers = {
+    aws = aws.ecr
+  }
 }
 
 #module "eks" {
@@ -259,6 +294,7 @@ locals {
   efs_tags    = merge(local.default_tags,jsondecode(var.aws_efs_additional_tags))
   vpc_tags    = merge(local.default_tags,jsondecode(var.aws_vpc_additional_tags))
   aurora_tags = merge(local.default_tags,jsondecode(var.aws_aurora_additional_tags))
+  ecr_tags    = merge(local.default_tags,jsondecode(var.aws_ecr_additional_tags))
 
   fqdn_provided = (
     (var.aws_r53_domain_name != "") ?
@@ -269,9 +305,9 @@ locals {
     false
   )
   create_efs           = var.aws_efs_create == true ? true : (var.aws_efs_create_ha == true ? true : false)
-  ec2_public_endpoint  = module.ec2[0].instance_public_dns != null ? module.ec2[0].instance_public_dns : module.ec2[0].instance_public_ip
-  ec2_private_endpoint = module.ec2[0].instance_private_dns != null ? module.ec2[0].instance_private_dns : module.ec2[0].instance_private_ip
-  ec2_endpoint         = local.ec2_public_endpoint != null ? local.ec2_public_endpoint : local.ec2_private_endpoint
+  ec2_public_endpoint  = var.aws_ec2_instance_create ? ( module.ec2[0].instance_public_dns  != null ? module.ec2[0].instance_public_dns  : module.ec2[0].instance_public_ip  ) : null
+  ec2_private_endpoint = var.aws_ec2_instance_create ? ( module.ec2[0].instance_private_dns != null ? module.ec2[0].instance_private_dns : module.ec2[0].instance_private_ip ) : null
+  ec2_endpoint         = var.aws_ec2_instance_create ? ( local.ec2_public_endpoint != null ? "http://${local.ec2_public_endpoint}" : "http://${local.ec2_private_endpoint}" ) : null
   elb_url              = try(module.aws_elb[0].aws_elb_dns_name,null ) != null ? "http://${module.aws_elb[0].aws_elb_dns_name}" : null
 }
 
@@ -297,7 +333,7 @@ output "instance_private_ip" {
 
 output "instance_endpoint" {
   description = "Will print the best EC2 option, from public dns to private ip"
-  value       = "http://${local.ec2_endpoint}"
+  value       = local.ec2_endpoint
 }
 
 output "aws_elb_dns_name" {
@@ -312,4 +348,19 @@ output "application_public_dns" {
 
 output "vm_url" {
   value = try(module.aws_route53[0].vm_url,local.elb_url)
+}
+
+output "ecr_repository_arn" {
+  description = "Full ARN of the repository"
+  value       = try(module.aws_ecr[0].repository_arn,null)
+}
+
+output "ecr_repository_registry_id" {
+  description = "The registry ID where the repository was created"
+  value       = try(module.aws_ecr[0].repository_registry_id,null)
+}
+
+output "ecr_repository_url" {
+  description = "The URL of the repository"
+  value       = try(module.aws_ecr[0].repository_url,null)
 }

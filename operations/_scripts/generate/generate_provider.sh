@@ -79,6 +79,14 @@ provider \"aws\" {
 }
 
 provider \"aws\" {
+  alias  = \"ecr\"
+  region = \"${AWS_DEFAULT_REGION}\"
+  default_tags {
+    tags = local.ecr_tags
+  }
+}
+
+provider \"aws\" {
   alias  = \"aurora\"
   region = \"${AWS_DEFAULT_REGION}\"
   default_tags {

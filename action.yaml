@@ -368,6 +368,74 @@ inputs:
     description: 'Directory path within docker env to mount directory to, default is `/data`'
     required: false
 
+  # AWS ECR
+  aws_ecr_repo_create:
+    description: 'Determines whether a repository will be created'
+    required: false
+  aws_ecr_repo_type:
+    description: 'The type of repository to create. Either `public` or `private`. Defaults to `private`.'
+    required: false
+  aws_ecr_repo_name:
+    description: 'The name of the repository. If none, will use the default resource-identifier.'
+    required: false
+  aws_ecr_repo_mutable:
+    description: 'The tag mutability setting for the repository. Set this to true if `MUTABLE`. Defaults to false, so `IMMUTABLE`'
+    required: false
+  aws_ecr_repo_encryption_type:
+    description: 'The encryption type for the repository. Must be one of: `KMS` or `AES256`. Defaults to `AES256`'
+    required: false
+  aws_ecr_repo_encryption_key_arn:
+    description: 'The ARN of the KMS key to use when encryption_type is `KMS`. If not specified, uses the default AWS managed key for ECR'
+    required: false
+  aws_ecr_repo_force_destroy:
+    description: 'If `true`, will delete the repository even if it contains images. Defaults to `false`'
+    required: false
+  aws_ecr_repo_image_scan:
+    description: 'Indicates whether images are scanned after being pushed to the repository (`true`) (default) or not scanned (`false`)'
+    required: false
+  aws_ecr_registry_scan_rule:
+    description: 'One or multiple blocks specifying scanning rules to determine which repository filters are used and at what frequency scanning will occur. Use []'
+    required: false
+  aws_ecr_registry_pull_through_cache_rules:
+    description: 'List of pull through cache rules to create. Use map(map(string)). '
+    required: false
+  aws_ecr_registry_scan_config:
+    description: 'Scanning type to set for the registry. Can be either `ENHANCED` or `BASIC`. Defaults to null.'
+    required: false
+  aws_ecr_registry_replication_rules_input:
+    description: 'The replication rules for a replication configuration. A maximum of 10 are allowed. Defaults to `[]`.'
+    required: false
+  aws_ecr_repo_policy_attach:
+    description: 'Determines whether a repository policy will be attached to the repository. Defaults to `true`.'
+    required: false
+  aws_ecr_repo_policy_create:
+    description: 'Determines whether a repository policy will be created. Defaults to `true`.'
+    required: false
+  aws_ecr_repo_policy_input:
+    description: 'The JSON policy to apply to the repository. If defined overrides the default policy'
+    required: false
+  aws_ecr_repo_read_arn:
+    description: 'The ARNs of the IAM users/roles that have read access to the repository. (Comma separated list)'
+    required: false
+  aws_ecr_repo_write_arn:
+    description: 'The ARNs of the IAM users/roles that have read/write access to the repository. (Comma separated list)'
+    required: false
+  aws_ecr_repo_read_arn_lambda:
+    description: 'The ARNs of the Lambda service roles that have read access to the repository. (Comma separated list)'
+    required: false
+  aws_ecr_lifecycle_policy_input:
+    description: 'The policy document. This is a JSON formatted string. See more details about [Policy Parameters](http://docs.aws.amazon.com/AmazonECR/latest/userguide/LifecyclePolicies.html#lifecycle_policy_parameters) in the official AWS docs'
+    required: false
+  aws_ecr_public_repo_catalog:
+    description: 'Catalog data configuration for the repository. Defaults to `{}`.'
+    required: false
+  aws_ecr_registry_policy_input:
+    description: 'The policy document. This is a JSON formatted string'
+    required: false
+  aws_ecr_additional_tags:
+    description: 'A list of strings that will be added to created resources'
+    required: false
+
   # AWS EKS
   aws_eks_create:
     description: 'Define if an EKS cluster should be created'
@@ -440,12 +508,23 @@ inputs:
     required: false
 
 outputs:
+  # EC2
   vm_url:
     description: "The URL of the generated app"
     value: ${{ steps.deploy.outputs.vm_url }}
   instance_endpoint:
     description: "The URL of the generated ec2 instance"
     value: ${{ steps.deploy.outputs.instance_endpoint }}
+  # ECR
+  ecr_repository_arn:
+    description: "ECR Repo ARN"
+    value: ${{ steps.deploy.outputs.ecr_repository_arn }}
+  ecr_repository_registry_id:
+    description: "ECR Repo Registry ID"
+    value: ${{ steps.deploy.outputs.ecr_repository_registry_id }}
+  ecr_repository_url:
+    description: "ECR Repo URL"
+    value: ${{ steps.deploy.outputs.ecr_repository_url }}
 
 runs:
   using: 'composite'
@@ -597,6 +676,30 @@ runs:
         DOCKER_REPO_APP_DIRECTORY_CLEANUP: ${{ inputs.docker_repo_app_directory_cleanup }}
         DOCKER_EFS_MOUNT_TARGET: ${{ inputs.docker_efs_mount_target }}
 
+        # ECR
+        AWS_ECR_REPO_CREATE: ${{ inputs.aws_ecr_repo_create }}
+        AWS_ECR_REPO_TYPE: ${{ inputs.aws_ecr_repo_type }}
+        AWS_ECR_REPO_NAME: ${{ inputs.aws_ecr_repo_name }}
+        AWS_ECR_REPO_MUTABLE: ${{ inputs.aws_ecr_repo_mutable }}
+        AWS_ECR_REPO_ENCRYPTION_TYPE: ${{ inputs.aws_ecr_repo_encryption_type }}
+        AWS_ECR_REPO_ENCRYPTION_KEY_ARN: ${{ inputs.aws_ecr_repo_encryption_key_arn }}
+        AWS_ECR_REPO_FORCE_DESTROY: ${{ inputs.aws_ecr_repo_force_destroy }}
+        AWS_ECR_REPO_IMAGE_SCAN: ${{ inputs.aws_ecr_repo_image_scan }}
+        AWS_ECR_REGISTRY_SCAN_RULE: ${{ inputs.aws_ecr_registry_scan_rule }}
+        AWS_ECR_REGISTRY_PULL_THROUGH_CACHE_RULES: ${{ inputs.aws_ecr_registry_pull_through_cache_rules }}
+        AWS_ECR_REGISTRY_SCAN_CONFIG: ${{ inputs.aws_ecr_registry_scan_config }}
+        AWS_ECR_REGISTRY_REPLICATION_RULES_INPUT: ${{ inputs.aws_ecr_registry_replication_rules_input }}
+        AWS_ECR_REPO_POLICY_ATTACH: ${{ inputs.aws_ecr_repo_policy_attach }}
+        AWS_ECR_REPO_POLICY_CREATE: ${{ inputs.aws_ecr_repo_policy_create }}
+        AWS_ECR_REPO_POLICY_INPUT: ${{ inputs.aws_ecr_repo_policy_input }}
+        AWS_ECR_REPO_READ_ARN: ${{ inputs.aws_ecr_repo_read_arn }}
+        AWS_ECR_REPO_WRITE_ARN: ${{ inputs.aws_ecr_repo_write_arn }}
+        AWS_ECR_REPO_READ_ARN_LAMBDA: ${{ inputs.aws_ecr_repo_read_arn_lambda }}
+        AWS_ECR_LIFECYCLE_POLICY_INPUT: ${{ inputs.aws_ecr_lifecycle_policy_input }}
+        AWS_ECR_PUBLIC_REPO_CATALOG: ${{ inputs.aws_ecr_public_repo_catalog }}
+        AWS_ECR_REGISTRY_POLICY_INPUT: ${{ inputs.aws_ecr_registry_policy_input }}
+        AWS_ECR_ADDITIONAL_TAGS: ${{ inputs.aws_ecr_additional_tags }}
+
         # AWS EKS
         AWS_EKS_CREATE: ${{ inputs.aws_eks_create }}
         AWS_EKS_REGION: ${{ inputs.aws_eks_region }}
@@ -643,6 +746,9 @@ runs:
         TF_STATE_BUCKET_DESTROY: ${{ inputs.tf_state_bucket_destroy }}
         AWS_EC2_PORT_LIST: ${{ inputs.aws_ec2_port_list }}
         AWS_ELB_LISTEN_PORT: ${{ inputs.aws_elb_listen_port }}
+        ECR_REPO_ARN: ${{ steps.deploy.outputs.ecr_repository_arn }}
+        ECR_REPO_ID: ${{ steps.deploy.outputs.ecr_repository_registry_id }}
+        ECR_REPO_URL: ${{ steps.deploy.outputs.ecr_repository_url }}
       run: $GITHUB_ACTION_PATH/operations/_scripts/deploy/summary.sh
 
     # upload generated artifacts to GitHub if enabled

@@ -121,18 +121,14 @@ resource "random_string" "random" {
   numeric   = false
 }
 
-data "aws_vpc" "selected" {
-  id    = var.aws_ec2_selected_vpc_id
-}
-
 output "instance_public_dns" {
   description = "Public DNS address of the EC2 instance"
-  value       = data.aws_vpc.selected.enable_dns_hostnames ? var.aws_ec2_instance_public_ip ? try(data.aws_instance.server_ip[0].public_dns,data.aws_instance.server_ignore_ami_ip[0].public_dns) :null : null
+  value       = var.aws_vpc_dns_enabled ? var.aws_ec2_instance_public_ip ? try(data.aws_instance.server_ip[0].public_dns,data.aws_instance.server_ignore_ami_ip[0].public_dns) :null : null
 }
 
 output "instance_private_dns" {
   description = "Public DNS address of the EC2 instance"
-  value       = data.aws_vpc.selected.enable_dns_hostnames ? try(data.aws_instance.server_ip[0].private_dns,data.aws_instance.server_ignore_ami_ip[0].private_dns) : null
+  value       = var.aws_vpc_dns_enabled ? try(data.aws_instance.server_ip[0].private_dns,data.aws_instance.server_ignore_ami_ip[0].private_dns) : null
 }
 
 output "instance_public_ip" {
