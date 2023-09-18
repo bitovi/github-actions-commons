@@ -71,14 +71,8 @@ resource "aws_security_group_rule" "efs_nfs_incoming_ports_defined" { # Incoming
   depends_on        = [ aws_security_group.efs_security_group_defined ]
 }
 
-# Check that at least we have the mount_target, if so, will assume it's engough
-data "aws_efs_mount_target" "mount_target" {
-  count                = local.create_efs ? 0 : 1
-  file_system_id       = var.aws_efs_fs_id
-}
-
 resource "aws_efs_mount_target" "efs_mount_target_incoming" {
-  count           = length(data.aws_efs_mount_target.mount_target) != 0 ? 0 : length(local.incoming_subnets)
+  count           = data.aws_efs_file_system.efs.number_of_mount_targets > 0 ? 0 : length(local.incoming_subnets)
   file_system_id  = data.aws_efs_file_system.efs.id
   subnet_id       = local.incoming_subnets[count.index]
   security_groups = [aws_security_group.efs_security_group_defined[0].id]
