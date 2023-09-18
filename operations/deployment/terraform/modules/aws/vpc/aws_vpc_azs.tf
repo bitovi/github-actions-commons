@@ -76,8 +76,8 @@ resource "random_integer" "az_select" {
 
 data "aws_subnet" "default_selected" {
   count             = var.aws_vpc_create ? 0 : ( 
-    var.aws_vpc_id != "" ? 0 : contains(data.aws_availability_zones.all.names, local.preferred_az) ? 1 : 0 )
-  availability_zone = local.preferred_az
+    var.aws_vpc_id != "" ? 0 : contains(data.aws_availability_zones.all.names, (var.aws_vpc_availability_zones != "" ? local.aws_vpc_availability_zones[0] : var.aws_vpc_id != "" ? data.aws_subnet.selected[0].availability_zone : local.aws_ec2_zone_selected)) ? 1 : 0 )
+  availability_zone = var.aws_vpc_availability_zones != "" ? local.aws_vpc_availability_zones[0] : var.aws_vpc_id != "" ? data.aws_subnet.selected[0].availability_zone : local.aws_ec2_zone_selected
   default_for_az    = true #-  What happens if I have multiple subnets in the same az?
 }
 
