@@ -71,20 +71,8 @@ resource "aws_security_group_rule" "efs_nfs_incoming_ports_defined" { # Incoming
   depends_on        = [ aws_security_group.efs_security_group_defined ]
 }
 
-#data "aws_efs_mount_target" "target" {
-#  count          = local.create_efs ? 0 : 1
-#  file_system_id = data.aws_efs_file_system.efs.id
-#}
-
-data "aws_efs_mount_target" "target" {
-  count      = local.create_efs ? 0 : length(data.aws_efs_file_system.efs.availability_zones)
-  file_system_id = data.aws_efs_file_system.efs.id
-  availability_zone_name = element(data.aws_efs_file_system.efs.availability_zones, count.index)
-  depends_on = [data.aws_efs_file_system.efs] # Ensure this data source runs after retrieving EFS info
-}
-
 resource "aws_efs_mount_target" "efs_mount_target_incoming" {
-  count           = try(data.aws_efs_mount_target.target[0].mount_target_dns_name, "" ) != "" ? length(local.incoming_subnets) : 0
+  count           = length(local.incoming_subnets)
   file_system_id  = data.aws_efs_file_system.efs.id
   subnet_id       = local.incoming_subnets[count.index]
   security_groups = [aws_security_group.efs_security_group_defined[0].id]
