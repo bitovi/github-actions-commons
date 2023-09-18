@@ -74,19 +74,19 @@ resource "random_integer" "az_select" {
   }
 }
 
-output "debug 1" {
+output "debug1" {
   value = local.use_default
 }
-output "debug 2" {
+output "debug2" {
   value = data.aws_availability_zones.all.names
 }
-output "debug 3" {
+output "debug3" {
   value = local.preferred_az
 }
-output "debug 4" {
+output "debug4" {
   value = var.aws_vpc_availability_zones
 }
-output "debug 5" {
+output "debug5" {
   value = local.aws_vpc_availability_zones[0]
 }
 
