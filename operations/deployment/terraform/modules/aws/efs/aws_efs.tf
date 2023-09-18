@@ -76,6 +76,7 @@ data "aws_efs_mount_target" "mount_target" {
   count                = local.create_efs ? 0 : 1
   file_system_id       = var.aws_efs_fs_id
   subnet_id            = var.aws_selected_subnet_id
+  depends_on = [ data.aws_efs_file_system.efs ]
 }
 
 resource "aws_efs_mount_target" "efs_mount_target_incoming" {
