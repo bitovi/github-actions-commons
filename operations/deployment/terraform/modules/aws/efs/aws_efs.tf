@@ -71,8 +71,15 @@ resource "aws_security_group_rule" "efs_nfs_incoming_ports_defined" { # Incoming
   depends_on        = [ aws_security_group.efs_security_group_defined ]
 }
 
+# Check that at least we have the mount_target for the selected_az if create is not true
+data "aws_efs_mount_target" "mount_target" {
+  count                = local.create_efs ? 0 : 1
+  file_system_id       = var.aws_efs_fs_id
+  subnet_id            = var.aws_selected_subnet_id
+}
+
 resource "aws_efs_mount_target" "efs_mount_target_incoming" {
-  count           = length(local.incoming_subnets)
+  count           = length(data.aws_efs_mount_target.mount_target) != 0 ? 0 : length(local.incoming_subnets)
   file_system_id  = data.aws_efs_file_system.efs.id
   subnet_id       = local.incoming_subnets[count.index]
   security_groups = [aws_security_group.efs_security_group_defined[0].id]
@@ -120,7 +127,6 @@ resource "aws_efs_mount_target" "efs_mount_target_action" {
 # Data sources from selected (Coming from VPC module)
 
 data "aws_subnets" "selected_vpc_id"  {
-  #for_each = var.aws_selected_vpc_id != null ? toset(data.aws_availability_zones.all.zone_ids) : []
   count = var.aws_selected_vpc_id != null ? length(var.aws_selected_az_list) : 0
   filter {
     name   = "vpc-id"
@@ -129,7 +135,6 @@ data "aws_subnets" "selected_vpc_id"  {
   filter {
     name   = "availability-zone-id"
     values = [var.aws_selected_az_list[count.index]]
-    #values = ["${each.value}"]
   }
 }
 
