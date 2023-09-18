@@ -115,7 +115,7 @@ module "efs" {
   aws_efs_transition_to_inactive  = var.aws_efs_transition_to_inactive
   # VPC inputs
   aws_selected_vpc_id             = module.vpc[0].aws_selected_vpc_id
-  aws_selected_subnet_id          = try(module.vpc[0].aws_vpc_subnet_selected,null)
+  aws_selected_subnet_id          = module.vpc[0].aws_vpc_subnet_selected
   aws_selected_az                 = module.vpc[0].preferred_az
   aws_selected_az_list            = module.vpc[0].availability_zones
   # Others

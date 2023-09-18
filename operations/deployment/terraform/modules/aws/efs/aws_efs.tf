@@ -71,12 +71,10 @@ resource "aws_security_group_rule" "efs_nfs_incoming_ports_defined" { # Incoming
   depends_on        = [ aws_security_group.efs_security_group_defined ]
 }
 
-# Check that at least we have the mount_target for the selected_az if create is not true
+# Check that at least we have the mount_target, if so, will assume it's engough
 data "aws_efs_mount_target" "mount_target" {
-  count                = local.create_efs ? 0 : var.aws_selected_subnet_id != null ? 1 : 0
+  count                = local.create_efs ? 0 : 1
   file_system_id       = var.aws_efs_fs_id
-  subnet_id            = var.aws_selected_subnet_id
-  depends_on = [ data.aws_efs_file_system.efs ]
 }
 
 resource "aws_efs_mount_target" "efs_mount_target_incoming" {
