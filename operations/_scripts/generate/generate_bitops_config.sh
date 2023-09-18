@@ -80,6 +80,8 @@ fi
 if ([[ $(alpha_only "$AWS_EC2_INSTANCE_CREATE") == true ]] || [[ $(alpha_only "$AWS_EFS_ENABLE") == true ]] || [[ $(alpha_only "$AWS_AURORA_ENABLE") == true ]]) && [[ "$(alpha_only $TF_STACK_DESTROY)" != "true" ]]; then
   # random_integer.az_select needs to be created before the "full stack" to avoid a potential state dependency locks
   targets="$targets
+      - module.vpc.local.use_default
+      - module.vpc.local.preferred_az
       - module.vpc.aws_availability_zones.all
       - module.vpc.random_integer.az_select"
       #- module.vpc.aws_ec2_instance_type_offerings.region_azs
