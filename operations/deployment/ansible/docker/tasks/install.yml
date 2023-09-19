@@ -5,11 +5,10 @@
     mode: '0755'
 
 - name: Add Docker GPG apt Key
-  get_url:
-    url: https://download.docker.com/linux/ubuntu/gpg
-    dest: /etc/apt/keyrings/docker.gpg
-    mode: ugo+rw
-
+    shell: >
+    curl -fsSL https://download.docker.com/linux/ubuntu/gpg | gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+    chmod a+r /etc/apt/keyrings/docker.gpg
+    
 - name: Add Docker repo
   apt_repository:
     repo: "deb [arch={{ dpkg_architecture }} signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu {{ ansible_distribution_release }} stable"
