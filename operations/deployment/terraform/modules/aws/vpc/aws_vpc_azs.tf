@@ -52,7 +52,8 @@ locals {
   aws_ec2_instance_type_offerings = sort(data.aws_ec2_instance_type_offerings.region_azs.locations)
   aws_ec2_zone_selected = local.aws_ec2_instance_type_offerings[random_integer.az_select[0].result]
   #preferred_az = var.aws_vpc_availability_zones != "" ? local.aws_vpc_availability_zones[0] : var.aws_vpc_id != "" ? data.aws_subnet.selected[0].availability_zone : local.aws_ec2_zone_selected
-  preferred_az = var.aws_vpc_availability_zones != "" ? local.aws_ec2_zone_selected : var.aws_vpc_id != "" ? data.aws_subnet.selected[0].availability_zone : local.aws_ec2_zone_selected
+  #preferred_az = var.aws_vpc_availability_zones != "" ? local.aws_ec2_zone_selected : var.aws_vpc_id != "" ? data.aws_subnet.selected[0].availability_zone : local.aws_ec2_zone_selected
+  preferred_az = var.aws_vpc_availability_zones != "" ? local.aws_vpc_availability_zones[0] : var.aws_vpc_id != "" ? data.aws_subnet.selected[0].availability_zone : local.aws_ec2_zone_selected
 }
 
 data "aws_ec2_instance_type_offerings" "region_azs" {
@@ -74,23 +75,6 @@ resource "random_integer" "az_select" {
     ignore_changes = all
   }
 }
-
-output "debug1" {
-  value = local.use_default
-}
-output "debug2" {
-  value = data.aws_availability_zones.all.names
-}
-output "debug3" {
-  value = local.preferred_az
-}
-output "debug4" {
-  value = var.aws_vpc_availability_zones
-}
-output "debug5" {
-  value = local.aws_vpc_availability_zones[0]
-}
-
 
 data "aws_subnet" "default_selected" {
   count             = local.use_default ? contains(data.aws_availability_zones.all.names, local.preferred_az) ? 1 : 0 : 0
