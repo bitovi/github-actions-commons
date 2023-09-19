@@ -5,16 +5,18 @@
     mode: '0755'
 
 - name: Add Docker GPG apt Key
-  command: "curl -fsSL https://download.docker.com/linux/ubuntu/gpg | gpg --dearmor -o /etc/apt/keyrings/docker.gpg"
+  get_url:
+    url: https://download.docker.com/linux/ubuntu/gpg
+    dest: /etc/apt/keyrings/docker.asc
 
 - name: Fix Docker key permissions
   file:
-    path: /etc/apt/keyrings/docker.gpg
+    path: /etc/apt/keyrings/docker.asc
     mode: '0666'
     
 - name: Add Docker repo
   apt_repository:
-    repo: "deb [arch={{ dpkg_architecture }} signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu {{ ansible_distribution_release }} stable"
+    repo: "deb [arch={{ dpkg_architecture }} signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu {{ ansible_distribution_release }} stable"
     state: present
 
 - name: Update apt repositories
