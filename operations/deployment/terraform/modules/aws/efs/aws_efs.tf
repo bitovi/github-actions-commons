@@ -120,7 +120,6 @@ resource "aws_efs_mount_target" "efs_mount_target_action" {
 # Data sources from selected (Coming from VPC module)
 
 data "aws_subnets" "selected_vpc_id"  {
-  #for_each = var.aws_selected_vpc_id != null ? toset(data.aws_availability_zones.all.zone_ids) : []
   count = var.aws_selected_vpc_id != null ? length(var.aws_selected_az_list) : 0
   filter {
     name   = "vpc-id"
@@ -129,7 +128,6 @@ data "aws_subnets" "selected_vpc_id"  {
   filter {
     name   = "availability-zone-id"
     values = [var.aws_selected_az_list[count.index]]
-    #values = ["${each.value}"]
   }
 }
 
