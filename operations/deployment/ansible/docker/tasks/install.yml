@@ -11,7 +11,7 @@
 - name: Fix Docker key permissions
   file:
     path: /etc/apt/keyrings/docker.gpg
-    mode: ugo+rw
+    mode: '0666'
     
 - name: Add Docker repo
   apt_repository:
