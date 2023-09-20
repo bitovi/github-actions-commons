@@ -392,11 +392,12 @@ An example EFS Zone mapping;
 }
 ```
 
-## Adding external Aurora database (AWS RDS)
+## Adding external database (AWS RDS or Aurora)
 
-If `aws_aurora_enable` is set to `true`, this action will deploy a RDS Aurora cluster using Postgres as a default. 
+If `aws_rds_db_enable` and/or `aws_aurora_enable` are set to `true`, this action will deploy a RDS instance and/or Aurora cluster using Postgres as a default. 
 
-See [this Terraform provider](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/rds_cluster) and [this other AWS doc](https://awscli.amazonaws.com/v2/documentation/api/latest/reference/rds/create-db-parameter-group.html) to set up most of the variables.
+For RDS see [this Terraform provider](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/db_instance)
+For Aurora see [this Terraform provider](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/rds_cluster) and [this other AWS doc](https://awscli.amazonaws.com/v2/documentation/api/latest/reference/rds/create-db-parameter-group.html) to set up most of the variables.
 
 ### Environment variables
 The following environment variables are added to the `.env` file in your app's `docker-compose.yaml` file.
@@ -410,8 +411,18 @@ services:
     env_file: .env
     # ...
 ```
+The RDS available environment variables are:
+| Variable | Description |
+|----------|-------------|
+| `DB_ENGINE`| Database enginge name |
+| `DB_ENGINE_VERSION`| Database engine version |
+| `DB_USER`| DB Username |
+| `DB_PASSWORD`| DB Password |
+| `DB_NAME`| Main database name |
+| `DB_PORT`| DB Port |
+| `DB_HOST`| DB Host |
 
-The available environment variables are:
+The Aurora available environment variables are:
 | Variable | Description |
 |----------|-------------|
 | `AURORA_CLUSTER_ENGINE` (and `DBA_ENGINE`) | Engine name - ( mysql/postgres ) |
