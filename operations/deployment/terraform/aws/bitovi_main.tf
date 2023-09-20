@@ -349,18 +349,3 @@ output "application_public_dns" {
 output "vm_url" {
   value = try(module.aws_route53[0].vm_url,local.elb_url)
 }
-
-output "ecr_repository_arn" {
-  description = "Full ARN of the repository"
-  value       = try(module.aws_ecr[0].repository_arn,null)
-}
-
-output "ecr_repository_registry_id" {
-  description = "The registry ID where the repository was created"
-  value       = try(module.aws_ecr[0].repository_registry_id,null)
-}
-
-output "ecr_repository_url" {
-  description = "The URL of the repository"
-  value       = try(module.aws_ecr[0].repository_url,null)
-}
