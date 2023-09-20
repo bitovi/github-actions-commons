@@ -59,7 +59,7 @@ resource "aws_db_instance" "default" {
   username                        = var.aws_rds_db_user != null ? var.aws_rds_db_user : "dbuser"
   password                        = random_password.rds.result
   skip_final_snapshot             = true
-  enabled_cloudwatch_logs_exports = [var.aws_rds_cloudwatch_logs_exports]
+  enabled_cloudwatch_logs_exports = var.aws_rds_cloudwatch_logs_exports
   vpc_security_group_ids          = [aws_security_group.rds_db_security_group.id]
 }
 
