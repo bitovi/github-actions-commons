@@ -21,6 +21,7 @@ resource "aws_security_group_rule" "ingress_rds" {
   protocol          = "tcp"
   cidr_blocks       = ["0.0.0.0/0"]
   security_group_id = aws_security_group.rds_db_security_group.id
+  depends_on = [ aws_db_instance.default ]
 }
 
 #resource "aws_security_group_rule" "ingress_rds_sgs" { ## TODO - Make this iterate through a list of allowed SGs
@@ -48,14 +49,14 @@ resource "aws_db_subnet_group" "selected" {
 resource "aws_db_instance" "default" {
   identifier                      = var.aws_rds_db_name != "" ? var.aws_rds_db_name : var.aws_resource_identifier
   engine                          = var.aws_rds_db_engine
-  engine_version           = var.aws_rds_db_engine_version
+  engine_version                  = var.aws_rds_db_engine_version
   db_subnet_group_name            = aws_db_subnet_group.selected.name
   db_name                         = var.aws_rds_db_name != null ? var.aws_rds_db_name : null
   port                            = var.aws_rds_db_port != null ? tonumber(var.aws_rds_db_port) : null
   allocated_storage               = tonumber(var.aws_rds_db_allocated_storage)
   max_allocated_storage           = tonumber(var.aws_rds_db_max_allocated_storage)
   instance_class                  = var.aws_rds_db_instance_class
-  username                        = var.aws_rds_db_user != null ? var.aws_rds_db_user : dbuser
+  username                        = var.aws_rds_db_user != null ? var.aws_rds_db_user : "dbuser"
   password                        = random_password.rds.result
   skip_final_snapshot             = true
   enabled_cloudwatch_logs_exports = [var.aws_rds_cloudwatch_logs_exports]
@@ -92,6 +93,13 @@ resource "random_password" "rds" {
   lifecycle {
   ignore_changes = all
   }
+}
+
+resource "random_string" "random_sm" {
+  length    = 5
+  lower     = true
+  special   = false
+  numeric   = false
 }
 
 data "aws_vpc" "selected" {
