@@ -127,6 +127,34 @@ module "efs" {
   }
 }
 
+module "rds" {
+  source = "../modules/aws/rds"
+  count  = var.aws_rds_db_enable ? 1 : 0
+  # RDS
+  aws_rds_db_name                    = var.aws_rds_db_name
+  aws_rds_db_engine                  = var.aws_rds_db_engine
+  aws_rds_db_engine_version          = var.aws_rds_db_engine_version
+  aws_rds_db_security_group_name     = var.aws_rds_db_security_group_name
+  aws_rds_db_port                    = var.aws_rds_db_port
+  aws_rds_db_subnets                 = var.aws_rds_db_subnets
+  aws_rds_db_allocated_storage       = var.aws_rds_db_allocated_storage
+  aws_rds_db_max_allocated_storage   = var.aws_rds_db_max_allocated_storage
+  aws_rds_db_instance_class          = var.aws_rds_db_instance_class
+  aws_rds_db_user                    = var.aws_rds_db_user
+  aws_rds_cloudwatch_logs_exports    = var.aws_rds_cloudwatch_logs_exports
+  # Others
+  aws_selected_vpc_id                = module.vpc.aws_selected_vpc_id
+  aws_subnets_vpc_subnets_ids        = module.vpc.aws_selected_vpc_subnets
+  aws_resource_identifier            = var.aws_resource_identifier
+  aws_resource_identifier_supershort = var.aws_resource_identifier_supershort
+  # Dependencies
+  depends_on = [module.vpc]
+
+  providers = {
+    aws = aws.rds
+  }
+}
+
 module "aurora_rds" {
   source = "../modules/aws/aurora"
   count  = var.aws_aurora_enable ? 1 : 0

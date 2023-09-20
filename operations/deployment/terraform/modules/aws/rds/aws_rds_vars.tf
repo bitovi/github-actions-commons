@@ -1,0 +1,15 @@
+variable "aws_rds_db_name" {}
+variable "aws_rds_db_engine" {}
+variable "aws_rds_db_engine_version" {}
+variable "aws_rds_db_security_group_name" {}
+variable "aws_rds_db_port" {}
+variable "aws_rds_db_subnets" {}
+variable "aws_rds_db_allocated_storage" {}
+variable "aws_rds_db_max_allocated_storage" {}
+variable "aws_rds_db_instance_class" {}
+variable "aws_rds_db_user" {}
+variable "aws_rds_cloudwatch_logs_exports" {}
+variable "aws_resource_identifier" {}
+variable "aws_resource_identifier_supershort" {}
+variable "aws_selected_vpc_id" {}
+variable "aws_subnets_vpc_subnets_ids" {}

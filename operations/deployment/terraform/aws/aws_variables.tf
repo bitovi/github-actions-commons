@@ -383,6 +383,80 @@ variable "aws_efs_additional_tags" {
 
 # AWS RDS
 
+variable "aws_rds_db_enable" {
+  type        = bool
+  description = "DB Toggle"
+  default     = null
+}
+
+variable "aws_rds_db_name" {
+  type        = string
+  description = "The name of the database to create when the DB instance is created. If this parameter is not specified, no database is created in the DB instance."
+  default     = null
+}
+
+variable "aws_rds_db_engine" {
+  type        = string
+  description = "Which Database engine to use."
+  default     = "postgres"
+}
+
+variable "aws_rds_db_engine_version" {
+  type        = string
+  description = "Which Database engine to use."
+  default     = null
+}
+
+variable "aws_rds_db_security_group_name" {
+  type        = string
+  description = "The name of the database security group. Defaults to SG for aws_resource_identifier - RDS"
+  default     = null
+}
+
+variable "aws_rds_db_port" {
+  type        = string
+  description = "Port where the DB listens to."
+  default     = null
+}
+
+variable "aws_rds_db_subnets" {
+  type        = string
+  description = "aws_rds_db_subnets"
+  default     = null
+}
+
+variable "aws_rds_db_allocated_storage" {
+  type        = string
+  description = "Storage size."
+  default     = "10"
+}
+
+variable "aws_rds_db_max_allocated_storage" {
+  type        = string
+  description = "Max Storage size. 0 to disable autoscaling"
+  default     = "0"
+}
+
+variable "aws_rds_db_instance_class" {
+  type        = string
+  description = "Server size"
+  default     = "db.t3.micro"
+}
+
+variable "aws_rds_db_user" {
+  type        = string
+  description = "user"
+  default     = "dbuser"
+}
+
+variable "aws_rds_cloudwatch_logs_exports" {
+  type        = string
+  description = "logs exports"
+  default     = null
+}
+
+# AWS Aurora
+
 variable "aws_aurora_enable" {
   type        = bool
   description = "deploy a postgres database"
