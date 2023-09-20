@@ -167,6 +167,23 @@ if [[ $(alpha_only "$AWS_EFS_ENABLE") == true ]]; then
 fi
 
 #-- RDS --#
+if [[ $(alpha_only "$AWS_RDS_DB_ENABLE") == true ]]; then
+  aws_rds_db_enable=$(generate_var aws_rds_db_enable $AWS_RDS_DB_ENABLE)
+  aws_rds_db_name=$(generate_var aws_rds_db_name $AWS_RDS_DB_NAME)
+  aws_rds_db_engine=$(generate_var aws_rds_db_engine $AWS_RDS_DB_ENGINE)
+  aws_rds_db_engine_version=$(generate_var aws_rds_db_engine_version $AWS_RDS_DB_ENGINE_VERSION)
+  aws_rds_db_security_group_name=$(generate_var aws_rds_db_security_group_name $AWS_RDS_DB_SECURITY_GROUP_NAME)
+  aws_rds_db_port=$(generate_var aws_rds_db_port $AWS_RDS_DB_PORT)
+  aws_rds_db_subnets=$(generate_var aws_rds_db_subnets $AWS_RDS_DB_SUBNETS)
+  aws_rds_db_allocated_storage=$(generate_var aws_rds_db_allocated_storage $AWS_RDS_DB_ALLOCATED_STORAGE)
+  aws_rds_db_max_allocated_storage=$(generate_var aws_rds_db_max_allocated_storage $AWS_RDS_DB_MAX_ALLOCATED_STORAGE)
+  aws_rds_db_instance_class=$(generate_var aws_rds_db_instance_class $AWS_RDS_DB_INSTANCE_CLASS)
+  aws_rds_db_user=$(generate_var aws_rds_db_user $AWS_RDS_DB_USER)
+  aws_rds_cloudwatch_logs_exports=$(generate_var aws_rds_cloudwatch_logs_exports $AWS_RDS_CLOUDWATCH_LOGS_EXPORTS)
+  aws_rds_additional_tags=$(generate_var aws_rds_additional_tags $AWS_RDS_ADDITIONAL_TAGS)
+fi
+
+#-- AURORA --#
 if [[ $(alpha_only "$AWS_AURORA_ENABLE") == true ]]; then
   aws_aurora_enable=$(generate_var aws_aurora_enable $AWS_AURORA_ENABLE)
   aws_aurora_engine=$(generate_var aws_aurora_engine $AWS_AURORA_ENGINE)
@@ -346,6 +363,20 @@ $aws_efs_ec2_mount_point
 $aws_efs_additional_tags
 
 #-- RDS --#
+$aws_rds_db_enable
+$aws_rds_db_name
+$aws_rds_db_engine
+$aws_rds_db_security_group_name
+$aws_rds_db_port
+$aws_rds_db_subnets
+$aws_rds_db_allocated_storage
+$aws_rds_db_max_allocated_storage
+$aws_rds_db_instance_class
+$aws_rds_db_user
+$aws_rds_cloudwatch_logs_exports
+$aws_rds_additional_tags
+
+#-- AURORA --#
 $aws_aurora_enable
 $aws_aurora_engine
 $aws_aurora_engine_version

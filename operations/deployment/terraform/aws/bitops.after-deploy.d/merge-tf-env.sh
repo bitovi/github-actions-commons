@@ -9,7 +9,7 @@ ANSIBLE_DIR=ansible/clone_repo
 TERRAFORM_PATH=terraform/aws
 
 # Merging order
-order=ec2,efs,aurora,repo,ghv,ghs,aws
+order=ec2,efs,rds,aurora,repo,ghv,ghs,aws
 
 # Ansible dotenv file -> The final destination of all
 ENV_OUT_FILE="${BITOPS_ENVROOT}/${ANSIBLE_DIR}/app.env"
@@ -19,6 +19,9 @@ ENV_EC2_FILE="${BITOPS_ENVROOT}/${TERRAFORM_PATH}/ec2.env"
 
 # EFS dotenv file
 ENV_EFS_FILE="${BITOPS_ENVROOT}/${TERRAFORM_PATH}/efs.env"
+
+# RDS dotenv file
+ENV_RDS_FILE="${BITOPS_ENVROOT}/${TERRAFORM_PATH}/rds.env"
 
 # Aurora dotenv file
 ENV_AURORA_FILE="${BITOPS_ENVROOT}/${TERRAFORM_PATH}/aurora.env"
@@ -79,6 +82,10 @@ function process {
     efs)
       # Code to be executed for option6
       merge $ENV_EFS_FILE "EFS"
+      ;;
+    rds)
+      # Code to be executed for option6
+      merge $ENV_RDS_FILE "RDS"
       ;;
     aurora)
       # Code to be executed for option6

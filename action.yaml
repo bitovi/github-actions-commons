@@ -297,8 +297,49 @@ inputs:
   aws_efs_additional_tags:
     description: 'A JSON object of additional tags that will be included on created resources. Example: `{"key1": "value1", "key2": "value2"}`'
     required: false
-  
-  # AWS RDS
+
+# AWS RDS
+  aws_rds_db_enable:
+    description: 'Set to true to enable an RDS DB.'
+    required: false
+  aws_rds_db_name:
+    description: 'The name of the database to create when the DB instance is created.'
+    required: false
+  aws_rds_db_engine:
+    description: 'Which Database engine to use. Default is postgres'
+    required: false
+  aws_rds_db_engine_version:
+    description: 'Which Database engine version to use.'
+    required: false
+  aws_rds_db_security_group_name:
+    description: 'The name of the database security group. Defaults to SG for aws_resource_identifier - RDS.'
+    required: false
+  aws_rds_db_port:
+    description: ' Port where the DB listens to.'
+    required: false
+  aws_rds_db_subnets:
+    description: 'Specify which subnets to use as a list of strings. '
+    required: false
+  aws_rds_db_allocated_storage:
+    description: 'Storage size. Defaults to 10.'
+    required: false
+  aws_rds_db_max_allocated_storage:
+    description: 'Max storage size. Defaults to 0 to disable auto-scaling.'
+    required: false
+  aws_rds_db_instance_class:
+    description: 'DB instance server type. Defaults to db.t3.micro.'
+    required: false
+  aws_rds_db_user:
+    description: 'Username for the db. Defaults to dbuser.'
+    required: false
+  aws_rds_cloudwatch_logs_exports:
+    description: 'Set of log types to enable for exporting to CloudWatch logs.'
+    required: false
+  aws_rds_additional_tags:
+    description: 'A JSON object of additional tags that will be included on created resources. Example: `{"key1": "value1", "key2": "value2"}`'
+    required: false
+
+  # AWS AURORA
   aws_aurora_enable:
     description: 'Set to "true" to enable a postgres database'
     required: false
@@ -648,6 +689,21 @@ runs:
         AWS_EFS_ADDITIONAL_TAGS: ${{ inputs.aws_efs_additional_tags }}
 
         # AWS RDS
+        AWS_RDS_DB_ENABLE: ${{ inputs.aws_rds_db_enable }}
+        AWS_RDS_DB_NAME: ${{ inputs.aws_rds_db_name }}
+        AWS_RDS_DB_ENGINE: ${{ inputs.aws_rds_db_engine }}
+        AWS_RDS_DB_ENGINE_VERSION: ${{ inputs.aws_rds_db_engine_version }}
+        AWS_RDS_DB_SECURITY_GROUP_NAME: ${{ inputs.aws_rds_db_security_group_name }}
+        AWS_RDS_DB_PORT: ${{ inputs.aws_rds_db_port }}
+        AWS_RDS_DB_SUBNETS: ${{ inputs.aws_rds_db_subnets }}
+        AWS_RDS_DB_ALLOCATED_STORAGE: ${{ inputs.aws_rds_db_allocated_storage }}
+        AWS_RDS_DB_MAX_ALLOCATED_STORAGE: ${{ inputs.aws_rds_db_max_allocated_storage }}
+        AWS_RDS_DB_INSTANCE_CLASS: ${{ inputs.aws_rds_db_instance_class }}
+        AWS_RDS_DB_USER: ${{ inputs.aws_rds_db_user }}
+        AWS_RDS_CLOUDWATCH_LOGS_EXPORTS: ${{ inputs.aws_rds_cloudwatch_logs_exports }}
+        AWS_RDS_ADDITIONAL_TAGS: ${{ inputs.aws_rds_additional_tags }}
+  
+        # AWS AURORA
         AWS_AURORA_ENABLE: ${{ inputs.aws_aurora_enable }}
         AWS_AURORA_ENGINE:  ${{ inputs.aws_aurora_engine }}
         AWS_AURORA_ENGINE_VERSION:  ${{ inputs.aws_aurora_engine_version }}
