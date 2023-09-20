@@ -77,7 +77,7 @@ if [ -n "$TF_TARGETS" ]; then
 fi
 
 # Making VPC Random creation first a must only if this modules are created. 
-if ([[ $(alpha_only "$AWS_EC2_INSTANCE_CREATE") == true ]] || [[ $(alpha_only "$AWS_EFS_ENABLE") == true ]] || [[ $(alpha_only "$AWS_AURORA_ENABLE") == true ]] || [[ $(alpha_only "$AWS_ECR_REPO_CREATE") == true ]]) && [[ "$(alpha_only $TF_STACK_DESTROY)" != "true" ]]; then
+if ([[ $(alpha_only "$AWS_EC2_INSTANCE_CREATE") == true ]] || [[ $(alpha_only "$AWS_EFS_ENABLE") == true ]] || [[ $(alpha_only "$AWS_AURORA_ENABLE") == true ]]) && [[ "$(alpha_only $TF_STACK_DESTROY)" != "true" ]]; then
   # random_integer.az_select needs to be created before the "full stack" to avoid a potential state dependency locks
   targets="$targets
       - module.vpc.random_integer.az_select"Adding 
@@ -108,9 +108,6 @@ fi
 mkdir -p "${GITHUB_ACTION_PATH}/operations/generated_code"
 # BitOps Deployment Config file
 BITOPS_DEPLOY_FILE="${GITHUB_ACTION_PATH}/operations/deployment/bitops.config.yaml"
-# BitOps Code Config File
-##BITOPS_CODE_FILE="${GITHUB_ACTION_PATH}/operations/generated_code/bitops.config.yaml"
-# BitOps Temp file
 BITOPS_CONFIG_TEMP="/tmp/bitops.config.yaml"
 
 # Global Bitops Config
@@ -128,9 +125,20 @@ bitops:
       create_bitops_terraform_config aws false targets
     fi
   else
-    if [[ $(alpha_only "$AWS_EC2_INSTANCE_CREATE") == true ]] || [[ $(alpha_only "$AWS_EFS_CREATE") == true ]] || [[ "$AWS_AURORA_ENABLE" != "" ]] || [[ $(alpha_only "$AWS_ECR_REPO_CREATE") == true ]]; then
+    if [[ $(alpha_only "$AWS_EC2_INSTANCE_CREATE") == true ]] || [[ $(alpha_only "$AWS_EFS_CREATE") == true ]] || [[ "$AWS_AURORA_ENABLE" != "" ]]; then
       add_terraform_module aws
       create_bitops_terraform_config aws true targets
+    fi
+  fi
+  if [[ $(alpha_only "$AWS_ECR_REPO_CREATE") != true ]]; then
+    if check_statefile aws ecr; then
+      add_terraform_module ecr
+      create_bitops_terraform_config ecr false
+    fi
+  else
+    if [[ $(alpha_only "$AWS_ECR_REPO_CREATE") == true ]]; then
+      add_terraform_module ecr
+      create_bitops_terraform_config ecr true
     fi
   fi
   if [[ $(alpha_only "$AWS_EKS_CREATE") != true ]]; then

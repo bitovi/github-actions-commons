@@ -98,6 +98,7 @@ provider \"aws\" {
 }
 
 generate_provider_aws aws
+generate_provider_aws ecr
 generate_provider_aws eks
 
 echo "Done with generate_provider.sh"

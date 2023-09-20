@@ -190,37 +190,37 @@ module "secretmanager_get" {
   env_aws_secret = var.env_aws_secret
 }
 
-module "aws_ecr" {
-  source = "../modules/aws/ecr"
-  count  = var.aws_ecr_repo_create ? 1 : 0
-  # ECR
-  aws_ecr_repo_type                         = var.aws_ecr_repo_type
-  aws_ecr_repo_name                         = var.aws_ecr_repo_name
-  aws_ecr_repo_mutable                      = var.aws_ecr_repo_mutable
-  aws_ecr_repo_encryption_type              = var.aws_ecr_repo_encryption_type
-  aws_ecr_repo_encryption_key_arn           = var.aws_ecr_repo_encryption_key_arn
-  aws_ecr_repo_force_destroy                = var.aws_ecr_repo_force_destroy
-  aws_ecr_repo_image_scan                   = var.aws_ecr_repo_image_scan
-  aws_ecr_registry_scan_rule                = var.aws_ecr_registry_scan_rule
-  aws_ecr_registry_pull_through_cache_rules = var.aws_ecr_registry_pull_through_cache_rules
-  aws_ecr_registry_scan_config              = var.aws_ecr_registry_scan_config
-  aws_ecr_registry_replication_rules_input  = var.aws_ecr_registry_replication_rules_input
-  aws_ecr_repo_policy_attach                = var.aws_ecr_repo_policy_attach
-  aws_ecr_repo_policy_create                = var.aws_ecr_repo_policy_create
-  aws_ecr_repo_policy_input                 = var.aws_ecr_repo_policy_input
-  aws_ecr_repo_read_arn                     = var.aws_ecr_repo_read_arn
-  aws_ecr_repo_write_arn                    = var.aws_ecr_repo_write_arn
-  aws_ecr_repo_read_arn_lambda              = var.aws_ecr_repo_read_arn_lambda
-  aws_ecr_lifecycle_policy_input            = var.aws_ecr_lifecycle_policy_input
-  aws_ecr_public_repo_catalog               = var.aws_ecr_public_repo_catalog
-  aws_ecr_registry_policy_input             = var.aws_ecr_registry_policy_input
-  # Others
-  aws_resource_identifier                   = var.aws_resource_identifier
-
-  providers = {
-    aws = aws.ecr
-  }
-}
+#module "aws_ecr" {
+#  source = "../modules/aws/ecr"
+#  count  = var.aws_ecr_repo_create ? 1 : 0
+#  # ECR
+#  aws_ecr_repo_type                         = var.aws_ecr_repo_type
+#  aws_ecr_repo_name                         = var.aws_ecr_repo_name
+#  aws_ecr_repo_mutable                      = var.aws_ecr_repo_mutable
+#  aws_ecr_repo_encryption_type              = var.aws_ecr_repo_encryption_type
+#  aws_ecr_repo_encryption_key_arn           = var.aws_ecr_repo_encryption_key_arn
+#  aws_ecr_repo_force_destroy                = var.aws_ecr_repo_force_destroy
+#  aws_ecr_repo_image_scan                   = var.aws_ecr_repo_image_scan
+#  aws_ecr_registry_scan_rule                = var.aws_ecr_registry_scan_rule
+#  aws_ecr_registry_pull_through_cache_rules = var.aws_ecr_registry_pull_through_cache_rules
+#  aws_ecr_registry_scan_config              = var.aws_ecr_registry_scan_config
+#  aws_ecr_registry_replication_rules_input  = var.aws_ecr_registry_replication_rules_input
+#  aws_ecr_repo_policy_attach                = var.aws_ecr_repo_policy_attach
+#  aws_ecr_repo_policy_create                = var.aws_ecr_repo_policy_create
+#  aws_ecr_repo_policy_input                 = var.aws_ecr_repo_policy_input
+#  aws_ecr_repo_read_arn                     = var.aws_ecr_repo_read_arn
+#  aws_ecr_repo_write_arn                    = var.aws_ecr_repo_write_arn
+#  aws_ecr_repo_read_arn_lambda              = var.aws_ecr_repo_read_arn_lambda
+#  aws_ecr_lifecycle_policy_input            = var.aws_ecr_lifecycle_policy_input
+#  aws_ecr_public_repo_catalog               = var.aws_ecr_public_repo_catalog
+#  aws_ecr_registry_policy_input             = var.aws_ecr_registry_policy_input
+#  # Others
+#  aws_resource_identifier                   = var.aws_resource_identifier
+#
+#  providers = {
+#    aws = aws.ecr
+#  }
+#}
 
 #module "eks" {
 #  source = "../modules/aws/eks"
