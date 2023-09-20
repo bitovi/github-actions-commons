@@ -78,7 +78,6 @@ if [[ $SUCCESS == 'success' ]]; then
     SUMMARY_CODE=10
     result_string="## Deploy Complete! :rocket:
     ECR Repo ARN: ${ECR_REPO_ARN}
-    ECR Repo ID:  ${ECR_REPO_ID}
     ECR Repo URL: ${ECR_REPO_URL}"
   elif [[ $BITOPS_CODE_ONLY == 'true' ]]; then
     if [[ $BITOPS_CODE_STORE == 'true' ]]; then
