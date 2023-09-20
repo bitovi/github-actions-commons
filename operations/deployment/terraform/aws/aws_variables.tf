@@ -386,7 +386,7 @@ variable "aws_efs_additional_tags" {
 variable "aws_rds_db_enable" {
   type        = bool
   description = "DB Toggle"
-  default     = null
+  default     = false
 }
 
 variable "aws_rds_db_name" {
