@@ -452,7 +452,7 @@ variable "aws_rds_db_user" {
 variable "aws_rds_cloudwatch_logs_exports" {
   type        = string
   description = "logs exports"
-  default     = null
+  default     = ""
 }
 
 variable "aws_rds_additional_tags" {
