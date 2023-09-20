@@ -16,8 +16,8 @@ resource "aws_security_group" "rds_db_security_group" {
 resource "aws_security_group_rule" "ingress_rds" {
   type              = "ingress"
   description       = "${var.aws_resource_identifier} - RDS Port"
-  from_port         = tonumber(var.aws_db_instance.default.port)
-  to_port           = tonumber(var.aws_db_instance.default.port)
+  from_port         = tonumber(aws_db_instance.default.port)
+  to_port           = tonumber(aws_db_instance.default.port)
   protocol          = "tcp"
   cidr_blocks       = ["0.0.0.0/0"]
   security_group_id = aws_security_group.rds_db_security_group.id
