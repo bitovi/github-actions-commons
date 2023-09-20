@@ -455,6 +455,12 @@ variable "aws_rds_cloudwatch_logs_exports" {
   default     = null
 }
 
+variable "aws_rds_additional_tags" {
+  type        = string
+  description = "A list of strings that will be added to created resources"
+  default     = "{}"
+}
+
 # AWS Aurora
 
 variable "aws_aurora_enable" {

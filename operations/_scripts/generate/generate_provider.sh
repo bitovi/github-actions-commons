@@ -87,6 +87,14 @@ provider \"aws\" {
 }
 
 provider \"aws\" {
+  alias  = \"rds\"
+  region = \"${AWS_DEFAULT_REGION}\"
+  default_tags {
+    tags = local.rds_tags
+  }
+}
+
+provider \"aws\" {
   alias  = \"aurora\"
   region = \"${AWS_DEFAULT_REGION}\"
   default_tags {

@@ -232,6 +232,7 @@ The following inputs can be used as `step.with` keys
 | `aws_rds_db_instance_class`| String | DB instance server type. Defaults to `db.t3.micro`. |
 | `aws_rds_db_user`| String | Username for the db. Defaults to `dbuser`. |
 | `aws_rds_cloudwatch_logs_exports`| String | Set of log types to enable for exporting to CloudWatch logs. MySQL and MariaDB: `audit, error, general, slowquery`. PostgreSQL: `postgresql, upgrade`. MSSQL: `agent , error`. Oracle: `alert, audit, listener, trace`. |
+| `aws_rds_additional_tags` | JSON | Add additional tags to the terraform [default tags](https://www.hashicorp.com/blog/default-tags-in-the-terraform-aws-provider), any tags put here will be added to efs provisioned resources.|
 <hr/>
 <br/>
 

@@ -335,6 +335,9 @@ inputs:
   aws_rds_cloudwatch_logs_exports:
     description: 'Set of log types to enable for exporting to CloudWatch logs.'
     required: false
+  aws_rds_additional_tags:
+    description: 'A JSON object of additional tags that will be included on created resources. Example: `{"key1": "value1", "key2": "value2"}`'
+    required: false
 
   # AWS AURORA
   aws_aurora_enable:
@@ -698,6 +701,7 @@ runs:
         AWS_RDS_DB_INSTANCE_CLASS: ${{ inputs.aws_rds_db_instance_class }}
         AWS_RDS_DB_USER: ${{ inputs.aws_rds_db_user }}
         AWS_RDS_CLOUDWATCH_LOGS_EXPORTS: ${{ inputs.aws_rds_cloudwatch_logs_exports }}
+        AWS_RDS_ADDITIONAL_TAGS: ${{ inputs.aws_rds_additional_tags }}
   
         # AWS AURORA
         AWS_AURORA_ENABLE: ${{ inputs.aws_aurora_enable }}
