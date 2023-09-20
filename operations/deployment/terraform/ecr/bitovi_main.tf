@@ -50,11 +50,6 @@ output "ecr_repository_arn" {
   value       = try(module.aws_ecr.repository_arn,null)
 }
 
-output "ecr_repository_registry_id" {
-  description = "The registry ID where the repository was created"
-  value       = try(module.aws_ecr.repository_registry_id,null)
-}
-
 output "ecr_repository_url" {
   description = "The URL of the repository"
   value       = try(module.aws_ecr.repository_url,null)

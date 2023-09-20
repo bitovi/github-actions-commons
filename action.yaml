@@ -519,9 +519,6 @@ outputs:
   ecr_repository_arn:
     description: "ECR Repo ARN"
     value: ${{ steps.deploy.outputs.ecr_repository_arn }}
-  ecr_repository_registry_id:
-    description: "ECR Repo Registry ID"
-    value: ${{ steps.deploy.outputs.ecr_repository_registry_id }}
   ecr_repository_url:
     description: "ECR Repo URL"
     value: ${{ steps.deploy.outputs.ecr_repository_url }}
@@ -747,7 +744,6 @@ runs:
         AWS_EC2_PORT_LIST: ${{ inputs.aws_ec2_port_list }}
         AWS_ELB_LISTEN_PORT: ${{ inputs.aws_elb_listen_port }}
         ECR_REPO_ARN: ${{ steps.deploy.outputs.ecr_repository_arn }}
-        ECR_REPO_ID: ${{ steps.deploy.outputs.ecr_repository_registry_id }}
         ECR_REPO_URL: ${{ steps.deploy.outputs.ecr_repository_url }}
       run: $GITHUB_ACTION_PATH/operations/_scripts/deploy/summary.sh
 

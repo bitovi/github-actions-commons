@@ -19,13 +19,11 @@ if [ "$BITOPS_TERRAFORM_COMMAND" != "destroy" ]; then
   terraform output | sed -e ':a;/["\)]$/!N;s/\n//;ta' -e 's/ *= */=/g;s/[" ]//g;s/,\([]]\)/\1/g' > $TARGET_FILE
   # ECR
   export BITOPS_ECR_REPO_ARN="$(cat $TARGET_FILE | grep ecr_repository_arn | awk -F"=" '{print $2}')"
-  export BITOPS_ECR_REPO_ID="$(cat $TARGET_FILE | grep ecr_repository_registry_id | awk -F"=" '{print $2}')"
   export BITOPS_ECR_REPO_URL="$(cat $TARGET_FILE | grep ecr_repository_url | awk -F"=" '{print $2}')"
   if [ -n "$BITOPS_ECR_REPO_ARN" ]; then
     echo -en "
 #### ECR values:
 ECR_REPO_ARN="$BITOPS_ECR_REPO_ARN"
-ECR_REPO_ID="$BITOPS_ECR_REPO_ID"
 ECR_REPO_URL="$BITOPS_ECR_REPO_URL"
 " > $BITOPS_ENVROOT/terraform/ecr/ecr.env
   fi
