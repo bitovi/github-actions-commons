@@ -6,7 +6,8 @@ data "aws_availability_zones" "all" {
   filter {
     name   = "region-name"
     values = [data.aws_region.current.name]
-  }
+  }  
+  state = "available"
 }
 
 data "aws_subnets" "vpc_subnets" {

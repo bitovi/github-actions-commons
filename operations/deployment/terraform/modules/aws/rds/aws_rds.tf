@@ -1,5 +1,5 @@
 resource "aws_security_group" "rds_db_security_group" {
-  name        = var.aws_rds_db_security_group_name != "" ? var.aws_rds_db_security_group_name : "SG for ${var.aws_resource_identifier} - RDS"
+  name        = var.aws_rds_db_security_group_name != null ? var.aws_rds_db_security_group_name : "SG for ${var.aws_resource_identifier} - RDS"
   description = "SG for ${var.aws_resource_identifier} - RDS"
   vpc_id      = var.aws_selected_vpc_id
   egress {
@@ -47,7 +47,7 @@ resource "aws_db_subnet_group" "selected" {
 }
 
 resource "aws_db_instance" "default" {
-  identifier                      = var.aws_rds_db_name != "" ? var.aws_rds_db_name : var.aws_resource_identifier
+  identifier                      = var.aws_rds_db_name != null ? var.aws_rds_db_name : var.aws_resource_identifier
   engine                          = var.aws_rds_db_engine
   engine_version                  = var.aws_rds_db_engine_version
   db_subnet_group_name            = aws_db_subnet_group.selected.name
@@ -61,6 +61,9 @@ resource "aws_db_instance" "default" {
   skip_final_snapshot             = true
   enabled_cloudwatch_logs_exports = [var.aws_rds_cloudwatch_logs_exports]
   vpc_security_group_ids          = [aws_security_group.rds_db_security_group.id]
+  tags = {
+    Name = "${var.aws_resource_identifier}-rds"
+  }
 }
 
 output "db_endpoint" {
