@@ -4,6 +4,19 @@ set -e
 
 echo "In generate_provider.sh"
 
+function generate_tf_state_file_name () {
+  if [ -n "$TF_STATE_FILE_NAME" ]; then
+    filename="$TF_STATE_FILE_NAME"
+  else
+    filename="tf-state-$1"
+  fi
+
+  if [ -n "$TF_STATE_FILE_NAME_APPEND" ]; then
+    filename="${filename}-${TF_STATE_FILE_NAME_APPEND}"
+  fi
+  echo $filename
+}
+
 # Will print bitovi_provider.tf with the Terraform state file and path based on the first parameter. 
 function generate_provider_aws () {
 echo "
@@ -26,7 +39,7 @@ terraform {
   backend \"s3\" {
     region  = \"${AWS_DEFAULT_REGION}\"
     bucket  = \"${TF_STATE_BUCKET}\"
-    key     = \"tf-state-$1\"
+    key     = \"$(generate_tf_state_file_name $1)\"
     encrypt = true #AES-256encryption
   }
 }
@@ -36,77 +49,25 @@ provider \"aws\" {
   default_tags {
     tags = local.default_tags
   }
-}
+}" > "${GITHUB_ACTION_PATH}/operations/deployment/terraform/$1/bitovi_provider.tf"
 
+  # Loop through the comma-separated list in $2
+  IFS=',' read -ra modules <<< "$2"
+  for module in "${modules[@]}"; do
+
+echo "
 provider \"aws\" {
-  alias  = \"ec2\"
+  alias  = \"$module\"
   region = \"${AWS_DEFAULT_REGION}\"
   default_tags {
-    tags = local.ec2_tags
+    tags = local.${module}_tags
   }
+}" >> "${GITHUB_ACTION_PATH}/operations/deployment/terraform/$1/bitovi_provider.tf"
+done
 }
 
-provider \"aws\" {
-  alias  = \"r53\"
-  region = \"${AWS_DEFAULT_REGION}\"
-  default_tags {
-    tags = local.r53_tags
-  }
-}
-
-provider \"aws\" {
-  alias  = \"elb\"
-  region = \"${AWS_DEFAULT_REGION}\"
-  default_tags {
-    tags = local.elb_tags
-  }
-}
-
-provider \"aws\" {
-  alias  = \"efs\"
-  region = \"${AWS_DEFAULT_REGION}\"
-  default_tags {
-    tags = local.efs_tags
-  }
-}
-
-provider \"aws\" {
-  alias  = \"vpc\"
-  region = \"${AWS_DEFAULT_REGION}\"
-  default_tags {
-    tags = local.vpc_tags
-  }
-}
-
-provider \"aws\" {
-  alias  = \"ecr\"
-  region = \"${AWS_DEFAULT_REGION}\"
-  default_tags {
-    tags = local.ecr_tags
-  }
-}
-
-provider \"aws\" {
-  alias  = \"rds\"
-  region = \"${AWS_DEFAULT_REGION}\"
-  default_tags {
-    tags = local.rds_tags
-  }
-}
-
-provider \"aws\" {
-  alias  = \"aurora\"
-  region = \"${AWS_DEFAULT_REGION}\"
-  default_tags {
-    tags = local.aurora_tags
-  }
-}
-
-" > "${GITHUB_ACTION_PATH}/operations/deployment/terraform/$1/bitovi_provider.tf"
-}
-
-generate_provider_aws aws
-generate_provider_aws ecr
+generate_provider_aws aws ec2,r53,elb,efs,vpc,rds,aurora
+generate_provider_aws ecr ecr
 generate_provider_aws eks
 
 echo "Done with generate_provider.sh"
