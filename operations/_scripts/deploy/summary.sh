@@ -12,7 +12,6 @@
 # AWS_EC2_PORT_LIST
 # AWS_ELB_LISTEN_PORT
 # ECR_REPO_ARN
-# ECR_REPO_ID
 # ECR_REPO_URL
 
 # Create an error code mechanism so we don't have to check the actual static text,
@@ -74,7 +73,7 @@ SUMMARY_CODE=0
 if [[ $SUCCESS == 'success' ]]; then
   if [[ -n $URL_OUTPUT ]] || [[ -n $EC2_URL_OUTPUT ]]; then
     result_string="## Deploy Complete! :rocket:"
-  elif [[ -n $ECR_REPO_ARN ]] && [[ -n $ECR_REPO_ID ]] && [[ -n $ECR_REPO_URL ]]; then
+  elif [[ -n $ECR_REPO_ARN ]] && [[ -n $ECR_REPO_URL ]]; then
     SUMMARY_CODE=10
     result_string="## Deploy Complete! :rocket:
     ECR Repo ARN: ${ECR_REPO_ARN}
