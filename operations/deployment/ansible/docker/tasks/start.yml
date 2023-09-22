@@ -22,14 +22,14 @@
   register: output
   async: "{{ ansible_start_docker_timeout }}"
   poll: 5
-  when: existing_files | length > 0 && ( docker_remove_orphans | bool )
+  when: existing_files | length > 0 and ( docker_remove_orphans | bool )
 
 - name: Start docker-compose without remove orphans
   ansible.builtin.command: "docker compose --project-directory {{ app_install_root }}/{{ app_repo_name }} up --detach --build --force-recreate"
   register: output
   async: "{{ ansible_start_docker_timeout }}"
   poll: 5
-  when: existing_files | length > 0 && not ( docker_remove_orphans | bool )
+  when: existing_files | length > 0 and not ( docker_remove_orphans | bool )
 
 - ansible.builtin.debug:
     var: output
