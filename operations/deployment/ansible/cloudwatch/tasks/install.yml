@@ -11,18 +11,10 @@
   apt:
     deb: "{{ app_install_root }}/amazon-cloudwatch-agent.deb"
 
-- name: Trigger Cloudwatch start with provided config
-  ansible.builtin.find:
-    paths: "{{ app_install_root }}/{{ app_repo_name }}"
-    recurse: no
-    patterns: 'cloudwatch.json'
-  register: file_status
-
 - name: Copy the cloudwathc config if it doesn't exists
   copy:
     src: "{{ lookup('ansible.builtin.env', 'BITOPS_OPSREPO_ENVIRONMENT_DIR') }}/bitovi-cloudwatch.json"
     dest: "{{ app_install_root }}/{{ app_repo_name }}/cloudwatch.json"
-  when: file_status.matched == 1
 
 - name: Trigger Cloudwatch start with the config
   ansible.builtin.shell: >
