@@ -13,9 +13,9 @@
 
 - name: Trigger Cloudwatch start with provided config
   ansible.builtin.find:
-  paths: "{{ app_install_root }}/{{ app_repo_name }}"
-  recurse: no
-  patterns: 'cloudwatch.json'
+    paths: "{{ app_install_root }}/{{ app_repo_name }}"
+    recurse: no
+    patterns: 'cloudwatch.json'
   register: file_status
 
 - name: Copy the cloudwathc config if it doesn't exists
