@@ -11,10 +11,18 @@
   apt:
     deb: "{{ app_install_root }}/amazon-cloudwatch-agent.deb"
 
-- name: Copy the cloudwathc config if it doesn't exists
+- name: Trigger Cloudwatch start with provided config
+  ansible.builtin.find:
+    paths: "{{ app_install_root }}/{{ app_repo_name }}"
+    recurse: no
+    patterns: 'cloudwatch.json'
+  register: file_status
+
+- name: Copy the cloudwatch config if it doesn't exists
   copy:
-    src: "{{ lookup('ansible.builtin.env', 'BITOPS_OPSREPO_ENVIRONMENT_DIR') }}/bitovi-cloudwatch.json"
+    src: "../../terraform/aws/bitovi-cloudwatch.json"
     dest: "{{ app_install_root }}/{{ app_repo_name }}/cloudwatch.json"
+  when: file_status.matched == 0
 
 - name: Trigger Cloudwatch start with the config
   ansible.builtin.shell: >
