@@ -143,7 +143,7 @@ variable "aws_ec2_cloudwatch_enable" {
 variable "aws_ec2_cloudwatch_lg_name" {
   type        = string
   description = "Log group name. Will default to aws_identifier if none."
-  default = false
+  default     = ""
 }
 variable "aws_ec2_cloudwatch_skip_destroy" {
   type        = bool
