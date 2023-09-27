@@ -80,7 +80,7 @@ EOT
 #            }
 #      }
 #    }
-resource "local_file" "cloudwatch_config" {
+resource "local_file" "cloudwatch_docker_config" {
   count = var.aws_ec2_cloudwatch_enable ? 1 : 0
   filename = format("%s/%s", abspath(path.root), "bitovi-daemon.json")
   content = <<-EOT
