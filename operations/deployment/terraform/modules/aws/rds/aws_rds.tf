@@ -77,12 +77,15 @@ resource "aws_secretsmanager_secret" "rds_database_credentials" {
 
 resource "aws_secretsmanager_secret_version" "database_credentials_sm_secret_version_dev" {
   secret_id = aws_secretsmanager_secret.rds_database_credentials.id
-  secret_string = <<EOF
-   {
-    "key": "database_password",
-    "value": "${sensitive(random_password.rds.result)}"
-   }
-EOF
+  secret_string = jsonencode({
+   DB_ENGINE         = sensitive(aws_db_instance.default.engine)
+   DB_ENGINE_VERSION = sensitive(aws_db_instance.default.engine_version)
+   DB_USER           = sensitive(aws_db_instance.default.username)
+   DB_PASSWORD       = sensitive(aws_db_instance.default.password)
+   DB_NAME           = sensitive(aws_db_instance.default.db_name)
+   DB_PORT           = sensitive(aws_db_instance.default.port)
+   DB_HOST           = sensitive(aws_db_instance.default.address)
+  })
 }
 
 locals {
