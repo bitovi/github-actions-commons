@@ -2,5 +2,5 @@
   hosts: bitops_servers
   become: true
   tasks:
-  - name: Include install docker
+  - name: Include install Cloudwatch
     include_tasks: tasks/install.yml

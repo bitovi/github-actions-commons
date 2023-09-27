@@ -121,6 +121,13 @@ resource "random_string" "random" {
   numeric   = false
 }
 
+resource "aws_cloudwatch_log_group" "example" {
+  count             = var.aws_ec2_cloudwatch_enable ? 1 : 0
+  name              = var.aws_ec2_cloudwatch_lg_name
+  skip_destroy      = var.aws_ec2_cloudwatch_skip_destroy
+  retention_in_days = tonumber(var.aws_ec2_cloudwatch_retention_days)
+}
+
 output "instance_public_dns" {
   description = "Public DNS address of the EC2 instance"
   value       = var.aws_vpc_dns_enabled ? var.aws_ec2_instance_public_ip ? try(data.aws_instance.server_ip[0].public_dns,data.aws_instance.server_ignore_ami_ip[0].public_dns) :null : null

@@ -1,12 +1,29 @@
-# copy code to the VM
-- name: Install the aws ca bundle
+- name: Get APT package architecture
+  command: dpkg --print-architecture
+  register: dpkg_arch
+
+- name: Download the aws Cloudwatch agent
   get_url:
-    url: "https://s3.amazonaws.com/amazoncloudwatch-agent/ubuntu/arm64/latest/amazon-cloudwatch-agent.deb"
+    url: "https://amazoncloudwatch-agent.s3.amazonaws.com/ubuntu/{{ dpkg_arch.stdout }}/latest/amazon-cloudwatch-agent.deb"
     dest: "{{ app_install_root }}/amazon-cloudwatch-agent.deb"
 
-- name: Install cloudwatch agent
+- name: Install the aws Cloudwatch agent
   apt:
     deb: "{{ app_install_root }}/amazon-cloudwatch-agent.deb"
-  become: yes
 
-#  https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/install-CloudWatch-Agent-commandline-fleet.html
+- name: Trigger Cloudwatch start with provided config
+  ansible.builtin.find:
+  paths: "{{ app_install_root }}/{{ app_repo_name }}"
+  recurse: no
+  patterns: 'cloudwatch.json'
+  register: file_status
+
+- name: Copy the cloudwathc config if it doesn't exists
+  copy:
+    src: "{{ lookup('ansible.builtin.env', 'BITOPS_OPSREPO_ENVIRONMENT_DIR') }}/bitovi-cloudwatch.json"
+    dest: "{{ app_install_root }}/{{ app_repo_name }}/cloudwatch.json"
+  when: file_status.matched == 1
+
+- name: Trigger Cloudwatch start with the config
+  ansible.builtin.shell: >
+    /opt/aws/amazon-cloudwatch-agent/bin/amazon-cloudwatch-agent-ctl -a fetch-config -c "file:{{ app_install_root }}/{{ app_repo_name }}/cloudwatch.json" -s

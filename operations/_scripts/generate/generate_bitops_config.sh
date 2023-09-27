@@ -174,6 +174,10 @@ bitops:
     if [[ $(alpha_only "$AWS_EFS_CREATE") == true ]] || [[ $(alpha_only "$AWS_EFS_CREATE_HA") == true ]] || [[ "$AWS_EFS_FS_ID" != "" ]]; then
       add_ansible_module efs
     fi
+    # Ansible - Install CloudWatch
+    if [[ $(alpha_only "$AWS_EC2_CLOUDWATCH_ENABLE") == true ]]; then
+      add_ansible_module cloudwatch
+    fi
     # Ansible - Install Docker
     if [[ $(alpha_only "$DOCKER_INSTALL") == true ]]; then
       add_ansible_module docker

@@ -14,6 +14,11 @@ module "ec2" {
   aws_ec2_create_keypair_sm           = var.aws_ec2_create_keypair_sm 
   aws_ec2_security_group_name         = var.aws_ec2_security_group_name
   aws_ec2_port_list                   = var.aws_ec2_port_list
+  # EC2 Cloudwatch
+  aws_ec2_cloudwatch_enable           = var.aws_ec2_cloudwatch_enable
+  aws_ec2_cloudwatch_lg_name          = var.aws_ec2_cloudwatch_lg_name != "" ? var.aws_ec2_cloudwatch_lg_name : "${var.aws_resource_identifier}-ec2-logs"
+  aws_ec2_cloudwatch_skip_destroy     = var.aws_ec2_cloudwatch_skip_destroy
+  aws_ec2_cloudwatch_retention_days   = var.aws_ec2_cloudwatch_retention_days
   # Data inputs
   aws_ec2_selected_vpc_id             = module.vpc.aws_selected_vpc_id
   aws_vpc_dns_enabled                 = module.vpc.aws_vpc_dns_enabled
@@ -293,6 +298,9 @@ module "ansible" {
   app_install_root             = var.app_install_root
   aws_resource_identifier      = var.aws_resource_identifier
   docker_remove_orphans        = var.docker_remove_orphans
+  # Cloudwatch
+  aws_ec2_cloudwatch_enable    = var.aws_ec2_cloudwatch_enable
+  aws_ec2_cloudwatch_lg_name   = var.aws_ec2_cloudwatch_lg_name != "" ? var.aws_ec2_cloudwatch_lg_name : "${var.aws_resource_identifier}-ec2-logs"
   aws_efs_ec2_mount_point      = var.aws_efs_ec2_mount_point
   aws_efs_mount_target         = var.aws_efs_mount_target
   docker_efs_mount_target      = var.docker_efs_mount_target
