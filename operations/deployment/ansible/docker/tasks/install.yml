@@ -26,18 +26,37 @@
 - name: Update apt repositories
   apt:
     update_cache: yes
-  
+
+- name: Check if the source file exists
+  stat:
+    path: "../../terraform/aws/bitovi-daemon.json"
+  register: file_status
+
+- name: Create the docker config folder
+  file:
+    path: /etc/docker
+    state: directory
+    mode: '0755'
+  when: file_status.stat.exists
+
+- name: Copy the cloudwatch docker config if it exists
+  copy:
+    src: "../../terraform/aws/bitovi-daemon.json"
+    dest: "/etc/docker/daemon.json"
+  when: file_status.stat.exists
+
 - name: Install Docker and Docker Compose
   apt:
     name:
       - docker-ce
-      - docker-ce-cli
-      - containerd.io
-      - docker-buildx-plugin
-      - docker-compose-plugin
+#      - docker-ce-cli
+#      - containerd.io
+#      - docker-buildx-plugin
+#      - docker-compose-plugin
+#
+#- name: Install Docker Module for Python
+#  pip:
+#    name:
+#      - docker
+#      - docker-compose
 
-- name: Install Docker Module for Python
-  pip:
-    name:
-      - docker
-      - docker-compose

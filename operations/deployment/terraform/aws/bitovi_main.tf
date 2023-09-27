@@ -301,6 +301,7 @@ module "ansible" {
   # Cloudwatch
   aws_ec2_cloudwatch_enable    = var.aws_ec2_cloudwatch_enable
   aws_ec2_cloudwatch_lg_name   = var.aws_ec2_cloudwatch_lg_name != "" ? var.aws_ec2_cloudwatch_lg_name : "${var.aws_resource_identifier}-ec2-logs"
+  aws_region_current_name      = module.vpc.aws_region_current_name
   aws_efs_ec2_mount_point      = var.aws_efs_ec2_mount_point
   aws_efs_mount_target         = var.aws_efs_mount_target
   docker_efs_mount_target      = var.docker_efs_mount_target
