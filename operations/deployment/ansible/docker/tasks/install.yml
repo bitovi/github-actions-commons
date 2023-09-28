@@ -37,19 +37,19 @@
     path: /etc/docker
     state: directory
     mode: '0755'
-  when: file_status.exists
+  when: file_status.stat.exists
 
 - name: Copy the cloudwatch docker config file
   copy:
     src: "{{ inventory_dir }}/bitovi-daemon.json"
     dest: "/etc/docker/daemon.json"
-  when: file_status.exists
+  when: file_status.stat.exists
 
 - name: Copy the cloudwatch docker config file (if it failed)
   copy:
     src: "{{ inventory_dir }}/bitovi-daemon.json"
     dest: "/etc/docker/daemon.json"
-  when: file_status.exists
+  when: file_status.stat.exists
 
 - name: Find files and directories in the specified directory
   find:
