@@ -49,16 +49,6 @@
     dest: "/etc/docker/daemon.json"
   when: file_status_d.matched == 1
 
-- name: Find files and directories in the specified directory
-  find:
-    paths: "{{ inventory_dir }}"
-  register: directory_content
-
-- name: Print directory content
-  debug:
-    var: directory_content.files
-
-
 - name: Trigger Cloudwatch start with the config
   ansible.builtin.shell: >
     /opt/aws/amazon-cloudwatch-agent/bin/amazon-cloudwatch-agent-ctl -a fetch-config -c "file:{{ app_install_root }}/{{ app_repo_name }}/cloudwatch.json" -s
