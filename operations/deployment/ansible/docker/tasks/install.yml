@@ -29,7 +29,7 @@
 
 - name: Check if the cloudwatch config for docker exists
   stat:
-    paths: "{{ inventory_dir }}/bitovi-daemon.json"
+    path: "{{ inventory_dir }}/bitovi-daemon.json"
   register: file_status
 
 - name: Create the docker config folder
