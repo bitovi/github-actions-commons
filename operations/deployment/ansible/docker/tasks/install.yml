@@ -26,18 +26,8 @@
 - name: Update apt repositories
   apt:
     update_cache: yes
-  
+
 - name: Install Docker and Docker Compose
   apt:
     name:
       - docker-ce
-      - docker-ce-cli
-      - containerd.io
-      - docker-buildx-plugin
-      - docker-compose-plugin
-
-- name: Install Docker Module for Python
-  pip:
-    name:
-      - docker
-      - docker-compose

@@ -414,6 +414,18 @@ inputs:
   docker_efs_mount_target:
     description: 'Directory path within docker env to mount directory to, default is `/data`'
     required: false
+  docker_cloudwatch_enable:
+    description: 'Toggle cloudwatch creation for Docker containers.'
+    required: false
+  docker_cloudwatch_lg_name:
+    description: 'Log group name. Will default to aws_identifier if none.'
+    required: false
+  docker_cloudwatch_skip_destroy:
+    description: 'Toggle deletion or not when destroying the stack.'
+    required: false
+  docker_cloudwatch_retention_days:
+    description: 'Number of days to retain logs. 0 to never expire.'
+    required: false
 
   # AWS ECR
   aws_ecr_repo_create:
@@ -736,6 +748,10 @@ runs:
         DOCKER_REPO_APP_DIRECTORY: ${{ inputs.docker_repo_app_directory }}
         DOCKER_REPO_APP_DIRECTORY_CLEANUP: ${{ inputs.docker_repo_app_directory_cleanup }}
         DOCKER_EFS_MOUNT_TARGET: ${{ inputs.docker_efs_mount_target }}
+        DOCKER_CLOUDWATCH_ENABLE: ${{ inputs.docker_cloudwatch_enable }}
+        DOCKER_CLOUDWATCH_LG_NAME: ${{ inputs.docker_cloudwatch_lg_name }}
+        DOCKER_CLOUDWATCH_SKIP_DESTROY: ${{ inputs.docker_cloudwatch_skip_destroy }}
+        DOCKER_CLOUDWATCH_RETENTION_DAYS: ${{ inputs.docker_cloudwatch_retention_days }}
 
         # ECR
         AWS_ECR_REPO_CREATE: ${{ inputs.aws_ecr_repo_create }}
