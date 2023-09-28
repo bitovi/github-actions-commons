@@ -121,7 +121,7 @@ resource "random_string" "random" {
   numeric   = false
 }
 
-resource "aws_cloudwatch_log_group" "example" {
+resource "aws_cloudwatch_log_group" "cw_log_group" {
   count             = var.aws_ec2_cloudwatch_enable ? 1 : 0
   name              = var.aws_ec2_cloudwatch_lg_name
   skip_destroy      = var.aws_ec2_cloudwatch_skip_destroy
