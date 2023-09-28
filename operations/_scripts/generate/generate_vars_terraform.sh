@@ -106,14 +106,6 @@ if [[ $(alpha_only "$AWS_EC2_INSTANCE_CREATE") == true ]]; then
   aws_ec2_additional_tags=$(generate_var aws_ec2_additional_tags $AWS_EC2_ADDITIONAL_TAGS)
 fi
 
-#-- EC2 Cloudwatch --#
-if [[ $(alpha_only "$AWS_EC2_CLOUDWATCH_ENABLE") == true ]]; then
-  aws_ec2_cloudwatch_enable=$(generate_var aws_ec2_cloudwatch_enable $AWS_EC2_CLOUDWATCH_ENABLE)
-  aws_ec2_cloudwatch_lg_name=$(generate_var aws_ec2_cloudwatch_lg_name $AWS_EC2_CLOUDWATCH_LG_NAME)
-  aws_ec2_cloudwatch_skip_destroy=$(generate_var aws_ec2_cloudwatch_skip_destroy $AWS_EC2_CLOUDWATCH_SKIP_DESTROY)
-  aws_ec2_cloudwatch_retention_days=$(generate_var aws_ec2_cloudwatch_retention_days $AWS_EC2_CLOUDWATCH_RETENTION_DAYS)
-fi
-
 #-- VPC Handling --# 
 if [[ $(alpha_only "$AWS_VPC_CREATE") == true ]]; then
   aws_vpc_create=$(generate_var aws_vpc_create $AWS_VPC_CREATE)
@@ -276,6 +268,10 @@ if [[ $(alpha_only "$DOCKER_INSTALL") == true ]]; then
   docker_install=$(generate_var docker_install $DOCKER_INSTALL)
   docker_remove_orphans=$(generate_var docker_remove_orphans $DOCKER_REMOVE_ORPHANS)
   docker_efs_mount_target=$(generate_var docker_efs_mount_target $DOCKER_EFS_MOUNT_TARGET)
+  docker_cloudwatch_enable=$(generate_var docker_cloudwatch_enable $DOCKER_CLOUDWATCH_ENABLE)
+  docker_cloudwatch_lg_name=$(generate_var docker_cloudwatch_lg_name $DOCKER_CLOUDWATCH_LG_NAME)
+  docker_cloudwatch_skip_destroy=$(generate_var docker_cloudwatch_skip_destroy $DOCKER_CLOUDWATCH_SKIP_DESTROY)
+  docker_cloudwatch_retention_days=$(generate_var docker_cloudwatch_retention_days $DOCKER_CLOUDWATCH_RETENTION_DAYS)
 fi
 
 #-- Application --#
@@ -320,12 +316,6 @@ $aws_ec2_instance_public_ip
 $aws_ec2_port_list
 $aws_ec2_user_data_replace_on_change
 $aws_ec2_additional_tags
-
-#-- EC2 CW --#
-$aws_ec2_cloudwatch_enable
-$aws_ec2_cloudwatch_lg_name
-$aws_ec2_cloudwatch_skip_destroy
-$aws_ec2_cloudwatch_retention_days
 
 #-- VPC --# 
 $aws_vpc_create
@@ -459,6 +449,10 @@ $aws_eks_additional_tags
 
 $docker_efs_mount_target
 $docker_remove_orphans
+$docker_cloudwatch_enable
+$docker_cloudwatch_lg_name
+$docker_cloudwatch_skip_destroy
+$docker_cloudwatch_retention_days
 
 #-- Application --#
 $ops_repo_environment

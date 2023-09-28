@@ -54,7 +54,6 @@ jobs:
 1. [AWS Specific](#aws-specific)
 1. [Secrets and Environment Variables](#secrets-and-environment-variables-inputs)
 1. [EC2](#ec2-inputs)
-1. [EC2 Cloudwatch](#ec2-cloudwatch-inputs)
 1. [VPC](#vpc-inputs)
 1. [Certificates](#certificate-inputs)
 1. [Load Balancer](#load-balancer-inputs)
@@ -154,16 +153,6 @@ The following inputs can be used as `step.with` keys
 | `aws_ec2_user_data_file` | String | Relative path in the repo for a user provided script to be executed with Terraform EC2 Instance creation. See [this note](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/user-data.html#user-data-shell-scripts) |
 | `aws_ec2_user_data_replace_on_change`| Boolean | If `aws_ec2_user_data_file` file changes, instance will stop and start. Hence public IP will change. This will destroy and recreate the instance. Defaults to `true`. |
 | `aws_ec2_additional_tags` | JSON | Add additional tags to the terraform [default tags](https://www.hashicorp.com/blog/default-tags-in-the-terraform-aws-provider), any tags put here will be added to ec2 provisioned resources.|
-<hr/>
-<br/>
-
-#### **EC2 Cloudwatch Inputs**
-| Name             | Type    | Description                        |
-|------------------|---------|------------------------------------|
-| `aws_ec2_cloudwatch_enable` | Boolean | Toggle cloudwatch creation for EC2 Instance. As default, will monitor docker logs. Create a cloudwatch.json with your config if you need to override it. Defaults to `false`.|
-| `aws_ec2_cloudwatch_lg_name` | String| Log group name. Will default to `${aws_resource_identifier}-ec2-logs` if none. |
-| `aws_ec2_cloudwatch_skip_destroy` | Boolean | Toggle deletion or not when destroying the stack. Defaults to `true`. |
-| `aws_ec2_cloudwatch_retention_days` | String | Number of days to retain logs. 0 to never expire. Defaults to `14`. See [note](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/cloudwatch_log_group#retention_in_days). |
 <hr/>
 <br/>
 
@@ -280,6 +269,10 @@ The following inputs can be used as `step.with` keys
 | `docker_repo_app_directory` | String | Relative path for the directory of the app. (i.e. where the `docker-compose.yaml` file is located). This is the directory that is copied into the EC2 instance. Default is `/`, the root of the repository. Add a `.gha-ignore` file with a list of files to be exluded. (Using glob patterns). |
 | `docker_repo_app_directory_cleanup` | Boolean | Will generate a timestamped compressed file (in the home directory of the instance) and delete the app repo directory. Runs before `docker_install` and after `docker_full_cleanup`. |
 | `docker_efs_mount_target` | String | Directory path within docker env to mount directory to. Default is `/data`|
+| `docker_cloudwatch_enable` | Boolean | Toggle cloudwatch creation for Docker. Create a file named `docker-daemon.json` in your repo root dir if you need to customize it. Defaults to `false`. Check [docker docs](https://docs.docker.com/config/containers/logging/awslogs/).|
+| `docker_cloudwatch_lg_name` | String| Log group name. Will default to `${aws_resource_identifier}-docker-logs` if none. |
+| `docker_cloudwatch_skip_destroy` | Boolean | Toggle deletion or not when destroying the stack. Defaults to `false`. |
+| `docker_cloudwatch_retention_days` | String | Number of days to retain logs. 0 to never expire. Defaults to `14`. See [note](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/cloudwatch_log_group#retention_in_days). |
 <hr/>
 <br/>
 

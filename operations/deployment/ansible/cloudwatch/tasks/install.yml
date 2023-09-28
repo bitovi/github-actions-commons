@@ -19,7 +19,7 @@
 
 - name: Copy the Docker cloudwatch config if it does exists
   copy:
-    src: "{{ app_install_root }}/{{ app_repo_name }}/docker-daemon.jsonn"
+    src: "{{ app_install_root }}/{{ app_repo_name }}/docker-daemon.json"
     dest: "/etc/docker/daemon.json"
   when: file_status_d.matched == 1
 
