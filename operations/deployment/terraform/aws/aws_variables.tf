@@ -134,6 +134,7 @@ variable "aws_ec2_additional_tags" {
   default     = "{}"
 }
 
+
 ## AWS VPC
 variable "aws_vpc_create" {
   type        = bool
@@ -557,6 +558,30 @@ variable "docker_remove_orphans" {
   type        = bool
   description = "define if ansible should clean orphans"
   default     = false
+}
+
+variable "docker_cloudwatch_enable" {
+  type        = bool
+  description = "Toggle cloudwatch for Docker."
+  default     = false
+}
+
+variable "docker_cloudwatch_lg_name" {
+  type        = string
+  description = "Log group name. Will default to aws_identifier if none."
+  default     = ""
+}
+
+variable "docker_cloudwatch_skip_destroy" {
+  type        = bool
+  description = "Toggle deletion or not when destroying the stack."
+  default     = false
+}
+
+variable "docker_cloudwatch_retention_days" {
+  type        = string
+  description = "Number of days to retain logs. 0 to never expire."
+  default     = "14"
 }
 
 # ECR

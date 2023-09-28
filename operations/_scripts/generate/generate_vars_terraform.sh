@@ -268,6 +268,10 @@ if [[ $(alpha_only "$DOCKER_INSTALL") == true ]]; then
   docker_install=$(generate_var docker_install $DOCKER_INSTALL)
   docker_remove_orphans=$(generate_var docker_remove_orphans $DOCKER_REMOVE_ORPHANS)
   docker_efs_mount_target=$(generate_var docker_efs_mount_target $DOCKER_EFS_MOUNT_TARGET)
+  docker_cloudwatch_enable=$(generate_var docker_cloudwatch_enable $DOCKER_CLOUDWATCH_ENABLE)
+  docker_cloudwatch_lg_name=$(generate_var docker_cloudwatch_lg_name $DOCKER_CLOUDWATCH_LG_NAME)
+  docker_cloudwatch_skip_destroy=$(generate_var docker_cloudwatch_skip_destroy $DOCKER_CLOUDWATCH_SKIP_DESTROY)
+  docker_cloudwatch_retention_days=$(generate_var docker_cloudwatch_retention_days $DOCKER_CLOUDWATCH_RETENTION_DAYS)
 fi
 
 #-- Application --#
@@ -445,6 +449,10 @@ $aws_eks_additional_tags
 
 $docker_efs_mount_target
 $docker_remove_orphans
+$docker_cloudwatch_enable
+$docker_cloudwatch_lg_name
+$docker_cloudwatch_skip_destroy
+$docker_cloudwatch_retention_days
 
 #-- Application --#
 $ops_repo_environment

@@ -32,3 +32,7 @@
 - name: Prune Docker system
   command: docker system prune --all --force --volumes
   when: docker_check.rc == 0
+
+- name: Prune all docker volumes
+  command: docker volume prune --all --force
+  when: docker_check.rc == 0
