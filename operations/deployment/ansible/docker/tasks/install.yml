@@ -29,7 +29,7 @@
 
 - name: Check if the source file exists
   stat:
-    path: "{{ playbook_dir }}/../../terraform/aws/bitovi-daemon.json"
+    path: "{{ inventory_dir }}/bitovi-daemon.json"
   register: file_status
 
 - name: Create the docker config folder
@@ -41,7 +41,7 @@
 
 - name: Copy the cloudwatch docker config if it exists
   copy:
-    src: "../../terraform/aws/bitovi-daemon.json"
+    src: "{{ inventory_dir }}/bitovi-daemon.json"
     dest: "/etc/docker/daemon.json"
   when: file_status.stat.exists
 

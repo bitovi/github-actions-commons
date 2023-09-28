@@ -20,7 +20,7 @@
 
 - name: Copy the cloudwatch config if it doesn't exists
   copy:
-    src: "../../terraform/aws/bitovi-cloudwatch.json"
+    src: "{{ inventory_dir }}/bitovi-cloudwatch.json"
     dest: "{{ app_install_root }}/{{ app_repo_name }}/cloudwatch.json"
   when: file_status.matched == 0
 
