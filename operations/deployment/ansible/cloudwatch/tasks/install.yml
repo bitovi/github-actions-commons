@@ -22,7 +22,3 @@
     src: "{{ app_install_root }}/{{ app_repo_name }}/docker-daemon.jsonn"
     dest: "/etc/docker/daemon.json"
   when: file_status_d.matched == 1
-
-- name: Trigger Cloudwatch start with the config
-  ansible.builtin.shell: >
-    /opt/aws/amazon-cloudwatch-agent/bin/amazon-cloudwatch-agent-ctl -a fetch-config -c "file:{{ app_install_root }}/{{ app_repo_name }}/cloudwatch.json" -s
