@@ -54,10 +54,11 @@
 - name: Find files and directories in the specified directory
   find:
     paths: "{{ inventory_dir }}"
-    register: directory_content
+  register: directory_content
+
 - name: Print directory content
   debug:
-  var: directory_content.files
+    var: directory_content.files
 
 - name: Install Docker and Docker Compose
   apt:
@@ -73,4 +74,3 @@
 #    name:
 #      - docker
 #      - docker-compose
-
