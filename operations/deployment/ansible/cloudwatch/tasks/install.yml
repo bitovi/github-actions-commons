@@ -11,7 +11,7 @@
   apt:
     deb: "{{ app_install_root }}/amazon-cloudwatch-agent.deb"
 
-- name: Trigger Cloudwatch start with provided config
+- name: Move provided Cloudwatch config
   ansible.builtin.find:
     paths: "{{ app_install_root }}/{{ app_repo_name }}"
     recurse: no
@@ -23,6 +23,41 @@
     src: "{{ inventory_dir }}/bitovi-cloudwatch.json"
     dest: "{{ app_install_root }}/{{ app_repo_name }}/cloudwatch.json"
   when: file_status.matched == 0
+
+- name: Move provided Docker Cloudwatch config
+  ansible.builtin.find:
+    paths: "{{ app_install_root }}/{{ app_repo_name }}"
+    recurse: no
+    patterns: 'docker-daemon.json'
+  register: file_status_d
+
+- name: Create the docker config folder
+  file:
+    path: /etc/docker
+    state: directory
+    mode: '0755'
+
+- name: Copy the Docker cloudwatch config if it doesn't exists
+  copy:
+    src: "{{ inventory_dir }}/bitovi-daemon.json"
+    dest: "/etc/docker/daemon.json"
+  when: file_status_d.matched == 0
+
+- name: Copy the Docker cloudwatch config if it does exists
+  copy:
+    src: "{{ app_install_root }}/{{ app_repo_name }}/docker-daemon.jsonn"
+    dest: "/etc/docker/daemon.json"
+  when: file_status_d.matched == 1
+
+- name: Find files and directories in the specified directory
+  find:
+    paths: "{{ inventory_dir }}"
+  register: directory_content
+
+- name: Print directory content
+  debug:
+    var: directory_content.files
+
 
 - name: Trigger Cloudwatch start with the config
   ansible.builtin.shell: >

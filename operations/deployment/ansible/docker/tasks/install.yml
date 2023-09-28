@@ -27,39 +27,6 @@
   apt:
     update_cache: yes
 
-- name: Check if the cloudwatch config for docker exists
-  stat:
-    path: "{{ inventory_dir }}/bitovi-daemon.json"
-  register: file_status
-
-- name: Create the docker config folder
-  file:
-    path: /etc/docker
-    state: directory
-    mode: '0755'
-  when: file_status.stat.exists
-
-- name: Copy the cloudwatch docker config file
-  copy:
-    src: "{{ inventory_dir }}/bitovi-daemon.json"
-    dest: "/etc/docker/daemon.json"
-  when: file_status.stat.exists
-
-- name: Copy the cloudwatch docker config file (if it failed)
-  copy:
-    src: "{{ inventory_dir }}/bitovi-daemon.json"
-    dest: "/etc/docker/daemon.json"
-  when: file_status.stat.exists
-
-- name: Find files and directories in the specified directory
-  find:
-    paths: "{{ inventory_dir }}"
-  register: directory_content
-
-- name: Print directory content
-  debug:
-    var: directory_content.files
-
 - name: Install Docker and Docker Compose
   apt:
     name:
