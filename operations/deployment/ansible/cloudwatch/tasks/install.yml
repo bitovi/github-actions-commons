@@ -1,30 +1,4 @@
-- name: Get APT package architecture
-  command: dpkg --print-architecture
-  register: dpkg_arch
-
-- name: Download the aws Cloudwatch agent
-  get_url:
-    url: "https://amazoncloudwatch-agent.s3.amazonaws.com/ubuntu/{{ dpkg_arch.stdout }}/latest/amazon-cloudwatch-agent.deb"
-    dest: "{{ app_install_root }}/amazon-cloudwatch-agent.deb"
-
-- name: Install the aws Cloudwatch agent
-  apt:
-    deb: "{{ app_install_root }}/amazon-cloudwatch-agent.deb"
-
-- name: Move provided Cloudwatch config
-  ansible.builtin.find:
-    paths: "{{ app_install_root }}/{{ app_repo_name }}"
-    recurse: no
-    patterns: 'cloudwatch.json'
-  register: file_status
-
-- name: Copy the cloudwatch config if it doesn't exists
-  copy:
-    src: "{{ inventory_dir }}/bitovi-cloudwatch.json"
-    dest: "{{ app_install_root }}/{{ app_repo_name }}/cloudwatch.json"
-  when: file_status.matched == 0
-
-- name: Move provided Docker Cloudwatch config
+- name: Check provided Docker Cloudwatch config
   ansible.builtin.find:
     paths: "{{ app_install_root }}/{{ app_repo_name }}"
     recurse: no
