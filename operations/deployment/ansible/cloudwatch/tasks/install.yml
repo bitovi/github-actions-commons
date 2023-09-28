@@ -22,3 +22,7 @@
     src: "{{ app_install_root }}/{{ app_repo_name }}/docker-daemon.jsonn"
     dest: "/etc/docker/daemon.json"
   when: file_status_d.matched == 1
+
+- name: Restart docker service for changes to take effect
+  command: systemctl restart docker
+  become: yes
