@@ -23,6 +23,13 @@
     dest: "/etc/docker/daemon.json"
   when: file_status_d.matched == 1
 
+- name: Check Docker exists
+  ansible.builtin.command:
+    cmd: "docker --version"
+  register: docker_check
+  ignore_errors: true
+
 - name: Restart docker service for changes to take effect
   command: systemctl restart docker
   become: yes
+  when: docker_check.rc == 0
