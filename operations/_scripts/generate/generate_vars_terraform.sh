@@ -204,7 +204,7 @@ if [[ $(alpha_only "$AWS_AURORA_ENABLE") == true ]]; then
 fi
 
 #-- ECS --#
-if [[ $(alpha_only "$AWS_AURORA_ENABLE") == true ]]; then
+if [[ $(alpha_only "$AWS_ECS_ENABLE") == true ]]; then
   aws_ecs_enable=$(generate_var aws_ecs_enable $AWS_ECS_ENABLE)
   aws_ecs_service_name=$(generate_var aws_ecs_service_name $AWS_ECS_SERVICE_NAME)
   aws_ecs_cluster_name=$(generate_var aws_ecs_cluster_name $AWS_ECS_CLUSTER_NAME)
