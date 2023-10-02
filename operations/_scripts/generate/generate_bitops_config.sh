@@ -62,16 +62,6 @@ function add_ansible_module (){
 }
 ### End functions
 
-### DEFINE WHEN TO RUN AWS MODULE
-
-if  [[ $(alpha_only "$AWS_EC2_INSTANCE_CREATE") == true ]] ||
-    [[ $(alpha_only "$AWS_EFS_ENABLE") == true ]] ||
-    [[ $(alpha_only "$AWS_AURORA_ENABLE") == true ]] ||
-    [[ $(alpha_only "$AWS_RDS_DB_ENABLE") == true ]] ||
-    [[ $(alpha_only "$AWS_ECS_ENABLE") == true ]]; then
-    AWS_ENABLE_MAIN=true
-fi
-
 if [[ "$(alpha_only $TF_STACK_DESTROY)" == "true" ]]; then
   ANSIBLE_SKIP=true
 fi
@@ -87,7 +77,12 @@ if [ -n "$TF_TARGETS" ]; then
 fi
 
 # Making VPC Random creation first a must only if this modules are created. 
-if [ $AWS_ENANBLE_MAIN ] && [[ "$(alpha_only $TF_STACK_DESTROY)" != "true" ]]; then
+if ([[ $(alpha_only "$AWS_EC2_INSTANCE_CREATE") == true ]] ||
+    [[ $(alpha_only "$AWS_EFS_ENABLE") == true ]] ||
+    [[ $(alpha_only "$AWS_AURORA_ENABLE") == true ]] ||
+    [[ $(alpha_only "$AWS_RDS_DB_ENABLE") == true ]] ||
+    [[ $(alpha_only "$AWS_ECS_ENABLE") == true ]]) && 
+    [[ "$(alpha_only $TF_STACK_DESTROY)" != "true" ]]; then
   # random_integer.az_select needs to be created before the "full stack" to avoid a potential state dependency locks
   targets="$targets
       - module.vpc.random_integer.az_select" 
@@ -135,7 +130,7 @@ bitops:
       create_bitops_terraform_config aws false targets
     fi
   else
-    if [ $AWS_ENANBLE_MAIN ] ; then
+    if [[ $(alpha_only "$AWS_EC2_INSTANCE_CREATE") != "" ]] || [[ $(alpha_only "$AWS_EFS_CREATE") != "" ]] || [[ "$AWS_AURORA_ENABLE" != "" ]] || [[ "$AWS_RDS_DB_ENABLE" != "" ]] || [[ "$AWS_ECS_ENABLE" != "" ]];; then
       add_terraform_module aws
       create_bitops_terraform_config aws true targets
     fi
