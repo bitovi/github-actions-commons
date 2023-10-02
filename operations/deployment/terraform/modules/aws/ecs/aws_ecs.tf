@@ -1,8 +1,8 @@
 resource "aws_ecs_cluster" "cluster" {
   name = var.aws_ecs_cluster_name != null ? var.aws_ecs_cluster_name : "${var.aws_resource_identifier}-cluster"
-  tags = merge(var.common_tags,{
+  tags = {
     Name = "${var.aws_resource_identifier}-ecs-cluster"
-  })
+  }
 }
 
 resource "aws_ecs_task_definition" "ecs_task" {
@@ -147,7 +147,7 @@ resource "aws_alb_listener" "lb_listener" {
 resource "aws_security_group" "ecs_lb_sg" {
   name        = var.aws_ecs_security_group_name != "" ? "${var.aws_ecs_security_group_name}-lb" : "SG for ${var.aws_resource_identifier} - ECS LB"
   description = "SG for ${var.aws_resource_identifier} - ECS Load Balancer"
-  vpc_id      = "${aws_vpc.main.id}"
+  vpc_id      = var.aws_selected_vpc_id
 
   egress {
     from_port = 0
