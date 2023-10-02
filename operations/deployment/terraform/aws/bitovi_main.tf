@@ -218,6 +218,33 @@ module "secretmanager_get" {
   env_aws_secret = var.env_aws_secret
 }
 
+
+module "aws_ecs" {
+  source = "../modules/aws/ecs"
+  count  = var.aws_ecs_create ? 1 : 0
+  # ECS
+  aws_ecs_service_name        = var.aws_ecs_service_name 
+  aws_ecs_cluster_name        = var.aws_ecs_cluster_name 
+  aws_ecs_task_name           = var.aws_ecs_task_name 
+  aws_ecs_node_count          = var.aws_ecs_node_count 
+  aws_ecs_app_image           = var.aws_ecs_app_image 
+  aws_ecs_app_cpu             = var.aws_ecs_app_cpu 
+  aws_ecs_app_mem             = var.aws_ecs_app_mem 
+  aws_ecs_security_group_name = var.aws_ecs_security_group_name 
+  aws_ecs_assign_public_ip    = var.aws_ecs_assign_public_ip 
+  aws_ecs_container_port      = var.aws_ecs_container_port 
+  aws_ecs_lb_name             = var.aws_ecs_lb_name 
+  aws_ecs_lb_port             = var.aws_ecs_lb_port 
+  aws_selected_vpc_id         = module.vpc.aws_selected_vpc_id
+  aws_selected_subnets        = module.vpc.aws_selected_vpc_subnets
+  # Others
+  aws_resource_identifier     = var.aws_resource_identifier
+
+  providers = {
+    aws = aws.ecs
+  }
+}
+
 #module "aws_ecr" {
 #  source = "../modules/aws/ecr"
 #  count  = var.aws_ecr_repo_create ? 1 : 0
@@ -328,6 +355,7 @@ locals {
   efs_tags    = merge(local.default_tags,jsondecode(var.aws_efs_additional_tags))
   vpc_tags    = merge(local.default_tags,jsondecode(var.aws_vpc_additional_tags))
   rds_tags    = merge(local.default_tags,jsondecode(var.aws_rds_additional_tags))
+  ecs_tags    = merge(local.default_tags,jsondecode(var.aws_ecs_additional_tags))
   aurora_tags = merge(local.default_tags,jsondecode(var.aws_aurora_additional_tags))
   ecr_tags    = merge(local.default_tags,jsondecode(var.aws_ecr_additional_tags))
 
@@ -383,4 +411,8 @@ output "application_public_dns" {
 
 output "vm_url" {
   value = try(module.aws_route53[0].vm_url,local.elb_url)
+}
+
+output "ecs_load_balancer_dns" {
+  value = try(module.aws_ecs[0].load_balancer_dns,null)
 }

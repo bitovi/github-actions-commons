@@ -203,6 +203,23 @@ if [[ $(alpha_only "$AWS_AURORA_ENABLE") == true ]]; then
   aws_aurora_additional_tags=$(generate_var aws_aurora_additional_tags $AWS_AURORA_ADDITIONAL_TAGS)
 fi
 
+#-- ECS --#
+if [[ $(alpha_only "$AWS_AURORA_ENABLE") == true ]]; then
+  aws_ecs_create=$(generate_var aws_ecs_create $AWS_ECS_CREATE)
+  aws_ecs_service_name=$(generate_var aws_ecs_service_name $AWS_ECS_SERVICE_NAME)
+  aws_ecs_cluster_name=$(generate_var aws_ecs_cluster_name $AWS_ECS_CLUSTER_NAME)
+  aws_ecs_task_name=$(generate_var aws_ecs_task_name $AWS_ECS_TASK_NAME)
+  aws_ecs_node_count=$(generate_var aws_ecs_node_count $AWS_ECS_NODE_COUNT)
+  aws_ecs_app_image=$(generate_var aws_ecs_app_image $AWS_ECS_APP_IMAGE)
+  aws_ecs_app_cpu=$(generate_var aws_ecs_app_cpu $AWS_ECS_APP_CPU)
+  aws_ecs_app_mem=$(generate_var aws_ecs_app_mem $AWS_ECS_APP_MEM)
+  aws_ecs_security_group_name=$(generate_var aws_ecs_security_group_name $AWS_ECS_SECURITY_GROUP_NAME)
+  aws_ecs_assign_public_ip=$(generate_var aws_ecs_assign_public_ip $AWS_ECS_ASSIGN_PUBLIC_IP)
+  aws_ecs_container_port=$(generate_var aws_ecs_container_port $AWS_ECS_CONTAINER_PORT)
+  aws_ecs_lb_name=$(generate_var aws_ecs_lb_name $AWS_ECS_LB_NAME)
+  aws_ecs_lb_port=$(generate_var aws_ecs_lb_port $AWS_ECS_LB_PORT)
+fi
+
 #-- ECR --# 
 if [[ $(alpha_only "$AWS_ECR_REPO_CREATE") == true ]]; then
   aws_ecr_repo_create=$(generate_var aws_ecr_repo_create $AWS_ECR_REPO_CREATE)
@@ -397,6 +414,21 @@ $aws_aurora_snapshot_overwrite
 $aws_aurora_database_protection
 $aws_aurora_database_final_snapshot
 $aws_aurora_additional_tags
+
+#-- ECS --#
+$aws_ecs_create
+$aws_ecs_service_name
+$aws_ecs_cluster_name
+$aws_ecs_task_name
+$aws_ecs_node_count
+$aws_ecs_app_image
+$aws_ecs_app_cpu
+$aws_ecs_app_mem
+$aws_ecs_security_group_name
+$aws_ecs_assign_public_ip
+$aws_ecs_container_port
+$aws_ecs_lb_name
+$aws_ecs_lb_port
 
 #-- ECR --#
 $aws_ecr_repo_create

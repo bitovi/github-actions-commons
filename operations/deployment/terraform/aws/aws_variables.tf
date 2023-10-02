@@ -584,6 +584,85 @@ variable "docker_cloudwatch_retention_days" {
   default     = "14"
 }
 
+# ECS
+variable "aws_ecs_create" {
+  type        = bool
+  description = "Toggle ECS Creation"
+  default     = false
+}
+
+variable "aws_ecs_service_name" {
+  type        = string
+  description = "Elastic Container Service name"
+  default     = ""
+}
+
+variable "aws_ecs_cluster_name" {
+  type        = string
+  description = "Elastic Container Service cluster name"
+  default     = ""
+}
+
+variable "aws_ecs_task_name" {
+  type        = string
+  description = "Elastic Container Service task name"
+  default     = ""
+}
+
+variable "aws_ecs_node_count" {
+  type        = string
+  description = "Node count for ECS Cluster"
+  default     = "1"
+}
+
+variable "aws_ecs_app_image" {
+  type        = string
+  description = "Name of the image to be used"
+  default     = ""
+}
+
+variable "aws_ecs_app_cpu" {
+  type        = string
+  description = "Node CPU Amount"
+  default     = "256"
+}
+
+variable "aws_ecs_app_mem" {
+  type        = string
+  description = "Node Mem Amount"
+  default     = "512"
+}
+
+variable "aws_ecs_security_group_name" {
+  type        = string
+  description = "ECS Secruity group name"
+  default     = ""
+}
+
+variable "aws_ecs_assign_public_ip" {
+  type        = bool
+  description = "Assign public IP to node"
+  default     = false
+}
+
+variable "aws_ecs_container_port" {
+  type        = string
+  description = "Comma separated list of container ports"
+  default     = ""
+}
+
+variable "aws_ecs_lb_name" {
+  type        = string
+  description = "Load Balancer name"
+  default     = ""
+}
+
+variable "aws_ecs_lb_port" {
+  type        = string
+  description = "Comma serparated list of ports exposed by the load balancer"
+  default     = ""
+}
+
 # ECR
 variable "aws_ecr_repo_create" { 
   description = "Determines whether a repository will be created"

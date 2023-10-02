@@ -427,6 +427,47 @@ inputs:
     description: 'Number of days to retain logs. 0 to never expire.'
     required: false
 
+  # AWS_ECS
+  aws_ecs_create:
+    description: 'Toggle ECS Creation'
+    required: false
+  aws_ecs_service_name:
+    description: 'Elastic Container Service name'
+    required: false
+  aws_ecs_cluster_name:
+    description: 'Elastic Container Service cluster name'
+    required: false
+  aws_ecs_task_name:
+    description: 'Elastic Container Service task name'
+    required: false
+  aws_ecs_node_count:
+    description: 'Node count for ECS Cluster'
+    required: false
+  aws_ecs_app_image:
+    description: 'Name of the image to be used'
+    required: false
+  aws_ecs_app_cpu:
+    description: 'Node CPU Amount'
+    required: false
+  aws_ecs_app_mem:
+    description: 'Node Mem Amount'
+    required: false
+  aws_ecs_security_group_name:
+    description: 'ECS Secruity group name'
+    required: false
+  aws_ecs_assign_public_ip:
+    description: 'Assign public IP to node'
+    required: false
+  aws_ecs_container_port:
+    description: 'Comma separated list of container ports'
+    required: false
+  aws_ecs_lb_name:
+    description: 'Load Balancer name'
+    required: false
+  aws_ecs_lb_port:
+    description: 'Comma serparated list of ports exposed by the load balancer'
+    required: false
+
   # AWS ECR
   aws_ecr_repo_create:
     description: 'Determines whether a repository will be created'
@@ -753,6 +794,21 @@ runs:
         DOCKER_CLOUDWATCH_SKIP_DESTROY: ${{ inputs.docker_cloudwatch_skip_destroy }}
         DOCKER_CLOUDWATCH_RETENTION_DAYS: ${{ inputs.docker_cloudwatch_retention_days }}
 
+        # ECS
+       AWS_ECS_CREATE: ${{ inputs.aws_ecs_create }}
+       AWS_ECS_SERVICE_NAME: ${{ inputs.aws_ecs_service_name }}
+       AWS_ECS_CLUSTER_NAME: ${{ inputs.aws_ecs_cluster_name }}
+       AWS_ECS_TASK_NAME: ${{ inputs.aws_ecs_task_name }}
+       AWS_ECS_NODE_COUNT: ${{ inputs.aws_ecs_node_count }}
+       AWS_ECS_APP_IMAGE: ${{ inputs.aws_ecs_app_image }}
+       AWS_ECS_APP_CPU: ${{ inputs.aws_ecs_app_cpu }}
+       AWS_ECS_APP_MEM: ${{ inputs.aws_ecs_app_mem }}
+       AWS_ECS_SECURITY_GROUP_NAME: ${{ inputs.aws_ecs_security_group_name }}
+       AWS_ECS_ASSIGN_PUBLIC_IP: ${{ inputs.aws_ecs_assign_public_ip }}
+       AWS_ECS_CONTAINER_PORT: ${{ inputs.aws_ecs_container_port }}
+       AWS_ECS_LB_NAME: ${{ inputs.aws_ecs_lb_name }}
+       AWS_ECS_LB_PORT: ${{ inputs.aws_ecs_lb_port }}
+       
         # ECR
         AWS_ECR_REPO_CREATE: ${{ inputs.aws_ecr_repo_create }}
         AWS_ECR_REPO_TYPE: ${{ inputs.aws_ecr_repo_type }}
