@@ -205,7 +205,7 @@ fi
 
 #-- ECS --#
 if [[ $(alpha_only "$AWS_AURORA_ENABLE") == true ]]; then
-  aws_ecs_create=$(generate_var aws_ecs_create $AWS_ECS_CREATE)
+  aws_ecs_enable=$(generate_var aws_ecs_enable $AWS_ECS_ENABLE)
   aws_ecs_service_name=$(generate_var aws_ecs_service_name $AWS_ECS_SERVICE_NAME)
   aws_ecs_cluster_name=$(generate_var aws_ecs_cluster_name $AWS_ECS_CLUSTER_NAME)
   aws_ecs_task_name=$(generate_var aws_ecs_task_name $AWS_ECS_TASK_NAME)
@@ -417,7 +417,7 @@ $aws_aurora_database_final_snapshot
 $aws_aurora_additional_tags
 
 #-- ECS --#
-$aws_ecs_create
+$aws_ecs_enable
 $aws_ecs_service_name
 $aws_ecs_cluster_name
 $aws_ecs_task_name

@@ -221,7 +221,7 @@ module "secretmanager_get" {
 
 module "aws_ecs" {
   source = "../modules/aws/ecs"
-  count  = var.aws_ecs_create ? 1 : 0
+  count  = var.aws_ecs_enable ? 1 : 0
   # ECS
   aws_ecs_service_name        = var.aws_ecs_service_name 
   aws_ecs_cluster_name        = var.aws_ecs_cluster_name 

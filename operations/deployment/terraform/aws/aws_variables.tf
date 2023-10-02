@@ -585,7 +585,7 @@ variable "docker_cloudwatch_retention_days" {
 }
 
 # ECS
-variable "aws_ecs_create" {
+variable "aws_ecs_enable" {
   type        = bool
   description = "Toggle ECS Creation"
   default     = false

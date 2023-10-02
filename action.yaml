@@ -428,7 +428,7 @@ inputs:
     required: false
 
   # AWS_ECS
-  aws_ecs_create:
+  aws_ecs_enable:
     description: 'Toggle ECS Creation'
     required: false
   aws_ecs_service_name:
@@ -798,7 +798,7 @@ runs:
         DOCKER_CLOUDWATCH_RETENTION_DAYS: ${{ inputs.docker_cloudwatch_retention_days }}
 
         # ECS
-        AWS_ECS_CREATE: ${{ inputs.aws_ecs_create }}
+        AWS_ECS_ENABLE: ${{ inputs.aws_ecs_enable }}
         AWS_ECS_SERVICE_NAME: ${{ inputs.aws_ecs_service_name }}
         AWS_ECS_CLUSTER_NAME: ${{ inputs.aws_ecs_cluster_name }}
         AWS_ECS_TASK_NAME: ${{ inputs.aws_ecs_task_name }}
