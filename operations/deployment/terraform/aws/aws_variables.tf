@@ -663,6 +663,12 @@ variable "aws_ecs_lb_port" {
   default     = ""
 }
 
+variable "aws_ecs_additional_tags" {
+  type        = string
+  description = "A list of strings that will be added to created resources"
+  default     = "{}"
+}
+
 # ECR
 variable "aws_ecr_repo_create" { 
   description = "Determines whether a repository will be created"
