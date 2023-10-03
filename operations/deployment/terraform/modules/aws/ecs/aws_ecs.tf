@@ -23,7 +23,7 @@ resource "aws_ecs_task_definition" "ecs_task" {
     "portMappings": [
       {
         "containerPort": ${var.aws_ecs_container_port},
-        "hostPort": ${local.aws_ecs_container_port}
+        "hostPort": ${var.aws_ecs_container_port}
       }
     ]
   }
@@ -47,7 +47,7 @@ resource "aws_ecs_service" "ecs_service_with_lb" {
   load_balancer {
     target_group_arn = aws_alb_target_group.lb_targets[0].id
     container_name   = var.aws_ecs_app_image
-    container_port   = local.aws_ecs_container_port[0]
+    container_port   = local.aws_ecs_container_port
   }
  # depends_on = [aws_lb_listener.hello_world]
 }
@@ -74,7 +74,7 @@ resource "aws_ecs_service" "ecs_service_with_lb" {
 locals {
   aws_ecs_task_name      = var.aws_ecs_task_name != "" ? var.aws_ecs_task_name : "${var.aws_resource_identifier}-app"
   aws_ecs_container_port = var.aws_ecs_container_port != "" ? [for n in split(",", var.aws_ecs_container_port) : tonumber(n)] : []
-  aws_ecs_lb_port        = var.aws_ecs_lb_port != "" ?        [for n in split(",", var.aws_ecs_container_port) : tonumber(n)] : local.aws_ecs_container_port
+  aws_ecs_lb_port        = var.aws_ecs_lb_port != "" ?        [for n in split(",", var.aws_ecs_lb_port)        : tonumber(n)] : local.aws_ecs_container_port
 }
 
 # Network part
