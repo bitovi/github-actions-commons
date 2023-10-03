@@ -53,7 +53,7 @@ resource "aws_ecs_service" "ecs_service_with_lb" {
 }
 
 resource "aws_iam_role" "ecsTaskExecutionRole" {
-  name               = "ecsTaskExecutionRoleFor${local.aws_ecs_task_name}"
+  name               = "${local.aws_ecs_task_name}-TaskRole"
   assume_role_policy = "${data.aws_iam_policy_document.assume_role_policy.json}"
 }
 
