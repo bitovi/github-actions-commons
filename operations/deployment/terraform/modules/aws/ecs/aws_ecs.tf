@@ -1,5 +1,5 @@
 resource "aws_ecs_cluster" "cluster" {
-  name = var.aws_ecs_cluster_name != null ? var.aws_ecs_cluster_name : "${var.aws_resource_identifier}-cluster"
+  name = var.aws_ecs_cluster_name != "" ? var.aws_ecs_cluster_name : "${var.aws_resource_identifier}-cluster"
   tags = {
     Name = "${var.aws_resource_identifier}-ecs-cluster"
   }
@@ -32,7 +32,7 @@ DEFINITION
 }
 
 resource "aws_ecs_service" "ecs_service_with_lb" {
-  name             = var.aws_ecs_service_name != null ? var.aws_ecs_service_name : "${var.aws_resource_identifier}-service"
+  name             = var.aws_ecs_service_name != "" ? var.aws_ecs_service_name : "${var.aws_resource_identifier}-service"
   cluster          = aws_ecs_cluster.cluster.id
   task_definition  = aws_ecs_task_definition.ecs_task.arn
   desired_count    = tonumber(var.aws_ecs_node_count)
@@ -53,7 +53,7 @@ resource "aws_ecs_service" "ecs_service_with_lb" {
 }
 
 #resource "aws_ecs_service" "ecs_service_no_lb" {
-#  name             = var.aws_ecs_service_name != null ? var.aws_ecs_service_name : "${var.aws_resource_identifier}-service"
+#  name             = var.aws_ecs_service_name != "" ? var.aws_ecs_service_name : "${var.aws_resource_identifier}-service"
 #  cluster          = aws_ecs_cluster.cluster.id
 #  task_definition  = aws_ecs_task_definition.ecs_task.arn
 #  desired_count    = var.aws_ecs_node_count
@@ -72,7 +72,7 @@ resource "aws_ecs_service" "ecs_service_with_lb" {
 
 
 locals {
-  aws_ecs_task_name      = var.aws_ecs_task_name != null ? var.aws_ecs_task_name : "${var.aws_resource_identifier}-app"
+  aws_ecs_task_name      = var.aws_ecs_task_name != "" ? var.aws_ecs_task_name : "${var.aws_resource_identifier}-app"
   aws_ecs_container_port = var.aws_ecs_container_port != "" ? [for n in split(",", var.aws_ecs_container_port) : tonumber(n)] : []
   aws_ecs_lb_port        = var.aws_ecs_lb_port != "" ?        [for n in split(",", var.aws_ecs_container_port) : tonumber(n)] : local.aws_ecs_container_port
 }
@@ -117,7 +117,7 @@ resource "aws_security_group_rule" "incoming_alb" {
 ### ALB --- Make this optional -- Using ALB name intentionally. (To make clear is an A LB)
 
 resource "aws_alb" "ecs_lb" {
-  name            = var.aws_ecs_lb_name != null ? var.aws_ecs_lb_name : "${var.aws_resource_identifier}-ecs-lb"
+  name            = var.aws_ecs_lb_name != "" ? var.aws_ecs_lb_name : "${var.aws_resource_identifier}-ecs-lb"
   subnets         = var.aws_selected_subnets
   security_groups = [aws_security_group.ecs_lb_sg.id]
 }
