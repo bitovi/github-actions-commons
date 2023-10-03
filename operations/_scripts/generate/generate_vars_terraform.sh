@@ -216,7 +216,6 @@ if [[ $(alpha_only "$AWS_ECS_ENABLE") == true ]]; then
   aws_ecs_security_group_name=$(generate_var aws_ecs_security_group_name $AWS_ECS_SECURITY_GROUP_NAME)
   aws_ecs_assign_public_ip=$(generate_var aws_ecs_assign_public_ip $AWS_ECS_ASSIGN_PUBLIC_IP)
   aws_ecs_container_port=$(generate_var aws_ecs_container_port $AWS_ECS_CONTAINER_PORT)
-  aws_ecs_lb_name=$(generate_var aws_ecs_lb_name $AWS_ECS_LB_NAME)
   aws_ecs_lb_port=$(generate_var aws_ecs_lb_port $AWS_ECS_LB_PORT)
   aws_ecs_additional_tags=$(generate_var aws_ecs_additional_tags $AWS_ECS_ADDITIONAL_TAGS)
 fi

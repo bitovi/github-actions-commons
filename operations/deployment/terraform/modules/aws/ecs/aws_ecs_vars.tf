@@ -8,8 +8,8 @@ variable "aws_ecs_app_mem" {}
 variable "aws_ecs_security_group_name" {}
 variable "aws_ecs_assign_public_ip" {}
 variable "aws_ecs_container_port" {}
-variable "aws_ecs_lb_name" {}
 variable "aws_ecs_lb_port" {}
 variable "aws_resource_identifier" {}
+variable "aws_resource_identifier_supershort" {}
 variable "aws_selected_vpc_id" {}
 variable "aws_selected_subnets" {}

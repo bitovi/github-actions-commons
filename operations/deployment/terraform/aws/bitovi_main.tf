@@ -233,12 +233,12 @@ module "aws_ecs" {
   aws_ecs_security_group_name = var.aws_ecs_security_group_name 
   aws_ecs_assign_public_ip    = var.aws_ecs_assign_public_ip 
   aws_ecs_container_port      = var.aws_ecs_container_port 
-  aws_ecs_lb_name             = var.aws_ecs_lb_name 
   aws_ecs_lb_port             = var.aws_ecs_lb_port 
   aws_selected_vpc_id         = module.vpc.aws_selected_vpc_id
   aws_selected_subnets        = module.vpc.aws_selected_vpc_subnets
   # Others
-  aws_resource_identifier     = var.aws_resource_identifier
+  aws_resource_identifier            = var.aws_resource_identifier
+  aws_resource_identifier_supershort = var.aws_resource_identifier_supershort
 
   providers = {
     aws = aws.ecs
