@@ -117,17 +117,17 @@ resource "aws_security_group_rule" "incoming_alb" {
 ### ALB --- Make this optional -- Using ALB name intentionally. (To make clear is an A LB)
 
 resource "aws_alb" "ecs_lb" {
-  name            = "${var.aws_resource_identifier_supershort}-ec"
+  name            = var.aws_resource_identifier_supershort
   subnets         = var.aws_selected_subnets
   security_groups = [aws_security_group.ecs_lb_sg.id]
   tags = {
-    Name = "${var.aws_resource_identifier_supershort}-ec"
+    Name = "${var.aws_resource_identifier_supershort}"
   }
 }
 
 resource "aws_alb_target_group" "lb_targets" {
   count       = length(local.aws_ecs_container_port)
-  name        = "${var.aws_resource_identifier}-ecs-tagets-${local.aws_ecs_container_port[count.index]}"
+  name        = "${var.aws_resource_identifier_supershort}"
   port        = local.aws_ecs_container_port[count.index]
   protocol    = "HTTP"
   vpc_id      = var.aws_selected_vpc_id

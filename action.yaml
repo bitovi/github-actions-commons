@@ -461,9 +461,6 @@ inputs:
   aws_ecs_container_port:
     description: 'Comma separated list of container ports'
     required: false
-  aws_ecs_lb_name:
-    description: 'Load Balancer name'
-    required: false
   aws_ecs_lb_port:
     description: 'Comma serparated list of ports exposed by the load balancer'
     required: false
@@ -809,7 +806,6 @@ runs:
         AWS_ECS_SECURITY_GROUP_NAME: ${{ inputs.aws_ecs_security_group_name }}
         AWS_ECS_ASSIGN_PUBLIC_IP: ${{ inputs.aws_ecs_assign_public_ip }}
         AWS_ECS_CONTAINER_PORT: ${{ inputs.aws_ecs_container_port }}
-        AWS_ECS_LB_NAME: ${{ inputs.aws_ecs_lb_name }}
         AWS_ECS_LB_PORT: ${{ inputs.aws_ecs_lb_port }}
         AWS_ECS_ADDITIONAL_TAGS: ${{ inputs.aws_ecs_additional_tags }}
        
