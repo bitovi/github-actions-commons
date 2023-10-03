@@ -53,7 +53,7 @@ resource "aws_ecs_service" "ecs_service_with_lb" {
 }
 
 resource "aws_iam_role" "ecsTaskExecutionRole" {
-  name               = "ecsTaskExecutionRole"
+  name               = "ecsTaskExecutionRoleFor${local.aws_ecs_task_name}"
   assume_role_policy = "${data.aws_iam_policy_document.assume_role_policy.json}"
 }
 
@@ -100,8 +100,8 @@ locals {
 
 # Network part
 resource "aws_security_group" "ecs_sg" {
-  name        = var.aws_ecs_security_group_name != "" ? var.aws_ecs_security_group_name : "SG for ${var.aws_resource_identifier} - ECS"
-  description = "SG for ${var.aws_resource_identifier} - ECS"
+  name        = var.aws_ecs_security_group_name != "" ? var.aws_ecs_security_group_name : "SG for ${var.aws_resource_identifier} ${local.aws_ecs_task_name} - ECS"
+  description = "SG for ${var.aws_resource_identifier} - ${local.aws_ecs_task_name} - ECS"
   vpc_id      = var.aws_selected_vpc_id
   egress {
     from_port   = 0
@@ -153,6 +153,9 @@ resource "aws_alb_target_group" "lb_targets" {
   protocol    = "HTTP"
   vpc_id      = var.aws_selected_vpc_id
   target_type = "ip"
+  lifecycle {
+    replace_triggered_by = [aws_security_group.ecs_sg]
+  }
 }
 
 # Redirect all traffic from the ALB to the target group
@@ -169,8 +172,8 @@ resource "aws_alb_listener" "lb_listener" {
 }
 
 resource "aws_security_group" "ecs_lb_sg" {
-  name        = var.aws_ecs_security_group_name != "" ? "${var.aws_ecs_security_group_name}-lb" : "SG for ${var.aws_resource_identifier} - ECS LB"
-  description = "SG for ${var.aws_resource_identifier} - ECS Load Balancer"
+  name        = var.aws_ecs_security_group_name != "" ? "${var.aws_ecs_security_group_name}-lb" : "SG for ${var.aws_resource_identifier} - ${local.aws_ecs_task_name} ECS LB"
+  description = "SG for ${var.aws_resource_identifier} - ${local.aws_ecs_task_name} ECS Load Balancer"
   vpc_id      = var.aws_selected_vpc_id
 
   egress {
