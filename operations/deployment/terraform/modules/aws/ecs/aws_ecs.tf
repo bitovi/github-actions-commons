@@ -82,7 +82,7 @@ DEFINITION
 resource "aws_ecs_service" "ecs_service_with_lb" {
   name             = var.aws_ecs_service_name != "" ? var.aws_ecs_service_name : "${var.aws_resource_identifier}-service"
   cluster          = aws_ecs_cluster.cluster.id
-  task_definition  = var.aws_ec2_cloudwatch_enable? aws_ecs_task_definition.ecs_task_cw[0].arn : aws_ecs_task_definition.ecs_task[0].arn
+  task_definition  = var.aws_ecs_cloudwatch_enable? aws_ecs_task_definition.ecs_task_cw[0].arn : aws_ecs_task_definition.ecs_task[0].arn
   desired_count    = tonumber(var.aws_ecs_node_count)
   launch_type      = "FARGATE"
 
