@@ -1,5 +1,18 @@
 resource "aws_ecs_cluster" "cluster" {
   name = var.aws_ecs_cluster_name != "" ? var.aws_ecs_cluster_name : "${var.aws_resource_identifier}-cluster"
+  setting {
+    name  = "containerInsights"
+    value = var.aws_ecs_cloudwatch_enable ? "enabled" : "disabled"
+  }
+  configuration {
+    execute_command_configuration {
+      log_configuration {
+        cloud_watch_log_group_name = var.aws_ecs_cloudwatch_lg_name
+      }
+    }
+  }
+  s3_bucket_name = var.aws_ecs_logs_s3_bucket
+  s3_key_prefix  = var.aws_ecs_logs_s3_bucket_prefix
   tags = {
     Name = "${var.aws_resource_identifier}-ecs-cluster"
   }
@@ -22,10 +35,17 @@ resource "aws_ecs_task_definition" "ecs_task" {
     "networkMode": "awsvpc",
     "portMappings": [
       {
-        "containerPort": ${var.aws_ecs_container_port},
-        "hostPort": ${var.aws_ecs_container_port}
+        "containerPort": ${tonumber(var.aws_ecs_container_port)}
       }
-    ]
+    ],
+    "logConfiguration": {
+      "logDriver": "awslogs",
+      "options": {
+        "awslogs-region":"${var.aws_region_current_name}",
+        "awslogs-group":"${var.aws_ecs_cloudwatch_lg_name}",
+        "tag":"{{.Name}}"
+      }
+    }
   }
 ]
 DEFINITION
@@ -51,6 +71,17 @@ resource "aws_ecs_service" "ecs_service_with_lb" {
   }
   depends_on = [aws_alb_listener.lb_listener]
 }
+
+# Cloudwatch config
+
+resource "aws_cloudwatch_log_group" "ecs_cw_log_group" {
+  count             = var.aws_ecs_cloudwatch_enable ? 1 : 0
+  name              = var.aws_ecs_cloudwatch_lg_name
+  skip_destroy      = var.aws_ecs_cloudwatch_skip_destroy
+  retention_in_days = tonumber(var.aws_ecs_cloudwatch_retention_days)
+}
+
+# IAM
 
 resource "aws_iam_role" "ecsTaskExecutionRole" {
   name               = "${var.aws_resource_identifier}-Role"
@@ -114,15 +145,15 @@ resource "aws_security_group" "ecs_sg" {
   }
 }
 
-#resource "aws_security_group_rule" "incoming_ecs_ports" {
-#  count       = length(local.aws_ecs_container_port)
-#  type        = "ingress"
-#  from_port   = local.aws_ecs_container_port[count.index]
-#  to_port     = local.aws_ecs_container_port[count.index]
-#  protocol    = "tcp"
-#  cidr_blocks = ["0.0.0.0/0"]
-#  security_group_id = aws_security_group.ecs_sg.id
-#}
+resource "aws_security_group_rule" "incoming_ecs_ports" {
+  count             = length(local.aws_ecs_container_port)
+  type              = "ingress"
+  from_port         = local.aws_ecs_container_port[count.index]
+  to_port           = local.aws_ecs_container_port[count.index]
+  protocol          = "tcp"
+  cidr_blocks       = ["0.0.0.0/0"]
+  security_group_id = aws_security_group.ecs_sg.id
+}
 
 resource "aws_security_group_rule" "incoming_alb" {
   count                    = length(local.aws_ecs_container_port)
@@ -141,6 +172,7 @@ resource "aws_alb" "ecs_lb" {
   name            = var.aws_resource_identifier_supershort
   subnets         = var.aws_selected_subnets
   security_groups = [aws_security_group.ecs_lb_sg.id]
+
   tags = {
     Name = "${var.aws_resource_identifier_supershort}"
   }
@@ -153,6 +185,7 @@ resource "aws_alb_target_group" "lb_targets" {
   protocol    = "HTTP"
   vpc_id      = var.aws_selected_vpc_id
   target_type = "ip"
+
   lifecycle {
     replace_triggered_by = [aws_security_group.ecs_sg]
   }
@@ -160,7 +193,7 @@ resource "aws_alb_target_group" "lb_targets" {
 
 # Redirect all traffic from the ALB to the target group
 resource "aws_alb_listener" "lb_listener" {
-  count       = length(local.aws_ecs_lb_port)
+  count             = length(local.aws_ecs_lb_port)
   load_balancer_arn = "${aws_alb.ecs_lb.id}"
   port              = local.aws_ecs_lb_port[count.index]
   protocol          = "HTTP"

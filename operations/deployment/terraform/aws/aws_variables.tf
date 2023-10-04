@@ -663,6 +663,32 @@ variable "aws_ecs_lb_port" {
   default     = ""
 }
 
+variable "aws_ecs_cloudwatch_enable" {
+  type        = bool
+  description = "Toggle cloudwatch for ECS."
+  default     = false
+}
+variable "aws_ecs_cloudwatch_lg_name" {
+  type        = string
+  description = "Log group name. Will default to aws_identifier if none."
+  default     = null
+}
+variable "aws_ecs_cloudwatch_skip_destroy" {
+  type        = string
+  description = "Toggle deletion or not when destroying the stack."
+  default     = null
+}
+variable "aws_ecs_logs_s3_bucket" {
+  type        = string
+  description = "Bucket where to send the ECS logs. Leave empty if disabled."
+  default     = null
+}
+variable "aws_ecs_logs_s3_bucket_prefix" {
+  type        = string
+  description = "Prefix where to store the logs (to define a folder in the bucket)."
+  default     = null
+}
+
 variable "aws_ecs_additional_tags" {
   type        = string
   description = "A list of strings that will be added to created resources"

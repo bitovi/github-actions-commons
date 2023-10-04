@@ -9,6 +9,12 @@ variable "aws_ecs_security_group_name" {}
 variable "aws_ecs_assign_public_ip" {}
 variable "aws_ecs_container_port" {}
 variable "aws_ecs_lb_port" {}
+variable "aws_ecs_cloudwatch_enable" {}
+variable "aws_ecs_cloudwatch_lg_name" {}
+variable "aws_ecs_cloudwatch_skip_destroy" {}
+variable "aws_ecs_logs_s3_bucket" {}
+variable "aws_ecs_logs_s3_bucket_prefix" {}
+variable "aws_region_current_name" {}
 variable "aws_resource_identifier" {}
 variable "aws_resource_identifier_supershort" {}
 variable "aws_selected_vpc_id" {}

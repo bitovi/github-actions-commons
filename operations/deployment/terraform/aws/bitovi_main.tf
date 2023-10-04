@@ -223,19 +223,25 @@ module "aws_ecs" {
   source = "../modules/aws/ecs"
   count  = var.aws_ecs_enable ? 1 : 0
   # ECS
-  aws_ecs_service_name        = var.aws_ecs_service_name 
-  aws_ecs_cluster_name        = var.aws_ecs_cluster_name 
-  aws_ecs_task_name           = var.aws_ecs_task_name 
-  aws_ecs_node_count          = var.aws_ecs_node_count 
-  aws_ecs_app_image           = var.aws_ecs_app_image 
-  aws_ecs_app_cpu             = var.aws_ecs_app_cpu 
-  aws_ecs_app_mem             = var.aws_ecs_app_mem 
-  aws_ecs_security_group_name = var.aws_ecs_security_group_name 
-  aws_ecs_assign_public_ip    = var.aws_ecs_assign_public_ip 
-  aws_ecs_container_port      = var.aws_ecs_container_port 
-  aws_ecs_lb_port             = var.aws_ecs_lb_port 
-  aws_selected_vpc_id         = module.vpc.aws_selected_vpc_id
-  aws_selected_subnets        = module.vpc.aws_selected_vpc_subnets
+  aws_ecs_service_name               = var.aws_ecs_service_name 
+  aws_ecs_cluster_name               = var.aws_ecs_cluster_name 
+  aws_ecs_task_name                  = var.aws_ecs_task_name 
+  aws_ecs_node_count                 = var.aws_ecs_node_count 
+  aws_ecs_app_image                  = var.aws_ecs_app_image 
+  aws_ecs_app_cpu                    = var.aws_ecs_app_cpu 
+  aws_ecs_app_mem                    = var.aws_ecs_app_mem 
+  aws_ecs_security_group_name        = var.aws_ecs_security_group_name 
+  aws_ecs_assign_public_ip           = var.aws_ecs_assign_public_ip 
+  aws_ecs_container_port             = var.aws_ecs_container_port 
+  aws_ecs_lb_port                    = var.aws_ecs_lb_port 
+  aws_ecs_cloudwatch_enable          = var.aws_ecs_cloudwatch_enable
+  aws_ecs_cloudwatch_lg_name         = var.aws_ecs_cloudwatch_enable ? ( var.aws_ecs_cloudwatch_lg_name != null ? var.aws_ecs_cloudwatch_lg_name : "${var.aws_resource_identifier}-ecs-logs" ) : null
+  aws_ecs_cloudwatch_skip_destroy    = var.aws_ecs_cloudwatch_skip_destroy
+  aws_ecs_logs_s3_bucket             = var.aws_ecs_logs_s3_bucket
+  aws_ecs_logs_s3_bucket_prefix      = var.aws_ecs_logs_s3_bucket_prefix
+  aws_region_current_name            = module.vpc.aws_region_current_name
+  aws_selected_vpc_id                = module.vpc.aws_selected_vpc_id
+  aws_selected_subnets               = module.vpc.aws_selected_vpc_subnets
   # Others
   aws_resource_identifier            = var.aws_resource_identifier
   aws_resource_identifier_supershort = var.aws_resource_identifier_supershort
