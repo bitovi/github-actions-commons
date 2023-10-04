@@ -20,6 +20,33 @@ resource "aws_ecs_cluster" "cluster" {
 }
 
 resource "aws_ecs_task_definition" "ecs_task" {
+  count                    = var.aws_ecs_cloudwatch_enable ? 0 : 1
+  family                   = local.aws_ecs_task_name
+  network_mode             = "awsvpc"
+  requires_compatibilities = ["FARGATE"]
+  cpu                      = tonumber(var.aws_ecs_app_cpu)
+  memory                   = tonumber(var.aws_ecs_app_mem)
+  execution_role_arn       = aws_iam_role.ecsTaskExecutionRole.arn
+  container_definitions = <<DEFINITION
+[
+  {
+    "image": "${var.aws_ecs_app_image}",
+    "cpu": ${var.aws_ecs_app_cpu},
+    "memory": ${var.aws_ecs_app_mem},
+    "name": "${local.aws_ecs_task_name}",
+    "networkMode": "awsvpc",
+    "portMappings": [
+      {
+        "containerPort": ${tonumber(var.aws_ecs_container_port)}
+      }
+    ]
+  }
+]
+DEFINITION
+}
+
+resource "aws_ecs_task_definition" "ecs_task_cw" {
+  count                    = var.aws_ecs_cloudwatch_enable ? 1 : 0
   family                   = local.aws_ecs_task_name
   network_mode             = "awsvpc"
   requires_compatibilities = ["FARGATE"]
@@ -55,7 +82,7 @@ DEFINITION
 resource "aws_ecs_service" "ecs_service_with_lb" {
   name             = var.aws_ecs_service_name != "" ? var.aws_ecs_service_name : "${var.aws_resource_identifier}-service"
   cluster          = aws_ecs_cluster.cluster.id
-  task_definition  = aws_ecs_task_definition.ecs_task.arn
+  task_definition  = var.aws_ec2_cloudwatch_enable? aws_ecs_task_definition.ecs_task_cw[0].arn : aws_ecs_task_definition.ecs_task[0].arn
   desired_count    = tonumber(var.aws_ecs_node_count)
   launch_type      = "FARGATE"
 
