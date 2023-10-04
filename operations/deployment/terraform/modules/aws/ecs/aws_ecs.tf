@@ -8,11 +8,12 @@ resource "aws_ecs_cluster" "cluster" {
     execute_command_configuration {
       log_configuration {
         cloud_watch_log_group_name = var.aws_ecs_cloudwatch_lg_name
+        s3_bucket_name             = var.aws_ecs_logs_s3_bucket
+        s3_key_prefix              = var.aws_ecs_logs_s3_bucket_prefix
       }
     }
   }
-  s3_bucket_name = var.aws_ecs_logs_s3_bucket
-  s3_key_prefix  = var.aws_ecs_logs_s3_bucket_prefix
+
   tags = {
     Name = "${var.aws_resource_identifier}-ecs-cluster"
   }

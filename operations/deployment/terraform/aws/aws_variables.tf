@@ -668,21 +668,31 @@ variable "aws_ecs_cloudwatch_enable" {
   description = "Toggle cloudwatch for ECS."
   default     = false
 }
+
 variable "aws_ecs_cloudwatch_lg_name" {
   type        = string
   description = "Log group name. Will default to aws_identifier if none."
   default     = null
 }
+
 variable "aws_ecs_cloudwatch_skip_destroy" {
   type        = string
   description = "Toggle deletion or not when destroying the stack."
   default     = null
 }
+
+variable "aws_ecs_cloudwatch_retention_days" {
+  type        = string
+  description = "Number of days to retain logs. 0 to never expire."
+  default     = "14"
+}
+
 variable "aws_ecs_logs_s3_bucket" {
   type        = string
   description = "Bucket where to send the ECS logs. Leave empty if disabled."
   default     = null
 }
+
 variable "aws_ecs_logs_s3_bucket_prefix" {
   type        = string
   description = "Prefix where to store the logs (to define a folder in the bucket)."
