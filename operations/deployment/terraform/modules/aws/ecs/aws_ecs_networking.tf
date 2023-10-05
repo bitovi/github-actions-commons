@@ -70,8 +70,8 @@ resource "aws_alb_listener" "lb_listener" {
   load_balancer_arn = "${aws_alb.ecs_lb.id}"
   port              = local.aws_ecs_lb_port#[count.index]
   protocol          = var.aws_certificates_selected_arn != "" ? "HTTPS" : "HTTP"
-  certificate_arn   = var.aws_certificates_selected_arn 
-  ssl_policy        = "ELBSecurityPolicy-TLS13-1-2-2021-06" # https://docs.aws.amazon.com/elasticloadbalancing/latest/application/create-https-listener.html
+  certificate_arn   = var.aws_certificates_selected_arn
+  ssl_policy        = var.aws_certificates_selected_arn != "" ? "ELBSecurityPolicy-TLS13-1-2-2021-06" : "" # https://docs.aws.amazon.com/elasticloadbalancing/latest/application/create-https-listener.html
   default_action {
     target_group_arn = aws_alb_target_group.lb_targets.id
     type             = "forward"
