@@ -1,5 +1,6 @@
 resource "aws_ecs_cluster" "cluster" {
   name = var.aws_ecs_cluster_name != "" ? var.aws_ecs_cluster_name : "${var.aws_resource_identifier}-cluster"
+
   setting {
     name  = "containerInsights"
     value = var.aws_ecs_cloudwatch_enable ? "enabled" : "disabled"
@@ -30,6 +31,10 @@ resource "aws_ecs_task_definition" "ecs_task" {
   container_definitions = <<DEFINITION
 [
   {
+    "runtimePlatform": {
+        "cpuArchitecture": "X86_64",
+        "operatingSystemFamily": "LINUX"
+    },
     "image": "${var.aws_ecs_app_image}",
     "cpu": ${var.aws_ecs_app_cpu},
     "memory": ${var.aws_ecs_app_mem},
@@ -37,7 +42,11 @@ resource "aws_ecs_task_definition" "ecs_task" {
     "networkMode": "awsvpc",
     "portMappings": [
       {
-        "containerPort": ${tonumber(var.aws_ecs_container_port)}
+        "name": "port-${var.aws_ecs_container_port}"
+        "containerPort": ${tonumber(var.aws_ecs_container_port)},
+        "hostPort": ${tonumber(var.aws_ecs_container_port)},
+        "protocol": "tcp",
+        "appProtocol": "http"
       }
     ]
   }
@@ -50,6 +59,7 @@ resource "aws_ecs_task_definition" "ecs_task_cw" {
   family                   = local.aws_ecs_task_name
   network_mode             = "awsvpc"
   requires_compatibilities = ["FARGATE"]
+  operating_system_family  = "LINUX"
   cpu                      = tonumber(var.aws_ecs_app_cpu)
   memory                   = tonumber(var.aws_ecs_app_mem)
   execution_role_arn       = aws_iam_role.ecsTaskExecutionRole.arn
@@ -63,7 +73,11 @@ resource "aws_ecs_task_definition" "ecs_task_cw" {
     "networkMode": "awsvpc",
     "portMappings": [
       {
-        "containerPort": ${tonumber(var.aws_ecs_container_port)}
+        "name": "port-${var.aws_ecs_container_port}"
+        "containerPort": ${tonumber(var.aws_ecs_container_port)},
+        "hostPort": ${tonumber(var.aws_ecs_container_port)},
+        "protocol": "tcp",
+        "appProtocol": "http"
       }
     ],
     "logConfiguration": {
