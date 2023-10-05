@@ -59,7 +59,6 @@ resource "aws_ecs_task_definition" "ecs_task_cw" {
   family                   = local.aws_ecs_task_name
   network_mode             = "awsvpc"
   requires_compatibilities = ["FARGATE"]
-  operating_system_family  = "LINUX"
   cpu                      = tonumber(var.aws_ecs_app_cpu)
   memory                   = tonumber(var.aws_ecs_app_mem)
   execution_role_arn       = aws_iam_role.ecsTaskExecutionRole.arn
