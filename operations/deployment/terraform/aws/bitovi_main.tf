@@ -32,7 +32,7 @@ module "ec2" {
 
 module "aws_certificates" {
   source = "../modules/aws/certificates"
-  count  = var.aws_ec2_instance_create && var.aws_r53_enable && var.aws_r53_domain_name != "" ? 1 : 0
+  count  = ( var.aws_ec2_instance_create || var.aws_ecs_enable ) && var.aws_r53_enable && var.aws_r53_domain_name != "" ? 1 : 0
   # Cert
   aws_r53_cert_arn         = var.aws_r53_cert_arn
   aws_r53_create_root_cert = var.aws_r53_create_root_cert
@@ -244,11 +244,33 @@ module "aws_ecs" {
   aws_selected_vpc_id                = module.vpc.aws_selected_vpc_id
   aws_selected_subnets               = module.vpc.aws_selected_vpc_subnets
   # Others
+  aws_certificates_selected_arn      = var.aws_r53_enable_cert && var.aws_r53_domain_name != "" ? module.aws_certificates[0].selected_arn : ""
   aws_resource_identifier            = var.aws_resource_identifier
   aws_resource_identifier_supershort = var.aws_resource_identifier_supershort
 
   providers = {
     aws = aws.ecs
+  }
+}
+
+module "aws_route53_ecs" {
+  source = "../modules/aws/route53"
+  count  = var.aws_ecs_enable && var.aws_r53_enable && var.aws_r53_domain_name != "" ? 1 : 0
+  # R53 values
+  aws_r53_domain_name           = var.aws_r53_domain_name
+  aws_r53_sub_domain_name       = var.aws_r53_sub_domain_name
+  aws_r53_root_domain_deploy    = var.aws_r53_root_domain_deploy
+  aws_r53_enable_cert           = var.aws_r53_enable_cert
+  # ELB
+  aws_elb_dns_name              = try(module.aws_ecs[0].load_balancer_dns,"")
+  aws_elb_zone_id               = try(module.aws_ecs[0].load_balancer_zone_id,"")
+  # Certs
+  aws_certificates_selected_arn = var.aws_r53_enable_cert && var.aws_r53_domain_name != "" ? module.aws_certificates[0].selected_arn : ""
+  # Others
+  fqdn_provided                 = local.fqdn_provided
+
+  providers = {
+    aws = aws.r53
   }
 }
 
