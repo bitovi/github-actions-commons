@@ -199,7 +199,7 @@ resource "aws_security_group_rule" "incoming_ecs_ports" {
 resource "aws_security_group_rule" "incoming_alb" {
   #count                    = length(local.aws_ecs_container_port)
   type                     = "ingress"
-  frozm_port                = local.aws_ecs_container_port#[count.index]
+  from_port                = local.aws_ecs_container_port#[count.index]
   to_port                  = local.aws_ecs_container_port#[count.index]
   protocol                 = "tcp"
   source_security_group_id = aws_security_group.ecs_lb_sg.id
@@ -240,7 +240,8 @@ resource "aws_alb_listener" "lb_listener" {
   protocol          = "HTTP"
 
   default_action {
-    target_group_arn = aws_alb_target_group.lb_targets[count.index].id
+#    target_group_arn = aws_alb_target_group.lb_targets[count.index].id
+    target_group_arn = aws_alb_target_group.lb_targets.id
     type             = "forward"
   }
 }
