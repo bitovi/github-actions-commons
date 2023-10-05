@@ -27,7 +27,7 @@ resource "aws_ecs_task_definition" "ecs_task" {
   requires_compatibilities = ["FARGATE"]
   cpu                      = tonumber(var.aws_ecs_app_cpu)
   memory                   = tonumber(var.aws_ecs_app_mem)
-  execution_role_arn       = aws_iam_role.ecsTaskExecutionRole.arn
+  execution_role_arn       = data.aws_iam_role.ecsTaskExecutionRole.arn
   container_definitions = <<DEFINITION
 [
   {
@@ -61,7 +61,7 @@ resource "aws_ecs_task_definition" "ecs_task_cw" {
   requires_compatibilities = ["FARGATE"]
   cpu                      = tonumber(var.aws_ecs_app_cpu)
   memory                   = tonumber(var.aws_ecs_app_mem)
-  execution_role_arn       = aws_iam_role.ecsTaskExecutionRole.arn
+  execution_role_arn       = data.aws_iam_role.ecsTaskExecutionRole.arn
   container_definitions = <<DEFINITION
 [
   {
