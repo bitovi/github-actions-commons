@@ -42,7 +42,7 @@ resource "aws_ecs_task_definition" "ecs_task" {
     "networkMode": "awsvpc",
     "portMappings": [
       {
-        "name": "port-${var.aws_ecs_container_port}"
+        "name": "port-${var.aws_ecs_container_port}",
         "containerPort": ${tonumber(var.aws_ecs_container_port)},
         "hostPort": ${tonumber(var.aws_ecs_container_port)},
         "protocol": "tcp",
@@ -72,7 +72,7 @@ resource "aws_ecs_task_definition" "ecs_task_cw" {
     "networkMode": "awsvpc",
     "portMappings": [
       {
-        "name": "port-${var.aws_ecs_container_port}"
+        "name": "port-${var.aws_ecs_container_port}",
         "containerPort": ${tonumber(var.aws_ecs_container_port)},
         "hostPort": ${tonumber(var.aws_ecs_container_port)},
         "protocol": "tcp",
