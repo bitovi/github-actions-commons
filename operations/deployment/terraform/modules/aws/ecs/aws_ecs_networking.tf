@@ -60,7 +60,7 @@ resource "aws_alb_target_group" "lb_targets" {
 resource "aws_alb_listener" "lb_listener" {
   count             = length(local.aws_ecs_lb_port)
   load_balancer_arn = "${aws_alb.ecs_lb.id}"
-  port              = var.aws_certificates_selected_arn != "" && count.index != 0 ? local.aws_ecs_lb_port[count.index] : 443
+  port              = var.aws_certificates_selected_arn != "" && count.index == 0 ? 443 : local.aws_ecs_lb_port[count.index]
   protocol          = var.aws_certificates_selected_arn != "" ? "HTTPS" : "HTTP"
   certificate_arn   = var.aws_certificates_selected_arn
   ssl_policy        = var.aws_certificates_selected_arn != "" ? "ELBSecurityPolicy-TLS13-1-2-2021-06" : "" # https://docs.aws.amazon.com/elasticloadbalancing/latest/application/create-https-listener.html
