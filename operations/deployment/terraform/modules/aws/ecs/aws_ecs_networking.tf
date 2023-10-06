@@ -130,11 +130,11 @@ output "load_balancer_dns" {
 }
 
 output "load_balancer_port" {
-  value = aws_alb_listener.lb_listener.port
+  value = aws_alb_listener.lb_listener[0].port
 }
 
 output "load_balancer_protocol" {
-  value = aws_alb_listener.lb_listener.protocol
+  value = aws_alb_listener.lb_listener[0].protocol
 }
 
 output "load_balancer_zone_id" {
