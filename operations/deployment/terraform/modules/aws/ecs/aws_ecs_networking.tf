@@ -1,6 +1,6 @@
 locals {
   aws_ecs_container_port = [for n in split(",", var.aws_ecs_container_port) : tonumber(n)]
-  aws_ecs_lb_port        = var.aws_ecs_lb_port != "" ?  var.aws_ecs_lb_port : local.aws_ecs_container_port #      [for n in split(",", var.aws_ecs_lb_port)        : tonumber(n)] : local.aws_ecs_container_port
+  aws_ecs_lb_port        = var.aws_ecs_lb_port != "" ?  [for n in split(",", var.aws_ecs_lb_port) : tonumber(n)] : local.aws_ecs_container_port
 }
 
 # Network part
