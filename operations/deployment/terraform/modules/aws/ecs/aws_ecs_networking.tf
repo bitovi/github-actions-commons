@@ -1,6 +1,8 @@
 locals {
   aws_ecs_container_port = [for n in split(",", var.aws_ecs_container_port) : tonumber(n)]
+  aws_ecs_sg_container_port     = distinct(local.aws_ecs_container_port)
   aws_ecs_lb_port        = var.aws_ecs_lb_port != "" ?  [for n in split(",", var.aws_ecs_lb_port) : tonumber(n)] : local.aws_ecs_container_port
+  aws_ecs_sg_lb_port     = distinct(local.aws_ecs_lb_port)
 }
 
 # Network part
@@ -20,10 +22,10 @@ resource "aws_security_group" "ecs_sg" {
 }
 
 resource "aws_security_group_rule" "incoming_alb" {
-  count                    = length(local.aws_ecs_container_port)
+  count                    = length(local.aws_ecs_sg_container_port)
   type                     = "ingress"
-  from_port                = local.aws_ecs_container_port[count.index]
-  to_port                  = local.aws_ecs_container_port[count.index]
+  from_port                = local.aws_ecs_sg_container_port[count.index]
+  to_port                  = local.aws_ecs_sg_container_port[count.index]
   protocol                 = "tcp"
   source_security_group_id = aws_security_group.ecs_lb_sg.id
   security_group_id        = aws_security_group.ecs_sg.id
@@ -151,10 +153,10 @@ resource "aws_security_group" "ecs_lb_sg" {
 }
 
 resource "aws_security_group_rule" "incoming_ecs_lb_ports" {
-  count       = length(local.aws_ecs_lb_port)
+  count       = length(local.aws_ecs_sg_lb_port)
   type        = "ingress"
-  from_port   = local.aws_ecs_lb_port[count.index]
-  to_port     = local.aws_ecs_lb_port[count.index]
+  from_port   = local.aws_ecs_sg_lb_port[count.index]
+  to_port     = local.aws_ecs_sg_lb_port[count.index]
   protocol    = "tcp"
   cidr_blocks = ["0.0.0.0/0"]
   security_group_id = aws_security_group.ecs_lb_sg.id
