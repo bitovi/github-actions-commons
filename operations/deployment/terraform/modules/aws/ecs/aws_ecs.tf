@@ -121,7 +121,9 @@ resource "aws_ecs_service" "ecs_service_with_lb" {
     container_name   = "${local.aws_ecs_task_name}${count.index}"
     container_port   = local.aws_ecs_container_port[count.index]
   }
-  depends_on = [aws_alb_listener.lb_listener[count.index]]
+  depends_on = [aws_alb_listener.lb_listener,
+                aws_ecs_task_definition.ecs_task,
+                aws_ecs_task_definition.ecs_task_cw]
 }
 
 # Cloudwatch config
