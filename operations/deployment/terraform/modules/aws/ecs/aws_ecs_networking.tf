@@ -58,7 +58,7 @@ resource "aws_alb_target_group" "lb_targets" {
 resource "aws_alb_listener" "lb_listener" {
   count             = length(local.aws_ecs_lb_port)
   load_balancer_arn = "${aws_alb.ecs_lb.id}"
-  port              = local.aws_ecs_lb_port[count.index]
+  port              = var.aws_certificates_selected_arn != "" && count.index != 0 ? local.aws_ecs_lb_port[count.index] : 443
   protocol          = var.aws_certificates_selected_arn != "" ? "HTTPS" : "HTTP"
   certificate_arn   = var.aws_certificates_selected_arn
   ssl_policy        = var.aws_certificates_selected_arn != "" ? "ELBSecurityPolicy-TLS13-1-2-2021-06" : "" # https://docs.aws.amazon.com/elasticloadbalancing/latest/application/create-https-listener.html
@@ -82,8 +82,9 @@ resource "aws_alb_listener_rule" "redirect_based_on_path" {
     }
   }
 }
+
 #resource "aws_alb_listener" "http_redirect" {
-#  count             = var.aws_ecs_lb_http_redirect_enable ? 1 : 0
+#  count             = var.aws_certificates_selected_arn != "" && local.aws_ecs_lb_port[0] != 80 ? 0 : 1 #var.aws_ecs_lb_http_redirect_enable ? 1 : 0
 #  load_balancer_arn = "${aws_alb.ecs_lb.id}"
 #  port              = "80"
 #  protocol          = "HTTP"
@@ -92,8 +93,42 @@ resource "aws_alb_listener_rule" "redirect_based_on_path" {
 #    type = "redirect"
 #
 #    redirect {
-#      port        = "local.aws_ecs_lb_port"
+#      port        = local.aws_ecs_lb_port[0]
+#      protocol    = "HTTP"
+#      status_code = "HTTP_301"
+#    }
+#  }
+#}
+#
+#resource "aws_alb_listener" "https_redirect" {
+#  count             = var.aws_certificates_selected_arn != "" ? 1 : 0 #var.aws_ecs_lb_http_redirect_enable ? 1 : 0
+#  load_balancer_arn = "${aws_alb.ecs_lb.id}"
+#  port              = "80"
+#  protocol          = "HTTP"
+#
+#  default_action {
+#    type = "redirect"
+#
+#    redirect {
+#      port        = local.aws_ecs_lb_port[0]
 #      protocol    = "HTTPS"
+#      status_code = "HTTP_301"
+#    }
+#  }
+#}
+#
+#resource "aws_alb_listener" "https_redirect2" {
+#  count             = var.aws_certificates_selected_arn != "" ? 1 : 0 #var.aws_ecs_lb_http_redirect_enable ? 1 : 0
+#  load_balancer_arn = "${aws_alb.ecs_lb.id}"
+#  port              = "80"
+#  protocol          = "HTTP"
+#
+#  default_action {
+#    type = "redirect"
+#
+#    redirect {
+#      port        = local.aws_ecs_lb_port[0]
+#      protocol    = var.aws_certificates_selected_arn != "" ? "HTTPS" : "HTTP"
 #      status_code = "HTTP_301"
 #    }
 #  }
@@ -119,7 +154,7 @@ resource "aws_security_group_rule" "incoming_ecs_lb_ports" {
   count       = length(local.aws_ecs_lb_port)
   type        = "ingress"
   from_port   = local.aws_ecs_lb_port[count.index]
-  to_port     = local.aws_ecs_container_port[count.index]
+  to_port     = local.aws_ecs_lb_port[count.index]
   protocol    = "tcp"
   cidr_blocks = ["0.0.0.0/0"]
   security_group_id = aws_security_group.ecs_lb_sg.id
