@@ -138,7 +138,3 @@ resource "aws_cloudwatch_log_group" "ecs_cw_log_group" {
 data "aws_iam_role" "ecsTaskExecutionRole" {
   name = "ecsTaskExecutionRole"
 }
-
-locals {
-  aws_ecs_task_name      = var.aws_ecs_task_name != "" ? var.aws_ecs_task_name : "${var.aws_resource_identifier}-app"
-}
