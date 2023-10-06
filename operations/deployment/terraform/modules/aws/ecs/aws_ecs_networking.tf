@@ -63,17 +63,17 @@ resource "aws_alb_listener" "lb_listener" {
   certificate_arn   = var.aws_certificates_selected_arn
   ssl_policy        = var.aws_certificates_selected_arn != "" ? "ELBSecurityPolicy-TLS13-1-2-2021-06" : "" # https://docs.aws.amazon.com/elasticloadbalancing/latest/application/create-https-listener.html
   default_action {
-    target_group_arn = aws_alb_target_group.lb_targets.id
+    target_group_arn = aws_alb_target_group.lb_targets[count.index].id
     type             = "forward"
   }
 }
 
-resource "aws_lb_listener_rule" "redirect_based_on_path" {
-  listener_arn = aws_lb_listener.lb_listener[0].arn
+resource "aws_alb_listener_rule" "redirect_based_on_path" {
+  listener_arn = aws_alb_listener.lb_listener[0].arn
 
   action {
     type             = "forward"
-    target_group_arn = aws_lb_target_group.lb_targets[1].arn
+    target_group_arn = aws_alb_target_group.lb_targets[1].arn
   }
 
   condition {
