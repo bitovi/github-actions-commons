@@ -1,5 +1,5 @@
 locals {
-  aws_ecs_container_port = var.aws_ecs_container_port# != "" ? [for n in split(",", var.aws_ecs_container_port) : tonumber(n)] : []
+  aws_ecs_container_port = [for n in split(",", var.aws_ecs_container_port) : tonumber(n)]
   aws_ecs_lb_port        = var.aws_ecs_lb_port != "" ?  var.aws_ecs_lb_port : local.aws_ecs_container_port #      [for n in split(",", var.aws_ecs_lb_port)        : tonumber(n)] : local.aws_ecs_container_port
 }
 
@@ -19,21 +19,11 @@ resource "aws_security_group" "ecs_sg" {
   }
 }
 
-#resource "aws_security_group_rule" "incoming_ecs_ports" {
-# # count             = length(local.aws_ecs_container_port)
-#  type              = "ingress"
-#  from_port         = local.aws_ecs_container_port#[count.index]
-#  to_port           = local.aws_ecs_container_port#[count.index]
-#  protocol          = "tcp"
-#  cidr_blocks       = ["0.0.0.0/0"]
-#  security_group_id = aws_security_group.ecs_sg.id
-#}
-
 resource "aws_security_group_rule" "incoming_alb" {
-  #count                    = length(local.aws_ecs_container_port)
+  count                    = length(local.aws_ecs_container_port)
   type                     = "ingress"
-  from_port                = local.aws_ecs_container_port#[count.index]
-  to_port                  = local.aws_ecs_container_port#[count.index]
+  from_port                = local.aws_ecs_container_port[count.index]
+  to_port                  = local.aws_ecs_container_port[count.index]
   protocol                 = "tcp"
   source_security_group_id = aws_security_group.ecs_lb_sg.id
   security_group_id        = aws_security_group.ecs_sg.id
@@ -52,9 +42,9 @@ resource "aws_alb" "ecs_lb" {
 }
 
 resource "aws_alb_target_group" "lb_targets" {
-  #count       = length(local.aws_ecs_container_port)
-  name        = "${var.aws_resource_identifier_supershort}"
-  port        = local.aws_ecs_container_port#[count.index]
+  count       = length(local.aws_ecs_container_port)
+  name        = "${var.aws_resource_identifier_supershort}${count.index}"
+  port        = local.aws_ecs_container_port[count.index]
   protocol    = "HTTP"
   vpc_id      = var.aws_selected_vpc_id
   target_type = "ip"
@@ -66,9 +56,9 @@ resource "aws_alb_target_group" "lb_targets" {
 
 # Redirect all traffic from the ALB to the target group
 resource "aws_alb_listener" "lb_listener" {
-  #count             = length(local.aws_ecs_lb_port)
+  count             = length(local.aws_ecs_lb_port)
   load_balancer_arn = "${aws_alb.ecs_lb.id}"
-  port              = local.aws_ecs_lb_port#[count.index]
+  port              = local.aws_ecs_lb_port[count.index]
   protocol          = var.aws_certificates_selected_arn != "" ? "HTTPS" : "HTTP"
   certificate_arn   = var.aws_certificates_selected_arn
   ssl_policy        = var.aws_certificates_selected_arn != "" ? "ELBSecurityPolicy-TLS13-1-2-2021-06" : "" # https://docs.aws.amazon.com/elasticloadbalancing/latest/application/create-https-listener.html
@@ -78,6 +68,20 @@ resource "aws_alb_listener" "lb_listener" {
   }
 }
 
+resource "aws_lb_listener_rule" "redirect_based_on_path" {
+  listener_arn = aws_lb_listener.lb_listener[0].arn
+
+  action {
+    type             = "forward"
+    target_group_arn = aws_lb_target_group.lb_targets[1].arn
+  }
+
+  condition {
+    path_pattern {
+      values = ["/api/*"]
+    }
+  }
+}
 #resource "aws_alb_listener" "http_redirect" {
 #  count             = var.aws_ecs_lb_http_redirect_enable ? 1 : 0
 #  load_balancer_arn = "${aws_alb.ecs_lb.id}"
@@ -112,10 +116,10 @@ resource "aws_security_group" "ecs_lb_sg" {
 }
 
 resource "aws_security_group_rule" "incoming_ecs_lb_ports" {
-  #count       = length(local.aws_ecs_lb_port)
+  count       = length(local.aws_ecs_lb_port)
   type        = "ingress"
-  from_port   = local.aws_ecs_lb_port#[count.index]
-  to_port     = local.aws_ecs_container_port#[count.index]
+  from_port   = local.aws_ecs_lb_port[count.index]
+  to_port     = local.aws_ecs_container_port[count.index]
   protocol    = "tcp"
   cidr_blocks = ["0.0.0.0/0"]
   security_group_id = aws_security_group.ecs_lb_sg.id

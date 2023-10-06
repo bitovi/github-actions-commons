@@ -20,9 +20,14 @@ resource "aws_ecs_cluster" "cluster" {
   }
 }
 
+locals {
+  aws_aws_ecs_app_image  = [for n in split(",", var.aws_aws_ecs_app_image) : n]
+  aws_ecs_task_name      = var.aws_ecs_task_name != "" ? var.aws_ecs_task_name : "${var.aws_resource_identifier}-app"
+}
+
 resource "aws_ecs_task_definition" "ecs_task" {
-  count                    = var.aws_ecs_cloudwatch_enable ? 0 : 1
-  family                   = local.aws_ecs_task_name
+  count                    = var.aws_ecs_cloudwatch_enable ? 0 : length(local.aws_aws_ecs_app_image)
+  family                   = "${local.aws_ecs_task_name}${count.index}"
   network_mode             = "awsvpc"
   requires_compatibilities = ["FARGATE"]
   cpu                      = tonumber(var.aws_ecs_app_cpu)
@@ -35,16 +40,16 @@ resource "aws_ecs_task_definition" "ecs_task" {
         "cpuArchitecture": "X86_64",
         "operatingSystemFamily": "LINUX"
     },
-    "image": "${var.aws_ecs_app_image}",
+    "image": "${local.aws_aws_ecs_app_image[count.index]}",
     "cpu": ${var.aws_ecs_app_cpu},
     "memory": ${var.aws_ecs_app_mem},
-    "name": "${local.aws_ecs_task_name}",
+    "name": "${local.aws_ecs_task_name}${count.index}",
     "networkMode": "awsvpc",
     "portMappings": [
       {
-        "name": "port-${var.aws_ecs_container_port}",
-        "containerPort": ${tonumber(var.aws_ecs_container_port)},
-        "hostPort": ${tonumber(var.aws_ecs_container_port)},
+        "name": "port-${local.aws_ecs_container_port[count.index]}",
+        "containerPort": ${tonumber(local.aws_ecs_container_port[count.index])},
+        "hostPort": ${tonumber(local.aws_ecs_container_port[count.index])},
         "protocol": "tcp",
         "appProtocol": "http"
       }
@@ -55,8 +60,8 @@ DEFINITION
 }
 
 resource "aws_ecs_task_definition" "ecs_task_cw" {
-  count                    = var.aws_ecs_cloudwatch_enable ? 1 : 0
-  family                   = local.aws_ecs_task_name
+  count                    = var.aws_ecs_cloudwatch_enable ? length(local.aws_aws_ecs_app_image) : 0
+  family                   = "${local.aws_ecs_task_name}${count.index}"
   network_mode             = "awsvpc"
   requires_compatibilities = ["FARGATE"]
   cpu                      = tonumber(var.aws_ecs_app_cpu)
@@ -65,16 +70,20 @@ resource "aws_ecs_task_definition" "ecs_task_cw" {
   container_definitions = <<DEFINITION
 [
   {
-    "image": "${var.aws_ecs_app_image}",
+    "runtimePlatform": {
+        "cpuArchitecture": "X86_64",
+        "operatingSystemFamily": "LINUX"
+    },
+    "image": "${local.aws_aws_ecs_app_image[count.index]}",
     "cpu": ${var.aws_ecs_app_cpu},
     "memory": ${var.aws_ecs_app_mem},
-    "name": "${local.aws_ecs_task_name}",
+    "name": "${local.aws_ecs_task_name}${count.index}",
     "networkMode": "awsvpc",
     "portMappings": [
       {
-        "name": "port-${var.aws_ecs_container_port}",
-        "containerPort": ${tonumber(var.aws_ecs_container_port)},
-        "hostPort": ${tonumber(var.aws_ecs_container_port)},
+        "name": "port-${local.aws_ecs_container_port[count.index]}",
+        "containerPort": ${tonumber(local.aws_ecs_container_port[count.index])},
+        "hostPort": ${tonumber(local.aws_ecs_container_port[count.index])},
         "protocol": "tcp",
         "appProtocol": "http"
       }
@@ -93,9 +102,10 @@ DEFINITION
 }
 
 resource "aws_ecs_service" "ecs_service_with_lb" {
-  name             = var.aws_ecs_service_name != "" ? var.aws_ecs_service_name : "${var.aws_resource_identifier}-service"
+  count            = length(local.aws_aws_ecs_app_image)
+  name             = var.aws_ecs_service_name != "" ? "${var.aws_ecs_service_name}${count.index}" : "${var.aws_resource_identifier}-${count.index}-service"
   cluster          = aws_ecs_cluster.cluster.id
-  task_definition  = var.aws_ecs_cloudwatch_enable? aws_ecs_task_definition.ecs_task_cw[0].arn : aws_ecs_task_definition.ecs_task[0].arn
+  task_definition  = var.aws_ecs_cloudwatch_enable? aws_ecs_task_definition.ecs_task_cw[count.index].arn : aws_ecs_task_definition.ecs_task[count.index].arn
   desired_count    = tonumber(var.aws_ecs_node_count)
   launch_type      = "FARGATE"
 
@@ -107,9 +117,9 @@ resource "aws_ecs_service" "ecs_service_with_lb" {
 
   load_balancer {
    # target_group_arn = aws_alb_target_group.lb_targets[0].id
-    target_group_arn = aws_alb_target_group.lb_targets.id
-    container_name   = local.aws_ecs_task_name
-    container_port   = tonumber(var.aws_ecs_container_port)
+    target_group_arn = aws_alb_target_group.lb_targets[count.index].id
+    container_name   = "${local.aws_ecs_task_name}${count.index}"
+    container_port   = local.aws_ecs_container_port[count.index]
   }
   depends_on = [aws_alb_listener.lb_listener]
 }

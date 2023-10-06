@@ -218,7 +218,6 @@ module "secretmanager_get" {
   env_aws_secret = var.env_aws_secret
 }
 
-
 module "aws_ecs" {
   source = "../modules/aws/ecs"
   count  = var.aws_ecs_enable ? 1 : 0
