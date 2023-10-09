@@ -114,7 +114,7 @@ resource "aws_ecs_service" "ecs_service_with_lb" {
   name             = var.aws_ecs_service_name != "" ? "${var.aws_ecs_service_name}${count.index}" : "${var.aws_resource_identifier}-${count.index}-service"
   cluster          = aws_ecs_cluster.cluster.id
   task_definition  = var.aws_ecs_cloudwatch_enable ? aws_ecs_task_definition.ecs_task_cw[count.index].arn : aws_ecs_task_definition.ecs_task[count.index].arn
-  desired_count    = local.aws_ecs_node_count
+  desired_count    = local.aws_ecs_node_count[count.index]
   launch_type      = "FARGATE"
 
   network_configuration {
