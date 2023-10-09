@@ -612,7 +612,7 @@ variable "aws_ecs_task_name" {
 variable "aws_ecs_task_execution_role" {
   type        = string
   description = "Elastic Container Service task execution role name."
-  default     = "ecsTaskExecutionRole"
+  default     = ""
 }
 
 variable "aws_ecs_node_count" {
