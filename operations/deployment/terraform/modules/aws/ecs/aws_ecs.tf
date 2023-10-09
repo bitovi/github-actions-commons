@@ -141,5 +141,5 @@ resource "aws_cloudwatch_log_group" "ecs_cw_log_group" {
 # IAM
 
 data "aws_iam_role" "ecsTaskExecutionRole" {
-  name = "var.aws_ecs_task_execution_role"
+  name = var.aws_ecs_task_execution_role
 }
