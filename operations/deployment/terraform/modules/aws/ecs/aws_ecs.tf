@@ -65,7 +65,7 @@ resource "aws_ecs_task_definition" "ecs_task" {
           name = element(split("=", env_var), 0)
           value = element(split("=", env_var), 1)
         }
-      ] : null
+      ] : []
     }
   ])
 }
