@@ -440,17 +440,28 @@ inputs:
   aws_ecs_task_name:
     description: 'Elastic Container Service task name'
     required: false
+  aws_ecs_task_execution_role:
+    description: 'Elastic Container Service task execution role name from IAM. Defaults to "ecsTaskExecutionRole"'
+    required: false
+            AWS_ECS_TASK_JSON_DEFINITION_FILE : ${{ inputs.aws_ecs_task_json_definition_file }}
+
   aws_ecs_node_count:
     description: 'Node count for ECS Cluster'
     required: false
   aws_ecs_app_image:
     description: 'Name of the image to be used'
     required: false
+  aws_ecs_image_path:
+    description: 'Path for subsequent deployed images. eg. api.'
+    required: false
   aws_ecs_app_cpu:
     description: 'Node CPU Amount'
     required: false
   aws_ecs_app_mem:
     description: 'Node Mem Amount'
+    required: false
+  aws_ecs_env_vars:
+    description: 'Environment variables in JSON style, separated by | .'
     required: false
   aws_ecs_security_group_name:
     description: 'ECS Secruity group name'
@@ -464,6 +475,24 @@ inputs:
   aws_ecs_lb_port:
     description: 'Comma serparated list of ports exposed by the load balancer'
     required: false
+  aws_ecs_cloudwatch_enable:
+    description: "Toggle cloudwatch for ECS. Default 'false'"
+    reuired: false
+  aws_ecs_cloudwatch_lg_name:
+    description: "Log group name. Will default to aws_identifier if none."
+    reuired: false
+  aws_ecs_cloudwatch_skip_destroy:
+    description: "Toggle deletion or not when destroying the stack."
+    reuired: false
+  aws_ecs_cloudwatch_retention_days:
+    description: "Number of days to retain logs. 0 to never expire. Default '14'"
+    reuired: false
+  aws_ecs_logs_s3_bucket:
+    description: "Bucket where to send the ECS logs. Leave empty if disabled."
+    reuired: false
+  aws_ecs_logs_s3_bucket_prefix:
+    description: "Prefix where to store the logs (to define a folder in the bucket)."
+    reuired: false
   aws_ecs_additional_tags:
     description: 'A list of strings that will be added to created resources'
     required: false
@@ -799,14 +828,24 @@ runs:
         AWS_ECS_SERVICE_NAME: ${{ inputs.aws_ecs_service_name }}
         AWS_ECS_CLUSTER_NAME: ${{ inputs.aws_ecs_cluster_name }}
         AWS_ECS_TASK_NAME: ${{ inputs.aws_ecs_task_name }}
+        AWS_ECS_TASK_EXECUTION_ROLE : ${{ inputs.aws_ecs_task_execution_role }}
+        AWS_ECS_TASK_JSON_DEFINITION_FILE : ${{ inputs.aws_ecs_task_json_definition_file }}
         AWS_ECS_NODE_COUNT: ${{ inputs.aws_ecs_node_count }}
         AWS_ECS_APP_IMAGE: ${{ inputs.aws_ecs_app_image }}
+        AWS_ECS_IMAGE_PATH : ${{ inputs.aws_ecs_image_path }}
         AWS_ECS_APP_CPU: ${{ inputs.aws_ecs_app_cpu }}
         AWS_ECS_APP_MEM: ${{ inputs.aws_ecs_app_mem }}
+        AWS_ECS_ENV_VARS  : ${{ inputs.aws_ecs_env_vars }}
         AWS_ECS_SECURITY_GROUP_NAME: ${{ inputs.aws_ecs_security_group_name }}
         AWS_ECS_ASSIGN_PUBLIC_IP: ${{ inputs.aws_ecs_assign_public_ip }}
         AWS_ECS_CONTAINER_PORT: ${{ inputs.aws_ecs_container_port }}
         AWS_ECS_LB_PORT: ${{ inputs.aws_ecs_lb_port }}
+        AWS_ECS_CLOUDWATCH_ENABLE : ${{ inputs.aws_ecs_cloudwatch_enable }}
+        AWS_ECS_CLOUDWATCH_LG_NAME : ${{ inputs.aws_ecs_cloudwatch_lg_name }}
+        AWS_ECS_CLOUDWATCH_SKIP_DESTROY : ${{ inputs.aws_ecs_cloudwatch_skip_destroy }}
+        AWS_ECS_CLOUDWATCH_RETENTION_DAYS : ${{ inputs.aws_ecs_cloudwatch_retention_days }}
+        AWS_ECS_LOGS_S3_BUCKET : ${{ inputs.aws_ecs_logs_s3_bucket }}
+        AWS_ECS_LOGS_S3_BUCKET_PREFIX : ${{ inputs.aws_ecs_logs_s3_bucket_prefix }}
         AWS_ECS_ADDITIONAL_TAGS: ${{ inputs.aws_ecs_additional_tags }}
        
         # ECR

@@ -16,5 +16,4 @@ terraform-*
 operations/deployment/terraform/inventory.yaml
 
 *.pem
-
 .vscode/

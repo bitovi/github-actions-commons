@@ -5,15 +5,14 @@ resource "aws_ecs_cluster" "cluster" {
     name  = "containerInsights"
     value = var.aws_ecs_cloudwatch_enable ? "enabled" : "disabled"
   }
-  #configuration {
-  #  execute_command_configuration {
-  #    log_configuration {
-  #      cloud_watch_log_group_name = var.aws_ecs_cloudwatch_lg_name
-  #      s3_bucket_name             = var.aws_ecs_logs_s3_bucket
-  #      s3_key_prefix              = var.aws_ecs_logs_s3_bucket_prefix
-  #    }
-  #  }
-  #}
+  configuration {
+    execute_command_configuration {
+      log_configuration {
+        s3_bucket_name             = var.aws_ecs_logs_s3_bucket
+        s3_key_prefix              = var.aws_ecs_logs_s3_bucket_prefix
+      }
+    }
+  }
 
   tags = {
     Name = "${var.aws_resource_identifier}-ecs-cluster"
@@ -21,8 +20,13 @@ resource "aws_ecs_cluster" "cluster" {
 }
 
 locals {
-  aws_aws_ecs_app_image  = [for n in split(",", var.aws_ecs_app_image) : n]
-  aws_ecs_task_name      = var.aws_ecs_task_name != "" ? var.aws_ecs_task_name : "${var.aws_resource_identifier}-app"
+  aws_aws_ecs_app_image       = [for n in split(",", var.aws_ecs_app_image) : n]
+  aws_ecs_task_name           = var.aws_ecs_task_name != ""           ? var.aws_ecs_task_name : "${var.aws_resource_identifier}-app"
+  aws_ecs_task_execution_role = var.aws_ecs_task_execution_role != "" ? [for n in split("|", var.aws_ecs_env_vars)   : n ]          : [for _ in range(length(local.aws_aws_ecs_app_image)) : "ecsTaskExecutionRole"]
+  aws_ecs_node_count          = var.aws_ecs_node_count != ""          ? [for n in split(",", var.aws_ecs_node_count) : tonumber(n)] : [for _ in range(length(local.aws_aws_ecs_app_image)) : 1]
+  aws_ecs_app_cpu             = var.aws_ecs_app_cpu != ""             ? [for n in split(",", var.aws_ecs_app_cpu)    : tonumber(n)] : [for _ in range(length(local.aws_aws_ecs_app_image)) : 256] 
+  aws_ecs_app_mem             = var.aws_ecs_app_mem != ""             ? [for n in split(",", var.aws_ecs_app_mem)    : tonumber(n)] : [for _ in range(length(local.aws_aws_ecs_app_image)) : 512]
+  aws_ecs_env_vars            = var.aws_ecs_env_vars != ""            ? [for n in split("|", var.aws_ecs_env_vars)   : n ]          : [for _ in range(length(local.aws_aws_ecs_app_image)) : "{}"]
 }
 
 resource "aws_ecs_task_definition" "ecs_task" {
@@ -30,9 +34,9 @@ resource "aws_ecs_task_definition" "ecs_task" {
   family                   = "${local.aws_ecs_task_name}${count.index}"
   network_mode             = "awsvpc"
   requires_compatibilities = ["FARGATE"]
-  cpu                      = tonumber(var.aws_ecs_app_cpu)
-  memory                   = tonumber(var.aws_ecs_app_mem)
-  execution_role_arn       = data.aws_iam_role.ecsTaskExecutionRole.arn
+  cpu                      = local.aws_ecs_app_cpu[count.index]
+  memory                   = local.aws_ecs_app_mem[count.index]
+  execution_role_arn       = data.aws_iam_role.ecsTaskExecutionRole[count.index].arn
   container_definitions = <<DEFINITION
 [
   {
@@ -45,6 +49,7 @@ resource "aws_ecs_task_definition" "ecs_task" {
     "memory": ${var.aws_ecs_app_mem},
     "name": "${local.aws_ecs_task_name}${count.index}",
     "networkMode": "awsvpc",
+    "environment": [ "${local.aws_ecs_env_vars[count.index]}" ]
     "portMappings": [
       {
         "name": "port-${local.aws_ecs_container_port[count.index]}",
@@ -64,9 +69,9 @@ resource "aws_ecs_task_definition" "ecs_task_cw" {
   family                   = "${local.aws_ecs_task_name}${count.index}"
   network_mode             = "awsvpc"
   requires_compatibilities = ["FARGATE"]
-  cpu                      = tonumber(var.aws_ecs_app_cpu)
-  memory                   = tonumber(var.aws_ecs_app_mem)
-  execution_role_arn       = data.aws_iam_role.ecsTaskExecutionRole.arn
+  cpu                      = local.aws_ecs_app_cpu[count.index]
+  memory                   = local.aws_ecs_app_mem[count.index]
+  execution_role_arn       = data.aws_iam_role.ecsTaskExecutionRole[count.index].arn
   container_definitions = <<DEFINITION
 [
   {
@@ -79,6 +84,7 @@ resource "aws_ecs_task_definition" "ecs_task_cw" {
     "memory": ${var.aws_ecs_app_mem},
     "name": "${local.aws_ecs_task_name}${count.index}",
     "networkMode": "awsvpc",
+    "environment": [ "${local.aws_ecs_env_vars[count.index]}" ]
     "portMappings": [
       {
         "name": "port-${local.aws_ecs_container_port[count.index]}",
@@ -136,5 +142,6 @@ resource "aws_cloudwatch_log_group" "ecs_cw_log_group" {
 # IAM
 
 data "aws_iam_role" "ecsTaskExecutionRole" {
-  name = "ecsTaskExecutionRole"
+  count = length(distinct(local.aws_ecs_task_execution_role))
+  name = distinct(local.aws_ecs_task_execution_role)[count.index]
 }

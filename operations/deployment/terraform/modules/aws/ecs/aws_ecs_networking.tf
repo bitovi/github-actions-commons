@@ -1,8 +1,9 @@
 locals {
-  aws_ecs_container_port = [for n in split(",", var.aws_ecs_container_port) : tonumber(n)]
-  aws_ecs_sg_container_port     = distinct(local.aws_ecs_container_port)
-  aws_ecs_lb_port        = var.aws_ecs_lb_port != "" ?  [for n in split(",", var.aws_ecs_lb_port) : tonumber(n)] : local.aws_ecs_container_port
-  aws_ecs_sg_lb_port     = distinct(local.aws_ecs_lb_port)
+  aws_ecs_container_port    = [for n in split(",", var.aws_ecs_container_port) : tonumber(n)]
+  aws_ecs_sg_container_port = distinct(local.aws_ecs_container_port)
+  aws_ecs_lb_port           = var.aws_ecs_lb_port != "" ?  [for n in split(",", var.aws_ecs_lb_port) : tonumber(n)] : local.aws_ecs_container_port
+  aws_ecs_sg_lb_port        = distinct(local.aws_ecs_lb_port)
+  aws_ecs_image_path       = var.aws_ecs_image_path != "" ? [for n in split(",", var.aws_ecs_image_path) : n ] : []
 }
 
 # Network part
@@ -71,16 +72,17 @@ resource "aws_alb_listener" "lb_listener" {
 }
 
 resource "aws_alb_listener_rule" "redirect_based_on_path" {
+  count        = length(local.aws_ecs_image_path)
   listener_arn = aws_alb_listener.lb_listener[0].arn
 
   action {
     type             = "forward"
-    target_group_arn = aws_alb_target_group.lb_targets[1].arn
+    target_group_arn = aws_alb_target_group.lb_targets[count.index + 1].arn
   }
 
   condition {
     path_pattern {
-      values = ["/api/*"]
+      values = ["/${local.aws_ecs_image_path[count.index]}/*"]
     }
   }
 }

@@ -609,10 +609,16 @@ variable "aws_ecs_task_name" {
   default     = ""
 }
 
+variable "aws_ecs_task_execution_role" {
+  type        = string
+  description = "Elastic Container Service task execution role name."
+  default     = "ecsTaskExecutionRole"
+}
+
 variable "aws_ecs_node_count" {
   type        = string
   description = "Node count for ECS Cluster"
-  default     = "1"
+  default     = ""
 }
 
 variable "aws_ecs_app_image" {
@@ -621,16 +627,28 @@ variable "aws_ecs_app_image" {
   default     = ""
 }
 
+variable "aws_ecs_image_path" {
+  type        = string
+  description = "Path for subsequent images. eg. api"
+  default     = ""
+}
+
 variable "aws_ecs_app_cpu" {
   type        = string
   description = "Node CPU Amount"
-  default     = "256"
+  default     = ""
 }
 
 variable "aws_ecs_app_mem" {
   type        = string
   description = "Node Mem Amount"
-  default     = "512"
+  default     = ""
+}
+
+variable "aws_ecs_env_vars" {
+  type        = string
+  description = "Environment variables in JSON style, separated by | "
+  default     = ""
 }
 
 variable "aws_ecs_security_group_name" {
