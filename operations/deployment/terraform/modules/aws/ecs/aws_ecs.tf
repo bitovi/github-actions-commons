@@ -48,7 +48,6 @@ resource "aws_ecs_task_definition" "ecs_task" {
     "memory": ${local.aws_ecs_app_mem[count.index]},
     "name": "${local.aws_ecs_task_name}${count.index}",
     "networkMode": "awsvpc",
-    "environment": [${local.aws_ecs_env_vars[count.index]}]
     "portMappings": [
       {
         "name": "port-${local.aws_ecs_container_port[count.index]}",
@@ -62,6 +61,7 @@ resource "aws_ecs_task_definition" "ecs_task" {
 ]
 DEFINITION
 }
+#    "environment": [${local.aws_ecs_env_vars[count.index]}]
 
 resource "aws_ecs_task_definition" "ecs_task_cw" {
   count                    = var.aws_ecs_cloudwatch_enable ? length(local.aws_aws_ecs_app_image) : 0
