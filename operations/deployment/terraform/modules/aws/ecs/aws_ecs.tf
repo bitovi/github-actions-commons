@@ -143,5 +143,5 @@ resource "aws_cloudwatch_log_group" "ecs_cw_log_group" {
 
 data "aws_iam_role" "ecsTaskExecutionRole" {
   count = length(distinct(local.aws_ecs_task_execution_role))
-  name = distinct(local.aws_ecs_task_execution_role)[count.index]
+  name = distinct(local.aws_ecs_task_execution_role[count.index])
 }
