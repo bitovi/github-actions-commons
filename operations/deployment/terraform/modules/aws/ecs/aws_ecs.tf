@@ -60,12 +60,7 @@ resource "aws_ecs_task_definition" "ecs_task" {
           "tag": "{{.Name}}"
         }
       } : null
-      "environment": length(local.aws_ecs_env_vars[count.index]) > 0 ? [
-        for env_var in split("|", local.aws_ecs_env_vars[count.index]) : {
-          name = element(split("=", env_var), 0)
-          value = element(split("=", env_var), 1)
-        }
-      ] : []
+      "environment": [{"name": "VARNAME", "value": "VARVAL"}]
     }
   ])
 }
