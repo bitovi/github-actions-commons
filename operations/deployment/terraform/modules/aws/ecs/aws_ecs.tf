@@ -60,10 +60,12 @@ resource "aws_ecs_task_definition" "ecs_task" {
           "tag": "{{.Name}}"
         }
       } : null
-      "environment": [{"name": "VARNAME", "value": "VARVAL"}]
+      "environment": []
     }
   ])
 }
+#      "environment": [{"name": "VARNAME", "value": "VARVAL"}]
+
 
 #resource "aws_ecs_task_definition" "ecs_task" {
 #  count                    = var.aws_ecs_cloudwatch_enable ? 0 : length(local.aws_aws_ecs_app_image)
