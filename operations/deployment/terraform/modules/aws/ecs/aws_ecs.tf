@@ -29,81 +29,117 @@ locals {
 }
 
 resource "aws_ecs_task_definition" "ecs_task" {
-  count                    = var.aws_ecs_cloudwatch_enable ? 0 : length(local.aws_aws_ecs_app_image)
-  family                   = "${local.aws_ecs_task_name}${count.index}"
+  count                    = var.aws_ecs_cloudwatch_enable ? 1 : 0
+  family                   = local.aws_ecs_task_name
   network_mode             = "awsvpc"
   requires_compatibilities = ["FARGATE"]
-  cpu                      = local.aws_ecs_app_cpu[count.index]
-  memory                   = local.aws_ecs_app_mem[count.index]
+  cpu                      = tonumber(var.aws_ecs_app_cpu)
+  memory                   = tonumber(var.aws_ecs_app_mem)
   execution_role_arn       = data.aws_iam_role.ecsTaskExecutionRole.arn
-  container_definitions = <<DEFINITION
-[
-  {
-    "runtimePlatform": {
-        "cpuArchitecture": "X86_64",
-        "operatingSystemFamily": "LINUX"
-    },
-    "image": "${local.aws_aws_ecs_app_image[count.index]}",
-    "cpu": ${local.aws_ecs_app_cpu[count.index]},
-    "memory": ${local.aws_ecs_app_mem[count.index]},
-    "name": "${local.aws_ecs_task_name}${count.index}",
-    "networkMode": "awsvpc",
-    "portMappings": [
-      {
-        "name": "port-${local.aws_ecs_container_port[count.index]}",
-        "containerPort": ${tonumber(local.aws_ecs_container_port[count.index])},
-        "hostPort": ${tonumber(local.aws_ecs_container_port[count.index])},
-        "protocol": "tcp",
-        "appProtocol": "http"
-      }
-    ]
-  }
-]
-DEFINITION
-}
-  #  "environment": [${local.aws_ecs_env_vars[count.index]}],
-
-resource "aws_ecs_task_definition" "ecs_task_cw" {
-  count                    = var.aws_ecs_cloudwatch_enable ? length(local.aws_aws_ecs_app_image) : 0
-  family                   = "${local.aws_ecs_task_name}${count.index}"
-  network_mode             = "awsvpc"
-  requires_compatibilities = ["FARGATE"]
-  cpu                      = local.aws_ecs_app_cpu[count.index]
-  memory                   = local.aws_ecs_app_mem[count.index]
-  execution_role_arn       = data.aws_iam_role.ecsTaskExecutionRole.arn
-  container_definitions = <<DEFINITION
-[
-  {
-    "runtimePlatform": {
-        "cpuArchitecture": "X86_64",
-        "operatingSystemFamily": "LINUX"
-    },
-    "image": "${local.aws_aws_ecs_app_image[count.index]}",
-    "cpu": ${local.aws_ecs_app_cpu[count.index]},
-    "memory": ${local.aws_ecs_app_mem[count.index]},
-    "name": "${local.aws_ecs_task_name}${count.index}",
-    "networkMode": "awsvpc",
-    "portMappings": [
-      {
-        "name": "port-${local.aws_ecs_container_port[count.index]}",
-        "containerPort": ${tonumber(local.aws_ecs_container_port[count.index])},
-        "hostPort": ${tonumber(local.aws_ecs_container_port[count.index])},
-        "protocol": "tcp",
-        "appProtocol": "http"
-      }
-    ],
-    "logConfiguration": {
-      "logDriver": "awslogs",
-      "options": {
-        "awslogs-region":"${var.aws_region_current_name}",
-        "awslogs-group":"${var.aws_ecs_cloudwatch_lg_name}",
-        "tag":"{{.Name}}"
-      }
+  container_definitions = jsonencode([
+    {
+      "image": var.aws_ecs_app_image,
+      "cpu": var.aws_ecs_app_cpu,
+      "memory": var.aws_ecs_app_mem,
+      "name": local.aws_ecs_task_name,
+      "networkMode": "awsvpc",
+      "portMappings": [
+        {
+          "name": "port-${var.aws_ecs_container_port}",
+          "containerPort": var.aws_ecs_container_port,
+          "hostPort": var.aws_ecs_container_port,
+          "protocol": "tcp",
+          "appProtocol": "http"
+        }
+      ],
+      "logConfiguration": var.aws_ecs_cloudwatch_enable ? {
+        "logDriver": "awslogs",
+        "options": {
+          "awslogs-region": var.aws_region_current_name,
+          "awslogs-group": var.aws_ecs_cloudwatch_lg_name,
+          "tag": "{{.Name}}"
+        }
+      } : null
     }
-  }
-]
-DEFINITION
+  ])
 }
+
+#resource "aws_ecs_task_definition" "ecs_task" {
+#  count                    = var.aws_ecs_cloudwatch_enable ? 0 : length(local.aws_aws_ecs_app_image)
+#  family                   = "${local.aws_ecs_task_name}${count.index}"
+#  network_mode             = "awsvpc"
+#  requires_compatibilities = ["FARGATE"]
+#  cpu                      = local.aws_ecs_app_cpu[count.index]
+#  memory                   = local.aws_ecs_app_mem[count.index]
+#  execution_role_arn       = data.aws_iam_role.ecsTaskExecutionRole.arn
+#  container_definitions = <<DEFINITION
+#[
+#  {
+#    "runtimePlatform": {
+#        "cpuArchitecture": "X86_64",
+#        "operatingSystemFamily": "LINUX"
+#    },
+#    "image": "${local.aws_aws_ecs_app_image[count.index]}",
+#    "cpu": ${local.aws_ecs_app_cpu[count.index]},
+#    "memory": ${local.aws_ecs_app_mem[count.index]},
+#    "name": "${local.aws_ecs_task_name}${count.index}",
+#    "networkMode": "awsvpc",
+#    "portMappings": [
+#      {
+#        "name": "port-${local.aws_ecs_container_port[count.index]}",
+#        "containerPort": ${tonumber(local.aws_ecs_container_port[count.index])},
+#        "hostPort": ${tonumber(local.aws_ecs_container_port[count.index])},
+#        "protocol": "tcp",
+#        "appProtocol": "http"
+#      }
+#    ]
+#  }
+#]
+#DEFINITION
+#}
+#  #  "environment": [${local.aws_ecs_env_vars[count.index]}],
+#
+#resource "aws_ecs_task_definition" "ecs_task_cw" {
+#  count                    = var.aws_ecs_cloudwatch_enable ? length(local.aws_aws_ecs_app_image) : 0
+#  family                   = "${local.aws_ecs_task_name}${count.index}"
+#  network_mode             = "awsvpc"
+#  requires_compatibilities = ["FARGATE"]
+#  cpu                      = local.aws_ecs_app_cpu[count.index]
+#  memory                   = local.aws_ecs_app_mem[count.index]
+#  execution_role_arn       = data.aws_iam_role.ecsTaskExecutionRole.arn
+#  container_definitions = <<DEFINITION
+#[
+#  {
+#    "runtimePlatform": {
+#        "cpuArchitecture": "X86_64",
+#        "operatingSystemFamily": "LINUX"
+#    },
+#    "image": "${local.aws_aws_ecs_app_image[count.index]}",
+#    "cpu": ${local.aws_ecs_app_cpu[count.index]},
+#    "memory": ${local.aws_ecs_app_mem[count.index]},
+#    "name": "${local.aws_ecs_task_name}${count.index}",
+#    "networkMode": "awsvpc",
+#    "portMappings": [
+#      {
+#        "name": "port-${local.aws_ecs_container_port[count.index]}",
+#        "containerPort": ${tonumber(local.aws_ecs_container_port[count.index])},
+#        "hostPort": ${tonumber(local.aws_ecs_container_port[count.index])},
+#        "protocol": "tcp",
+#        "appProtocol": "http"
+#      }
+#    ],
+#    "logConfiguration": {
+#      "logDriver": "awslogs",
+#      "options": {
+#        "awslogs-region":"${var.aws_region_current_name}",
+#        "awslogs-group":"${var.aws_ecs_cloudwatch_lg_name}",
+#        "tag":"{{.Name}}"
+#      }
+#    }
+#  }
+#]
+#DEFINITION
+#}
 
 #    "environment": [${local.aws_ecs_env_vars[count.index]}],
 
@@ -112,7 +148,8 @@ resource "aws_ecs_service" "ecs_service_with_lb" {
   count            = length(local.aws_aws_ecs_app_image)
   name             = var.aws_ecs_service_name != "" ? "${var.aws_ecs_service_name}${count.index}" : "${var.aws_resource_identifier}-${count.index}-service"
   cluster          = aws_ecs_cluster.cluster.id
-  task_definition  = var.aws_ecs_cloudwatch_enable ? aws_ecs_task_definition.ecs_task_cw[count.index].arn : aws_ecs_task_definition.ecs_task[count.index].arn
+  #task_definition  = var.aws_ecs_cloudwatch_enable ? aws_ecs_task_definition.ecs_task_cw[count.index].arn : aws_ecs_task_definition.ecs_task[count.index].arn
+  task_definition  = aws_ecs_task_definition.ecs_task[count.index].arn
   desired_count    = local.aws_ecs_node_count[count.index]
   launch_type      = "FARGATE"
 
