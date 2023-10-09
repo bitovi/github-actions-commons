@@ -443,8 +443,9 @@ inputs:
   aws_ecs_task_execution_role:
     description: 'Elastic Container Service task execution role name from IAM. Defaults to "ecsTaskExecutionRole"'
     required: false
-            AWS_ECS_TASK_JSON_DEFINITION_FILE : ${{ inputs.aws_ecs_task_json_definition_file }}
-
+  aws_ecs_task_json_definition_file:
+    description: 'Name of the json file containing task definition. Overrides every other input.'
+    required: false
   aws_ecs_node_count:
     description: 'Node count for ECS Cluster'
     required: false
