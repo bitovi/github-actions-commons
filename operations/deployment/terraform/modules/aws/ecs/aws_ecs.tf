@@ -45,7 +45,7 @@ resource "aws_ecs_task_definition" "ecs_task" {
       "networkMode": "awsvpc",
       "portMappings": [
         {
-          "name": "port-${var.aws_ecs_container_port[count.index]}",
+          "name": "port-${local.aws_ecs_container_port[count.index]}",
           "containerPort": tonumber(local.aws_ecs_container_port[count.index]),
           "hostPort": tonumber(local.aws_ecs_container_port[count.index]),
           "protocol": "tcp",
