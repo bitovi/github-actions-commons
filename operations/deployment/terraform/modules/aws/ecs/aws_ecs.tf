@@ -29,7 +29,7 @@ locals {
 }
 
 resource "aws_ecs_task_definition" "ecs_task" {
-  count                    = var.aws_ecs_cloudwatch_enable ? 1 : 0
+  count                    = length(local.aws_aws_ecs_app_image)
   family                   = local.aws_ecs_task_name
   network_mode             = "awsvpc"
   requires_compatibilities = ["FARGATE"]
