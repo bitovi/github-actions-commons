@@ -30,24 +30,24 @@ locals {
 
 resource "aws_ecs_task_definition" "ecs_task" {
   count                    = length(local.aws_aws_ecs_app_image)
-  family                   = local.aws_ecs_task_name
+  family                   = "${local.aws_ecs_task_name}${count.index}"
   network_mode             = "awsvpc"
   requires_compatibilities = ["FARGATE"]
-  cpu                      = tonumber(var.aws_ecs_app_cpu)
-  memory                   = tonumber(var.aws_ecs_app_mem)
+  cpu                      = local.aws_ecs_app_cpu[count.index]
+  memory                   = local.aws_ecs_app_mem[count.index]
   execution_role_arn       = data.aws_iam_role.ecsTaskExecutionRole.arn
   container_definitions = jsonencode([
     {
-      "image": var.aws_ecs_app_image,
-      "cpu": var.aws_ecs_app_cpu,
-      "memory": var.aws_ecs_app_mem,
-      "name": local.aws_ecs_task_name,
+      "image": local.aws_aws_ecs_app_image[count.index],
+      "cpu": local.aws_ecs_app_cpu[count.index],
+      "memory": local.aws_ecs_app_mem[count.index],
+      "name": "${local.aws_ecs_task_name}${count.index}",
       "networkMode": "awsvpc",
       "portMappings": [
         {
           "name": "port-${var.aws_ecs_container_port}",
-          "containerPort": var.aws_ecs_container_port,
-          "hostPort": var.aws_ecs_container_port,
+          "containerPort": tonumber(local.aws_ecs_container_port[count.index]),
+          "hostPort": tonumber(local.aws_ecs_container_port[count.index]),
           "protocol": "tcp",
           "appProtocol": "http"
         }
