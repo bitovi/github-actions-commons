@@ -22,7 +22,7 @@ resource "aws_ecs_cluster" "cluster" {
 locals {
   aws_aws_ecs_app_image       = [for n in split(",", var.aws_ecs_app_image) : n]
   aws_ecs_task_name           = var.aws_ecs_task_name != ""           ? var.aws_ecs_task_name : "${var.aws_resource_identifier}-app"
-  aws_ecs_task_execution_role = var.aws_ecs_task_execution_role != "" ? [for n in split("|", var.aws_ecs_env_vars)   : n ]          : [for _ in range(length(local.aws_aws_ecs_app_image)) : "ecsTaskExecutionRole"]
+  #aws_ecs_task_execution_role = var.aws_ecs_task_execution_role != "" ? [for n in split("|", var.aws_ecs_env_vars)   : n ]          : [for _ in range(length(local.aws_aws_ecs_app_image)) : "ecsTaskExecutionRole"]
   aws_ecs_node_count          = var.aws_ecs_node_count != ""          ? [for n in split(",", var.aws_ecs_node_count) : tonumber(n)] : [for _ in range(length(local.aws_aws_ecs_app_image)) : 1]
   aws_ecs_app_cpu             = var.aws_ecs_app_cpu != ""             ? [for n in split(",", var.aws_ecs_app_cpu)    : tonumber(n)] : [for _ in range(length(local.aws_aws_ecs_app_image)) : 256] 
   aws_ecs_app_mem             = var.aws_ecs_app_mem != ""             ? [for n in split(",", var.aws_ecs_app_mem)    : tonumber(n)] : [for _ in range(length(local.aws_aws_ecs_app_image)) : 512]
@@ -36,7 +36,8 @@ resource "aws_ecs_task_definition" "ecs_task" {
   requires_compatibilities = ["FARGATE"]
   cpu                      = local.aws_ecs_app_cpu[count.index]
   memory                   = local.aws_ecs_app_mem[count.index]
-  execution_role_arn       = data.aws_iam_role.ecsTaskExecutionRole[count.index].arn
+  execution_role_arn       = data.aws_iam_role.ecsTaskExecutionRole.arn
+#  execution_role_arn       = data.aws_iam_role.ecsTaskExecutionRole[count.index].arn
   container_definitions = <<DEFINITION
 [
   {
@@ -71,7 +72,7 @@ resource "aws_ecs_task_definition" "ecs_task_cw" {
   requires_compatibilities = ["FARGATE"]
   cpu                      = local.aws_ecs_app_cpu[count.index]
   memory                   = local.aws_ecs_app_mem[count.index]
-  execution_role_arn       = data.aws_iam_role.ecsTaskExecutionRole[count.index].arn
+  execution_role_arn       = data.aws_iam_role.ecsTaskExecutionRole.arn
   container_definitions = <<DEFINITION
 [
   {
@@ -141,7 +142,11 @@ resource "aws_cloudwatch_log_group" "ecs_cw_log_group" {
 
 # IAM
 
+#data "aws_iam_role" "ecsTaskExecutionRole" {
+#  count = length(local.aws_ecs_task_execution_role)
+#  name = local.aws_ecs_task_execution_role)[count.index]
+#}
+
 data "aws_iam_role" "ecsTaskExecutionRole" {
-  count = length(local.aws_ecs_task_execution_role)
-  name = local.aws_ecs_task_execution_role[count.index]
+  name = "ecsTaskExecutionRole"
 }
