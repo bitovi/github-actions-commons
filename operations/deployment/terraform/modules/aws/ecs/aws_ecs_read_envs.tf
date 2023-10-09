@@ -7,12 +7,13 @@ locals {
 
 data "template_file" "variable_template" {
   count = can(file(local.env_repo_file)) ? 1 : 0
+
   template = <<EOF
 [
   % for pair in local.env_repo_file :
   {
-    "name": "${pair.key}",
-    "value": "${pair.value}"
+    "name": "${pair[0]}",
+    "value": "${pair[1]}"
   },
   % endfor
 ]
