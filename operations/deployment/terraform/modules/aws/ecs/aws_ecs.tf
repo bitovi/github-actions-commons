@@ -25,7 +25,7 @@ locals {
   aws_ecs_node_count          = var.aws_ecs_node_count != ""          ? [for n in split(",", var.aws_ecs_node_count) : tonumber(n)] : [for _ in range(length(local.aws_aws_ecs_app_image)) : 1]
   aws_ecs_app_cpu             = var.aws_ecs_app_cpu != ""             ? [for n in split(",", var.aws_ecs_app_cpu)    : tonumber(n)] : [for _ in range(length(local.aws_aws_ecs_app_image)) : 256] 
   aws_ecs_app_mem             = var.aws_ecs_app_mem != ""             ? [for n in split(",", var.aws_ecs_app_mem)    : tonumber(n)] : [for _ in range(length(local.aws_aws_ecs_app_image)) : 512]
-  aws_ecs_env_vars            = var.aws_ecs_env_vars != ""            ? [for n in split("|", var.aws_ecs_env_vars)   : n ]          : [for _ in range(length(local.aws_aws_ecs_app_image)) : "{}"]
+  #aws_ecs_env_vars            = var.aws_ecs_env_vars != ""            ? [for n in split("|", var.aws_ecs_env_vars)   : length(n) > 0 ? "environment": [ ]          : [for _ in range(length(local.aws_aws_ecs_app_image)) : ]
 }
 
 resource "aws_ecs_task_definition" "ecs_task" {
@@ -48,7 +48,6 @@ resource "aws_ecs_task_definition" "ecs_task" {
     "memory": ${local.aws_ecs_app_mem[count.index]},
     "name": "${local.aws_ecs_task_name}${count.index}",
     "networkMode": "awsvpc",
-    "environment": [${local.aws_ecs_env_vars[count.index]}],
     "portMappings": [
       {
         "name": "port-${local.aws_ecs_container_port[count.index]}",
@@ -62,9 +61,7 @@ resource "aws_ecs_task_definition" "ecs_task" {
 ]
 DEFINITION
 }
-
-#    "environment": [${local.aws_ecs_env_vars[count.index]}]
-
+  #  "environment": [${local.aws_ecs_env_vars[count.index]}],
 
 resource "aws_ecs_task_definition" "ecs_task_cw" {
   count                    = var.aws_ecs_cloudwatch_enable ? length(local.aws_aws_ecs_app_image) : 0
@@ -86,7 +83,6 @@ resource "aws_ecs_task_definition" "ecs_task_cw" {
     "memory": ${local.aws_ecs_app_mem[count.index]},
     "name": "${local.aws_ecs_task_name}${count.index}",
     "networkMode": "awsvpc",
-    "environment": [${local.aws_ecs_env_vars[count.index]}],
     "portMappings": [
       {
         "name": "port-${local.aws_ecs_container_port[count.index]}",
@@ -108,6 +104,9 @@ resource "aws_ecs_task_definition" "ecs_task_cw" {
 ]
 DEFINITION
 }
+
+#    "environment": [${local.aws_ecs_env_vars[count.index]}],
+
 
 resource "aws_ecs_service" "ecs_service_with_lb" {
   count            = length(local.aws_aws_ecs_app_image)
