@@ -648,7 +648,7 @@ variable "aws_ecs_app_mem" {
 variable "aws_ecs_env_vars" {
   type        = string
   description = "Environment variables in JSON style, separated by | "
-  default     = "{}"
+  default     = {}
 }
 
 variable "aws_ecs_security_group_name" {
