@@ -23,7 +23,6 @@ locals {
   aws_aws_ecs_app_image       = [for n in split(",", var.aws_ecs_app_image) : n]
   aws_ecs_task_name           = var.aws_ecs_task_name != ""           ? var.aws_ecs_task_name : "${var.aws_resource_identifier}-app"
   aws_ecs_task_execution_role = var.aws_ecs_task_execution_role != "" ? [for n in split("|", var.aws_ecs_env_vars)   : n ]          : [for _ in range(length(local.aws_aws_ecs_app_image)) : "ecsTaskExecutionRole"]
-  aws_ecs_task_er             = distinct(local.aws_ecs_task_execution_role)
   aws_ecs_node_count          = var.aws_ecs_node_count != ""          ? [for n in split(",", var.aws_ecs_node_count) : tonumber(n)] : [for _ in range(length(local.aws_aws_ecs_app_image)) : 1]
   aws_ecs_app_cpu             = var.aws_ecs_app_cpu != ""             ? [for n in split(",", var.aws_ecs_app_cpu)    : tonumber(n)] : [for _ in range(length(local.aws_aws_ecs_app_image)) : 256] 
   aws_ecs_app_mem             = var.aws_ecs_app_mem != ""             ? [for n in split(",", var.aws_ecs_app_mem)    : tonumber(n)] : [for _ in range(length(local.aws_aws_ecs_app_image)) : 512]
@@ -143,6 +142,6 @@ resource "aws_cloudwatch_log_group" "ecs_cw_log_group" {
 # IAM
 
 data "aws_iam_role" "ecsTaskExecutionRole" {
-  count = length(local.aws_ecs_task_er)
-  name =  local.aws_ecs_task_er[count.index]
+  count = length(distinct(local.aws_ecs_task_execution_role))
+  name = distinct(local.aws_ecs_task_execution_role)[count.index]
 }
