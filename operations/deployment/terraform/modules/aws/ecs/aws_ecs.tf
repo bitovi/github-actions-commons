@@ -48,6 +48,7 @@ resource "aws_ecs_task_definition" "ecs_task" {
     "memory": ${local.aws_ecs_app_mem[count.index]},
     "name": "${local.aws_ecs_task_name}${count.index}",
     "networkMode": "awsvpc",
+    "environment": [${local.aws_ecs_env_vars[count.index]}]
     "portMappings": [
       {
         "name": "port-${local.aws_ecs_container_port[count.index]}",
@@ -61,7 +62,6 @@ resource "aws_ecs_task_definition" "ecs_task" {
 ]
 DEFINITION
 }
-#    "environment": [${local.aws_ecs_env_vars[count.index]}]
 
 resource "aws_ecs_task_definition" "ecs_task_cw" {
   count                    = var.aws_ecs_cloudwatch_enable ? length(local.aws_aws_ecs_app_image) : 0
@@ -110,8 +110,8 @@ resource "aws_ecs_service" "ecs_service_with_lb" {
   count            = length(local.aws_aws_ecs_app_image)
   name             = var.aws_ecs_service_name != "" ? "${var.aws_ecs_service_name}${count.index}" : "${var.aws_resource_identifier}-${count.index}-service"
   cluster          = aws_ecs_cluster.cluster.id
-  task_definition  = var.aws_ecs_cloudwatch_enable? aws_ecs_task_definition.ecs_task_cw[count.index].arn : aws_ecs_task_definition.ecs_task[count.index].arn
-  desired_count    = tonumber(var.aws_ecs_node_count)
+  task_definition  = var.aws_ecs_cloudwatch_enable ? aws_ecs_task_definition.ecs_task_cw[count.index].arn : aws_ecs_task_definition.ecs_task[count.index].arn
+  desired_count    = local.aws_ecs_node_count
   launch_type      = "FARGATE"
 
   network_configuration {
