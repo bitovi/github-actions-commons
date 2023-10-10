@@ -88,7 +88,7 @@ resource "aws_alb_listener_rule" "redirect_based_on_path" {
 }
 
 resource "aws_alb_listener" "http_redirect" {
-  count             = var.aws_ecs_lb_redirect_enable && !contains(local.aws_ecs_lb_port, 80) ? 1 : 0
+  #count             = var.aws_ecs_lb_redirect_enable && !contains(local.aws_ecs_lb_port, 80) ? 1 : 0
   load_balancer_arn = "${aws_alb.ecs_lb.id}"
   port              = "80"
   protocol          = "HTTP"
@@ -105,7 +105,7 @@ resource "aws_alb_listener" "http_redirect" {
 }
 
 resource "aws_alb_listener" "https_redirect" {
-  count             = var.aws_ecs_lb_redirect_enable && var.aws_certificates_selected_arn != "" && !contains(local.aws_ecs_lb_port, 443) ? 1 : 0
+  #count             = var.aws_ecs_lb_redirect_enable && var.aws_certificates_selected_arn != "" && !contains(local.aws_ecs_lb_port, 443) ? 1 : 0
   load_balancer_arn = "${aws_alb.ecs_lb.id}"
   port              = "443"
   protocol          = "HTTP"
