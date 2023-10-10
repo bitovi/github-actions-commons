@@ -13,6 +13,17 @@ resource "aws_ecs_cluster" "cluster" {
   #    }
   #  }
   #}
+  dynamic "configuration" {
+    for_each = var.aws_ecs_logs_s3_bucket != "" ? [1] : []
+    content {
+      execute_command_configuration {
+        log_configuration {
+          s3_bucket_name    = var.aws_ecs_logs_s3_bucket
+          s3_key_prefix     = var.aws_ecs_logs_s3_bucket_prefix
+        }
+      }
+    }
+  }
   tags = {
     Name = "${var.aws_resource_identifier}-ecs-cluster"
   }
@@ -50,6 +61,7 @@ resource "aws_ecs_task_definition" "ecs_task" {
           "appProtocol": "http"
         }
       ],
+      "environment": local.env_repo_vars
       "logConfiguration": var.aws_ecs_cloudwatch_enable ? {
         "logDriver": "awslogs",
         "options": {
@@ -58,7 +70,6 @@ resource "aws_ecs_task_definition" "ecs_task" {
           "tag": "{{.Name}}"
         }
       } : null
-      "environment": local.env_repo_vars
     }
   ])
 }
@@ -182,4 +193,40 @@ resource "aws_cloudwatch_log_group" "ecs_cw_log_group" {
 
 data "aws_iam_role" "ecsTaskExecutionRole" {
   name = var.aws_ecs_task_execution_role
+}
+
+# Bucket logs
+
+resource "aws_s3_bucket" "ecs_cluster_logs" {
+  count = var.aws_ecs_logs_s3_bucket != "" ? 1 : 0
+  bucket = var.aws_ecs_logs_s3_bucket
+  force_destroy = true
+  tags = {
+    Name = var.aws_ecs_logs_s3_bucket
+  }
+}
+
+resource "aws_s3_bucket_policy" "allow_access_from_another_account" {
+  count = var.aws_ecs_logs_s3_bucket != "" ? 1 : 0
+  bucket = aws_s3_bucket.ecs_cluster_logs[0].id
+  policy = <<POLICY
+{
+  "Id": "Policy",
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Action": [
+        "s3:PutObject"
+      ],
+      "Effect": "Allow",
+      "Resource": "arn:aws:s3:::${var.aws_ecs_logs_s3_bucket}/*",
+      "Principal": {
+        "AWS": [
+          "${data.aws_ecs_cluster.main.arn}"
+        ]
+      }
+    }
+  ]
+}
+POLICY
 }
