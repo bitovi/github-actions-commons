@@ -60,7 +60,12 @@ resource "aws_ecs_task_definition" "ecs_task" {
           "tag": "{{.Name}}"
         }
       } : null
-      "environment": []
+      "environment": [
+  {
+    "name" = "KEY"
+    "value" = "VALUE"
+  },
+]
     }
   ])
 }
