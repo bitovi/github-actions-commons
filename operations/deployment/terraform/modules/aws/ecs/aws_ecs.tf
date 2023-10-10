@@ -60,7 +60,7 @@ resource "aws_ecs_task_definition" "ecs_task" {
           "tag": "{{.Name}}"
         }
       } : null
-      "environment": [local.env_repo_vars]
+      "environment": ["${local.env_repo_vars}"]
     }
   ])
 }
