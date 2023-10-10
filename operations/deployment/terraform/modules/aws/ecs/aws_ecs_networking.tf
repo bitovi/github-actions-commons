@@ -88,37 +88,48 @@ resource "aws_alb_listener_rule" "redirect_based_on_path" {
 }
 
 resource "aws_alb_listener" "http_redirect" {
-  #count             = var.aws_ecs_lb_redirect_enable && !contains(local.aws_ecs_lb_port, 80) ? 1 : 0
+  #count             = var.aws_ecs_lb_redirect_enable && !contains(local.aws_ecs_lb_port,80) ? 1 : 0
   load_balancer_arn = "${aws_alb.ecs_lb.id}"
   port              = "80"
   protocol          = "HTTP"
 
   default_action {
-    type = "redirect"
-
-    redirect {
-      port        = local.aws_ecs_lb_port[0]
-      protocol    = var.aws_certificates_selected_arn != "" ? "HTTPS" : "HTTP"
-      status_code = "HTTP_301"
-    }
+    target_group_arn = aws_alb_target_group.lb_targets[0].id
+    type             = "forward"
   }
+#  default_action {
+#    type = "redirect"
+#
+#    redirect {
+#      port        = local.aws_ecs_lb_port[0]
+#      protocol    = var.aws_certificates_selected_arn != "" ? "HTTPS" : "HTTP"
+#      status_code = "HTTP_301"
+#    }
+#  }
 }
 
 resource "aws_alb_listener" "https_redirect" {
-  #count             = var.aws_ecs_lb_redirect_enable && var.aws_certificates_selected_arn != "" && !contains(local.aws_ecs_lb_port, 443) ? 1 : 0
+  #count             = var.aws_ecs_lb_redirect_enable && var.aws_certificates_selected_arn != "" && !contains(local.aws_ecs_lb_port,443) ? 1 : 0
   load_balancer_arn = "${aws_alb.ecs_lb.id}"
   port              = "443"
-  protocol          = "HTTP"
+  protocol          = "HTTPS"
+  certificate_arn   = var.aws_certificates_selected_arn
+  ssl_policy        = var.aws_certificates_selected_arn != "" ? "ELBSecurityPolicy-TLS13-1-2-2021-06" : "" # https://docs.aws.amazon.com/elasticloadbalancing/latest/application/create-https-listener.html
 
   default_action {
-    type = "redirect"
-
-    redirect {
-      port        = local.aws_ecs_lb_port[0]
-      protocol    = "HTTPS"
-      status_code = "HTTP_301"
-    }
+    target_group_arn = aws_alb_target_group.lb_targets[0].id
+    type             = "forward"
   }
+
+#  default_action {
+#    type = "redirect"
+#
+#    redirect {
+#      port        = local.aws_ecs_lb_port[0]
+#      protocol    = "HTTPS"
+#      status_code = "HTTP_301"
+#    }
+#  }
 }
 
 resource "aws_security_group" "ecs_lb_sg" {
