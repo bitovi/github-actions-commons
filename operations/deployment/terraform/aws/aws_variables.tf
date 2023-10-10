@@ -682,7 +682,7 @@ variable "aws_ecs_lb_redirect_enable" {
 }
 
 variable "aws_ecs_autoscaling_enable" {
-  type        = string
+  type        = bool
   description = "Toggle ecs autoscaling policy"
   default     = "false"
 }
@@ -701,14 +701,14 @@ variable "aws_ecs_autoscaling_min_nodes" {
 
 variable "aws_ecs_autoscaling_max_mem" {
   type        = string
-  description = "Some"
-  default     = "Max memory percentage usage"
+  description = "Max memory percentage usage"
+  default     = ""
 }
 
 variable "aws_ecs_autoscaling_max_cpu" {
   type        = string
-  description = "Some"
-  default     = "Max CPU percentage usage"
+  description = "Max CPU percentage usage"
+  default     = ""
 }
 
 variable "aws_ecs_cloudwatch_enable" {
