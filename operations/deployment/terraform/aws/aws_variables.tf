@@ -615,6 +615,12 @@ variable "aws_ecs_task_execution_role" {
   default     = "ecsTaskExecutionRole"
 }
 
+variable "aws_ecs_task_json_definition_file" {
+  type        = string
+  description = "Filename for json file containing ECS conteiner definitions"
+  default     = ""
+}
+
 variable "aws_ecs_node_count" {
   type        = string
   description = "Node count for ECS Cluster"
@@ -645,12 +651,6 @@ variable "aws_ecs_app_mem" {
   default     = ""
 }
 
-variable "aws_ecs_env_vars" {
-  type        = string
-  description = "Environment variables in JSON style, separated by | "
-  default     = ""
-}
-
 variable "aws_ecs_security_group_name" {
   type        = string
   description = "ECS Secruity group name"
@@ -669,16 +669,16 @@ variable "aws_ecs_container_port" {
   default     = ""
 }
 
-variable "aws_ecs_lb_name" {
-  type        = string
-  description = "Load Balancer name"
-  default     = ""
-}
-
 variable "aws_ecs_lb_port" {
   type        = string
   description = "Comma serparated list of ports exposed by the load balancer"
   default     = ""
+}
+
+variable "aws_ecs_lb_redirect_enable" {
+  type        = bool
+  description = "Toggle redirect from HTTP and/or HTTPS to the main container port"
+  default     = false
 }
 
 variable "aws_ecs_cloudwatch_enable" {

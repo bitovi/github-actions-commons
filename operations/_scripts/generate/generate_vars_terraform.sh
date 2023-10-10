@@ -221,6 +221,7 @@ if [[ $(alpha_only "$AWS_ECS_ENABLE") == true ]]; then
   aws_ecs_assign_public_ip=$(generate_var aws_ecs_assign_public_ip $AWS_ECS_ASSIGN_PUBLIC_IP)
   aws_ecs_container_port=$(generate_var aws_ecs_container_port $AWS_ECS_CONTAINER_PORT)
   aws_ecs_lb_port=$(generate_var aws_ecs_lb_port $AWS_ECS_LB_PORT)
+  aws_ecs_lb_redirect_enable=$(generate_var aws_ecs_lb_redirect_enable $AWS_ECS_LB_REDIRECT_ENABLE)
   aws_ecs_cloudwatch_enable=$(generate_var aws_ecs_cloudwatch_enable $AWS_ECS_CLOUDWATCH_ENABLE)
   aws_ecs_cloudwatch_lg_name=$(generate_var aws_ecs_cloudwatch_lg_name $AWS_ECS_CLOUDWATCH_LG_NAME)
   aws_ecs_cloudwatch_skip_destroy=$(generate_var aws_ecs_cloudwatch_skip_destroy $AWS_ECS_CLOUDWATCH_SKIP_DESTROY)
@@ -431,6 +432,7 @@ $aws_ecs_service_name
 $aws_ecs_cluster_name
 $aws_ecs_task_name
 $aws_ecs_task_execution_role
+$aws_ecs_task_json_definition_file
 $aws_ecs_node_count
 $aws_ecs_app_image
 $aws_ecs_image_path
@@ -440,8 +442,15 @@ $aws_ecs_env_vars
 $aws_ecs_security_group_name
 $aws_ecs_assign_public_ip
 $aws_ecs_container_port
-$aws_ecs_lb_name
 $aws_ecs_lb_port
+$aws_ecs_lb_redirect_enable
+$aws_ecs_cloudwatch_enable
+$aws_ecs_cloudwatch_lg_name
+$aws_ecs_cloudwatch_skip_destroy
+$aws_ecs_cloudwatch_retention_days
+$aws_ecs_logs_s3_bucket
+$aws_ecs_logs_s3_bucket_prefix
+$aws_ecs_additional_tags
 
 #-- ECR --#
 $aws_ecr_repo_create
