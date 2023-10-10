@@ -96,7 +96,7 @@ resource "aws_alb_listener" "http_redirect" {
 
   default_action {
     type = var.aws_certificates_selected_arn != "" ? "redirect" : "forward"
-
+    target_group_arn = var.aws_certificates_selected_arn != "" ? null : aws_alb_target_group.lb_targets[0].id
     dynamic "redirect" {
       for_each = var.aws_certificates_selected_arn != "" ? [1] : [0]
       content {
@@ -106,13 +106,13 @@ resource "aws_alb_listener" "http_redirect" {
       }
     }
 
-    dynamic "forward" {
-      for_each = var.aws_certificates_selected_arn != "" ? [0] : [1]
-      content {
-        target_group_arn = aws_alb_target_group.lb_targets[0].id
-        type             = "forward"
-      }
-    }
+    #dynamic "forward" {
+    #  for_each = var.aws_certificates_selected_arn != "" ? [0] : [1]
+    #  content {
+    #    target_group_arn = aws_alb_target_group.lb_targets[0].id
+    #    #type             = "forward"
+    #  }
+    #}
   }
 }
 
