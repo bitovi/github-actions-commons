@@ -68,7 +68,7 @@ resource "aws_ecs_task_definition" "ecs_task" {
   ])
 }
 
-resource "aws_ecs_service" "ecs_service_with_lb" {
+resource "aws_ecs_service" "ecs_service" {
   count            = length(local.aws_aws_ecs_app_image)
   name             = var.aws_ecs_service_name != "" ? "${var.aws_ecs_service_name}${count.index}" : "${var.aws_resource_identifier}-${count.index}-service"
   cluster          = aws_ecs_cluster.cluster.id
