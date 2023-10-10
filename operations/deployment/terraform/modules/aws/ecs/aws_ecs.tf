@@ -5,15 +5,14 @@ resource "aws_ecs_cluster" "cluster" {
     name  = "containerInsights"
     value = var.aws_ecs_cloudwatch_enable ? "enabled" : "disabled"
   }
-#  configuration {
-#    execute_command_configuration {
-#      log_configuration {
-#        s3_bucket_name             = var.aws_ecs_logs_s3_bucket
-#        s3_key_prefix              = var.aws_ecs_logs_s3_bucket_prefix
-#      }
-#    }
-#  }
-
+ configuration {
+    execute_command_configuration {
+      log_configuration {
+        s3_bucket_name             = var.aws_ecs_logs_s3_bucket
+        s3_key_prefix              = var.aws_ecs_logs_s3_bucket_prefix
+      }
+    }
+  }
   tags = {
     Name = "${var.aws_resource_identifier}-ecs-cluster"
   }
@@ -25,7 +24,6 @@ locals {
   aws_ecs_node_count          = var.aws_ecs_node_count != ""          ? [for n in split(",", var.aws_ecs_node_count) : tonumber(n)] : [for _ in range(length(local.aws_aws_ecs_app_image)) : 1]
   aws_ecs_app_cpu             = var.aws_ecs_app_cpu != ""             ? [for n in split(",", var.aws_ecs_app_cpu)    : tonumber(n)] : [for _ in range(length(local.aws_aws_ecs_app_image)) : 256] 
   aws_ecs_app_mem             = var.aws_ecs_app_mem != ""             ? [for n in split(",", var.aws_ecs_app_mem)    : tonumber(n)] : [for _ in range(length(local.aws_aws_ecs_app_image)) : 512]
-  aws_ecs_env_vars            = var.aws_ecs_env_vars != ""            ? [for n in split("|", var.aws_ecs_env_vars)   : n ]          : [for _ in range(length(local.aws_aws_ecs_app_image)) : null]
 }
 
 resource "aws_ecs_task_definition" "ecs_task" {
