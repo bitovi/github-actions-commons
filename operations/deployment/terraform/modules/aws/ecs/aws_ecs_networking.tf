@@ -93,19 +93,19 @@ resource "aws_alb_listener" "http_redirect" {
   port              = "80"
   protocol          = "HTTP"
 
-  default_action {
-    target_group_arn = aws_alb_target_group.lb_targets[0].id
-    type             = "forward"
-  }
 #  default_action {
-#    type = "redirect"
-#
-#    redirect {
-#      port        = local.aws_ecs_lb_port[0]
-#      protocol    = var.aws_certificates_selected_arn != "" ? "HTTPS" : "HTTP"
-#      status_code = "HTTP_301"
-#    }
+#    target_group_arn = aws_alb_target_group.lb_targets[0].id
+#    type             = "forward"
 #  }
+  default_action {
+    type = "redirect"
+
+    redirect {
+      port        = local.aws_ecs_lb_port[0]
+      protocol    = var.aws_certificates_selected_arn != "" ? "HTTPS" : "HTTP"
+      status_code = "HTTP_301"
+    }
+  }
 }
 
 resource "aws_security_group_rule" "incoming_alb_http" {
@@ -126,20 +126,20 @@ resource "aws_alb_listener" "https_redirect" {
   certificate_arn   = var.aws_certificates_selected_arn
   ssl_policy        = var.aws_certificates_selected_arn != "" ? "ELBSecurityPolicy-TLS13-1-2-2021-06" : "" # https://docs.aws.amazon.com/elasticloadbalancing/latest/application/create-https-listener.html
 
-  default_action {
-    target_group_arn = aws_alb_target_group.lb_targets[0].id
-    type             = "forward"
-  }
+  #default_action {
+  #  target_group_arn = aws_alb_target_group.lb_targets[0].id
+  #  type             = "forward"
+  #}
 
-#  default_action {
-#    type = "redirect"
-#
-#    redirect {
-#      port        = local.aws_ecs_lb_port[0]
-#      protocol    = "HTTPS"
-#      status_code = "HTTP_301"
-#    }
-#  }
+  default_action {
+    type = "redirect"
+
+    redirect {
+      port        = local.aws_ecs_lb_port[0]
+      protocol    = "HTTPS"
+      status_code = "HTTP_301"
+    }
+  }
 }
 
 resource "aws_security_group_rule" "incoming_alb_https" {
