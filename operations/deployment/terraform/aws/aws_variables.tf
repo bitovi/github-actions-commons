@@ -681,6 +681,36 @@ variable "aws_ecs_lb_redirect_enable" {
   default     = false
 }
 
+variable "aws_ecs_autoscaling_enable" {
+  type        = string
+  description = "Toggle ecs autoscaling policy"
+  default     = "false"
+}
+
+variable "aws_ecs_autoscaling_max_nodes" {
+  type        = string
+  description = "Max ammount of nodes to scale up to."
+  default     = ""
+}
+
+variable "aws_ecs_autoscaling_min_nodes" {
+  type        = string
+  description = "Min ammount of nodes to scale down to."
+  default     = ""
+}
+
+variable "aws_ecs_autoscaling_max_mem" {
+  type        = string
+  description = "Some"
+  default     = "Max memory percentage usage"
+}
+
+variable "aws_ecs_autoscaling_max_cpu" {
+  type        = string
+  description = "Some"
+  default     = "Max CPU percentage usage"
+}
+
 variable "aws_ecs_cloudwatch_enable" {
   type        = bool
   description = "Toggle cloudwatch for ECS."
@@ -708,13 +738,13 @@ variable "aws_ecs_cloudwatch_retention_days" {
 variable "aws_ecs_logs_s3_bucket" {
   type        = string
   description = "Bucket where to send the ECS logs. Leave empty if disabled."
-  default     = null
+  default     = ""
 }
 
 variable "aws_ecs_logs_s3_bucket_prefix" {
   type        = string
   description = "Prefix where to store the logs (to define a folder in the bucket)."
-  default     = null
+  default     = ""
 }
 
 variable "aws_ecs_additional_tags" {

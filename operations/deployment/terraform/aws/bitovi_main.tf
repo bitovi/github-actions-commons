@@ -237,6 +237,11 @@ module "aws_ecs" {
   aws_ecs_container_port             = var.aws_ecs_container_port 
   aws_ecs_lb_port                    = var.aws_ecs_lb_port
   aws_ecs_lb_redirect_enable         = var.aws_ecs_lb_redirect_enable
+  aws_ecs_autoscaling_enable         = var.aws_ecs_autoscaling_enable
+  aws_ecs_autoscaling_max_nodes      = var.aws_ecs_autoscaling_max_nodes
+  aws_ecs_autoscaling_min_nodes      = var.aws_ecs_autoscaling_min_nodes
+  aws_ecs_autoscaling_max_mem        = var.aws_ecs_autoscaling_max_mem
+  aws_ecs_autoscaling_max_cpu        = var.aws_ecs_autoscaling_max_cpu
   aws_ecs_cloudwatch_enable          = var.aws_ecs_cloudwatch_enable
   aws_ecs_cloudwatch_lg_name         = var.aws_ecs_cloudwatch_enable ? ( var.aws_ecs_cloudwatch_lg_name != null ? var.aws_ecs_cloudwatch_lg_name : "${var.aws_resource_identifier}-ecs-logs" ) : null
   aws_ecs_cloudwatch_skip_destroy    = var.aws_ecs_cloudwatch_skip_destroy

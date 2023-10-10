@@ -13,6 +13,11 @@ variable "aws_ecs_assign_public_ip" {}
 variable "aws_ecs_container_port" {}
 variable "aws_ecs_lb_port" {}
 variable "aws_ecs_lb_redirect_enable" {}
+variable "aws_ecs_autoscaling_enable" {}
+variable "aws_ecs_autoscaling_max_nodes" {}
+variable "aws_ecs_autoscaling_min_nodes" {}
+variable "aws_ecs_autoscaling_max_mem" {}
+variable "aws_ecs_autoscaling_max_cpu" {}
 variable "aws_ecs_cloudwatch_enable" {}
 variable "aws_ecs_cloudwatch_lg_name" {}
 variable "aws_ecs_cloudwatch_skip_destroy" {}

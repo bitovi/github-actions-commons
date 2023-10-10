@@ -222,6 +222,11 @@ if [[ $(alpha_only "$AWS_ECS_ENABLE") == true ]]; then
   aws_ecs_container_port=$(generate_var aws_ecs_container_port $AWS_ECS_CONTAINER_PORT)
   aws_ecs_lb_port=$(generate_var aws_ecs_lb_port $AWS_ECS_LB_PORT)
   aws_ecs_lb_redirect_enable=$(generate_var aws_ecs_lb_redirect_enable $AWS_ECS_LB_REDIRECT_ENABLE)
+  aws_ecs_autoscaling_enable=$(generate_var aws_ecs_autoscaling_enable $AWS_ECS_AUTOSCALING_ENABLE)
+  aws_ecs_autoscaling_max_nodes=$(generate_var aws_ecs_autoscaling_max_nodes $AWS_ECS_AUTOSCALING_MAX_NODES)
+  aws_ecs_autoscaling_min_nodes=$(generate_var aws_ecs_autoscaling_min_nodes $AWS_ECS_AUTOSCALING_MIN_NODES)
+  aws_ecs_autoscaling_max_mem=$(generate_var aws_ecs_autoscaling_max_mem $AWS_ECS_AUTOSCALING_MAX_MEM)
+  aws_ecs_autoscaling_max_cpu=$(generate_var aws_ecs_autoscaling_max_cpu $AWS_ECS_AUTOSCALING_MIN_MEM)
   aws_ecs_cloudwatch_enable=$(generate_var aws_ecs_cloudwatch_enable $AWS_ECS_CLOUDWATCH_ENABLE)
   aws_ecs_cloudwatch_lg_name=$(generate_var aws_ecs_cloudwatch_lg_name $AWS_ECS_CLOUDWATCH_LG_NAME)
   aws_ecs_cloudwatch_skip_destroy=$(generate_var aws_ecs_cloudwatch_skip_destroy $AWS_ECS_CLOUDWATCH_SKIP_DESTROY)
@@ -444,6 +449,11 @@ $aws_ecs_assign_public_ip
 $aws_ecs_container_port
 $aws_ecs_lb_port
 $aws_ecs_lb_redirect_enable
+$aws_ecs_autoscaling_enable
+$aws_ecs_autoscaling_max_nodes
+$aws_ecs_autoscaling_min_nodes
+$aws_ecs_autoscaling_max_mem
+$aws_ecs_autoscaling_max_cpu
 $aws_ecs_cloudwatch_enable
 $aws_ecs_cloudwatch_lg_name
 $aws_ecs_cloudwatch_skip_destroy
