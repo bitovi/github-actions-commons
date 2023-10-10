@@ -52,7 +52,7 @@ resource "aws_alb_target_group" "lb_targets" {
   vpc_id      = var.aws_selected_vpc_id
   target_type = "ip"
 
-  lifecycle {
+  lifecycle { 
     replace_triggered_by = [aws_security_group.ecs_sg]
   }
 }
@@ -106,32 +106,8 @@ resource "aws_alb_listener" "http_redirect" {
         status_code = "HTTP_301"
       }
     }
-
-    #dynamic "forward" {
-    #  for_each = var.aws_certificates_selected_arn != "" ? [0] : [1]
-    #  content {
-    #    target_group_arn = aws_alb_target_group.lb_targets[0].id
-    #    #type             = "forward"
-    #  }
-    #}
   }
 }
-
-
-#  default_action {
-#    target_group_arn = aws_alb_target_group.lb_targets[0].id
-#    type             = "forward"
-#  }
-#  default_action {
-#    type = "redirect"
-#
-#    redirect {
-#      port        = local.aws_ecs_lb_port[0]
-#      protocol    = var.aws_certificates_selected_arn != "" ? "HTTPS" : "HTTP"
-#      status_code = "HTTP_301"
-#    }
-#  }
-#}
 
 resource "aws_security_group_rule" "incoming_alb_http" {
   count             = length(aws_alb_listener.http_redirect)
@@ -155,16 +131,22 @@ resource "aws_alb_listener" "https_redirect" {
     target_group_arn = aws_alb_target_group.lb_targets[0].id
     type             = "forward"
   }
+}
 
-  #default_action {
-  #  type = "redirect"
-  #
-  #  redirect {
-  #    port        = local.aws_ecs_lb_port[0]
-  #    protocol    = "HTTPS"
-  #    status_code = "HTTP_301"
-  #  }
-  #}
+resource "aws_alb_listener_rule" "redirect_based_on_path_for_http" {
+  count        = length(local.aws_ecs_image_path)
+  listener_arn = var.aws_certificates_selected_arn != "" ? aws_alb_listener.https_redirect[0].arn : aws_alb_listener.http_redirect[0].arn
+
+  action {
+    type             = "forward"
+    target_group_arn = aws_alb_target_group.lb_targets[count.index + 1].arn
+  }
+
+  condition {
+    path_pattern {
+      values = ["/${local.aws_ecs_image_path[count.index]}/*"]
+    }
+  }
 }
 
 resource "aws_security_group_rule" "incoming_alb_https" {
