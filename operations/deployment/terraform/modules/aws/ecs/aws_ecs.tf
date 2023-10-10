@@ -83,7 +83,6 @@ resource "aws_ecs_service" "ecs_service" {
   }
 
   load_balancer {
-   # target_group_arn = aws_alb_target_group.lb_targets[0].id
     target_group_arn = aws_alb_target_group.lb_targets[count.index].id
     container_name   = "${local.aws_ecs_task_name}${count.index}"
     container_port   = local.aws_ecs_container_port[count.index]
