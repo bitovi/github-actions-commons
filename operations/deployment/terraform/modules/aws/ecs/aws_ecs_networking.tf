@@ -88,7 +88,7 @@ resource "aws_alb_listener_rule" "redirect_based_on_path" {
 }
 
 resource "aws_alb_listener" "http_redirect" {
-  #count             = var.aws_ecs_lb_redirect_enable && !contains(local.aws_ecs_lb_port,80) ? 1 : 0
+  count             = var.aws_ecs_lb_redirect_enable && !contains(local.aws_ecs_lb_port,80) ? 1 : 0
   load_balancer_arn = "${aws_alb.ecs_lb.id}"
   port              = "80"
   protocol          = "HTTP"
@@ -108,8 +108,18 @@ resource "aws_alb_listener" "http_redirect" {
 #  }
 }
 
+resource "aws_security_group_rule" "incoming_alb_http" {
+  count             = length(aws_alb_listener.http_redirect)
+  type              = "ingress"
+  from_port         = 80
+  to_port           = 80
+  protocol          = "tcp"
+  cidr_blocks       = ["0.0.0.0/0"]
+  security_group_id = aws_security_group.ecs_lb_sg.id
+}
+
 resource "aws_alb_listener" "https_redirect" {
-  #count             = var.aws_ecs_lb_redirect_enable && var.aws_certificates_selected_arn != "" && !contains(local.aws_ecs_lb_port,443) ? 1 : 0
+  count             = var.aws_ecs_lb_redirect_enable && var.aws_certificates_selected_arn != "" && !contains(local.aws_ecs_lb_port,443) ? 1 : 0
   load_balancer_arn = "${aws_alb.ecs_lb.id}"
   port              = "443"
   protocol          = "HTTPS"
@@ -130,6 +140,16 @@ resource "aws_alb_listener" "https_redirect" {
 #      status_code = "HTTP_301"
 #    }
 #  }
+}
+
+resource "aws_security_group_rule" "incoming_alb_https" {
+  count             = length(aws_alb_listener.https_redirect)
+  type              = "ingress"
+  from_port         = 443
+  to_port           = 443
+  protocol          = "tcp"
+  cidr_blocks       = ["0.0.0.0/0"]
+  security_group_id = aws_security_group.ecs_lb_sg.id
 }
 
 resource "aws_security_group" "ecs_lb_sg" {
