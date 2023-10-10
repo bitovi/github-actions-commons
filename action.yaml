@@ -855,7 +855,7 @@ runs:
         AWS_ECS_ASSIGN_PUBLIC_IP: ${{ inputs.aws_ecs_assign_public_ip }}
         AWS_ECS_CONTAINER_PORT: ${{ inputs.aws_ecs_container_port }}
         AWS_ECS_LB_PORT: ${{ inputs.aws_ecs_lb_port }}
-        AWS_ECS_LB_REDIRECT: ${{ inputs.aws_ecs_lb_redirect_enable }}
+        AWS_ECS_LB_REDIRECT_ENABLE: ${{ inputs.aws_ecs_lb_redirect_enable }}
         AWS_ECS_AUTOSCALING_ENABLE: ${{ inputs.aws_ecs_autoscaling_enable }}
         AWS_ECS_AUTOSCALING_MAX_NODES: ${{ inputs.aws_ecs_autoscaling_max_nodes }}
         AWS_ECS_AUTOSCALING_MIN_NODES: ${{ inputs.aws_ecs_autoscaling_min_nodes }}
