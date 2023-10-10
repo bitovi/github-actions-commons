@@ -222,7 +222,7 @@ resource "aws_s3_bucket_policy" "allow_access_from_another_account" {
       "Resource": "arn:aws:s3:::${var.aws_ecs_logs_s3_bucket}/*",
       "Principal": {
         "AWS": [
-          "${data.aws_ecs_cluster.main.arn}"
+          "${aws_ecs_cluster.cluster.arn}"
         ]
       }
     }
