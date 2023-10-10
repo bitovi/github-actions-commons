@@ -95,7 +95,7 @@ resource "aws_alb_listener" "http_redirect" {
 
 
   default_action {
-    type = var.aws_certificates_selected_arn != "" ? "forward" : "redirect"
+    type = var.aws_certificates_selected_arn != "" ? "redirect" : "forward"
 
     dynamic "redirect" {
       for_each = var.aws_certificates_selected_arn != "" ? [1] : [0]
