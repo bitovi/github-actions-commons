@@ -101,7 +101,7 @@ resource "aws_alb_listener" "http_redirect" {
     dynamic "redirect" {
       for_each = var.aws_certificates_selected_arn != "" ? [1] : [0]
       content {
-        port        = local.aws_ecs_lb_port[0]
+        port        = 443
         protocol    = "HTTPS"
         status_code = "HTTP_301"
       }
