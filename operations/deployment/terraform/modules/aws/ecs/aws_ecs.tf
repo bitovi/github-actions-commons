@@ -219,7 +219,7 @@ resource "aws_s3_bucket_policy" "allow_access_from_another_account" {
         "s3:PutObject"
       ],
       "Effect": "Allow",
-      "Resource": "arn:aws:s3:::${var.aws_ecs_logs_s3_bucket}/*",
+      "Resource": "${aws_s3_bucket.ecs_cluster_logs[0].arn}/*",
       "Principal": {
         "AWS": [
           "${aws_ecs_cluster.cluster.arn}"
