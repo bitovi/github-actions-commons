@@ -17,8 +17,9 @@ resource "aws_ecs_cluster" "cluster" {
     for_each = var.aws_ecs_logs_s3_bucket != "" ? [1] : []
     content {
       execute_command_configuration {
+        logging = DEFAULT
         log_configuration {
-          s3_bucket_name    = var.aws_ecs_logs_s3_bucket
+          s3_bucket_name    = aws_s3_bucket.ecs_cluster_logs[0].name
           s3_key_prefix     = var.aws_ecs_logs_s3_bucket_prefix
         }
       }
