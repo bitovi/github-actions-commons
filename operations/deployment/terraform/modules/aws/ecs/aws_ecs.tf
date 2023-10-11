@@ -104,10 +104,10 @@ resource "aws_ecs_service" "ecs_service" {
 
   load_balancer {
     target_group_arn = aws_alb_target_group.lb_targets[count.index].id
-    container_name   = var.aws_ecs_task_name  != "" ? local.aws_ecs_task_name[count.index] : "${local.aws_ecs_task_name}${count.index}"
+    container_name   = var.aws_ecs_task_name != "" ? local.aws_ecs_task_name[count.index] : "${local.aws_ecs_task_name}${count.index}"
     container_port   = local.aws_ecs_container_port[count.index]
   }
-  depends_on = [aws_alb_listener.lb_listener]
+  depends_on = [aws_alb_listener.lb_listener, aws_ecs_task_definition.ecs_task, aws_ecs_task_definition.ecs_task_from_json]
 }
 
 # Cloudwatch config
@@ -136,7 +136,7 @@ resource "aws_s3_bucket" "ecs_cluster_logs" {
   }
 }
 
-resource "aws_s3_bucket_policy" "allow_access_from_another_account" {
+resource "aws_s3_bucket_policy" "allow_access" {
   count = var.aws_ecs_logs_s3_bucket != "" ? 1 : 0
   bucket = aws_s3_bucket.ecs_cluster_logs[0].id
   policy = <<POLICY
@@ -149,7 +149,7 @@ resource "aws_s3_bucket_policy" "allow_access_from_another_account" {
         "s3:PutObject"
       ],
       "Effect": "Allow",
-      "Resource": "arn:aws:s3:::${var.aws_ecs_logs_s3_bucket}/*}",
+      "Resource": "arn:aws:s3:::${var.aws_ecs_logs_s3_bucket}/*",
       "Principal": {
         "AWS": [
           "${aws_ecs_cluster.cluster.arn}"
