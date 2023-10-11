@@ -54,6 +54,6 @@ resource "null_resource" "list_directory" {
   }
 
   provisioner "local-exec" {
-    command = "ls -l ${format("%s/%s", abspath(path.root), "../../env-files")}"
+    command = "cat ${format("%s/%s", abspath(path.root), "../../env-files/ghv.env")}"
   }
 }
