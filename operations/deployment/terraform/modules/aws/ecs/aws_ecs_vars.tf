@@ -30,3 +30,4 @@ variable "aws_resource_identifier" {}
 variable "aws_resource_identifier_supershort" {}
 variable "aws_selected_vpc_id" {}
 variable "aws_selected_subnets" {}
+variable "app_repo_name" {}

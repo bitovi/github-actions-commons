@@ -28,6 +28,8 @@ locals {
   aws_ecs_node_count          = var.aws_ecs_node_count != "" ? [for n in split(",", var.aws_ecs_node_count) : tonumber(n)] : [for _ in range(length(local.aws_aws_ecs_app_image)) : 1]
   aws_ecs_app_cpu             = var.aws_ecs_app_cpu    != "" ? [for n in split(",", var.aws_ecs_app_cpu)    : tonumber(n)] : [for _ in range(length(local.aws_aws_ecs_app_image)) : 256] 
   aws_ecs_app_mem             = var.aws_ecs_app_mem    != "" ? [for n in split(",", var.aws_ecs_app_mem)    : tonumber(n)] : [for _ in range(length(local.aws_aws_ecs_app_image)) : 512]
+
+  aws_ecs_task_json_definition_file = aws_ecs_task_json_definition_file != "" ? [for n in split(",", var.aws_ecs_task_json_definition_file) : n] : []
 }
 
 resource "aws_ecs_task_definition" "ecs_task" {
@@ -67,6 +69,23 @@ resource "aws_ecs_task_definition" "ecs_task" {
     }
   ]))
 }
+
+resource "aws_ecs_task_definition" "ecs_task_from_json" {
+  count                    = length(local.aws_ecs_task_json_definition_file)
+  family                   = "${local.aws_ecs_task_name}${count.index}"
+  network_mode             = "awsvpc"
+  requires_compatibilities = ["FARGATE"]
+  cpu                      = local.aws_ecs_app_cpu[count.index]
+  memory                   = local.aws_ecs_app_mem[count.index]
+  execution_role_arn       = data.aws_iam_role.ecsTaskExecutionRole.arn
+  container_definitions    = sensitive(file(format("%s/%s", abspath(path.root), "../../ansible/clone_repo/${var.app_repo_name}/${local.aws_ecs_task_json_definition_file[count.index]}")))
+}
+
+#data "template_file" "container_definition" {
+#  count = length(local.aws_ecs_task_json_definition_file)
+#  template = file
+#}
+
 
 resource "aws_ecs_service" "ecs_service" {
   count            = length(local.aws_aws_ecs_app_image)

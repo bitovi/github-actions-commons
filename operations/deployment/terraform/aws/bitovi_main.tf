@@ -255,7 +255,7 @@ module "aws_ecs" {
   aws_certificates_selected_arn      = var.aws_r53_enable_cert && var.aws_r53_domain_name != "" ? module.aws_certificates[0].selected_arn : ""
   aws_resource_identifier            = var.aws_resource_identifier
   aws_resource_identifier_supershort = var.aws_resource_identifier_supershort
-
+  app_repo_name                      = var.app_repo_name
   providers = {
     aws = aws.ecs
   }
