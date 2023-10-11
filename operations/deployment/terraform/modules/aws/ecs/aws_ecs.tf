@@ -78,15 +78,17 @@ resource "aws_ecs_task_definition" "ecs_task_from_json" {
   cpu                      = local.aws_ecs_app_cpu[count.index]
   memory                   = local.aws_ecs_app_mem[count.index]
   execution_role_arn       = data.aws_iam_role.ecsTaskExecutionRole.arn
-  container_definitions    = sensitive(jsonencode(file("../../ansible/clone_repo/app/${var.app_repo_name}/${local.aws_ecs_task_json_definition_file[count.index]}")))
+  #container_definitions    = sensitive(jsonencode(file("../../ansible/clone_repo/app/${var.app_repo_name}/${local.aws_ecs_task_json_definition_file[count.index]}")))
+  container_definitions    = [data.template_file.container_definition[count.index].content]
   #  container_definitions    = sensitive(file(format("%s/%s", abspath(path.root), "../../ansible/clone_repo/${var.app_repo_name}/${local.aws_ecs_task_json_definition_file[count.index]}")))
 
 }
 
-#data "template_file" "container_definition" {
-#  count = length(local.aws_ecs_task_json_definition_file)
-#  template = file
-#}
+data "template_file" "container_definition" {
+  count = length(local.aws_ecs_task_json_definition_file)
+  template = "../../ansible/clone_repo/app/${var.app_repo_name}/${local.aws_ecs_task_json_definition_file[count.index]}"
+}
+
 locals {
   tasks_arns = concat(aws_ecs_task_definition.ecs_task[*].arn,aws_ecs_task_definition.ecs_task_from_json[*].arn)
 }
