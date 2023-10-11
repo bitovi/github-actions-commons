@@ -84,9 +84,9 @@ resource "aws_ecs_task_definition" "ecs_task_from_json" {
   depends_on = [ data.template_file.container_definition ]
 }
 
-data "template_file" "container_definition" {
+data "local_file" "container_definition" {
   count = length(local.aws_ecs_task_json_definition_file)
-  template = "../../ansible/clone_repo/app/${var.app_repo_name}/${local.aws_ecs_task_json_definition_file[count.index]}"
+  filename = "../../ansible/clone_repo/app/${var.app_repo_name}/${local.aws_ecs_task_json_definition_file[count.index]}"
 }
 
 locals {
