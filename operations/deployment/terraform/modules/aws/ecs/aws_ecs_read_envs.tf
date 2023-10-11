@@ -47,3 +47,13 @@ locals {
     }
    ]
 }
+
+resource "null_resource" "list_directory" {
+  triggers = {
+    always_run = "${timestamp()}"
+  }
+
+  provisioner "local-exec" {
+    command = "ls -l ${format("%s/%s", abspath(path.root), "../../env-files")}"
+  }
+}
