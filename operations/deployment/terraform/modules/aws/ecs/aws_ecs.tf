@@ -25,9 +25,9 @@ resource "aws_ecs_cluster" "cluster" {
 locals {
   aws_aws_ecs_app_image       = [for n in split(",", var.aws_ecs_app_image) : n]
   aws_ecs_task_name           = var.aws_ecs_task_name  != "" ? var.aws_ecs_task_name : "${var.aws_resource_identifier}-app"
-  aws_ecs_node_count          = var.aws_ecs_node_count != "" ? [for n in split(",", var.aws_ecs_node_count) : tonumber(n)] : [for _ in range(length(local.aws_aws_ecs_app_image)) : 1]
-  aws_ecs_app_cpu             = var.aws_ecs_app_cpu    != "" ? [for n in split(",", var.aws_ecs_app_cpu)    : tonumber(n)] : [for _ in range(length(local.aws_aws_ecs_app_image)) : 256] 
-  aws_ecs_app_mem             = var.aws_ecs_app_mem    != "" ? [for n in split(",", var.aws_ecs_app_mem)    : tonumber(n)] : [for _ in range(length(local.aws_aws_ecs_app_image)) : 512]
+  aws_ecs_node_count          = var.aws_ecs_node_count != "" ? [for n in split(",", var.aws_ecs_node_count) : tonumber(n)] : [for _ in range(local.tasks_count) : 1]
+  aws_ecs_app_cpu             = var.aws_ecs_app_cpu    != "" ? [for n in split(",", var.aws_ecs_app_cpu)    : tonumber(n)] : [for _ in range(local.tasks_count) : 256] 
+  aws_ecs_app_mem             = var.aws_ecs_app_mem    != "" ? [for n in split(",", var.aws_ecs_app_mem)    : tonumber(n)] : [for _ in range(local.tasks_count) : 512]
 
   aws_ecs_task_json_definition_file = var.aws_ecs_task_json_definition_file != "" ? [for n in split(",", var.aws_ecs_task_json_definition_file) : n] : []
 }
@@ -82,11 +82,12 @@ resource "aws_ecs_task_definition" "ecs_task_from_json" {
 }
 
 locals {
-  tasks_arns = concat(aws_ecs_task_definition.ecs_task[*].arn,aws_ecs_task_definition.ecs_task_from_json[*].arn)
+  tasks_arns  = concat(aws_ecs_task_definition.ecs_task[*].arn,aws_ecs_task_definition.ecs_task_from_json[*].arn)
+  tasks_count = length(local.aws_aws_ecs_app_image) + length(local.aws_ecs_task_json_definition_file)
 }
 
 resource "aws_ecs_service" "ecs_service" {
-  count            = length(local.aws_aws_ecs_app_image) + length(local.aws_ecs_task_json_definition_file)
+  count            = local.tasks_count
   name             = var.aws_ecs_service_name != "" ? "${var.aws_ecs_service_name}${count.index}" : "${var.aws_resource_identifier}-${count.index}-service"
   cluster          = aws_ecs_cluster.cluster.id
   task_definition = local.tasks_arns[count.index]
