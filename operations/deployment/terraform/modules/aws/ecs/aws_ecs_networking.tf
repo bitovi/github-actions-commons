@@ -9,7 +9,7 @@ locals {
 # Network part
 resource "aws_security_group" "ecs_sg" {
   name        = var.aws_ecs_security_group_name != "" ? var.aws_ecs_security_group_name : "SG for ${var.aws_resource_identifier} ECS"
-  description = "SG for ${var.aws_resource_identifier} - ${local.aws_ecs_task_name} - ECS"
+  description = "SG for ${var.aws_resource_identifier} - ${local.aws_ecs_cluster_name} - ECS"
   vpc_id      = var.aws_selected_vpc_id
   egress {
     from_port   = 0
@@ -161,7 +161,7 @@ resource "aws_security_group_rule" "incoming_alb_https" {
 
 resource "aws_security_group" "ecs_lb_sg" {
   name        = var.aws_ecs_security_group_name != "" ? "${var.aws_ecs_security_group_name}-lb" : "SG for ${var.aws_resource_identifier} ECS LB"
-  description = "SG for ${var.aws_resource_identifier} - ${local.aws_ecs_task_name} ECS Load Balancer"
+  description = "SG for ${var.aws_resource_identifier} - ${local.aws_ecs_cluster_name} ECS Load Balancer"
   vpc_id      = var.aws_selected_vpc_id
 
   egress {

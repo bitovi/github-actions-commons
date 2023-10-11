@@ -1,5 +1,5 @@
 resource "aws_ecs_cluster" "cluster" {
-  name = var.aws_ecs_cluster_name != "" ? var.aws_ecs_cluster_name : "${var.aws_resource_identifier}-cluster"
+  name = "${local.aws_ecs_cluster_name}-cluster"
 
   setting {
     name  = "containerInsights"
@@ -24,7 +24,8 @@ resource "aws_ecs_cluster" "cluster" {
 
 locals {
   aws_aws_ecs_app_image       = [for n in split(",", var.aws_ecs_app_image) : n]
-  aws_ecs_task_name           = var.aws_ecs_task_name  != "" ? var.aws_ecs_task_name : "${var.aws_resource_identifier}-app"
+  aws_ecs_cluster_name        = var.aws_ecs_cluster_name != "" ? var.aws_ecs_cluster_name : "${var.aws_resource_identifier}"
+  aws_ecs_task_name           = var.aws_ecs_task_name  != "" ? [for n in split(",", var.aws_ecs_task_name) : n] : "${var.aws_resource_identifier}-app"
   aws_ecs_node_count          = var.aws_ecs_node_count != "" ? [for n in split(",", var.aws_ecs_node_count) : tonumber(n)] : [for _ in range(local.tasks_count) : 1]
   aws_ecs_app_cpu             = var.aws_ecs_app_cpu    != "" ? [for n in split(",", var.aws_ecs_app_cpu)    : tonumber(n)] : [for _ in range(local.tasks_count) : 256] 
   aws_ecs_app_mem             = var.aws_ecs_app_mem    != "" ? [for n in split(",", var.aws_ecs_app_mem)    : tonumber(n)] : [for _ in range(local.tasks_count) : 512]
@@ -34,7 +35,7 @@ locals {
 
 resource "aws_ecs_task_definition" "ecs_task" {
   count                    = length(local.aws_aws_ecs_app_image)
-  family                   = "${local.aws_ecs_task_name}${count.index}"
+  family                   = var.aws_ecs_task_name  != "" ? local.aws_ecs_task_name[count.index] : "${local.aws_ecs_task_name}${count.index}"
   network_mode             = "awsvpc"
   requires_compatibilities = ["FARGATE"]
   cpu                      = local.aws_ecs_app_cpu[count.index]
@@ -45,7 +46,7 @@ resource "aws_ecs_task_definition" "ecs_task" {
       "image": local.aws_aws_ecs_app_image[count.index],
       "cpu": local.aws_ecs_app_cpu[count.index],
       "memory": local.aws_ecs_app_mem[count.index],
-      "name": "${local.aws_ecs_task_name}${count.index}",
+      "name": var.aws_ecs_task_name  != "" ? local.aws_ecs_task_name[count.index] : "${local.aws_ecs_task_name}${count.index}",
       "networkMode": "awsvpc",
       "portMappings": [
         {
@@ -72,7 +73,7 @@ resource "aws_ecs_task_definition" "ecs_task" {
 
 resource "aws_ecs_task_definition" "ecs_task_from_json" {
   count                    = length(local.aws_ecs_task_json_definition_file)
-  family                   = "${local.aws_ecs_task_name}${count.index}"
+  family                   = var.aws_ecs_task_name  != "" ? local.aws_ecs_task_name[count.index] : "${local.aws_ecs_task_name}${count.index}"
   network_mode             = "awsvpc"
   requires_compatibilities = ["FARGATE"]
   cpu                      = local.aws_ecs_app_cpu[count.index]
@@ -103,7 +104,7 @@ resource "aws_ecs_service" "ecs_service" {
 
   load_balancer {
     target_group_arn = aws_alb_target_group.lb_targets[count.index].id
-    container_name   = "${local.aws_ecs_task_name}${count.index}"
+    container_name   = var.aws_ecs_task_name  != "" ? local.aws_ecs_task_name[count.index] : "${local.aws_ecs_task_name}${count.index}"
     container_port   = local.aws_ecs_container_port[count.index]
   }
   depends_on = [aws_alb_listener.lb_listener]
