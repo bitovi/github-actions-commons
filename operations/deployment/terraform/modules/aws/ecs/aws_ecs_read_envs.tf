@@ -47,13 +47,3 @@ locals {
     }
    ]
 }
-
-resource "null_resource" "list_directory" {
-  triggers = {
-    always_run = "${timestamp()}"
-  }
-
-  provisioner "local-exec" {
-    command = "cat ${format("%s/%s", abspath(path.root), "../../env-files/ghv.env")}"
-  }
-}

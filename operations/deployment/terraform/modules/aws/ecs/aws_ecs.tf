@@ -38,7 +38,7 @@ resource "aws_ecs_task_definition" "ecs_task" {
   cpu                      = local.aws_ecs_app_cpu[count.index]
   memory                   = local.aws_ecs_app_mem[count.index]
   execution_role_arn       = data.aws_iam_role.ecsTaskExecutionRole.arn
-  container_definitions = jsonencode([
+  container_definitions = sensitive(jsonencode([
     {
       "image": local.aws_aws_ecs_app_image[count.index],
       "cpu": local.aws_ecs_app_cpu[count.index],
@@ -65,7 +65,7 @@ resource "aws_ecs_task_definition" "ecs_task" {
         }
       } : null
     }
-  ])
+  ]))
 }
 
 resource "aws_ecs_service" "ecs_service" {
