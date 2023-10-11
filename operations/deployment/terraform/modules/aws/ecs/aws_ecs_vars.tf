@@ -22,8 +22,6 @@ variable "aws_ecs_cloudwatch_enable" {}
 variable "aws_ecs_cloudwatch_lg_name" {}
 variable "aws_ecs_cloudwatch_skip_destroy" {}
 variable "aws_ecs_cloudwatch_retention_days" {}
-variable "aws_ecs_logs_s3_bucket" {}
-variable "aws_ecs_logs_s3_bucket_prefix" {}
 variable "aws_certificates_selected_arn" {}
 variable "aws_region_current_name" {}
 variable "aws_resource_identifier" {}

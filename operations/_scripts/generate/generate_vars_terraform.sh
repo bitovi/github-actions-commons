@@ -231,8 +231,6 @@ if [[ $(alpha_only "$AWS_ECS_ENABLE") == true ]]; then
   aws_ecs_cloudwatch_lg_name=$(generate_var aws_ecs_cloudwatch_lg_name $AWS_ECS_CLOUDWATCH_LG_NAME)
   aws_ecs_cloudwatch_skip_destroy=$(generate_var aws_ecs_cloudwatch_skip_destroy $AWS_ECS_CLOUDWATCH_SKIP_DESTROY)
   aws_ecs_cloudwatch_retention_days=$(generate_var aws_ecs_cloudwatch_retention_days $AWS_ECS_CLOUDWATCH_RETENTION_DAYS)
-  aws_ecs_logs_s3_bucket=$(generate_var aws_ecs_logs_s3_bucket $AWS_ECS_LOGS_S3_BUCKET)
-  aws_ecs_logs_s3_bucket_prefix=$(generate_var aws_ecs_logs_s3_bucket_prefix $AWS_ECS_LOGS_S3_BUCKET_PREFIX)
   aws_ecs_additional_tags=$(generate_var aws_ecs_additional_tags $AWS_ECS_ADDITIONAL_TAGS)
 fi
 
@@ -458,8 +456,6 @@ $aws_ecs_cloudwatch_enable
 $aws_ecs_cloudwatch_lg_name
 $aws_ecs_cloudwatch_skip_destroy
 $aws_ecs_cloudwatch_retention_days
-$aws_ecs_logs_s3_bucket
-$aws_ecs_logs_s3_bucket_prefix
 $aws_ecs_additional_tags
 
 #-- ECR --#

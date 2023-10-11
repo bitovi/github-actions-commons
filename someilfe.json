@@ -1,0 +1,77 @@
+{
+    "agent": {
+      "metrics_collection_interval": 5,
+      "run_as_user": "root"
+    },
+    "logs": {
+      "logs_collected": {
+            "files": {
+              "collect_list": [
+                    {
+                      "file_path": "/var/lib/docker/containers/*/*.log",
+                      "log_group_name": "leo-testing",
+                      "log_stream_name": "{instance_id}",
+                      "timestamp_format": "%b %d %H:%M:%S",
+                      "timezone": "Local"
+                    }
+              ]
+            }
+      }
+    }
+}
+
+
+{
+  "image": "755521597925.dkr.ecr.us-east-1.amazonaws.com/testing-repo-leo:d2ec2",
+  "cpu": 2048,
+  "memory": 4096,
+  "name": "bitovi-devops-training-ec2-gha-example-ecr-ecs-fargate-app0",
+  "networkMode": "awsvpc",
+  "portMappings": [
+    {
+      "name": "port-3000",
+      "containerPort": 3000,
+      "hostPort": 3000,
+      "protocol": "tcp",
+      "appProtocol": "http"
+    }
+  ],
+  "environment": [],
+  "logConfiguration": 
+  {
+    "logDriver": "awslogs",
+    "options": {
+      "awslogs-create-group": "true",
+      "awslogs-region": "us-east-1",
+      "awslogs-group": "bitovi-devops-training-ec2-gha-example-ecr-ecs-fargate-ecs-logs",
+      "awslogs-stream-prefix": "{{.Name}}"
+    }
+  }
+}
+
+
+{
+  + cpu              = 2048
+  + environment      = []
+  + image            = "755521597925.dkr.ecr.us-east-1.amazonaws.com/testing-repo-leo:d2ec2"
+  + logConfiguration = {
+      + logDriver = "awslogs"
+      + options   = {
+          + awslogs-create-group  = "true"
+          + awslogs-group         = "bitovi-devops-training-ec2-gha-example-ecr-ecs-fargate-ecs-logs"
+          + awslogs-region        = "us-east-1"
+          + awslogs-stream-prefix = "{{.Name}}"
+        }
+    }
+  + memory           = 4096
+  + name             = "bitovi-devops-training-ec2-gha-example-ecr-ecs-fargate-app0"
+  + portMappings     = [
+      + {
+          + appProtocol   = "http"
+          + containerPort = 3000
+          + hostPort      = 3000
+          + name          = "port-3000"
+          + protocol      = "tcp"
+        },
+    ]
+}

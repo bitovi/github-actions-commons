@@ -735,18 +735,6 @@ variable "aws_ecs_cloudwatch_retention_days" {
   default     = "14"
 }
 
-variable "aws_ecs_logs_s3_bucket" {
-  type        = string
-  description = "Bucket where to send the ECS logs. Leave empty if disabled."
-  default     = ""
-}
-
-variable "aws_ecs_logs_s3_bucket_prefix" {
-  type        = string
-  description = "Prefix where to store the logs (to define a folder in the bucket)."
-  default     = ""
-}
-
 variable "aws_ecs_additional_tags" {
   type        = string
   description = "A list of strings that will be added to created resources"

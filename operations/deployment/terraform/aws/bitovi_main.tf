@@ -246,8 +246,6 @@ module "aws_ecs" {
   aws_ecs_cloudwatch_lg_name         = var.aws_ecs_cloudwatch_enable ? ( var.aws_ecs_cloudwatch_lg_name != null ? var.aws_ecs_cloudwatch_lg_name : "${var.aws_resource_identifier}-ecs-logs" ) : null
   aws_ecs_cloudwatch_skip_destroy    = var.aws_ecs_cloudwatch_skip_destroy
   aws_ecs_cloudwatch_retention_days  = var.aws_ecs_cloudwatch_retention_days
-  aws_ecs_logs_s3_bucket             = var.aws_ecs_logs_s3_bucket
-  aws_ecs_logs_s3_bucket_prefix      = var.aws_ecs_logs_s3_bucket_prefix
   aws_region_current_name            = module.vpc.aws_region_current_name
   aws_selected_vpc_id                = module.vpc.aws_selected_vpc_id
   aws_selected_subnets               = module.vpc.aws_selected_vpc_subnets

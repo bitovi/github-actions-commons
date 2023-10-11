@@ -5,18 +5,6 @@ resource "aws_ecs_cluster" "cluster" {
     name  = "containerInsights"
     value = var.aws_ecs_cloudwatch_enable ? "enabled" : "disabled"
   }
-  dynamic "configuration" {
-    for_each = var.aws_ecs_logs_s3_bucket != "" ? [1] : []
-    content {
-      execute_command_configuration {
-        logging = "OVERRIDE"
-        log_configuration {
-          s3_bucket_name    = aws_s3_bucket.ecs_cluster_logs[0].id
-          s3_key_prefix     = var.aws_ecs_logs_s3_bucket_prefix
-        }
-      }
-    }
-  }
   tags = {
     Name = "${var.aws_resource_identifier}-ecs-cluster"
   }
@@ -46,7 +34,7 @@ resource "aws_ecs_task_definition" "ecs_task" {
       "image": local.aws_aws_ecs_app_image[count.index],
       "cpu": local.aws_ecs_app_cpu[count.index],
       "memory": local.aws_ecs_app_mem[count.index],
-      "name": var.aws_ecs_task_name  != "" ? local.aws_ecs_task_name[count.index] : "${local.aws_ecs_task_name}${count.index}",
+      "name": var.aws_ecs_task_name != "" ? local.aws_ecs_task_name[count.index] : "${local.aws_ecs_task_name}${count.index}",
       "networkMode": "awsvpc",
       "portMappings": [
         {
@@ -63,9 +51,7 @@ resource "aws_ecs_task_definition" "ecs_task" {
         "options": {
           "awslogs-create-group": "true",
           "awslogs-region": var.aws_region_current_name,
-          "awslogs-group": var.aws_ecs_cloudwatch_lg_name,
-          "awslogs-stream-prefix": "{{.Name}}"
-        }
+          "awslogs-group": var.aws_ecs_cloudwatch_lg_name        }
       } : null
     }
   ]))
@@ -73,7 +59,7 @@ resource "aws_ecs_task_definition" "ecs_task" {
 
 resource "aws_ecs_task_definition" "ecs_task_from_json" {
   count                    = length(local.aws_ecs_task_json_definition_file)
-  family                   = var.aws_ecs_task_name  != "" ? local.aws_ecs_task_name[count.index] : "${local.aws_ecs_task_name}${count.index}"
+  family                   = var.aws_ecs_task_name != "" ? local.aws_ecs_task_name[count.index] : "${local.aws_ecs_task_name}${count.index}"
   network_mode             = "awsvpc"
   requires_compatibilities = ["FARGATE"]
   cpu                      = local.aws_ecs_app_cpu[count.index]
@@ -124,39 +110,3 @@ resource "aws_cloudwatch_log_group" "ecs_cw_log_group" {
 data "aws_iam_role" "ecsTaskExecutionRole" {
   name = var.aws_ecs_task_execution_role
 }
-
-# Bucket logs
-
-resource "aws_s3_bucket" "ecs_cluster_logs" {
-  count = var.aws_ecs_logs_s3_bucket != "" ? 1 : 0
-  bucket = var.aws_ecs_logs_s3_bucket
-  force_destroy = true
-  tags = {
-    Name = var.aws_ecs_logs_s3_bucket
-  }
-}
-
-#resource "aws_s3_bucket_policy" "allow_access" {
-#  count = var.aws_ecs_logs_s3_bucket != "" ? 1 : 0
-#  bucket = aws_s3_bucket.ecs_cluster_logs[0].id
-#  policy = <<POLICY
-#{
-#  "Id": "Policy",
-#  "Version": "2012-10-17",
-#  "Statement": [
-#    {
-#      "Action": [
-#        "s3:PutObject"
-#      ],
-#      "Effect": "Allow",
-#      "Resource": "arn:aws:s3:::${var.aws_ecs_logs_s3_bucket}/*",
-#      "Principal": {
-#        "AWS": [
-#          "${aws_ecs_cluster.cluster.arn}"
-#        ]
-#      }
-#    }
-#  ]
-#}
-#POLICY
-#}
