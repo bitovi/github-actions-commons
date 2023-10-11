@@ -29,7 +29,7 @@ locals {
   aws_ecs_app_cpu             = var.aws_ecs_app_cpu    != "" ? [for n in split(",", var.aws_ecs_app_cpu)    : tonumber(n)] : [for _ in range(length(local.aws_aws_ecs_app_image)) : 256] 
   aws_ecs_app_mem             = var.aws_ecs_app_mem    != "" ? [for n in split(",", var.aws_ecs_app_mem)    : tonumber(n)] : [for _ in range(length(local.aws_aws_ecs_app_image)) : 512]
 
-  aws_ecs_task_json_definition_file = aws_ecs_task_json_definition_file != "" ? [for n in split(",", var.aws_ecs_task_json_definition_file) : n] : []
+  aws_ecs_task_json_definition_file = var.aws_ecs_task_json_definition_file != "" ? [for n in split(",", var.aws_ecs_task_json_definition_file) : n] : []
 }
 
 resource "aws_ecs_task_definition" "ecs_task" {
