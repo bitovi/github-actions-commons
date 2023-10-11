@@ -51,7 +51,8 @@ resource "aws_ecs_task_definition" "ecs_task" {
         "options": {
           "awslogs-create-group": "true",
           "awslogs-region": var.aws_region_current_name,
-          "awslogs-group": var.aws_ecs_cloudwatch_lg_name        }
+          "awslogs-group": var.aws_ecs_cloudwatch_lg_name
+        }
       } : null
     }
   ]))
