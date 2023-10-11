@@ -1,8 +1,9 @@
 locals {
-  env_repo_file = format("%s/%s", abspath(path.root), "../env-files/repo.env")
-  env_ghv_file  = format("%s/%s", abspath(path.root), "../env-files/ghv.env")
-  env_ghs_file  = format("%s/%s", abspath(path.root), "../env-files/ghs.env")
-  env_aws_file  = format("%s/%s", abspath(path.root), "../env-files/aws.env")
+  #env_repo_file = format("%s/%s", abspath(path.root), "../../env-files/repo.env")
+  env_repo_file = format("%s/%s", abspath(path.root), "../../env-files/some.env")
+  env_ghv_file  = format("%s/%s", abspath(path.root), "../../env-files/ghv.env")
+  env_ghs_file  = format("%s/%s", abspath(path.root), "../../env-files/ghs.env")
+  env_aws_file  = format("%s/%s", abspath(path.root), "../../env-files/aws.env")
 }
 
 data "local_file" "env_repo_file" {
