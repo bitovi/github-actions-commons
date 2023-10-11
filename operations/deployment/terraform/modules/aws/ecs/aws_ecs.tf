@@ -78,7 +78,9 @@ resource "aws_ecs_task_definition" "ecs_task_from_json" {
   cpu                      = local.aws_ecs_app_cpu[count.index]
   memory                   = local.aws_ecs_app_mem[count.index]
   execution_role_arn       = data.aws_iam_role.ecsTaskExecutionRole.arn
-  container_definitions    = sensitive(file(format("%s/%s", abspath(path.root), "../../ansible/clone_repo/${var.app_repo_name}/${local.aws_ecs_task_json_definition_file[count.index]}")))
+  container_definitions    = sensitive(file("../../ansible/clone_repo/${var.app_repo_name}/${local.aws_ecs_task_json_definition_file[count.index]}"))
+  #  container_definitions    = sensitive(file(format("%s/%s", abspath(path.root), "../../ansible/clone_repo/${var.app_repo_name}/${local.aws_ecs_task_json_definition_file[count.index]}")))
+
 }
 
 #data "template_file" "container_definition" {
