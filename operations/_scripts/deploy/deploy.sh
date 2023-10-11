@@ -107,6 +107,12 @@ if [[ $(alpha_only "$BITOPS_SKIP_RUN") == true ]]; then
   exit 0
 fi
 
+echo "::group::Tree"
+echo $GITHUB_ACTION_PATH
+tree ${GITHUB_ACTION_PATH}/operations/deployment/
+exit 0
+echo "::endgroup::
+
 echo "::group::BitOps Excecution"  
 echo "Running BitOps for env: $BITOPS_ENVIRONMENT"
 docker run --rm --name bitops \
