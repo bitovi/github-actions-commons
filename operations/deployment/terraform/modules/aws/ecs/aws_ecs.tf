@@ -85,13 +85,17 @@ resource "aws_ecs_task_definition" "ecs_task_from_json" {
 #  count = length(local.aws_ecs_task_json_definition_file)
 #  template = file
 #}
-
+locals {
+  tasks_arns = concat(aws_ecs_task_definition.ecs_task[*].arn,aws_ecs_task_definition.ecs_task_from_json[*].arn)
+}
 
 resource "aws_ecs_service" "ecs_service" {
-  count            = length(local.aws_aws_ecs_app_image)
+  count            = length(local.aws_aws_ecs_app_image) + length(local.aws_ecs_task_json_definition_file)
   name             = var.aws_ecs_service_name != "" ? "${var.aws_ecs_service_name}${count.index}" : "${var.aws_resource_identifier}-${count.index}-service"
   cluster          = aws_ecs_cluster.cluster.id
-  task_definition  = aws_ecs_task_definition.ecs_task[count.index].arn
+  #task_definition  = aws_ecs_task_definition.ecs_task[count.index].arn
+  task_definition = local.tasks_arns[count.index]
+
   desired_count    = local.aws_ecs_node_count[count.index]
   launch_type      = "FARGATE"
 
