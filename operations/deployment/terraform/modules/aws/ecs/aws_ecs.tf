@@ -136,27 +136,27 @@ resource "aws_s3_bucket" "ecs_cluster_logs" {
   }
 }
 
-resource "aws_s3_bucket_policy" "allow_access" {
-  count = var.aws_ecs_logs_s3_bucket != "" ? 1 : 0
-  bucket = aws_s3_bucket.ecs_cluster_logs[0].id
-  policy = <<POLICY
-{
-  "Id": "Policy",
-  "Version": "2012-10-17",
-  "Statement": [
-    {
-      "Action": [
-        "s3:PutObject"
-      ],
-      "Effect": "Allow",
-      "Resource": "arn:aws:s3:::${var.aws_ecs_logs_s3_bucket}/*",
-      "Principal": {
-        "AWS": [
-          "${aws_ecs_cluster.cluster.arn}"
-        ]
-      }
-    }
-  ]
-}
-POLICY
-}
+#resource "aws_s3_bucket_policy" "allow_access" {
+#  count = var.aws_ecs_logs_s3_bucket != "" ? 1 : 0
+#  bucket = aws_s3_bucket.ecs_cluster_logs[0].id
+#  policy = <<POLICY
+#{
+#  "Id": "Policy",
+#  "Version": "2012-10-17",
+#  "Statement": [
+#    {
+#      "Action": [
+#        "s3:PutObject"
+#      ],
+#      "Effect": "Allow",
+#      "Resource": "arn:aws:s3:::${var.aws_ecs_logs_s3_bucket}/*",
+#      "Principal": {
+#        "AWS": [
+#          "${aws_ecs_cluster.cluster.arn}"
+#        ]
+#      }
+#    }
+#  ]
+#}
+#POLICY
+#}
