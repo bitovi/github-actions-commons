@@ -1,9 +1,10 @@
 locals {
-  aws_ecs_container_port    = [for n in split(",", var.aws_ecs_container_port) : tonumber(n)]
-  aws_ecs_sg_container_port = distinct(local.aws_ecs_container_port)
-  aws_ecs_lb_port           = var.aws_ecs_lb_port != "" ?  [for n in split(",", var.aws_ecs_lb_port) : tonumber(n)] : local.aws_ecs_container_port
-  aws_ecs_sg_lb_port        = distinct(local.aws_ecs_lb_port)
-  aws_ecs_image_path       = var.aws_ecs_image_path != "" ? [for n in split(",", var.aws_ecs_image_path) : n ] : []
+  aws_ecs_container_port      = [for n in split(",", var.aws_ecs_container_port) : tonumber(n)]
+  aws_ecs_sg_container_port   = distinct(local.aws_ecs_container_port)
+  aws_ecs_lb_port             = var.aws_ecs_lb_port != "" ?  [for n in split(",", var.aws_ecs_lb_port) : tonumber(n)] : local.aws_ecs_container_port
+  aws_ecs_sg_lb_port          = distinct(local.aws_ecs_lb_port)
+  aws_ecs_image_path          = var.aws_ecs_image_path != "" ? [for n in split(",", var.aws_ecs_image_path) : n ] : []
+  aws_ecs_image_path_redirect = length(aws_alb_listener.https_redirect) > 0 || length(aws_alb_listener.http_redirect) > 0 ? local.aws_ecs_image_path : []
 }
 
 # Network part
@@ -134,7 +135,7 @@ resource "aws_alb_listener" "https_redirect" {
 }
 
 resource "aws_alb_listener_rule" "redirect_based_on_path_for_http" {
-  for_each = { for idx, path in local.aws_ecs_image_path : idx => path if length(path) > 0 }
+  for_each = { for idx, path in local.aws_ecs_image_path_redirect : idx => path if length(path) > 0 }
   listener_arn = var.aws_certificates_selected_arn != "" ? aws_alb_listener.https_redirect[0].arn : aws_alb_listener.http_redirect[0].arn
 
   action {
