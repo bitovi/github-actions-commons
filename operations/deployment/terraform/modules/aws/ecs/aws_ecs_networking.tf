@@ -150,22 +150,6 @@ resource "aws_alb_listener_rule" "redirect_based_on_path_for_http" {
   }
 }
 
-#resource "aws_alb_listener_rule" "redirect_based_on_path_for_http" {
-#  count        = length(local.aws_ecs_image_path)
-#  listener_arn = var.aws_certificates_selected_arn != "" ? aws_alb_listener.https_redirect[0].arn : aws_alb_listener.http_redirect[0].arn
-#
-#  action {
-#    type             = "forward"
-#    target_group_arn = aws_alb_target_group.lb_targets[count.index + 1].arn
-#  }
-#
-#  condition {
-#    path_pattern {
-#      values = ["/${local.aws_ecs_image_path[count.index]}/*"]
-#    }
-#  }
-#}
-
 resource "aws_security_group_rule" "incoming_alb_https" {
   count             = length(aws_alb_listener.https_redirect)
   type              = "ingress"
