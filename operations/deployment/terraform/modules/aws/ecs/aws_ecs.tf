@@ -12,12 +12,13 @@ resource "aws_ecs_cluster" "cluster" {
 
 locals {
   aws_aws_ecs_app_image       = [for n in split(",", var.aws_ecs_app_image) : n]
-  aws_ecs_cluster_name        = var.aws_ecs_cluster_name != "" ? var.aws_ecs_cluster_name : "${var.aws_resource_identifier}"
-  aws_ecs_task_name           = var.aws_ecs_task_name  != "" ? [for n in split(",", var.aws_ecs_task_name) : n] : [for _ in range(local.tasks_count) : "${var.aws_resource_identifier}-app" ]
-  aws_ecs_node_count          = var.aws_ecs_node_count != "" ? [for n in split(",", var.aws_ecs_node_count) : tonumber(n)] : [for _ in range(local.tasks_count) : 1]
-  aws_ecs_app_cpu             = var.aws_ecs_app_cpu    != "" ? [for n in split(",", var.aws_ecs_app_cpu)    : tonumber(n)] : [for _ in range(local.tasks_count) : 256] 
-  aws_ecs_app_mem             = var.aws_ecs_app_mem    != "" ? [for n in split(",", var.aws_ecs_app_mem)    : tonumber(n)] : [for _ in range(local.tasks_count) : 512]
-
+  aws_ecs_cluster_name        = var.aws_ecs_cluster_name  != "" ? var.aws_ecs_cluster_name : "${var.aws_resource_identifier}"
+  aws_ecs_task_name           = var.aws_ecs_task_name     != "" ? [for n in split(",", var.aws_ecs_task_name) : n]               : [for _ in range(local.tasks_count) : "${var.aws_resource_identifier}-app" ]
+  aws_ecs_node_count          = var.aws_ecs_node_count    != "" ? [for n in split(",", var.aws_ecs_node_count)    : tonumber(n)] : [for _ in range(local.tasks_count) : 1]
+  aws_ecs_task_cpu            = var.aws_ecs_task_cpu      != "" ? [for n in split(",", var.aws_ecs_task_cpu)      : tonumber(n)] : [for _ in range(local.tasks_count) : 256] 
+  aws_ecs_task_mem            = var.aws_ecs_task_mem      != "" ? [for n in split(",", var.aws_ecs_task_mem)      : tonumber(n)] : [for _ in range(local.tasks_count) : 512]
+  aws_ecs_container_cpu       = var.aws_ecs_container_cpu != "" ? [for n in split(",", var.aws_ecs_container_cpu) : tonumber(n)] : [for _ in range(local.aws_aws_ecs_app_image) : null] 
+  aws_ecs_container_mem       = var.aws_ecs_container_mem != "" ? [for n in split(",", var.aws_ecs_container_mem) : tonumber(n)] : [for _ in range(local.aws_aws_ecs_app_image) : null]
   aws_ecs_task_json_definition_file = var.aws_ecs_task_json_definition_file != "" ? [for n in split(",", var.aws_ecs_task_json_definition_file) : n] : []
 }
 
@@ -26,14 +27,14 @@ resource "aws_ecs_task_definition" "ecs_task" {
   family                   = var.aws_ecs_task_name  != "" ? local.aws_ecs_task_name[count.index] : "${local.aws_ecs_task_name}${count.index}"
   network_mode             = "awsvpc"
   requires_compatibilities = ["FARGATE"]
-  cpu                      = local.aws_ecs_app_cpu[count.index]
-  memory                   = local.aws_ecs_app_mem[count.index]
+  cpu                      = local.aws_ecs_task_cpu[count.index]
+  memory                   = local.aws_ecs_task_mem[count.index]
   execution_role_arn       = data.aws_iam_role.ecsTaskExecutionRole.arn
   container_definitions = sensitive(jsonencode([
     {
       "image": local.aws_aws_ecs_app_image[count.index],
-      "cpu": local.aws_ecs_app_cpu[count.index],
-      "memory": local.aws_ecs_app_mem[count.index],
+      "cpu": local.aws_ecs_container_cpu[count.index],
+      "memory": local.aws_ecs_container_mem[count.index],
       "name": var.aws_ecs_task_name != "" ? local.aws_ecs_task_name[count.index] : "${local.aws_ecs_task_name}${count.index}",
       "networkMode": "awsvpc",
       "portMappings": [
@@ -64,8 +65,8 @@ resource "aws_ecs_task_definition" "ecs_task_from_json" {
   family                   = var.aws_ecs_task_name != "" ? local.aws_ecs_task_name[count.index] : "${local.aws_ecs_task_name}${count.index}"
   network_mode             = "awsvpc"
   requires_compatibilities = ["FARGATE"]
-  cpu                      = local.aws_ecs_app_cpu[count.index]
-  memory                   = local.aws_ecs_app_mem[count.index]
+  cpu                      = local.aws_ecs_task_cpu[count.index]
+  memory                   = local.aws_ecs_task_mem[count.index]
   execution_role_arn       = data.aws_iam_role.ecsTaskExecutionRole.arn
   container_definitions    = sensitive(file("../../ansible/clone_repo/app/${var.app_repo_name}/${local.aws_ecs_task_json_definition_file[count.index]}"))
 }

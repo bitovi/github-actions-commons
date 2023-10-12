@@ -455,11 +455,17 @@ inputs:
   aws_ecs_image_path:
     description: 'Path for subsequent deployed images. eg. api.'
     required: false
-  aws_ecs_app_cpu:
-    description: 'Node CPU Amount'
+  aws_ecs_task_cpu:
+    description: 'Task CPU Amount'
     required: false
-  aws_ecs_app_mem:
-    description: 'Node Mem Amount'
+  aws_ecs_task_mem:
+    description: 'Task Mem Amount'
+    required: false
+  aws_ecs_container_cpu:
+    description: 'Container CPU Amount'
+    required: false
+  aws_ecs_container_cpu:
+    description: 'Container Mem Amount'
     required: false
   aws_ecs_security_group_name:
     description: 'ECS Secruity group name'
@@ -843,8 +849,10 @@ runs:
         AWS_ECS_NODE_COUNT: ${{ inputs.aws_ecs_node_count }}
         AWS_ECS_APP_IMAGE: ${{ inputs.aws_ecs_app_image }}
         AWS_ECS_IMAGE_PATH : ${{ inputs.aws_ecs_image_path }}
-        AWS_ECS_APP_CPU: ${{ inputs.aws_ecs_app_cpu }}
-        AWS_ECS_APP_MEM: ${{ inputs.aws_ecs_app_mem }}
+        AWS_ECS_TASK_CPU: ${{ inputs.aws_ecs_task_cpu }}
+        AWS_ECS_TASK_MEM: ${{ inputs.aws_ecs_task_mem }}
+        AWS_ECS_CONTAINER_CPU: ${{ inputs.aws_ecs_container_cpu }}
+        AWS_ECS_CONTAINER_MEM: ${{ inputs.aws_ecs_container_cpu }}
         AWS_ECS_SECURITY_GROUP_NAME: ${{ inputs.aws_ecs_security_group_name }}
         AWS_ECS_ASSIGN_PUBLIC_IP: ${{ inputs.aws_ecs_assign_public_ip }}
         AWS_ECS_CONTAINER_PORT: ${{ inputs.aws_ecs_container_port }}

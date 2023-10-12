@@ -639,15 +639,27 @@ variable "aws_ecs_image_path" {
   default     = ""
 }
 
-variable "aws_ecs_app_cpu" {
+variable "aws_ecs_task_cpu" {
   type        = string
-  description = "Node CPU Amount"
+  description = "Task CPU Amount"
   default     = ""
 }
 
-variable "aws_ecs_app_mem" {
+variable "aws_ecs_task_mem" {
   type        = string
-  description = "Node Mem Amount"
+  description = "Task Mem Amount"
+  default     = ""
+}
+
+variable "aws_ecs_container_cpu" {
+  type        = string
+  description = "Container CPU Amount"
+  default     = ""
+}
+
+variable "aws_ecs_container_mem" {
+  type        = string
+  description = "Container Mem Amount"
   default     = ""
 }
 
