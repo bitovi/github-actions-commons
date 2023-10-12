@@ -134,7 +134,7 @@ resource "aws_alb_listener" "https_redirect" {
 }
 
 resource "aws_alb_listener_rule" "redirect_based_on_path_for_http" {
-  for_each = { for idx, path in local.aws_ecs_image_path : idx => path if path != "" }
+  for_each = { for idx, path in local.aws_ecs_image_path : idx => path if length(path) > 0 }
   listener_arn = var.aws_certificates_selected_arn != "" ? aws_alb_listener.https_redirect[0].arn : aws_alb_listener.http_redirect[0].arn
 
   action {
