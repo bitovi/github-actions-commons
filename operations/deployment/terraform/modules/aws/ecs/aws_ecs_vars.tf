@@ -3,13 +3,13 @@ variable "aws_ecs_cluster_name" {}
 variable "aws_ecs_task_name" {}
 variable "aws_ecs_task_execution_role" {}
 variable "aws_ecs_task_json_definition_file" {}
-variable "aws_ecs_node_count" {}
-variable "aws_ecs_app_image" {}
-variable "aws_ecs_image_path" {}
 variable "aws_ecs_task_cpu" {}
 variable "aws_ecs_task_mem" {}
 variable "aws_ecs_container_cpu" {}
 variable "aws_ecs_container_mem" {}
+variable "aws_ecs_node_count" {}
+variable "aws_ecs_app_image" {}
+variable "aws_ecs_image_path" {}
 variable "aws_ecs_security_group_name" {}
 variable "aws_ecs_assign_public_ip" {}
 variable "aws_ecs_container_port" {}

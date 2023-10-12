@@ -446,15 +446,6 @@ inputs:
   aws_ecs_task_json_definition_file:
     description: 'Name of the json file containing task definition. Overrides every other input.'
     required: false
-  aws_ecs_node_count:
-    description: 'Node count for ECS Cluster'
-    required: false
-  aws_ecs_app_image:
-    description: 'Name of the image to be used'
-    required: false
-  aws_ecs_image_path:
-    description: 'Path for subsequent deployed images. eg. api.'
-    required: false
   aws_ecs_task_cpu:
     description: 'Task CPU Amount'
     required: false
@@ -464,8 +455,17 @@ inputs:
   aws_ecs_container_cpu:
     description: 'Container CPU Amount'
     required: false
-  aws_ecs_container_cpu:
+  aws_ecs_container_mem:
     description: 'Container Mem Amount'
+    required: false
+  aws_ecs_node_count:
+    description: 'Node count for ECS Cluster'
+    required: false
+  aws_ecs_app_image:
+    description: 'Name of the image to be used'
+    required: false
+  aws_ecs_image_path:
+    description: 'Path for subsequent deployed images. eg. api.'
     required: false
   aws_ecs_security_group_name:
     description: 'ECS Secruity group name'
@@ -846,13 +846,13 @@ runs:
         AWS_ECS_TASK_NAME: ${{ inputs.aws_ecs_task_name }}
         AWS_ECS_TASK_EXECUTION_ROLE : ${{ inputs.aws_ecs_task_execution_role }}
         AWS_ECS_TASK_JSON_DEFINITION_FILE : ${{ inputs.aws_ecs_task_json_definition_file }}
-        AWS_ECS_NODE_COUNT: ${{ inputs.aws_ecs_node_count }}
-        AWS_ECS_APP_IMAGE: ${{ inputs.aws_ecs_app_image }}
-        AWS_ECS_IMAGE_PATH : ${{ inputs.aws_ecs_image_path }}
         AWS_ECS_TASK_CPU: ${{ inputs.aws_ecs_task_cpu }}
         AWS_ECS_TASK_MEM: ${{ inputs.aws_ecs_task_mem }}
         AWS_ECS_CONTAINER_CPU: ${{ inputs.aws_ecs_container_cpu }}
         AWS_ECS_CONTAINER_MEM: ${{ inputs.aws_ecs_container_cpu }}
+        AWS_ECS_NODE_COUNT: ${{ inputs.aws_ecs_node_count }}
+        AWS_ECS_APP_IMAGE: ${{ inputs.aws_ecs_app_image }}
+        AWS_ECS_IMAGE_PATH : ${{ inputs.aws_ecs_image_path }}
         AWS_ECS_SECURITY_GROUP_NAME: ${{ inputs.aws_ecs_security_group_name }}
         AWS_ECS_ASSIGN_PUBLIC_IP: ${{ inputs.aws_ecs_assign_public_ip }}
         AWS_ECS_CONTAINER_PORT: ${{ inputs.aws_ecs_container_port }}

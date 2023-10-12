@@ -227,13 +227,13 @@ module "aws_ecs" {
   aws_ecs_task_name                  = var.aws_ecs_task_name
   aws_ecs_task_execution_role        = var.aws_ecs_task_execution_role
   aws_ecs_task_json_definition_file  = var.aws_ecs_task_json_definition_file
-  aws_ecs_node_count                 = var.aws_ecs_node_count 
-  aws_ecs_app_image                  = var.aws_ecs_app_image 
-  aws_ecs_image_path                 = var.aws_ecs_image_path
   aws_ecs_task_cpu                   = var.aws_ecs_task_cpu 
   aws_ecs_task_mem                   = var.aws_ecs_task_mem 
   aws_ecs_container_cpu              = var.aws_ecs_container_cpu 
   aws_ecs_container_mem              = var.aws_ecs_container_mem 
+  aws_ecs_node_count                 = var.aws_ecs_node_count 
+  aws_ecs_app_image                  = var.aws_ecs_app_image 
+  aws_ecs_image_path                 = var.aws_ecs_image_path
   aws_ecs_security_group_name        = var.aws_ecs_security_group_name 
   aws_ecs_assign_public_ip           = var.aws_ecs_assign_public_ip 
   aws_ecs_container_port             = var.aws_ecs_container_port 
