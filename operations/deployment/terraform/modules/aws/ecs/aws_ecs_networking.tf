@@ -72,17 +72,17 @@ resource "aws_alb_listener" "lb_listener" {
 }
 
 resource "aws_alb_listener_rule" "redirect_based_on_path" {
-  count        = length(local.aws_ecs_image_path)
+  for_each = { for idx, path in local.aws_ecs_image_path : idx => path if length(path) > 0 }
   listener_arn = aws_alb_listener.lb_listener[0].arn
 
   action {
     type             = "forward"
-    target_group_arn = aws_alb_target_group.lb_targets[count.index + 1].arn
+    target_group_arn = aws_alb_target_group.lb_targets[each.key + 1].arn
   }
 
   condition {
     path_pattern {
-      values = ["/${local.aws_ecs_image_path[count.index]}/*"]
+      values = ["/${each.value}/*"]
     }
   }
 }
