@@ -11,7 +11,7 @@ resource "aws_ecs_cluster" "cluster" {
 }
 
 locals {
-  aws_aws_ecs_app_image       = [for n in split(",", var.aws_ecs_app_image) : n]
+  aws_ecs_app_image           = [for n in split(",", var.aws_ecs_app_image) : n]
   aws_ecs_cluster_name        = var.aws_ecs_cluster_name  != "" ? var.aws_ecs_cluster_name : "${var.aws_resource_identifier}"
   aws_ecs_task_name           = var.aws_ecs_task_name     != "" ? [for n in split(",", var.aws_ecs_task_name) : n]               : [for _ in range(local.tasks_count) : "${var.aws_resource_identifier}-app" ]
   aws_ecs_node_count          = var.aws_ecs_node_count    != "" ? [for n in split(",", var.aws_ecs_node_count)    : tonumber(n)] : [for _ in range(local.tasks_count) : 1]
@@ -23,7 +23,7 @@ locals {
 }
 
 resource "aws_ecs_task_definition" "ecs_task" {
-  count                    = length(local.aws_aws_ecs_app_image)
+  count                    = length(local.aws_ecs_app_image)
   family                   = var.aws_ecs_task_name  != "" ? local.aws_ecs_task_name[count.index] : "${local.aws_ecs_task_name}${count.index}"
   network_mode             = "awsvpc"
   requires_compatibilities = ["FARGATE"]
@@ -32,7 +32,7 @@ resource "aws_ecs_task_definition" "ecs_task" {
   execution_role_arn       = data.aws_iam_role.ecsTaskExecutionRole.arn
   container_definitions = sensitive(jsonencode([
     {
-      "image": local.aws_aws_ecs_app_image[count.index],
+      "image": local.aws_ecs_app_image[count.index],
       "cpu": local.aws_ecs_container_cpu[count.index],
       "memory": local.aws_ecs_container_mem[count.index],
       "name": var.aws_ecs_task_name != "" ? local.aws_ecs_task_name[count.index] : "${local.aws_ecs_task_name}${count.index}",
@@ -73,7 +73,7 @@ resource "aws_ecs_task_definition" "ecs_task_from_json" {
 
 locals {
   tasks_arns  = concat(aws_ecs_task_definition.ecs_task[*].arn,aws_ecs_task_definition.ecs_task_from_json[*].arn)
-  tasks_count = length(local.aws_aws_ecs_app_image) + length(local.aws_ecs_task_json_definition_file)
+  tasks_count = length(local.aws_ecs_app_image) + length(local.aws_ecs_task_json_definition_file)
 }
 
 resource "aws_ecs_service" "ecs_service" {
