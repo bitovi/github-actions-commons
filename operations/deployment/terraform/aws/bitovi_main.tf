@@ -227,6 +227,7 @@ module "aws_ecs" {
   aws_ecs_task_name                  = var.aws_ecs_task_name
   aws_ecs_task_execution_role        = var.aws_ecs_task_execution_role
   aws_ecs_task_json_definition_file  = var.aws_ecs_task_json_definition_file
+  aws_ecs_task_network_mode          = var.aws_ecs_task_network_mode
   aws_ecs_task_cpu                   = var.aws_ecs_task_cpu 
   aws_ecs_task_mem                   = var.aws_ecs_task_mem 
   aws_ecs_container_cpu              = var.aws_ecs_container_cpu 

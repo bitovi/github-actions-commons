@@ -621,21 +621,9 @@ variable "aws_ecs_task_json_definition_file" {
   default     = ""
 }
 
-variable "aws_ecs_node_count" {
+variable "aws_ecs_task_network_mode" {
   type        = string
-  description = "Node count for ECS Cluster"
-  default     = ""
-}
-
-variable "aws_ecs_app_image" {
-  type        = string
-  description = "Name of the image to be used"
-  default     = ""
-}
-
-variable "aws_ecs_image_path" {
-  type        = string
-  description = "Path for subsequent images. eg. api"
+  description = "Network type to use in task definition"
   default     = ""
 }
 
@@ -662,6 +650,25 @@ variable "aws_ecs_container_mem" {
   description = "Container Mem Amount"
   default     = ""
 }
+
+variable "aws_ecs_node_count" {
+  type        = string
+  description = "Node count for ECS Cluster"
+  default     = ""
+}
+
+variable "aws_ecs_app_image" {
+  type        = string
+  description = "Name of the image to be used"
+  default     = ""
+}
+
+variable "aws_ecs_image_path" {
+  type        = string
+  description = "Path for subsequent images. eg. api"
+  default     = ""
+}
+
 
 variable "aws_ecs_security_group_name" {
   type        = string

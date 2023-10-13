@@ -3,6 +3,7 @@ variable "aws_ecs_cluster_name" {}
 variable "aws_ecs_task_name" {}
 variable "aws_ecs_task_execution_role" {}
 variable "aws_ecs_task_json_definition_file" {}
+variable "aws_ecs_task_network_mode" {}
 variable "aws_ecs_task_cpu" {}
 variable "aws_ecs_task_mem" {}
 variable "aws_ecs_container_cpu" {}

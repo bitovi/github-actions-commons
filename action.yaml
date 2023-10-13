@@ -446,6 +446,9 @@ inputs:
   aws_ecs_task_json_definition_file:
     description: 'Name of the json file containing task definition. Overrides every other input.'
     required: false
+  aws_ecs_task_network_mode:
+    description: 'Network type to use in task definition'
+    required: false
   aws_ecs_task_cpu:
     description: 'Task CPU Amount'
     required: false
@@ -844,8 +847,9 @@ runs:
         AWS_ECS_SERVICE_NAME: ${{ inputs.aws_ecs_service_name }}
         AWS_ECS_CLUSTER_NAME: ${{ inputs.aws_ecs_cluster_name }}
         AWS_ECS_TASK_NAME: ${{ inputs.aws_ecs_task_name }}
-        AWS_ECS_TASK_EXECUTION_ROLE : ${{ inputs.aws_ecs_task_execution_role }}
-        AWS_ECS_TASK_JSON_DEFINITION_FILE : ${{ inputs.aws_ecs_task_json_definition_file }}
+        AWS_ECS_TASK_EXECUTION_ROLE: ${{ inputs.aws_ecs_task_execution_role }}
+        AWS_ECS_TASK_JSON_DEFINITION_FILE: ${{ inputs.aws_ecs_task_json_definition_file }}
+        AWS_ECS_TASK_NETWORK_MODE: ${{ inputs.aws_ecs_task_network_mode }}
         AWS_ECS_TASK_CPU: ${{ inputs.aws_ecs_task_cpu }}
         AWS_ECS_TASK_MEM: ${{ inputs.aws_ecs_task_mem }}
         AWS_ECS_CONTAINER_CPU: ${{ inputs.aws_ecs_container_cpu }}
