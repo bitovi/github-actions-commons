@@ -24,7 +24,7 @@ locals {
 
 resource "aws_ecs_task_definition" "ecs_task" {
   count                    = length(local.aws_ecs_app_image)
-  family                   = var.aws_ecs_task_name  != "" ? local.aws_ecs_task_name[count.index] : "${local.aws_ecs_task_name}${count.index}"
+  family                   = var.aws_ecs_task_name  != "" ? local.aws_ecs_task_name[count.index] : "${local.aws_ecs_task_name[count.index]}${count.index}"
   network_mode             = "awsvpc"
   requires_compatibilities = ["FARGATE"]
   cpu                      = local.aws_ecs_task_cpu[count.index]
@@ -35,7 +35,7 @@ resource "aws_ecs_task_definition" "ecs_task" {
       "image": local.aws_ecs_app_image[count.index],
       "cpu": local.aws_ecs_container_cpu[count.index],
       "memory": local.aws_ecs_container_mem[count.index],
-      "name": var.aws_ecs_task_name != "" ? local.aws_ecs_task_name[count.index] : "${local.aws_ecs_task_name}${count.index}",
+      "name": var.aws_ecs_task_name != "" ? local.aws_ecs_task_name[count.index] : "${local.aws_ecs_task_name[count.index]}${count.index}",
       "networkMode": "awsvpc",
       "portMappings": [
         {
