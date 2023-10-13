@@ -11,7 +11,7 @@ resource "aws_ecs_cluster" "cluster" {
 }
 
 locals {
-  aws_ecs_app_image           = [for n in split(",", var.aws_ecs_app_image) : n]
+  aws_ecs_app_image           = var.aws_ecs_app_image     != "" ? [for n in split(",", var.aws_ecs_app_image) : n] : []
   aws_ecs_cluster_name        = var.aws_ecs_cluster_name  != "" ? var.aws_ecs_cluster_name : "${var.aws_resource_identifier}"
   aws_ecs_task_name           = var.aws_ecs_task_name     != "" ? [for n in split(",", var.aws_ecs_task_name) : n]               : [for _ in range(local.tasks_count) : "${var.aws_resource_identifier}-app" ]
   aws_ecs_node_count          = var.aws_ecs_node_count    != "" ? [for n in split(",", var.aws_ecs_node_count)    : tonumber(n)] : [for _ in range(local.tasks_count) : 1]
