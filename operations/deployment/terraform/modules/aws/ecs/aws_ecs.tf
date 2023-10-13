@@ -15,7 +15,7 @@ locals {
   aws_ecs_cluster_name        = var.aws_ecs_cluster_name  != "" ? var.aws_ecs_cluster_name : "${var.aws_resource_identifier}"
   aws_ecs_task_name           = var.aws_ecs_task_name     != "" ? [for n in split(",", var.aws_ecs_task_name) : n]               : [for _ in range(local.tasks_count) : "${var.aws_resource_identifier}-app" ]
   aws_ecs_node_count          = var.aws_ecs_node_count    != "" ? [for n in split(",", var.aws_ecs_node_count)    : tonumber(n)] : [for _ in range(local.tasks_count) : 1]
-  aws_ecs_task_network_mode   = var.aws_ecs_task_network_mode != "" ? [for n in split(",", var.aws_ecs_task_name) : n]           : [for _ in range(local.tasks_count) : "awsvpc" ]
+  aws_ecs_task_network_mode   = var.aws_ecs_task_network_mode != "" ? [for n in split(",", var.aws_ecs_task_network_mode) : n]   : [for _ in range(local.tasks_count) : "awsvpc" ]
   aws_ecs_task_cpu            = var.aws_ecs_task_cpu      != "" ? [for n in split(",", var.aws_ecs_task_cpu)      : tonumber(n)] : [for _ in range(local.tasks_count) : 256] 
   aws_ecs_task_mem            = var.aws_ecs_task_mem      != "" ? [for n in split(",", var.aws_ecs_task_mem)      : tonumber(n)] : [for _ in range(local.tasks_count) : 512]
   aws_ecs_container_cpu       = var.aws_ecs_container_cpu != "" ? [for n in split(",", var.aws_ecs_container_cpu) : tonumber(n)] : [for _ in range(length(local.aws_ecs_app_image)) : null] 
