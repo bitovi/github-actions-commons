@@ -62,7 +62,7 @@ resource "aws_ecs_task_definition" "ecs_task" {
 
 resource "aws_ecs_task_definition" "ecs_task_from_json" {
   count                    = length(local.aws_ecs_task_json_definition_file)
-  family                   = var.aws_ecs_task_name != "" ? local.aws_ecs_task_name[count.index] : "${local.aws_ecs_task_name}${count.index}"
+  family                   = var.aws_ecs_task_name != "" ? local.aws_ecs_task_name[count.index] : "${local.aws_ecs_task_name[count.index]}${count.index}"
   network_mode             = "awsvpc"
   requires_compatibilities = ["FARGATE"]
   cpu                      = local.aws_ecs_task_cpu[count.index]
@@ -93,7 +93,7 @@ resource "aws_ecs_service" "ecs_service" {
 
   load_balancer {
     target_group_arn = aws_alb_target_group.lb_targets[count.index].id
-    container_name   = var.aws_ecs_task_name != "" ? local.aws_ecs_task_name[count.index] : "${local.aws_ecs_task_name}${count.index}"
+    container_name   = var.aws_ecs_task_name != "" ? local.aws_ecs_task_name[count.index] : "${local.aws_ecs_task_name[count.index]}${count.index}"
     container_port   = local.aws_ecs_container_port[count.index]
   }
   depends_on = [aws_alb_listener.lb_listener, aws_ecs_task_definition.ecs_task, aws_ecs_task_definition.ecs_task_from_json]
