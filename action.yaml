@@ -437,6 +437,12 @@ inputs:
   aws_ecs_cluster_name:
     description: 'Elastic Container Service cluster name'
     required: false
+  aws_ecs_service_launch_type:
+    description: 'Configuration type. Could be EC2, FARGATE or EXTERNAL'
+    required: false
+  aws_ecs_task_type:
+    description: 'Configuration type. Could be EC2, FARGATE or empty. Will default to aws_ecs_service_launch_type if none defined. (Blank if EXTERNAL)'
+    required: false
   aws_ecs_task_name:
     description: 'Elastic Container Service task name'
     required: false
@@ -846,6 +852,8 @@ runs:
         AWS_ECS_ENABLE: ${{ inputs.aws_ecs_enable }}
         AWS_ECS_SERVICE_NAME: ${{ inputs.aws_ecs_service_name }}
         AWS_ECS_CLUSTER_NAME: ${{ inputs.aws_ecs_cluster_name }}
+        AWS_ECS_SERVICE_LAUNCH_TYPE : ${{ inputs.aws_ecs_service_launch_type }}
+        AWS_ECS_TASK_TYPE : ${{ inputs.aws_ecs_task_type }}
         AWS_ECS_TASK_NAME: ${{ inputs.aws_ecs_task_name }}
         AWS_ECS_TASK_EXECUTION_ROLE: ${{ inputs.aws_ecs_task_execution_role }}
         AWS_ECS_TASK_JSON_DEFINITION_FILE: ${{ inputs.aws_ecs_task_json_definition_file }}

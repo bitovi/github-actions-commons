@@ -1,5 +1,7 @@
 variable "aws_ecs_service_name" {}
 variable "aws_ecs_cluster_name" {}
+variable "aws_ecs_service_launch_type" {}
+variable "aws_ecs_task_type" {}
 variable "aws_ecs_task_name" {}
 variable "aws_ecs_task_execution_role" {}
 variable "aws_ecs_task_json_definition_file" {}

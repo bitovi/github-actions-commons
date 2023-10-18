@@ -603,6 +603,18 @@ variable "aws_ecs_cluster_name" {
   default     = ""
 }
 
+variable "aws_ecs_service_launch_type" {
+  type        = string
+  description = "Configuration type. Could be EC2, FARGATE or EXTERNAL"
+  default     = "FARGATE"
+}
+
+variable "aws_ecs_task_type" {
+  type        = string
+  description = "Configuration type. Could be EC2, FARGATE or empty. Will default to aws_ecs_service_launch_type if none defined. (Blank if EXTERNAL)"
+  default     = ""
+}
+
 variable "aws_ecs_task_name" {
   type        = string
   description = "Elastic Container Service task name"

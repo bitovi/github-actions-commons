@@ -21,13 +21,14 @@ locals {
   aws_ecs_container_cpu       = var.aws_ecs_container_cpu != "" ? [for n in split(",", var.aws_ecs_container_cpu) : tonumber(n)] : [for _ in range(length(local.aws_ecs_app_image)) : null] 
   aws_ecs_container_mem       = var.aws_ecs_container_mem != "" ? [for n in split(",", var.aws_ecs_container_mem) : tonumber(n)] : [for _ in range(length(local.aws_ecs_app_image)) : null]
   aws_ecs_task_json_definition_file = var.aws_ecs_task_json_definition_file != "" ? [for n in split(",", var.aws_ecs_task_json_definition_file) : n] : []
+  aws_ecs_task_type           = var.aws_ecs_task_type     != "" ? [for n in split(",", var.aws_ecs_task_network_mode) : n] : [for _ in range(local.tasks_count) : (var.aws_ecs_service_launch_type == "FARGATE" || var.aws_ecs_service_launch_type == "EC2" ? var.aws_ecs_service_launch_type : "" )]
 }
 
 resource "aws_ecs_task_definition" "ecs_task" {
   count                    = length(local.aws_ecs_app_image)
   family                   = var.aws_ecs_task_name  != "" ? local.aws_ecs_task_name[count.index] : "${local.aws_ecs_task_name[count.index]}${count.index}"
   network_mode             = local.aws_ecs_task_network_mode[count.index]
-  requires_compatibilities = ["FARGATE"]
+  requires_compatibilities = [local.aws_ecs_task_type]
   cpu                      = local.aws_ecs_task_cpu[count.index]
   memory                   = local.aws_ecs_task_mem[count.index]
   execution_role_arn       = data.aws_iam_role.ecsTaskExecutionRole.arn
@@ -63,11 +64,11 @@ resource "aws_ecs_task_definition" "ecs_task" {
 
 resource "aws_ecs_task_definition" "ecs_task_from_json" {
   count                    = length(local.aws_ecs_task_json_definition_file)
-  family                   = var.aws_ecs_task_name != "" ? local.aws_ecs_task_name[count.index] : "${local.aws_ecs_task_name[count.index]}${count.index}"
-  network_mode             = local.aws_ecs_task_network_mode[count.index]
-  requires_compatibilities = ["FARGATE"]
-  cpu                      = local.aws_ecs_task_cpu[count.index]
-  memory                   = local.aws_ecs_task_mem[count.index]
+  family                   = var.aws_ecs_task_name != "" ? local.aws_ecs_task_name[count.index+length(local.aws_ecs_app_image)] : "${local.aws_ecs_task_name[count.index+length(local.aws_ecs_app_image)]}${count.index+length(local.aws_ecs_app_image)}"
+  network_mode             = local.aws_ecs_task_network_mode[count.index + length(local.aws_ecs_app_image)]
+  requires_compatibilities = ["${local.aws_ecs_task_type[count.index +length(local.aws_ecs_app_image)]}"]
+  cpu                      = local.aws_ecs_task_cpu[count.index+length(local.aws_ecs_app_image)]
+  memory                   = local.aws_ecs_task_mem[count.index+length(local.aws_ecs_app_image)]
   execution_role_arn       = data.aws_iam_role.ecsTaskExecutionRole.arn
   container_definitions    = sensitive(file("../../ansible/clone_repo/app/${var.app_repo_name}/${local.aws_ecs_task_json_definition_file[count.index]}"))
 }
@@ -84,7 +85,7 @@ resource "aws_ecs_service" "ecs_service" {
   task_definition = local.tasks_arns[count.index]
 
   desired_count    = local.aws_ecs_node_count[count.index]
-  launch_type      = "FARGATE"
+  launch_type      = var.aws_ecs_service_launch_type
 
   network_configuration {
     security_groups  = [aws_security_group.ecs_sg.id]

@@ -61,6 +61,7 @@ jobs:
 1. [RDS](#rds-inputs)
 1. [Amazon Aurora Inputs](#aurora-inputs)
 1. [Docker](#docker-inputs)
+1. [ECS](#ecs-inputs)
 1. [ECR](#ecr-inputs)
 1. [EKS](#eks-inputs)
 
@@ -234,7 +235,7 @@ The following inputs can be used as `step.with` keys
 | `aws_rds_db_instance_class`| String | DB instance server type. Defaults to `db.t3.micro`. |
 | `aws_rds_db_user`| String | Username for the db. Defaults to `dbuser`. |
 | `aws_rds_cloudwatch_logs_exports`| String | Set of log types to enable for exporting to CloudWatch logs. Defaults to `postgresql`. MySQL and MariaDB: `audit, error, general, slowquery`. PostgreSQL: `postgresql, upgrade`. MSSQL: `agent , error`. Oracle: `alert, audit, listener, trace`. |
-| `aws_rds_additional_tags` | JSON | Add additional tags to the terraform [default tags](https://www.hashicorp.com/blog/default-tags-in-the-terraform-aws-provider), any tags put here will be added to efs provisioned resources.|
+| `aws_rds_additional_tags` | JSON | Add additional tags to the terraform [default tags](https://www.hashicorp.com/blog/default-tags-in-the-terraform-aws-provider), any tags put here will be added to RDS provisioned resources.|
 <hr/>
 <br/>
 
@@ -276,6 +277,43 @@ The following inputs can be used as `step.with` keys
 <hr/>
 <br/>
 
+#### **ECS Inputs***
+| Name             | Type    | Description                        |
+|------------------|---------|------------------------------------|
+| `aws_ecs_enable`| Boolean | Toggle ECS Creation. Defaults to `false`. |
+| `aws_ecs_service_name`| String | Elastic Container Service name. |
+| `aws_ecs_cluster_name`| String | Elastic Container Service cluster name. |
+| `aws_ecs_service_launch_type`| String | Configuration type. Could be `EC2`, `FARGATE` or `EXTERNAL`. Defaults to `FARGATE`. |
+| `aws_ecs_task_type`| String | Configuration type. Could be `EC2`, `FARGATE` or empty. Will default to `aws_ecs_service_launch_type` if none defined. (Blank if `EXTERNAL`). |
+| `aws_ecs_task_name`| String | Elastic Container Service task name. |
+| `aws_ecs_task_execution_role`| String | Elastic Container Service task execution role name from IAM. Defaults to `ecsTaskExecutionRole`. |
+| `aws_ecs_task_json_definition_file`| String | Name of the json file containing task definition. Overrides every other input. |
+| `aws_ecs_task_network_mode`| String | Network type to use in task definition. One of `none`, `bridge`, `awsvpc`, and `host`. |
+| `aws_ecs_task_cpu`| String | Task CPU Amount. |
+| `aws_ecs_task_mem`| String | Task Mem Amount. |
+| `aws_ecs_container_cpu`| String | Container CPU Amount. |
+| `aws_ecs_container_mem`| String | Container Mem Amount. |
+| `aws_ecs_node_count`| String | Node count for ECS Cluster. |
+| `aws_ecs_app_image`| String | Name of the container image to be used. |
+| `aws_ecs_image_path`| String | Path for subsequent deployed images (For load balabcer). eg. api. (For http://bitovi.com/api/) |
+| `aws_ecs_security_group_name`| String | ECS Secruity group name. |
+| `aws_ecs_assign_public_ip`| Boolean | Assign public IP to node. |
+| `aws_ecs_container_port`| String | Comma separated list of container ports. One for each. |
+| `aws_ecs_lb_port`| String | Comma serparated list of ports exposed by the load balancer. One for each. |
+| `aws_ecs_lb_redirect_enable`| String | Toggle redirect from HTTP and/or HTTPS to the main port. |
+| `aws_ecs_autoscaling_enable`| Boolean | Toggle ecs autoscaling policy. |
+| `aws_ecs_autoscaling_max_nodes`| String | Max ammount of nodes to scale up to. |
+| `aws_ecs_autoscaling_min_nodes`| String | Min ammount of nodes to scale down to. |
+| `aws_ecs_autoscaling_max_mem`| String | Define autoscaling max mem. |
+| `aws_ecs_autoscaling_max_cpu`| String | Define autoscaling max cpu. |
+| `aws_ecs_cloudwatch_enable`| Boolean | Toggle cloudwatch for ECS. Default `false`. |
+| `aws_ecs_cloudwatch_lg_name`| String | Log group name. Will default to `aws_identifier` if none. |
+| `aws_ecs_cloudwatch_skip_destroy`| Boolean | Toggle deletion or not when destroying the stack. |
+| `aws_ecs_cloudwatch_retention_days`| String | Number of days to retain logs. 0 to never expire. Defaults to `14`. |
+| `aws_ecs_additional_tags`| JSON | Add additional tags to the terraform [default tags](https://www.hashicorp.com/blog/default-tags-in-the-terraform-aws-provider), any tags put here will be added to ECS provisioned resources.|
+<hr/>
+<br/>
+
 #### **ECR Inputs**
 | Name             | Type    | Description                        |
 |------------------|---------|------------------------------------|
@@ -300,7 +338,7 @@ The following inputs can be used as `step.with` keys
 | `aws_ecr_lifecycle_policy_input` | String | The policy document. This is a JSON formatted string. See more details about [Policy Parameters](http://docs.aws.amazon.com/AmazonECR/latest/userguide/LifecyclePolicies.html#lifecycle_policy_parameters) in the official AWS docs' |
 | `aws_ecr_public_repo_catalog` | String | Catalog data configuration for the repository. Defaults to `{}`.' |
 | `aws_ecr_registry_policy_input` | String | The policy document. This is a JSON formatted string' |
-| `aws_ecr_additional_tags ` | JSON | Add additional tags to the terraform [default tags](https://www.hashicorp.com/blog/default-tags-in-the-terraform-aws-provider), any tags put here will be added to aurora provisioned resources.|
+| `aws_ecr_additional_tags ` | JSON | Add additional tags to the terraform [default tags](https://www.hashicorp.com/blog/default-tags-in-the-terraform-aws-provider), any tags put here will be added to ECR provisioned resources.|
 <hr/>
 <br/>
 
@@ -488,6 +526,50 @@ Additional details about the cluster that's created:
 - Sends logs to AWS Cloudwatch
 
 > _**For more details**, see [link-to-be-updated](operations/deployment/terraform/postgres.tf)_
+
+
+## ECS Deployment example
+Say you have a frontend and backend deployment. Backend will live and listen on bitovi.com/api/
+
+
+### Basic example
+```yaml
+name: Basic deploy
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  EC2-Deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - id: deploy
+        uses: bitovi/github-actions-deploy-commons@main # <--- Check version to use, main for now.
+        with:
+          aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID_SANDBOX }}
+          aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY_SANDBOX }}
+          aws_default_region: us-east-1
+  
+          stack_destroy: 
+          tf_state_bucket: ecs-leo-testing
+          tf_state_bucket_destroy: 
+      
+          aws_ecs_enable: true
+          aws_ecs_task_name: frontend,backend
+          aws_ecs_task_network_mode: awsvpc
+          aws_ecs_task_cpu: 1024,2048
+          aws_ecs_task_mem: 2048,6144
+          aws_ecs_app_image: 123.dkr.ecr.us-east-1.amazonaws.com/testing-repo:fe,123.dkr.ecr.us-east-1.amazonaws.com/testing-repo-leo:be
+          aws_ecs_image_path: 'api'
+          aws_ecs_assign_public_ip: true
+          aws_ecs_container_port: 3000,3001
+          aws_ecs_lb_port: 3000,3001
+          aws_ecs_lb_redirect_enable: true
+          aws_ecs_cloudwatch_enable: true
+          aws_r53_enable: true
+          domain_name: bitovi.com
+          aws_ecs_additional_tags: '{\"key\":\"value\",\"key2\":\"value2\"}'
+```
 
 ## Made with BitOps
 [BitOps](https://bitops.sh) allows you to define Infrastructure-as-Code for multiple tools in a central place.  This action uses a BitOps [Operations Repository](https://bitops.sh/operations-repo-structure/) to set up the necessary Terraform and Ansible to create infrastructure and deploy to it.

@@ -208,6 +208,8 @@ if [[ $(alpha_only "$AWS_ECS_ENABLE") == true ]]; then
   aws_ecs_enable=$(generate_var aws_ecs_enable $AWS_ECS_ENABLE)
   aws_ecs_service_name=$(generate_var aws_ecs_service_name $AWS_ECS_SERVICE_NAME)
   aws_ecs_cluster_name=$(generate_var aws_ecs_cluster_name $AWS_ECS_CLUSTER_NAME)
+  aws_ecs_service_launch_type=$(generate_var aws_ecs_service_launch_type $AWS_ECS_SERVICE_LAUNCH_TYPE)
+  aws_ecs_task_type=$(generate_var aws_ecs_task_type $AWS_ECS_TASK_TYPE)
   aws_ecs_task_name=$(generate_var aws_ecs_task_name $AWS_ECS_TASK_NAME)
   aws_ecs_task_execution_role=$(generate_var aws_ecs_task_execution_role $AWS_ECS_TASK_EXECUTION_ROLE)
   aws_ecs_task_json_definition_file=$(generate_var aws_ecs_task_json_definition_file $AWS_ECS_TASK_JSON_DEFINITION_FILE)
@@ -436,6 +438,8 @@ $aws_aurora_additional_tags
 $aws_ecs_enable
 $aws_ecs_service_name
 $aws_ecs_cluster_name
+$aws_ecs_service_launch_type
+$aws_ecs_task_type
 $aws_ecs_task_name
 $aws_ecs_task_execution_role
 $aws_ecs_task_json_definition_file

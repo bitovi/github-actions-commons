@@ -224,6 +224,8 @@ module "aws_ecs" {
   # ECS
   aws_ecs_service_name               = var.aws_ecs_service_name 
   aws_ecs_cluster_name               = var.aws_ecs_cluster_name 
+  aws_ecs_service_launch_type        = var.aws_ecs_service_launch_type
+  aws_ecs_task_type                  = var.aws_ecs_task_type
   aws_ecs_task_name                  = var.aws_ecs_task_name
   aws_ecs_task_execution_role        = var.aws_ecs_task_execution_role
   aws_ecs_task_json_definition_file  = var.aws_ecs_task_json_definition_file
