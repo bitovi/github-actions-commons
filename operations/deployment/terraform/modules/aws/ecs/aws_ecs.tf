@@ -28,7 +28,7 @@ resource "aws_ecs_task_definition" "ecs_task" {
   count                    = length(local.aws_ecs_app_image)
   family                   = var.aws_ecs_task_name  != "" ? local.aws_ecs_task_name[count.index] : "${local.aws_ecs_task_name[count.index]}${count.index}"
   network_mode             = local.aws_ecs_task_network_mode[count.index]
-  requires_compatibilities = [local.aws_ecs_task_type]
+  requires_compatibilities = [local.aws_ecs_task_type[count.index]]
   cpu                      = local.aws_ecs_task_cpu[count.index]
   memory                   = local.aws_ecs_task_mem[count.index]
   execution_role_arn       = data.aws_iam_role.ecsTaskExecutionRole.arn
@@ -64,7 +64,7 @@ resource "aws_ecs_task_definition" "ecs_task" {
 
 resource "aws_ecs_task_definition" "ecs_task_from_json" {
   count                    = length(local.aws_ecs_task_json_definition_file)
-  family                   = var.aws_ecs_task_name != "" ? local.aws_ecs_task_name[count.index+length(local.aws_ecs_app_image)] : "${local.aws_ecs_task_name[count.index+length(local.aws_ecs_app_image)]}${count.index+length(local.aws_ecs_app_image)}"
+  family                   = var.aws_ecs_task_name != "" ? local.aws_ecs_task_name[count.index + length(local.aws_ecs_app_image)] : "${local.aws_ecs_task_name[count.index + length(local.aws_ecs_app_image)]}${count.index+length(local.aws_ecs_app_image)}"
   network_mode             = local.aws_ecs_task_network_mode[count.index + length(local.aws_ecs_app_image)]
   requires_compatibilities = ["${local.aws_ecs_task_type[count.index +length(local.aws_ecs_app_image)]}"]
   cpu                      = local.aws_ecs_task_cpu[count.index+length(local.aws_ecs_app_image)]
