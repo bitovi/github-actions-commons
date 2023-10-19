@@ -71,7 +71,7 @@ output "db_endpoint" {
 }
 
 output "db_secret_details" {
-  value = "${local.db_secret_name}"
+  value = aws_secretsmanager_secret.rds_database_credentials.name
 }
 
 // Creates a secret manager secret for the databse credentials
@@ -90,11 +90,6 @@ resource "aws_secretsmanager_secret_version" "database_credentials_sm_secret_ver
    DB_PORT           = sensitive(aws_db_instance.default.port)
    DB_HOST           = sensitive(aws_db_instance.default.address)
   })
-}
-
-locals {
-  db_secret_name = aws_secretsmanager_secret_version.database_credentials_sm_secret_version_dev.id
-  db_port        = aws_db_instance.default.port
 }
 
 resource "random_password" "rds" {
