@@ -236,12 +236,12 @@ module "aws_ecs" {
   aws_ecs_container_mem              = var.aws_ecs_container_mem 
   aws_ecs_node_count                 = var.aws_ecs_node_count 
   aws_ecs_app_image                  = var.aws_ecs_app_image 
-  aws_ecs_image_path                 = var.aws_ecs_image_path
   aws_ecs_security_group_name        = var.aws_ecs_security_group_name 
   aws_ecs_assign_public_ip           = var.aws_ecs_assign_public_ip 
   aws_ecs_container_port             = var.aws_ecs_container_port 
   aws_ecs_lb_port                    = var.aws_ecs_lb_port
   aws_ecs_lb_redirect_enable         = var.aws_ecs_lb_redirect_enable
+  aws_ecs_lb_container_path          = var.aws_ecs_lb_container_path
   aws_ecs_autoscaling_enable         = var.aws_ecs_autoscaling_enable
   aws_ecs_autoscaling_max_nodes      = var.aws_ecs_autoscaling_max_nodes
   aws_ecs_autoscaling_min_nodes      = var.aws_ecs_autoscaling_min_nodes

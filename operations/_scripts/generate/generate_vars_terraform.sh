@@ -220,13 +220,13 @@ if [[ $(alpha_only "$AWS_ECS_ENABLE") == true ]]; then
   aws_ecs_container_cpu=$(generate_var aws_ecs_container_mem $AWS_ECS_CONTAINER_MEM)
   aws_ecs_node_count=$(generate_var aws_ecs_node_count $AWS_ECS_NODE_COUNT)
   aws_ecs_app_image=$(generate_var aws_ecs_app_image $AWS_ECS_APP_IMAGE)
-  aws_ecs_image_path=$(generate_var aws_ecs_image_path $AWS_ECS_IMAGE_PATH)
   aws_ecs_env_vars=$(generate_var aws_ecs_env_vars $AWS_ECS_ENV_VARS )
   aws_ecs_security_group_name=$(generate_var aws_ecs_security_group_name $AWS_ECS_SECURITY_GROUP_NAME)
   aws_ecs_assign_public_ip=$(generate_var aws_ecs_assign_public_ip $AWS_ECS_ASSIGN_PUBLIC_IP)
   aws_ecs_container_port=$(generate_var aws_ecs_container_port $AWS_ECS_CONTAINER_PORT)
   aws_ecs_lb_port=$(generate_var aws_ecs_lb_port $AWS_ECS_LB_PORT)
   aws_ecs_lb_redirect_enable=$(generate_var aws_ecs_lb_redirect_enable $AWS_ECS_LB_REDIRECT_ENABLE)
+  aws_ecs_lb_container_path=$(generate_var aws_ecs_lb_container_path $AWS_ECS_LB_CONTAINER_PATH)
   aws_ecs_autoscaling_enable=$(generate_var aws_ecs_autoscaling_enable $AWS_ECS_AUTOSCALING_ENABLE)
   aws_ecs_autoscaling_max_nodes=$(generate_var aws_ecs_autoscaling_max_nodes $AWS_ECS_AUTOSCALING_MAX_NODES)
   aws_ecs_autoscaling_min_nodes=$(generate_var aws_ecs_autoscaling_min_nodes $AWS_ECS_AUTOSCALING_MIN_NODES)
@@ -450,13 +450,13 @@ $aws_ecs_container_cpu
 $aws_ecs_container_mem
 $aws_ecs_node_count
 $aws_ecs_app_image
-$aws_ecs_image_path
 $aws_ecs_env_vars
 $aws_ecs_security_group_name
 $aws_ecs_assign_public_ip
 $aws_ecs_container_port
 $aws_ecs_lb_port
 $aws_ecs_lb_redirect_enable
+$aws_ecs_lb_container_path
 $aws_ecs_autoscaling_enable
 $aws_ecs_autoscaling_max_nodes
 $aws_ecs_autoscaling_min_nodes

@@ -675,13 +675,6 @@ variable "aws_ecs_app_image" {
   default     = ""
 }
 
-variable "aws_ecs_image_path" {
-  type        = string
-  description = "Path for subsequent images. eg. api"
-  default     = ""
-}
-
-
 variable "aws_ecs_security_group_name" {
   type        = string
   description = "ECS Secruity group name"
@@ -710,6 +703,12 @@ variable "aws_ecs_lb_redirect_enable" {
   type        = bool
   description = "Toggle redirect from HTTP and/or HTTPS to the main container port"
   default     = false
+}
+
+variable "aws_ecs_lb_container_path" {
+  type        = string
+  description = "Path for subsequent images. eg. api"
+  default     = ""
 }
 
 variable "aws_ecs_autoscaling_enable" {

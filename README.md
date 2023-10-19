@@ -295,12 +295,12 @@ The following inputs can be used as `step.with` keys
 | `aws_ecs_container_mem`| String | Container Mem Amount. |
 | `aws_ecs_node_count`| String | Node count for ECS Cluster. |
 | `aws_ecs_app_image`| String | Name of the container image to be used. |
-| `aws_ecs_image_path`| String | Path for subsequent deployed images (For load balabcer). eg. api. (For http://bitovi.com/api/) |
 | `aws_ecs_security_group_name`| String | ECS Secruity group name. |
 | `aws_ecs_assign_public_ip`| Boolean | Assign public IP to node. |
 | `aws_ecs_container_port`| String | Comma separated list of container ports. One for each. |
 | `aws_ecs_lb_port`| String | Comma serparated list of ports exposed by the load balancer. One for each. |
 | `aws_ecs_lb_redirect_enable`| String | Toggle redirect from HTTP and/or HTTPS to the main port. |
+| `aws_ecs_lb_container_path`| String | Comma separated list of paths for subsequent deployed containers. Need `aws_ecs_lb_redirect_enable` to be true. eg. api. (For http://bitovi.com/api/). If you have multiple, set them to `api,monitor,prom,,` (This example is for 6 containers) |
 | `aws_ecs_autoscaling_enable`| Boolean | Toggle ecs autoscaling policy. |
 | `aws_ecs_autoscaling_max_nodes`| String | Max ammount of nodes to scale up to. |
 | `aws_ecs_autoscaling_min_nodes`| String | Min ammount of nodes to scale down to. |
@@ -560,7 +560,7 @@ jobs:
           aws_ecs_task_cpu: 1024,2048
           aws_ecs_task_mem: 2048,6144
           aws_ecs_app_image: 123.dkr.ecr.us-east-1.amazonaws.com/testing-repo:fe,123.dkr.ecr.us-east-1.amazonaws.com/testing-repo-leo:be
-          aws_ecs_image_path: 'api'
+          aws_ecs_lb_container_path: 'api'
           aws_ecs_assign_public_ip: true
           aws_ecs_container_port: 3000,3001
           aws_ecs_lb_port: 3000,3001

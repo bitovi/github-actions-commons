@@ -473,9 +473,6 @@ inputs:
   aws_ecs_app_image:
     description: 'Name of the image to be used'
     required: false
-  aws_ecs_image_path:
-    description: 'Path for subsequent deployed images. eg. api.'
-    required: false
   aws_ecs_security_group_name:
     description: 'ECS Secruity group name'
     required: false
@@ -490,6 +487,9 @@ inputs:
     required: false
   aws_ecs_lb_redirect_enable:
     description: 'Toggle redirect from HTTP and/or HTTPS to the main port.'
+    required: false
+  aws_ecs_lb_container_path:
+    description: 'Path for subsequent deployed images. eg. api.'
     required: false
   aws_ecs_autoscaling_enable:
     description: 'Toggle ecs autoscaling policy'
@@ -864,12 +864,12 @@ runs:
         AWS_ECS_CONTAINER_MEM: ${{ inputs.aws_ecs_container_cpu }}
         AWS_ECS_NODE_COUNT: ${{ inputs.aws_ecs_node_count }}
         AWS_ECS_APP_IMAGE: ${{ inputs.aws_ecs_app_image }}
-        AWS_ECS_IMAGE_PATH : ${{ inputs.aws_ecs_image_path }}
         AWS_ECS_SECURITY_GROUP_NAME: ${{ inputs.aws_ecs_security_group_name }}
         AWS_ECS_ASSIGN_PUBLIC_IP: ${{ inputs.aws_ecs_assign_public_ip }}
         AWS_ECS_CONTAINER_PORT: ${{ inputs.aws_ecs_container_port }}
         AWS_ECS_LB_PORT: ${{ inputs.aws_ecs_lb_port }}
         AWS_ECS_LB_REDIRECT_ENABLE: ${{ inputs.aws_ecs_lb_redirect_enable }}
+        AWS_ECS_LB_CONTAINER_PATH : ${{ inputs.aws_ecs_lb_container_path }}
         AWS_ECS_AUTOSCALING_ENABLE: ${{ inputs.aws_ecs_autoscaling_enable }}
         AWS_ECS_AUTOSCALING_MAX_NODES: ${{ inputs.aws_ecs_autoscaling_max_nodes }}
         AWS_ECS_AUTOSCALING_MIN_NODES: ${{ inputs.aws_ecs_autoscaling_min_nodes }}

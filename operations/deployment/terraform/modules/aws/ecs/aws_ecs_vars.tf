@@ -12,12 +12,12 @@ variable "aws_ecs_container_cpu" {}
 variable "aws_ecs_container_mem" {}
 variable "aws_ecs_node_count" {}
 variable "aws_ecs_app_image" {}
-variable "aws_ecs_image_path" {}
 variable "aws_ecs_security_group_name" {}
 variable "aws_ecs_assign_public_ip" {}
 variable "aws_ecs_container_port" {}
 variable "aws_ecs_lb_port" {}
 variable "aws_ecs_lb_redirect_enable" {}
+variable "aws_ecs_lb_container_path" {}
 variable "aws_ecs_autoscaling_enable" {}
 variable "aws_ecs_autoscaling_max_nodes" {}
 variable "aws_ecs_autoscaling_min_nodes" {}
