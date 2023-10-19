@@ -114,11 +114,11 @@ if [[ $SUCCESS == 'success' ]]; then
   elif [[ $TF_STACK_DESTROY == 'true' ]]; then
     if [[ $TF_STATE_BUCKET_DESTROY != 'true' ]]; then
       SUMMARY_CODE=9
-      result_string="## VM Destroyed! :boom:
+      result_string="## Destroyed! :boom:
       Infrastructure should be gone now!"
     else
       SUMMARY_CODE=8
-      result_string="## VM Destroyed! :boom:
+      result_string="## Destroyed! :boom:
       Buckets and infrastructure should be gone now!"
     fi
 
