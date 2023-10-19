@@ -560,11 +560,11 @@ jobs:
           aws_ecs_task_cpu: 1024,2048
           aws_ecs_task_mem: 2048,6144
           aws_ecs_app_image: 123.dkr.ecr.us-east-1.amazonaws.com/testing-repo:fe,123.dkr.ecr.us-east-1.amazonaws.com/testing-repo-leo:be
-          aws_ecs_lb_container_path: 'api'
           aws_ecs_assign_public_ip: true
           aws_ecs_container_port: 3000,3001
           aws_ecs_lb_port: 3000,3001
           aws_ecs_lb_redirect_enable: true
+          aws_ecs_lb_container_path: 'api'
           aws_ecs_cloudwatch_enable: true
           aws_r53_enable: true
           domain_name: bitovi.com

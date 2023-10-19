@@ -493,16 +493,16 @@ inputs:
     required: false
   aws_ecs_autoscaling_enable:
     description: 'Toggle ecs autoscaling policy'
-    required: falseh_enable
+    required: false
   aws_ecs_autoscaling_max_nodes:
     description: 'Max ammount of nodes to scale up to.'
-    required: falseh_enable
+    required: false
   aws_ecs_autoscaling_min_nodes:
     description: 'Min ammount of nodes to scale down to.'
-    required: falseh_enable
+    required: false
   aws_ecs_autoscaling_max_mem:
     description: 'Some'
-    required: falseh_enable
+    required: false
   aws_ecs_autoscaling_max_cpu:
     description: 'Some'
     required: false
