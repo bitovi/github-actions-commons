@@ -203,6 +203,42 @@ if [[ $(alpha_only "$AWS_AURORA_ENABLE") == true ]]; then
   aws_aurora_additional_tags=$(generate_var aws_aurora_additional_tags $AWS_AURORA_ADDITIONAL_TAGS)
 fi
 
+#-- ECS --#
+if [[ $(alpha_only "$AWS_ECS_ENABLE") == true ]]; then
+  aws_ecs_enable=$(generate_var aws_ecs_enable $AWS_ECS_ENABLE)
+  aws_ecs_service_name=$(generate_var aws_ecs_service_name $AWS_ECS_SERVICE_NAME)
+  aws_ecs_cluster_name=$(generate_var aws_ecs_cluster_name $AWS_ECS_CLUSTER_NAME)
+  aws_ecs_service_launch_type=$(generate_var aws_ecs_service_launch_type $AWS_ECS_SERVICE_LAUNCH_TYPE)
+  aws_ecs_task_type=$(generate_var aws_ecs_task_type $AWS_ECS_TASK_TYPE)
+  aws_ecs_task_name=$(generate_var aws_ecs_task_name $AWS_ECS_TASK_NAME)
+  aws_ecs_task_execution_role=$(generate_var aws_ecs_task_execution_role $AWS_ECS_TASK_EXECUTION_ROLE)
+  aws_ecs_task_json_definition_file=$(generate_var aws_ecs_task_json_definition_file $AWS_ECS_TASK_JSON_DEFINITION_FILE)
+  aws_ecs_task_network_mode=$(generate_var aws_ecs_task_network_mode $AWS_ECS_TASK_NETWORK_MODE)
+  aws_ecs_task_cpu=$(generate_var aws_ecs_task_cpu $AWS_ECS_TASK_CPU)
+  aws_ecs_task_mem=$(generate_var aws_ecs_task_mem $AWS_ECS_TASK_MEM)
+  aws_ecs_container_cpu=$(generate_var aws_ecs_container_cpu $AWS_ECS_CONTAINER_CPU)
+  aws_ecs_container_cpu=$(generate_var aws_ecs_container_mem $AWS_ECS_CONTAINER_MEM)
+  aws_ecs_node_count=$(generate_var aws_ecs_node_count $AWS_ECS_NODE_COUNT)
+  aws_ecs_app_image=$(generate_var aws_ecs_app_image $AWS_ECS_APP_IMAGE)
+  aws_ecs_env_vars=$(generate_var aws_ecs_env_vars $AWS_ECS_ENV_VARS )
+  aws_ecs_security_group_name=$(generate_var aws_ecs_security_group_name $AWS_ECS_SECURITY_GROUP_NAME)
+  aws_ecs_assign_public_ip=$(generate_var aws_ecs_assign_public_ip $AWS_ECS_ASSIGN_PUBLIC_IP)
+  aws_ecs_container_port=$(generate_var aws_ecs_container_port $AWS_ECS_CONTAINER_PORT)
+  aws_ecs_lb_port=$(generate_var aws_ecs_lb_port $AWS_ECS_LB_PORT)
+  aws_ecs_lb_redirect_enable=$(generate_var aws_ecs_lb_redirect_enable $AWS_ECS_LB_REDIRECT_ENABLE)
+  aws_ecs_lb_container_path=$(generate_var aws_ecs_lb_container_path $AWS_ECS_LB_CONTAINER_PATH)
+  aws_ecs_autoscaling_enable=$(generate_var aws_ecs_autoscaling_enable $AWS_ECS_AUTOSCALING_ENABLE)
+  aws_ecs_autoscaling_max_nodes=$(generate_var aws_ecs_autoscaling_max_nodes $AWS_ECS_AUTOSCALING_MAX_NODES)
+  aws_ecs_autoscaling_min_nodes=$(generate_var aws_ecs_autoscaling_min_nodes $AWS_ECS_AUTOSCALING_MIN_NODES)
+  aws_ecs_autoscaling_max_mem=$(generate_var aws_ecs_autoscaling_max_mem $AWS_ECS_AUTOSCALING_MAX_MEM)
+  aws_ecs_autoscaling_max_cpu=$(generate_var aws_ecs_autoscaling_max_cpu $AWS_ECS_AUTOSCALING_MIN_MEM)
+  aws_ecs_cloudwatch_enable=$(generate_var aws_ecs_cloudwatch_enable $AWS_ECS_CLOUDWATCH_ENABLE)
+  aws_ecs_cloudwatch_lg_name=$(generate_var aws_ecs_cloudwatch_lg_name $AWS_ECS_CLOUDWATCH_LG_NAME)
+  aws_ecs_cloudwatch_skip_destroy=$(generate_var aws_ecs_cloudwatch_skip_destroy $AWS_ECS_CLOUDWATCH_SKIP_DESTROY)
+  aws_ecs_cloudwatch_retention_days=$(generate_var aws_ecs_cloudwatch_retention_days $AWS_ECS_CLOUDWATCH_RETENTION_DAYS)
+  aws_ecs_additional_tags=$(generate_var aws_ecs_additional_tags $AWS_ECS_ADDITIONAL_TAGS)
+fi
+
 #-- ECR --# 
 if [[ $(alpha_only "$AWS_ECR_REPO_CREATE") == true ]]; then
   aws_ecr_repo_create=$(generate_var aws_ecr_repo_create $AWS_ECR_REPO_CREATE)
@@ -397,6 +433,40 @@ $aws_aurora_snapshot_overwrite
 $aws_aurora_database_protection
 $aws_aurora_database_final_snapshot
 $aws_aurora_additional_tags
+
+#-- ECS --#
+$aws_ecs_enable
+$aws_ecs_service_name
+$aws_ecs_cluster_name
+$aws_ecs_service_launch_type
+$aws_ecs_task_type
+$aws_ecs_task_name
+$aws_ecs_task_execution_role
+$aws_ecs_task_json_definition_file
+$aws_ecs_task_network_mode
+$aws_ecs_task_cpu
+$aws_ecs_task_mem
+$aws_ecs_container_cpu
+$aws_ecs_container_mem
+$aws_ecs_node_count
+$aws_ecs_app_image
+$aws_ecs_env_vars
+$aws_ecs_security_group_name
+$aws_ecs_assign_public_ip
+$aws_ecs_container_port
+$aws_ecs_lb_port
+$aws_ecs_lb_redirect_enable
+$aws_ecs_lb_container_path
+$aws_ecs_autoscaling_enable
+$aws_ecs_autoscaling_max_nodes
+$aws_ecs_autoscaling_min_nodes
+$aws_ecs_autoscaling_max_mem
+$aws_ecs_autoscaling_max_cpu
+$aws_ecs_cloudwatch_enable
+$aws_ecs_cloudwatch_lg_name
+$aws_ecs_cloudwatch_skip_destroy
+$aws_ecs_cloudwatch_retention_days
+$aws_ecs_additional_tags
 
 #-- ECR --#
 $aws_ecr_repo_create

@@ -427,6 +427,101 @@ inputs:
     description: 'Number of days to retain logs. 0 to never expire.'
     required: false
 
+  # AWS_ECS
+  aws_ecs_enable:
+    description: 'Toggle ECS Creation'
+    required: false
+  aws_ecs_service_name:
+    description: 'Elastic Container Service name'
+    required: false
+  aws_ecs_cluster_name:
+    description: 'Elastic Container Service cluster name'
+    required: false
+  aws_ecs_service_launch_type:
+    description: 'Configuration type. Could be EC2, FARGATE or EXTERNAL'
+    required: false
+  aws_ecs_task_type:
+    description: 'Configuration type. Could be EC2, FARGATE or empty. Will default to aws_ecs_service_launch_type if none defined. (Blank if EXTERNAL)'
+    required: false
+  aws_ecs_task_name:
+    description: 'Elastic Container Service task name'
+    required: false
+  aws_ecs_task_execution_role:
+    description: 'Elastic Container Service task execution role name from IAM. Defaults to "ecsTaskExecutionRole"'
+    required: false
+  aws_ecs_task_json_definition_file:
+    description: 'Name of the json file containing task definition. Overrides every other input.'
+    required: false
+  aws_ecs_task_network_mode:
+    description: 'Network type to use in task definition'
+    required: false
+  aws_ecs_task_cpu:
+    description: 'Task CPU Amount'
+    required: false
+  aws_ecs_task_mem:
+    description: 'Task Mem Amount'
+    required: false
+  aws_ecs_container_cpu:
+    description: 'Container CPU Amount'
+    required: false
+  aws_ecs_container_mem:
+    description: 'Container Mem Amount'
+    required: false
+  aws_ecs_node_count:
+    description: 'Node count for ECS Cluster'
+    required: false
+  aws_ecs_app_image:
+    description: 'Name of the image to be used'
+    required: false
+  aws_ecs_security_group_name:
+    description: 'ECS Secruity group name'
+    required: false
+  aws_ecs_assign_public_ip:
+    description: 'Assign public IP to node'
+    required: false
+  aws_ecs_container_port:
+    description: 'Comma separated list of container ports'
+    required: false
+  aws_ecs_lb_port:
+    description: 'Comma serparated list of ports exposed by the load balancer'
+    required: false
+  aws_ecs_lb_redirect_enable:
+    description: 'Toggle redirect from HTTP and/or HTTPS to the main port.'
+    required: false
+  aws_ecs_lb_container_path:
+    description: 'Path for subsequent deployed images. eg. api.'
+    required: false
+  aws_ecs_autoscaling_enable:
+    description: 'Toggle ecs autoscaling policy'
+    required: false
+  aws_ecs_autoscaling_max_nodes:
+    description: 'Max ammount of nodes to scale up to.'
+    required: false
+  aws_ecs_autoscaling_min_nodes:
+    description: 'Min ammount of nodes to scale down to.'
+    required: false
+  aws_ecs_autoscaling_max_mem:
+    description: 'Some'
+    required: false
+  aws_ecs_autoscaling_max_cpu:
+    description: 'Some'
+    required: false
+  aws_ecs_cloudwatch_enable:
+    description: "Toggle cloudwatch for ECS. Default 'false'"
+    reuired: false
+  aws_ecs_cloudwatch_lg_name:
+    description: "Log group name. Will default to aws_identifier if none."
+    reuired: false
+  aws_ecs_cloudwatch_skip_destroy:
+    description: "Toggle deletion or not when destroying the stack."
+    reuired: false
+  aws_ecs_cloudwatch_retention_days:
+    description: "Number of days to retain logs. 0 to never expire. Default '14'"
+    reuired: false
+  aws_ecs_additional_tags:
+    description: 'A list of strings that will be added to created resources'
+    required: false
+
   # AWS ECR
   aws_ecr_repo_create:
     description: 'Determines whether a repository will be created'
@@ -753,6 +848,39 @@ runs:
         DOCKER_CLOUDWATCH_SKIP_DESTROY: ${{ inputs.docker_cloudwatch_skip_destroy }}
         DOCKER_CLOUDWATCH_RETENTION_DAYS: ${{ inputs.docker_cloudwatch_retention_days }}
 
+        # ECS
+        AWS_ECS_ENABLE: ${{ inputs.aws_ecs_enable }}
+        AWS_ECS_SERVICE_NAME: ${{ inputs.aws_ecs_service_name }}
+        AWS_ECS_CLUSTER_NAME: ${{ inputs.aws_ecs_cluster_name }}
+        AWS_ECS_SERVICE_LAUNCH_TYPE : ${{ inputs.aws_ecs_service_launch_type }}
+        AWS_ECS_TASK_TYPE : ${{ inputs.aws_ecs_task_type }}
+        AWS_ECS_TASK_NAME: ${{ inputs.aws_ecs_task_name }}
+        AWS_ECS_TASK_EXECUTION_ROLE: ${{ inputs.aws_ecs_task_execution_role }}
+        AWS_ECS_TASK_JSON_DEFINITION_FILE: ${{ inputs.aws_ecs_task_json_definition_file }}
+        AWS_ECS_TASK_NETWORK_MODE: ${{ inputs.aws_ecs_task_network_mode }}
+        AWS_ECS_TASK_CPU: ${{ inputs.aws_ecs_task_cpu }}
+        AWS_ECS_TASK_MEM: ${{ inputs.aws_ecs_task_mem }}
+        AWS_ECS_CONTAINER_CPU: ${{ inputs.aws_ecs_container_cpu }}
+        AWS_ECS_CONTAINER_MEM: ${{ inputs.aws_ecs_container_cpu }}
+        AWS_ECS_NODE_COUNT: ${{ inputs.aws_ecs_node_count }}
+        AWS_ECS_APP_IMAGE: ${{ inputs.aws_ecs_app_image }}
+        AWS_ECS_SECURITY_GROUP_NAME: ${{ inputs.aws_ecs_security_group_name }}
+        AWS_ECS_ASSIGN_PUBLIC_IP: ${{ inputs.aws_ecs_assign_public_ip }}
+        AWS_ECS_CONTAINER_PORT: ${{ inputs.aws_ecs_container_port }}
+        AWS_ECS_LB_PORT: ${{ inputs.aws_ecs_lb_port }}
+        AWS_ECS_LB_REDIRECT_ENABLE: ${{ inputs.aws_ecs_lb_redirect_enable }}
+        AWS_ECS_LB_CONTAINER_PATH : ${{ inputs.aws_ecs_lb_container_path }}
+        AWS_ECS_AUTOSCALING_ENABLE: ${{ inputs.aws_ecs_autoscaling_enable }}
+        AWS_ECS_AUTOSCALING_MAX_NODES: ${{ inputs.aws_ecs_autoscaling_max_nodes }}
+        AWS_ECS_AUTOSCALING_MIN_NODES: ${{ inputs.aws_ecs_autoscaling_min_nodes }}
+        AWS_ECS_AUTOSCALING_MAX_MEM: ${{ inputs.aws_ecs_autoscaling_max_mem }}
+        AWS_ECS_AUTOSCALING_MIN_MEM: ${{ inputs.aws_ecs_autoscaling_max_cpu }}
+        AWS_ECS_CLOUDWATCH_ENABLE : ${{ inputs.aws_ecs_cloudwatch_enable }}
+        AWS_ECS_CLOUDWATCH_LG_NAME : ${{ inputs.aws_ecs_cloudwatch_lg_name }}
+        AWS_ECS_CLOUDWATCH_SKIP_DESTROY : ${{ inputs.aws_ecs_cloudwatch_skip_destroy }}
+        AWS_ECS_CLOUDWATCH_RETENTION_DAYS : ${{ inputs.aws_ecs_cloudwatch_retention_days }}
+        AWS_ECS_ADDITIONAL_TAGS: ${{ inputs.aws_ecs_additional_tags }}
+       
         # ECR
         AWS_ECR_REPO_CREATE: ${{ inputs.aws_ecr_repo_create }}
         AWS_ECR_REPO_TYPE: ${{ inputs.aws_ecr_repo_type }}

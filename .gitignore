@@ -1,5 +1,4 @@
 local.sh
-*.env
 
 # Terraform
 *.terraform.lock*
@@ -16,5 +15,4 @@ terraform-*
 operations/deployment/terraform/inventory.yaml
 
 *.pem
-
 .vscode/

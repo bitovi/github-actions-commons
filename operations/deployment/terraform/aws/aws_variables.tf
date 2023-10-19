@@ -584,6 +584,193 @@ variable "docker_cloudwatch_retention_days" {
   default     = "14"
 }
 
+# ECS
+variable "aws_ecs_enable" {
+  type        = bool
+  description = "Toggle ECS Creation"
+  default     = false
+}
+
+variable "aws_ecs_service_name" {
+  type        = string
+  description = "Elastic Container Service name"
+  default     = ""
+}
+
+variable "aws_ecs_cluster_name" {
+  type        = string
+  description = "Elastic Container Service cluster name"
+  default     = ""
+}
+
+variable "aws_ecs_service_launch_type" {
+  type        = string
+  description = "Configuration type. Could be EC2, FARGATE or EXTERNAL"
+  default     = "FARGATE"
+}
+
+variable "aws_ecs_task_type" {
+  type        = string
+  description = "Configuration type. Could be EC2, FARGATE or empty. Will default to aws_ecs_service_launch_type if none defined. (Blank if EXTERNAL)"
+  default     = ""
+}
+
+variable "aws_ecs_task_name" {
+  type        = string
+  description = "Elastic Container Service task name"
+  default     = ""
+}
+
+variable "aws_ecs_task_execution_role" {
+  type        = string
+  description = "Elastic Container Service task execution role name."
+  default     = "ecsTaskExecutionRole"
+}
+
+variable "aws_ecs_task_json_definition_file" {
+  type        = string
+  description = "Filename for json file containing ECS conteiner definitions"
+  default     = ""
+}
+
+variable "aws_ecs_task_network_mode" {
+  type        = string
+  description = "Network type to use in task definition"
+  default     = ""
+}
+
+variable "aws_ecs_task_cpu" {
+  type        = string
+  description = "Task CPU Amount"
+  default     = ""
+}
+
+variable "aws_ecs_task_mem" {
+  type        = string
+  description = "Task Mem Amount"
+  default     = ""
+}
+
+variable "aws_ecs_container_cpu" {
+  type        = string
+  description = "Container CPU Amount"
+  default     = ""
+}
+
+variable "aws_ecs_container_mem" {
+  type        = string
+  description = "Container Mem Amount"
+  default     = ""
+}
+
+variable "aws_ecs_node_count" {
+  type        = string
+  description = "Node count for ECS Cluster"
+  default     = ""
+}
+
+variable "aws_ecs_app_image" {
+  type        = string
+  description = "Name of the image to be used"
+  default     = ""
+}
+
+variable "aws_ecs_security_group_name" {
+  type        = string
+  description = "ECS Secruity group name"
+  default     = ""
+}
+
+variable "aws_ecs_assign_public_ip" {
+  type        = bool
+  description = "Assign public IP to node"
+  default     = false
+}
+
+variable "aws_ecs_container_port" {
+  type        = string
+  description = "Comma separated list of container ports"
+  default     = ""
+}
+
+variable "aws_ecs_lb_port" {
+  type        = string
+  description = "Comma serparated list of ports exposed by the load balancer"
+  default     = ""
+}
+
+variable "aws_ecs_lb_redirect_enable" {
+  type        = bool
+  description = "Toggle redirect from HTTP and/or HTTPS to the main container port"
+  default     = false
+}
+
+variable "aws_ecs_lb_container_path" {
+  type        = string
+  description = "Path for subsequent images. eg. api"
+  default     = ""
+}
+
+variable "aws_ecs_autoscaling_enable" {
+  type        = bool
+  description = "Toggle ecs autoscaling policy"
+  default     = "false"
+}
+
+variable "aws_ecs_autoscaling_max_nodes" {
+  type        = string
+  description = "Max ammount of nodes to scale up to."
+  default     = ""
+}
+
+variable "aws_ecs_autoscaling_min_nodes" {
+  type        = string
+  description = "Min ammount of nodes to scale down to."
+  default     = ""
+}
+
+variable "aws_ecs_autoscaling_max_mem" {
+  type        = string
+  description = "Max memory percentage usage"
+  default     = ""
+}
+
+variable "aws_ecs_autoscaling_max_cpu" {
+  type        = string
+  description = "Max CPU percentage usage"
+  default     = ""
+}
+
+variable "aws_ecs_cloudwatch_enable" {
+  type        = bool
+  description = "Toggle cloudwatch for ECS."
+  default     = false
+}
+
+variable "aws_ecs_cloudwatch_lg_name" {
+  type        = string
+  description = "Log group name. Will default to aws_identifier if none."
+  default     = null
+}
+
+variable "aws_ecs_cloudwatch_skip_destroy" {
+  type        = string
+  description = "Toggle deletion or not when destroying the stack."
+  default     = null
+}
+
+variable "aws_ecs_cloudwatch_retention_days" {
+  type        = string
+  description = "Number of days to retain logs. 0 to never expire."
+  default     = "14"
+}
+
+variable "aws_ecs_additional_tags" {
+  type        = string
+  description = "A list of strings that will be added to created resources"
+  default     = "{}"
+}
+
 # ECR
 variable "aws_ecr_repo_create" { 
   description = "Determines whether a repository will be created"
