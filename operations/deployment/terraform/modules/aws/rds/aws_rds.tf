@@ -70,6 +70,10 @@ output "db_endpoint" {
   value = aws_db_instance.default.endpoint
 }
 
+output "db_secret_details" {
+  value = "${local.db_secret_name}"
+}
+
 // Creates a secret manager secret for the databse credentials
 resource "aws_secretsmanager_secret" "rds_database_credentials" {
   name   = "${var.aws_resource_identifier_supershort}-rdsdb-pub-${random_string.random_sm.result}"
