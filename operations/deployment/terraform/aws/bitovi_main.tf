@@ -454,11 +454,11 @@ output "vm_url" {
 }
 
 output "db_endpoint" {
-  value = try(module.rds.db_endpoint,null)
+  value = try(module.rds[0].db_endpoint,null)
 }
 
 output "db_secret_details_name" {
-  value = try(module.rds.db_secret_details,null)
+  value = try(module.rds[0].db_secret_details,null)
 }
 
 output "ecs_dns_record" {
