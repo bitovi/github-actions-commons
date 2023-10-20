@@ -11,6 +11,10 @@
 # TF_STATE_BUCKET_DESTROY
 # AWS_EC2_PORT_LIST
 # AWS_ELB_LISTEN_PORT
+# RDS_ENDPOINT
+# RDS_SECRETS_NAME
+# ECS_ALB_DNS
+# ECS_DNS
 # ECR_REPO_ARN
 # ECR_REPO_URL
 
@@ -28,6 +32,8 @@
 # 8 - success, destroy buckets and infrastructure
 # 9 - success, destroy infrastructure
 # 10 - success, ECR created
+# 11 - success. RDS created
+# 12 - success, ECS created
 # 500 - cancelled
 
 # Function to process and return the result as a string
@@ -78,6 +84,20 @@ if [[ $SUCCESS == 'success' ]]; then
     result_string="## Deploy Complete! :rocket:
     ECR Repo ARN: ${ECR_REPO_ARN}
     ECR Repo URL: ${ECR_REPO_URL}"
+  elif [[ -n $RDS_ENDPOINT ]] && [[ -n $RDS_SECRETS_NAME ]]; then
+    SUMMARY_CODE=11
+    result_string="## Deploy Complete! :rocket:
+    RDS Endpoint: ${RDS_ENDPOINT}
+    RDS Details Secret Manager name: ${RDS_SECRETS_NAME}"
+  elif [[ -n $ECS_ALB_DNS ]] && ![[ -n $ECS_DNS ]]; then
+    SUMMARY_CODE=12
+    result_string="## Deploy Complete! :rocket:
+    ECS LB Endpoint: ${ECS_ALB_DNS}"
+  elif [[ -n $ECS_ALB_DNS ]] && [[ -n $ECS_DNS ]]; then
+    SUMMARY_CODE=12
+    result_string="## Deploy Complete! :rocket:
+    ECS LB Endpoing: ${ECS_ALB_DNS}
+    ECS Public DNS: ${ECS_DNS}"
   elif [[ $BITOPS_CODE_ONLY == 'true' ]]; then
     if [[ $BITOPS_CODE_STORE == 'true' ]]; then
       SUMMARY_CODE=6
@@ -94,11 +114,11 @@ if [[ $SUCCESS == 'success' ]]; then
   elif [[ $TF_STACK_DESTROY == 'true' ]]; then
     if [[ $TF_STATE_BUCKET_DESTROY != 'true' ]]; then
       SUMMARY_CODE=9
-      result_string="## VM Destroyed! :boom:
+      result_string="## Destroyed! :boom:
       Infrastructure should be gone now!"
     else
       SUMMARY_CODE=8
-      result_string="## VM Destroyed! :boom:
+      result_string="## Destroyed! :boom:
       Buckets and infrastructure should be gone now!"
     fi
 

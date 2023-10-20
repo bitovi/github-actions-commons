@@ -70,6 +70,4 @@ generate_provider_aws aws ec2,r53,elb,efs,vpc,rds,aurora,ecs
 generate_provider_aws ecr ecr
 generate_provider_aws eks
 
-cat "${GITHUB_ACTION_PATH}/operations/deployment/terraform/aws/bitovi_provider.tf"
-
 echo "Done with generate_provider.sh"

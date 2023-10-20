@@ -453,6 +453,18 @@ output "vm_url" {
   value = try(module.aws_route53[0].vm_url,local.elb_url)
 }
 
+output "db_endpoint" {
+  value = try(module.rds[0].db_endpoint,null)
+}
+
+output "db_secret_details_name" {
+  value = try(module.rds[0].db_secret_details,null)
+}
+
+output "ecs_dns_record" {
+  value = try(module.aws_route53_ecs[0].vm_url,null)
+}
+
 output "ecs_load_balancer_dns" {
   value = try(module.aws_ecs[0].load_balancer_dns,null)
 }
