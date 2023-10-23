@@ -308,8 +308,14 @@ inputs:
   aws_rds_db_enable:
     description: 'Set to true to enable an RDS DB.'
     required: false
+  aws_rds_db_proxy:
+    description: 'Set to true to add a RDS DB Proxy'
+    required: false
   aws_rds_db_name:
     description: 'The name of the database to create when the DB instance is created.'
+    required: false
+  aws_rds_db_user:
+    description: 'Username for the db. Defaults to dbuser.'
     required: false
   aws_rds_db_engine:
     description: 'Which Database engine to use. Default is postgres'
@@ -319,6 +325,15 @@ inputs:
     required: false
   aws_rds_db_security_group_name:
     description: 'The name of the database security group. Defaults to SG for aws_resource_identifier - RDS.'
+    required: false
+  aws_rds_db_allowed_security_groups:
+    description: 'Comma separated list of security groups to add to the DB SG'
+    required: false
+  aws_rds_db_ingress_allow_all:
+    description: 'Allow incoming traffic from 0.0.0.0/0.'
+    required: false
+  aws_rds_db_publicly_accessible:
+    description: 'Allow the database to be publicly accessible.'
     required: false
   aws_rds_db_port:
     description: ' Port where the DB listens to.'
@@ -335,10 +350,13 @@ inputs:
   aws_rds_db_instance_class:
     description: 'DB instance server type. Defaults to db.t3.micro.'
     required: false
-  aws_rds_db_user:
-    description: 'Username for the db. Defaults to dbuser.'
+  aws_rds_db_final_snapshot:
+    description: 'Generates a snapshot of the database before deletion.'
     required: false
-  aws_rds_cloudwatch_logs_exports:
+  aws_rds_db_restore_snapshot_identifier:
+    description: 'Name of the snapshot to restore the database from.'
+    required: false
+  aws_rds_db_cloudwatch_logs_exports:
     description: 'Set of log types to enable for exporting to CloudWatch logs.'
     required: false
   aws_rds_additional_tags:
@@ -348,6 +366,9 @@ inputs:
   # AWS Aurora
   aws_aurora_enable:
     description: 'Set to "true" to enable a postgres database'
+    required: false
+  aws_aurora_proxy:
+    description: 'Set to true to add a RDS DB Proxy'
     required: false
   aws_aurora_engine: 
     description: 'Which Database engine to use'
@@ -395,6 +416,50 @@ inputs:
     description: 'A JSON object of additional tags that will be included on created resources. Example: `{"key1": "value1", "key2": "value2"}`'
     required: false
     
+  # RDS Proxy
+  aws_db_proxy_enable:
+    description: 'Toggle DB Proxy creation'
+    required: false
+  aws_db_proxy_name:
+    description: 'DB Proxy name'
+    required: false
+  aws_db_proxy_database_id:
+    description: 'Database ID to create proxy for'
+    required: false
+  aws_db_proxy_cluster:
+    description: 'Define if Database is a cluster or not'
+    required: false
+  aws_db_proxy_secret_name:
+    description: 'Name of the secret containing DB parameters to connect to'
+    required: false
+  aws_db_proxy_client_password_auth_type:
+    description: 'Auth type to use, will use the following, depending on DB the family. MYSQL_NATIVE_PASSWORD, POSTGRES_SCRAM_SHA_256, and SQL_SERVER_AUTHENTICATION'
+    required: false
+  aws_db_proxy_tls:
+    description: 'Toogle TLS enforcement for connection'
+    required: false
+  aws_db_proxy_security_group_name:
+    description: 'Name for the proxy security group. Default to aws_resource_identifier if none.'
+    required: false
+  aws_db_proxy_database_security_group_allow:
+    description: 'Will add an incoming rule from every security group associated with the DB'
+    required: false
+  aws_db_proxy_allowed_security_group:
+    description: 'Comma separated list of SG Ids to add.'
+    required: false
+  aws_db_proxy_allow_all_incoming:
+    description: 'Allow all incoming traffic to the DB Proxy. Mind that the proxy is only available from the internal network except manually exposed.'
+    required: false
+  aws_db_proxy_cloudwatch_enable:
+    description: 'Toggle Cloudwatch logs. Will be stored in /aws/rds/proxy/rds_proxy.name'
+    required: false
+  aws_db_proxy_cloudwatch_retention_days:
+    description: 'Number of days to retain logs'
+    required: false
+  aws_db_proxy_additional_tags:
+    description: 'A list of strings that will be added to created resources'
+    required: false
+
   # Docker 
   docker_install: 
     description: 'Define if docker should be installed. After this, docker-compose up will be excecuted.'
@@ -676,6 +741,23 @@ outputs:
   db_secret_details_name:
     description: "ECS DNS URL"
     value: ${{ steps.deploy.outputs.db_secret_details_name }}
+  db_proxy_rds_endpoing:
+    description: "Database proxy endpoint"
+    value: ${{ steps.deploy.outputs.db_proxy_rds }}
+  # Aurora
+  aurora_db_endpoint:
+    description: "ECS ALB DNS Record"
+    value: ${{ steps.deploy.outputs.aurora_endpoint }}
+  aurora_db_secret_details_name:
+    description: "ECS DNS URL"
+    value: ${{ steps.deploy.outputs.aurora_secret_details_name }}
+  aurora_proxy_endpoint:
+    description: "Database proxy endpoint"
+    value: ${{ steps.deploy.outputs.db_proxy_aurora }}
+  # DB Proxy
+  db_proxy_endpoint:
+    description: "Database proxy endpoint"
+    value: ${{ steps.deploy.outputs.db_proxy_endpoint }}
   # ECS
   ecs_load_balancer_dns:
     description: "ECS ALB DNS Record"
@@ -819,21 +901,28 @@ runs:
 
         # AWS RDS
         AWS_RDS_DB_ENABLE: ${{ inputs.aws_rds_db_enable }}
+        AWS_RDS_DB_PROXY: ${{ inputs.aws_rds_db_proxy }}
         AWS_RDS_DB_NAME: ${{ inputs.aws_rds_db_name }}
+        AWS_RDS_DB_USER: ${{ inputs.aws_rds_db_user }}
         AWS_RDS_DB_ENGINE: ${{ inputs.aws_rds_db_engine }}
         AWS_RDS_DB_ENGINE_VERSION: ${{ inputs.aws_rds_db_engine_version }}
         AWS_RDS_DB_SECURITY_GROUP_NAME: ${{ inputs.aws_rds_db_security_group_name }}
+        AWS_RDS_DB_ALLOWED_SECURITY_GROUPS: ${{ inputs.aws_rds_db_allowed_security_groups }}
+        AWS_RDS_DB_INGRESS_ALLOW_ALL: ${{ inputs.aws_rds_db_ingress_allow_all }}
+        AWS_RDS_DB_PUBLICLY_ACCESSIBLE: ${{ inputs.aws_rds_db_publicly_accessible }}
         AWS_RDS_DB_PORT: ${{ inputs.aws_rds_db_port }}
         AWS_RDS_DB_SUBNETS: ${{ inputs.aws_rds_db_subnets }}
         AWS_RDS_DB_ALLOCATED_STORAGE: ${{ inputs.aws_rds_db_allocated_storage }}
         AWS_RDS_DB_MAX_ALLOCATED_STORAGE: ${{ inputs.aws_rds_db_max_allocated_storage }}
         AWS_RDS_DB_INSTANCE_CLASS: ${{ inputs.aws_rds_db_instance_class }}
-        AWS_RDS_DB_USER: ${{ inputs.aws_rds_db_user }}
-        AWS_RDS_CLOUDWATCH_LOGS_EXPORTS: ${{ inputs.aws_rds_cloudwatch_logs_exports }}
+        AWS_RDS_DB_FINAL_SNAPSHOT: ${{ inputs.aws_rds_db_final_snapshot }}
+        AWS_RDS_DB_RESTORE_SNAPSHOT_IDENTIFIER: ${{ inputs.aws_rds_db_restore_snapshot_identifier }}
+        AWS_RDS_DB_CLOUDWATCH_LOGS_EXPORTS: ${{ inputs.aws_rds_db_cloudwatch_logs_exports }}
         AWS_RDS_ADDITIONAL_TAGS: ${{ inputs.aws_rds_additional_tags }}
 
         # AWS AURORA
         AWS_AURORA_ENABLE: ${{ inputs.aws_aurora_enable }}
+        AWS_AURORA_PROXY: ${{ inputs.aws_aurora_proxy }}
         AWS_AURORA_ENGINE:  ${{ inputs.aws_aurora_engine }}
         AWS_AURORA_ENGINE_VERSION:  ${{ inputs.aws_aurora_engine_version }}
         AWS_AURORA_DATABASE_GROUP_FAMILY:  ${{ inputs.aws_aurora_database_group_family }}
@@ -849,6 +938,22 @@ runs:
         AWS_AURORA_DATABASE_PROTECTION: ${{ inputs.aws_aurora_database_protection }}
         AWS_AURORA_DATABASE_FINAL_SNAPSHOT: ${{ inputs.aws_aurora_database_final_snapshot }}
         AWS_AURORA_ADDITIONAL_TAGS: ${{ inputs.aws_aurora_additional_tags }}
+
+        # AWS DB PROXY
+        AWS_DB_PROXY_ENABLE: ${{ inputs.aws_db_proxy_enable }}
+        AWS_DB_PROXY_NAME : ${{ inputs.aws_db_proxy_name }}
+        AWS_DB_PROXY_DATABASE_ID : ${{ inputs.aws_db_proxy_database_id }}
+        AWS_DB_PROXY_CLUSTER : ${{ inputs.aws_db_proxy_cluster }}
+        AWS_DB_PROXY_SECRET_NAME : ${{ inputs.aws_db_proxy_secret_name }}
+        AWS_DB_PROXY_CLIENT_PASSWORD_AUTH_TYPE : ${{ inputs.aws_db_proxy_client_password_auth_type }}
+        AWS_DB_PROXY_TLS : ${{ inputs.aws_db_proxy_tls }}
+        AWS_DB_PROXY_SECURITY_GROUP_NAME : ${{ inputs.aws_db_proxy_security_group_name }}
+        AWS_DB_PROXY_DATABASE_SECURITY_GROUP_ALLOW : ${{ inputs.aws_db_proxy_database_security_group_allow }}
+        AWS_DB_PROXY_ALLOWED_SECURITY_GROUP : ${{ inputs.aws_db_proxy_allowed_security_group }}
+        AWS_DB_PROXY_ALLOW_ALL_INCOMING : ${{ inputs.aws_db_proxy_allow_all_incoming }}
+        AWS_DB_PROXY_CLOUDWATCH_ENABLE : ${{ inputs.aws_db_proxy_cloudwatch_enable }}
+        AWS_DB_PROXY_CLOUDWATCH_RETENTION_DAYS : ${{ inputs.aws_db_proxy_cloudwatch_retention_days }}
+        AWS_DB_PROXY_ADDITIONAL_TAGS: ${{ inputs.aws_db_proxy_additional_tags }}
 
         # Docker
         DOCKER_INSTALL: ${{ inputs.docker_install }}

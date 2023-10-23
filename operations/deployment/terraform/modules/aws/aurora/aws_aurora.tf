@@ -125,6 +125,24 @@ resource "aws_secretsmanager_secret_version" "database_credentials_sm_secret_ver
 EOF
 }
 
+// Creates a secret manager secret for the databse credentials
+resource "aws_secretsmanager_secret" "aurora_database_credentials" {
+  name   = "${var.aws_resource_identifier_supershort}-aurora-${random_string.random_sm.result}"
+}
+
+resource "aws_secretsmanager_secret_version" "database_credentials_sm_secret_version_dev" {
+  secret_id = aws_secretsmanager_secret.aurora_database_credentials.id
+  secret_string = jsonencode({
+   DB_ENGINE         = sensitive(local.dba_engine)
+   DB_ENGINE_VERSION = sensitive(module.aurora_cluster.cluster_engine_version_actual)
+   DB_USER           = sensitive(module.aurora_cluster.cluster_master_username)
+   DB_PASSWORD       = sensitive(module.aurora_cluster.cluster_master_password)
+   DB_NAME           = sensitive(module.aurora_cluster.cluster_database_name == null ? "" : module.aurora_cluster.cluster_database_name)
+   DB_PORT           = sensitive(module.aurora_cluster.cluster_port)
+   DB_HOST           = sensitive(module.aurora_cluster.cluster_endpoint)
+  })
+}
+
 resource "random_string" "random_sm" {
   length    = 5
   lower     = true
@@ -154,4 +172,16 @@ resource "aws_db_cluster_snapshot" "overwrite_db_snapshot" {
 data "aws_vpc" "selected" {
   count = var.aws_selected_vpc_id != null ? 1 : 0
   id    = var.aws_selected_vpc_id
+}
+
+output "aurora_db_id" {
+  value = module.aurora_cluster.cluster_id
+}
+
+output "aurora_secret_name" {
+  value = aws_secretsmanager_secret.aurora_database_credentials.name
+}
+
+output "aurora_db_endpoint" {
+  value = module.aurora_cluster.cluster_endpoint
 }

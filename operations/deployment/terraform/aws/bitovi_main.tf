@@ -131,27 +131,61 @@ module "rds" {
   source = "../modules/aws/rds"
   count  = var.aws_rds_db_enable ? 1 : 0
   # RDS
-  aws_rds_db_name                    = var.aws_rds_db_name
-  aws_rds_db_engine                  = var.aws_rds_db_engine
-  aws_rds_db_engine_version          = var.aws_rds_db_engine_version
-  aws_rds_db_security_group_name     = var.aws_rds_db_security_group_name
-  aws_rds_db_port                    = var.aws_rds_db_port
-  aws_rds_db_subnets                 = var.aws_rds_db_subnets
-  aws_rds_db_allocated_storage       = var.aws_rds_db_allocated_storage
-  aws_rds_db_max_allocated_storage   = var.aws_rds_db_max_allocated_storage
-  aws_rds_db_instance_class          = var.aws_rds_db_instance_class
-  aws_rds_db_user                    = var.aws_rds_db_user
-  aws_rds_cloudwatch_logs_exports    = var.aws_rds_cloudwatch_logs_exports
+  aws_rds_db_name                        = var.aws_rds_db_name
+  aws_rds_db_user                        = var.aws_rds_db_user
+  aws_rds_db_engine                      = var.aws_rds_db_engine
+  aws_rds_db_engine_version              = var.aws_rds_db_engine_version
+  aws_rds_db_security_group_name         = var.aws_rds_db_security_group_name
+  aws_rds_db_allowed_security_groups     = var.aws_rds_db_allowed_security_groups
+  aws_rds_db_ingress_allow_all           = var.aws_rds_db_ingress_allow_all
+  aws_rds_db_publicly_accessible         = var.aws_rds_db_publicly_accessible
+  aws_rds_db_port                        = var.aws_rds_db_port
+  aws_rds_db_subnets                     = var.aws_rds_db_subnets
+  aws_rds_db_allocated_storage           = var.aws_rds_db_allocated_storage
+  aws_rds_db_max_allocated_storage       = var.aws_rds_db_max_allocated_storage
+  aws_rds_db_instance_class              = var.aws_rds_db_instance_class
+  aws_rds_db_final_snapshot              = var.aws_rds_db_final_snapshot
+  aws_rds_db_restore_snapshot_identifier = var.aws_rds_db_restore_snapshot_identifier
+  aws_rds_db_cloudwatch_logs_exports        = var.aws_rds_db_cloudwatch_logs_exports
   # Others
-  aws_selected_vpc_id                = module.vpc.aws_selected_vpc_id
-  aws_subnets_vpc_subnets_ids        = module.vpc.aws_selected_vpc_subnets
-  aws_resource_identifier            = var.aws_resource_identifier
-  aws_resource_identifier_supershort = var.aws_resource_identifier_supershort
+  aws_selected_vpc_id                    = module.vpc.aws_selected_vpc_id
+  aws_subnets_vpc_subnets_ids            = module.vpc.aws_selected_vpc_subnets
+  aws_resource_identifier                = var.aws_resource_identifier
+  aws_resource_identifier_supershort     = var.aws_resource_identifier_supershort
   # Dependencies
   depends_on = [module.vpc]
 
   providers = {
     aws = aws.rds
+  }
+}
+
+module "db_proxy_rds" {
+  source = "../modules/aws/db_proxy"
+  count  = var.aws_rds_db_proxy ? 1 : 0
+  # PROXY
+  aws_db_proxy_name                           = var.aws_db_proxy_name
+  aws_db_proxy_database_id                    = module.rds[0].db_id
+  aws_db_proxy_cluster                        = false
+  aws_db_proxy_secret_name                    = module.rds[0].db_secret_name
+  aws_db_proxy_client_password_auth_type      = var.aws_db_proxy_client_password_auth_type
+  aws_db_proxy_tls                            = var.aws_db_proxy_tls
+  aws_db_proxy_security_group_name            = var.aws_db_proxy_security_group_name
+  aws_db_proxy_database_security_group_allow  = var.aws_db_proxy_database_security_group_allow
+  aws_db_proxy_allowed_security_group         = var.aws_db_proxy_allowed_security_group
+  aws_db_proxy_allow_all_incoming             = var.aws_db_proxy_allow_all_incoming
+  aws_db_proxy_cloudwatch_enable              = var.aws_db_proxy_cloudwatch_enable
+  aws_db_proxy_cloudwatch_retention_days      = var.aws_db_proxy_cloudwatch_retention_days
+  # Others
+  aws_selected_vpc_id                         = module.vpc.aws_selected_vpc_id
+  aws_selected_subnets                        = module.vpc.aws_selected_vpc_subnets
+  aws_resource_identifier                     = var.aws_resource_identifier
+
+  # Dependencies
+  depends_on = [module.vpc,module.rds]
+
+  providers = {
+    aws = aws.db_proxy
   }
 }
 
@@ -186,6 +220,65 @@ module "aurora_rds" {
 
   providers = {
     aws = aws.aurora
+  }
+}
+
+module "db_proxy_aurora" {
+  source = "../modules/aws/db_proxy"
+  count  = var.aws_aurora_proxy ? 1 : 0
+  # PROXY
+  aws_db_proxy_name                           = var.aws_db_proxy_name
+  aws_db_proxy_database_id                    = module.aurora_rds[0].aurora_db_id
+  aws_db_proxy_cluster                        = true
+  aws_db_proxy_secret_name                    = module.aurora_rds[0].aurora_secret_name
+  aws_db_proxy_client_password_auth_type      = var.aws_db_proxy_client_password_auth_type
+  aws_db_proxy_tls                            = var.aws_db_proxy_tls
+  aws_db_proxy_security_group_name            = var.aws_db_proxy_security_group_name
+  aws_db_proxy_database_security_group_allow  = var.aws_db_proxy_database_security_group_allow
+  aws_db_proxy_allowed_security_group         = var.aws_db_proxy_allowed_security_group
+  aws_db_proxy_allow_all_incoming             = var.aws_db_proxy_allow_all_incoming
+  aws_db_proxy_cloudwatch_enable              = var.aws_db_proxy_cloudwatch_enable
+  aws_db_proxy_cloudwatch_retention_days      = var.aws_db_proxy_cloudwatch_retention_days
+  # Others
+  aws_selected_vpc_id                         = module.vpc.aws_selected_vpc_id
+  aws_selected_subnets                        = module.vpc.aws_selected_vpc_subnets
+  aws_resource_identifier                     = var.aws_resource_identifier
+
+  # Dependencies
+  depends_on = [module.vpc,module.rds]
+
+  providers = {
+    aws = aws.db_proxy
+  }
+}
+
+
+module "db_proxy" {
+  source = "../modules/aws/db_proxy"
+  count  = var.aws_db_proxy_enable ? 1 : 0
+  # PROXY
+  aws_db_proxy_name                           = var.aws_db_proxy_name
+  aws_db_proxy_database_id                    = var.aws_db_proxy_database_id
+  aws_db_proxy_cluster                        = var.aws_db_proxy_cluster
+  aws_db_proxy_secret_name                    = var.aws_db_proxy_secret_name
+  aws_db_proxy_client_password_auth_type      = var.aws_db_proxy_client_password_auth_type
+  aws_db_proxy_tls                            = var.aws_db_proxy_tls
+  aws_db_proxy_security_group_name            = var.aws_db_proxy_security_group_name
+  aws_db_proxy_database_security_group_allow  = var.aws_db_proxy_database_security_group_allow
+  aws_db_proxy_allowed_security_group         = var.aws_db_proxy_allowed_security_group
+  aws_db_proxy_allow_all_incoming             = var.aws_db_proxy_allow_all_incoming
+  aws_db_proxy_cloudwatch_enable              = var.aws_db_proxy_cloudwatch_enable
+  aws_db_proxy_cloudwatch_retention_days      = var.aws_db_proxy_cloudwatch_retention_days
+  # Others
+  aws_selected_vpc_id                         = module.vpc.aws_selected_vpc_id
+  aws_selected_subnets                        = module.vpc.aws_selected_vpc_subnets
+  aws_resource_identifier                     = var.aws_resource_identifier
+
+  # Dependencies
+  depends_on = [module.vpc]
+
+  providers = {
+    aws = aws.db_proxy
   }
 }
 
@@ -389,15 +482,16 @@ locals {
   }
   default_tags = merge(local.aws_tags, jsondecode(var.aws_additional_tags))
   # Module tagging
-  ec2_tags    = merge(local.default_tags,jsondecode(var.aws_ec2_additional_tags))
-  r53_tags    = merge(local.default_tags,jsondecode(var.aws_r53_additional_tags))
-  elb_tags    = merge(local.default_tags,jsondecode(var.aws_elb_additional_tags))
-  efs_tags    = merge(local.default_tags,jsondecode(var.aws_efs_additional_tags))
-  vpc_tags    = merge(local.default_tags,jsondecode(var.aws_vpc_additional_tags))
-  rds_tags    = merge(local.default_tags,jsondecode(var.aws_rds_additional_tags))
-  ecs_tags    = merge(local.default_tags,jsondecode(var.aws_ecs_additional_tags))
-  aurora_tags = merge(local.default_tags,jsondecode(var.aws_aurora_additional_tags))
-  ecr_tags    = merge(local.default_tags,jsondecode(var.aws_ecr_additional_tags))
+  ec2_tags      = merge(local.default_tags,jsondecode(var.aws_ec2_additional_tags))
+  r53_tags      = merge(local.default_tags,jsondecode(var.aws_r53_additional_tags))
+  elb_tags      = merge(local.default_tags,jsondecode(var.aws_elb_additional_tags))
+  efs_tags      = merge(local.default_tags,jsondecode(var.aws_efs_additional_tags))
+  vpc_tags      = merge(local.default_tags,jsondecode(var.aws_vpc_additional_tags))
+  rds_tags      = merge(local.default_tags,jsondecode(var.aws_rds_additional_tags))
+  ecs_tags      = merge(local.default_tags,jsondecode(var.aws_ecs_additional_tags))
+  aurora_tags   = merge(local.default_tags,jsondecode(var.aws_aurora_additional_tags))
+  ecr_tags      = merge(local.default_tags,jsondecode(var.aws_ecr_additional_tags))
+  db_proxy_tags = merge(local.default_tags,jsondecode(var.aws_db_proxy_additional_tags))
 
   fqdn_provided = (
     (var.aws_r53_domain_name != "") ?
@@ -449,6 +543,18 @@ output "application_public_dns" {
   value       = try(module.aws_route53[0].vm_url,null)
 }
 
+output "aurora_endpoint" {
+  value = try(module.aurora_rds[0].db_endpoint,null)
+}
+
+output "aurora_secret_details_name" {
+  value = try(module.aurora_rds[0].db_secret_name,null)
+}
+
+output "db_proxy_aurora" {
+  value = try(module.db_proxy_aurora[0].endpoint,null)
+}
+
 output "vm_url" {
   value = try(module.aws_route53[0].vm_url,local.elb_url)
 }
@@ -458,7 +564,15 @@ output "db_endpoint" {
 }
 
 output "db_secret_details_name" {
-  value = try(module.rds[0].db_secret_details,null)
+  value = try(module.rds[0].db_secret_name,null)
+}
+
+output "db_proxy_rds" {
+  value = try(module.db_proxy_rds[0].db_endpoint,null)
+}
+
+output "db_proxy_endpoint" {
+  value = try(module.db_proxy[0].db_endpoint,null)
 }
 
 output "ecs_dns_record" {

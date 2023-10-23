@@ -14,6 +14,7 @@ resource "aws_security_group" "rds_db_security_group" {
 }
 
 resource "aws_security_group_rule" "ingress_rds" {
+  count             = var.aws_rds_db_ingress_allow_all ? 1 : 0
   type              = "ingress"
   description       = "${var.aws_resource_identifier} - RDS Port"
   from_port         = tonumber(aws_db_instance.default.port)
@@ -21,18 +22,22 @@ resource "aws_security_group_rule" "ingress_rds" {
   protocol          = "tcp"
   cidr_blocks       = ["0.0.0.0/0"]
   security_group_id = aws_security_group.rds_db_security_group.id
-  depends_on = [ aws_db_instance.default ]
 }
 
-#resource "aws_security_group_rule" "ingress_rds_sgs" { ## TODO - Make this iterate through a list of allowed SGs
-#  type                     = "ingress"
-#  description              = "${var.aws_resource_identifier} - RDS in SG"
-#  from_port                = tonumber(var.aws_db_instance.default.port)
-#  to_port                  = tonumber(var.aws_db_instance.default.port)
-#  protocol                 = "tcp"
-#  source_security_group_id = aws_security_group.elb_security_group.id
-#  security_group_id        = var.aws_elb_target_sg_id
-#}
+locals {
+  aws_rds_db_allowed_security_groups = var.aws_rds_db_allowed_security_groups != null ? [for n in split(",", var.aws_rds_db_allowed_security_groups) : n] : []
+}
+
+resource "aws_security_group_rule" "ingress_rds_extras" {
+  count                    = length(local.aws_rds_db_allowed_security_groups)
+  type                     = "ingress"
+  description              = "${var.aws_resource_identifier} - RDS ingress extra SG"
+  from_port                = tonumber(aws_db_instance.default.port)
+  to_port                  = tonumber(aws_db_instance.default.port)
+  protocol                 = "tcp"
+  source_security_group_id = local.aws_rds_db_allowed_security_groups[count.index]
+  security_group_id        = aws_security_group.rds_db_security_group.id
+}
 
 locals {
   aws_rds_db_subnets = var.aws_rds_db_subnets  != null ? [for n in split(",", var.aws_rds_db_subnets)  : (n)] :  var.aws_subnets_vpc_subnets_ids
@@ -47,20 +52,23 @@ resource "aws_db_subnet_group" "selected" {
 }
 
 resource "aws_db_instance" "default" {
-  identifier                      = var.aws_rds_db_name != null ? var.aws_rds_db_name : var.aws_resource_identifier
-  engine                          = var.aws_rds_db_engine
-  engine_version                  = var.aws_rds_db_engine_version
-  db_subnet_group_name            = aws_db_subnet_group.selected.name
-  db_name                         = var.aws_rds_db_name != null ? var.aws_rds_db_name : null
-  port                            = var.aws_rds_db_port != null ? tonumber(var.aws_rds_db_port) : null
-  allocated_storage               = tonumber(var.aws_rds_db_allocated_storage)
-  max_allocated_storage           = tonumber(var.aws_rds_db_max_allocated_storage)
-  instance_class                  = var.aws_rds_db_instance_class
-  username                        = var.aws_rds_db_user != null ? var.aws_rds_db_user : "dbuser"
-  password                        = random_password.rds.result
-  skip_final_snapshot             = true
-  enabled_cloudwatch_logs_exports = [var.aws_rds_cloudwatch_logs_exports]
-  vpc_security_group_ids          = [aws_security_group.rds_db_security_group.id]
+  identifier                       = var.aws_rds_db_name != null ? var.aws_rds_db_name : var.aws_resource_identifier
+  engine                           = var.aws_rds_db_engine
+  engine_version                   = var.aws_rds_db_engine_version
+  db_subnet_group_name             = aws_db_subnet_group.selected.name
+  db_name                          = var.aws_rds_db_name != null ? var.aws_rds_db_name : null
+  port                             = var.aws_rds_db_port != null ? tonumber(var.aws_rds_db_port) : null
+  allocated_storage                = tonumber(var.aws_rds_db_allocated_storage)
+  max_allocated_storage            = tonumber(var.aws_rds_db_max_allocated_storage)
+  instance_class                   = var.aws_rds_db_instance_class
+  username                         = var.aws_rds_db_user != null ? var.aws_rds_db_user : "dbuser"
+  password                         = random_password.rds.result
+  skip_final_snapshot              = var.aws_rds_db_final_snapshot == "" ? true : false
+  final_snapshot_identifier        = var.aws_rds_db_final_snapshot
+  snapshot_identifier              = var.aws_rds_db_restore_snapshot_identifier 
+  publicly_accessible              = var.aws_rds_db_publicly_accessible 
+  enabled_cloudwatch_logs_exports  = [var.aws_rds_db_cloudwatch_logs_exports]
+  vpc_security_group_ids           = [aws_security_group.rds_db_security_group.id]
   tags = {
     Name = "${var.aws_resource_identifier}-rds"
   }
@@ -70,8 +78,12 @@ output "db_endpoint" {
   value = aws_db_instance.default.endpoint
 }
 
-output "db_secret_details" {
+output "db_secret_name" {
   value = aws_secretsmanager_secret.rds_database_credentials.name
+}
+
+output "db_id" {
+  value = aws_db_instance.default.id
 }
 
 // Creates a secret manager secret for the databse credentials

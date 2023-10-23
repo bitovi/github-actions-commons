@@ -169,23 +169,30 @@ fi
 #-- RDS --#
 if [[ $(alpha_only "$AWS_RDS_DB_ENABLE") == true ]]; then
   aws_rds_db_enable=$(generate_var aws_rds_db_enable $AWS_RDS_DB_ENABLE)
+  aws_rds_db_proxy=$(generate_var aws_rds_db_proxy $AWS_RDS_DB_PROXY)
   aws_rds_db_name=$(generate_var aws_rds_db_name $AWS_RDS_DB_NAME)
+  aws_rds_db_user=$(generate_var aws_rds_db_user $AWS_RDS_DB_USER)
   aws_rds_db_engine=$(generate_var aws_rds_db_engine $AWS_RDS_DB_ENGINE)
   aws_rds_db_engine_version=$(generate_var aws_rds_db_engine_version $AWS_RDS_DB_ENGINE_VERSION)
   aws_rds_db_security_group_name=$(generate_var aws_rds_db_security_group_name $AWS_RDS_DB_SECURITY_GROUP_NAME)
+  aws_rds_db_allowed_security_groups=$(generate_var aws_rds_db_allowed_security_groups $AWS_RDS_DB_ALLOWED_SECURITY_GROUPS)
+  aws_rds_db_ingress_allow_all=$(generate_var aws_rds_db_ingress_allow_all $AWS_RDS_DB_INGRESS_ALLOW_ALL)
+  aws_rds_db_publicly_accessible=$(generate_var aws_rds_db_publicly_accessible $AWS_RDS_DB_PUBLICLY_ACCESSIBLE)
   aws_rds_db_port=$(generate_var aws_rds_db_port $AWS_RDS_DB_PORT)
   aws_rds_db_subnets=$(generate_var aws_rds_db_subnets $AWS_RDS_DB_SUBNETS)
   aws_rds_db_allocated_storage=$(generate_var aws_rds_db_allocated_storage $AWS_RDS_DB_ALLOCATED_STORAGE)
   aws_rds_db_max_allocated_storage=$(generate_var aws_rds_db_max_allocated_storage $AWS_RDS_DB_MAX_ALLOCATED_STORAGE)
   aws_rds_db_instance_class=$(generate_var aws_rds_db_instance_class $AWS_RDS_DB_INSTANCE_CLASS)
-  aws_rds_db_user=$(generate_var aws_rds_db_user $AWS_RDS_DB_USER)
-  aws_rds_cloudwatch_logs_exports=$(generate_var aws_rds_cloudwatch_logs_exports $AWS_RDS_CLOUDWATCH_LOGS_EXPORTS)
+  aws_rds_db_final_snapshot=$(generate_var aws_rds_db_final_snapshot $AWS_RDS_DB_FINAL_SNAPSHOT)
+  aws_rds_db_restore_snapshot_identifier=$(generate_var aws_rds_db_restore_snapshot_identifier $AWS_RDS_DB_RESTORE_SNAPSHOT_IDENTIFIER)
+  aws_rds_db_cloudwatch_logs_exports=$(generate_var aws_rds_db_cloudwatch_logs_exports $AWS_RDS_DB_CLOUDWATCH_LOGS_EXPORTS)
   aws_rds_additional_tags=$(generate_var aws_rds_additional_tags $AWS_RDS_ADDITIONAL_TAGS)
 fi
 
 #-- AURORA --#
 if [[ $(alpha_only "$AWS_AURORA_ENABLE") == true ]]; then
   aws_aurora_enable=$(generate_var aws_aurora_enable $AWS_AURORA_ENABLE)
+  aws_aurora_proxy=$(generate_var aws_aurora_proxy $AWS_AURORA_PROXY)
   aws_aurora_engine=$(generate_var aws_aurora_engine $AWS_AURORA_ENGINE)
   aws_aurora_engine_version=$(generate_var aws_aurora_engine_version $AWS_AURORA_ENGINE_VERSION)
   aws_aurora_database_group_family=$(generate_var aws_aurora_database_group_family $AWS_AURORA_DATABASE_GROUP_FAMILY)
@@ -202,6 +209,22 @@ if [[ $(alpha_only "$AWS_AURORA_ENABLE") == true ]]; then
   # aws_aurora_database_final_snapshot=$(generate_var aws_aurora_database_final_snapshot $AWS_AURORA_DATABASE_FINAL_SNAPSHOT ) - Special case
   aws_aurora_additional_tags=$(generate_var aws_aurora_additional_tags $AWS_AURORA_ADDITIONAL_TAGS)
 fi
+
+#-- DB PROXY --#
+aws_db_proxy_enable=$(generate_var aws_db_proxy_enable $AWS_DB_PROXY_ENABLE)
+aws_db_proxy_name=$(generate_var aws_db_proxy_name $AWS_DB_PROXY_NAME)
+aws_db_proxy_database_id=$(generate_var aws_db_proxy_database_id $AWS_DB_PROXY_DATABASE_ID)
+aws_db_proxy_cluster=$(generate_var aws_db_proxy_cluster $AWS_DB_PROXY_CLUSTER)
+aws_db_proxy_secret_name=$(generate_var aws_db_proxy_secret_name $AWS_DB_PROXY_SECRET_NAME)
+aws_db_proxy_client_password_auth_type=$(generate_var aws_db_proxy_client_password_auth_type $AWS_DB_PROXY_CLIENT_PASSWORD_AUTH_TYPE)
+aws_db_proxy_tls=$(generate_var aws_db_proxy_tls $AWS_DB_PROXY_TLS)
+aws_db_proxy_security_group_name=$(generate_var aws_db_proxy_security_group_name $AWS_DB_PROXY_SECURITY_GROUP_NAME)
+aws_db_proxy_database_security_group_allow=$(generate_var aws_db_proxy_database_security_group_allow $AWS_DB_PROXY_DATABASE_SECURITY_GROUP_ALLOW)
+aws_db_proxy_allowed_security_group=$(generate_var aws_db_proxy_allowed_security_group $AWS_DB_PROXY_ALLOWED_SECURITY_GROUP)
+aws_db_proxy_allow_all_incoming=$(generate_var aws_db_proxy_allow_all_incoming $AWS_DB_PROXY_ALLOW_ALL_INCOMING)
+aws_db_proxy_cloudwatch_enable=$(generate_var aws_db_proxy_cloudwatch_enable $AWS_DB_PROXY_CLOUDWATCH_ENABLE)
+aws_db_proxy_cloudwatch_retention_days=$(generate_var aws_db_proxy_cloudwatch_retention_days $AWS_DB_PROXY_CLOUDWATCH_RETENTION_DAYS)
+aws_db_proxy_additional_tags=$(generate_var aws_db_proxy_additional_tags $AWS_DB_PROXY_ADDITIONAL_TAGS)
 
 #-- ECS --#
 if [[ $(alpha_only "$AWS_ECS_ENABLE") == true ]]; then
@@ -404,20 +427,28 @@ $aws_efs_additional_tags
 
 #-- RDS --#
 $aws_rds_db_enable
+$aws_rds_db_proxy
 $aws_rds_db_name
+$aws_rds_db_user
 $aws_rds_db_engine
+$aws_rds_db_engine_version
 $aws_rds_db_security_group_name
+$aws_rds_db_allowed_security_groups
+$aws_rds_db_ingress_allow_all
+$aws_rds_db_publicly_accessible
 $aws_rds_db_port
 $aws_rds_db_subnets
 $aws_rds_db_allocated_storage
 $aws_rds_db_max_allocated_storage
 $aws_rds_db_instance_class
-$aws_rds_db_user
-$aws_rds_cloudwatch_logs_exports
+$aws_rds_db_final_snapshot
+$aws_rds_db_restore_snapshot_identifier
+$aws_rds_db_cloudwatch_logs_exports
 $aws_rds_additional_tags
 
 #-- AURORA --#
 $aws_aurora_enable
+$aws_aurora_proxy
 $aws_aurora_engine
 $aws_aurora_engine_version
 $aws_aurora_database_group_family
@@ -433,6 +464,22 @@ $aws_aurora_snapshot_overwrite
 $aws_aurora_database_protection
 $aws_aurora_database_final_snapshot
 $aws_aurora_additional_tags
+
+#-- DB PROXY --#
+$aws_db_proxy_enable
+$aws_db_proxy_name
+$aws_db_proxy_database_id
+$aws_db_proxy_cluster
+$aws_db_proxy_secret_name
+$aws_db_proxy_client_password_auth_type
+$aws_db_proxy_tls
+$aws_db_proxy_security_group_name
+$aws_db_proxy_database_security_group_allow
+$aws_db_proxy_allowed_security_group
+$aws_db_proxy_allow_all_incoming
+$aws_db_proxy_cloudwatch_enable
+$aws_db_proxy_cloudwatch_retention_days
+$aws_db_proxy_additional_tags
 
 #-- ECS --#
 $aws_ecs_enable

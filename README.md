@@ -224,17 +224,23 @@ The following inputs can be used as `step.with` keys
 | Name             | Type    | Description                        |
 |------------------|---------|------------------------------------|
 | `aws_rds_db_enable`| Boolean | Set to `true` to enable an RDS DB|
+| `aws_rds_db_proxy`| Boolean | Set to `true` to add a RDS DB Proxy |
 | `aws_rds_db_name`| String | The name of the database to create when the DB instance is created. If this parameter is not specified, no database is created in the DB instance. |
+| `aws_rds_db_user`| String | Username for the db. Defaults to `dbuser`. |
 | `aws_rds_db_engine`| String | Which Database engine to use. Defaults to `postgres`. |
 | `aws_rds_db_engine_version`| String | Which Database engine version to use. |
 | `aws_rds_db_security_group_name`| String | The name of the database security group. Defaults to `SG for ${aws_resource_identifier} - RDS`. |
+| `aws_rds_db_allowed_security_groups` | String | Comma separated list of security groups to add to the DB SG. | 
+| `aws_rds_db_ingress_allow_all` | Boolean | Allow incoming traffic from 0.0.0.0/0. Defaults to `true`. |
+| `aws_rds_db_publicly_accessible` | Boolean | Allow the database to be publicly accessible. Defaults to `false`. |
 | `aws_rds_db_port`| String | Port where the DB listens to. |
 | `aws_rds_db_subnets`| String | Specify which subnets to use as a list of strings.  Example: `i-1234,i-5678,i-9101`. |
 | `aws_rds_db_allocated_storage`| String | Storage size. Defaults to `10`. |
 | `aws_rds_db_max_allocated_storage`| String | Max storage size. Defaults to `0` to disable auto-scaling. |
 | `aws_rds_db_instance_class`| String | DB instance server type. Defaults to `db.t3.micro`. |
-| `aws_rds_db_user`| String | Username for the db. Defaults to `dbuser`. |
-| `aws_rds_cloudwatch_logs_exports`| String | Set of log types to enable for exporting to CloudWatch logs. Defaults to `postgresql`. MySQL and MariaDB: `audit, error, general, slowquery`. PostgreSQL: `postgresql, upgrade`. MSSQL: `agent , error`. Oracle: `alert, audit, listener, trace`. |
+| `aws_rds_db_final_snapshot` | String | If wanted, add a snapshot name. Leave emtpy if not. |
+| `aws_rds_db_restore_snapshot_identifier` | String | Name of the snapshot to create the databse from. |
+| `aws_rds_db_cloudwatch_logs_exports`| String | Set of log types to enable for exporting to CloudWatch logs. Defaults to `postgresql`. MySQL and MariaDB: `audit, error, general, slowquery`. PostgreSQL: `postgresql, upgrade`. MSSQL: `agent , error`. Oracle: `alert, audit, listener, trace`. |
 | `aws_rds_additional_tags` | JSON | Add additional tags to the terraform [default tags](https://www.hashicorp.com/blog/default-tags-in-the-terraform-aws-provider), any tags put here will be added to RDS provisioned resources.|
 <hr/>
 <br/>
@@ -243,6 +249,7 @@ The following inputs can be used as `step.with` keys
 | Name             | Type    | Description                        |
 |------------------|---------|------------------------------------|
 | `aws_aurora_enable` | Boolean | Set to `true` to enable an [Aurora database](https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/CHAP_AuroraOverview.html). (Postgres or MySQL). |
+| `aws_aurora_proxy`| Boolean | Set to `true` to add an Aurora DB Proxy |
 | `aws_aurora_engine` | String |  Which Database engine to use. Default is `aurora-postgresql`.|
 | `aws_aurora_engine_version` | String |  Specify database version.  More information [Postgres](https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/AuroraPostgreSQL.Updates.20180305.html) or [MySQL](https://docs.aws.amazon.com/AmazonRDS/latest/AuroraMySQLReleaseNotes/Welcome.html). Default is `11.17`. (Postgres) |
 | `aws_aurora_database_group_family` | String | Specify aws database group family. Default is `aurora-postgresql11`. See [this](https://awscli.amazonaws.com/v2/documentation/api/latest/reference/rds/create-db-parameter-group.html).|
@@ -258,6 +265,26 @@ The following inputs can be used as `step.with` keys
 | `aws_aurora_database_protection` | Boolean | Protects the database from deletion. Default is `false`.|
 | `aws_aurora_database_final_snapshot` | Boolean | Creates a snapshot before deletion. If a string is passed, it will be used as snapsthot name. Defaults to `false`.|
 | `aws_aurora_additional_tags` | JSON | Add additional tags to the terraform [default tags](https://www.hashicorp.com/blog/default-tags-in-the-terraform-aws-provider), any tags put here will be added to aurora provisioned resources.|
+<hr/>
+<br/>
+
+#### **DB Proxy Inputs**
+| Name             | Type    | Description                        |
+|------------------|---------|------------------------------------|
+| `aws_db_proxy_enable` | Boolean | Set to `true` to enable a database proxy. |
+| `aws_db_proxy_name` | String | Name of the database proxy.  Defaults to `aws_resource_identifier` |
+| `aws_db_proxy_database_id` | String |  Specify the ID of the databse to use. |
+| `aws_db_proxy_cluster` | Boolean | Set to true if you are creating this for an RDS Cluster. Defaults to `false`. |
+| `aws_db_proxy_secret_name` | String | AWS Secrets manager containing database details and credentials. | 
+| `aws_db_proxy_client_password_auth_type` | String | Overrides auth type. Using `MYSQL_NATIVE_PASSWORD`, `POSTGRES_SCRAM_SHA_256`, and `SQL_SERVER_AUTHENTICATION` depending on the database family. |
+| `aws_db_proxy_tls` | String | Make TLS a requirement for connections. Defaults to `true`.|
+| `aws_db_proxy_security_group_name` | String | Name for the proxy security group. Defaults to `aws_resource_identifier`. |
+| `aws_db_proxy_database_security_group_allow` | String | If true, will add an incoming rule from every security group associated with the DB. |
+| `aws_db_proxy_allowed_security_group` | String | Comma separated list fo allowed security groups to add.|
+| `aws_db_proxy_allow_all_incoming` | String | Allow all incoming traffic to the DB Proxy. Mind that the proxy is only available from the internal network except manually exposed. | 
+| `aws_db_proxy_cloudwatch_enable` | String | Toggle Cloudwatch logs. Will be stored in `/aws/rds/proxy/rds_proxy.name`. |
+| `aws_db_proxy_cloudwatch_retention_days` | String | Number of days to retain cloudwatch logs. Defaults to `14`. |
+| `aws_db_proxy_additional_tags` | JSON | Add additional tags to the ter added to aurora provisioned resources.|
 <hr/>
 <br/>
 
