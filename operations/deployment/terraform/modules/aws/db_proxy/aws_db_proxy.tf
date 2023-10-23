@@ -21,7 +21,7 @@ locals {
   ###
   db_engine         = var.aws_db_proxy_cluster ? data.aws_rds_cluster.db[0].engine : data.aws_db_instance.db[0].engine
   db_port           = var.aws_db_proxy_cluster ? tonumber(data.aws_rds_cluster.db[0].port) : tonumber(data.aws_db_instance.db[0].db_instance_port)
-  db_security_group = var.aws_db_proxy_cluster ? data.aws_rds_cluster.db[0].vpc_security_group_ids : data.aws_db_instance.db[0].vpc_security_group_ids
+  db_security_group = var.aws_db_proxy_cluster ? data.aws_rds_cluster.db[0].vpc_security_group_ids : data.aws_db_instance.db[0].vpc_security_groups
 }
 
 data "aws_region" "current" {}
@@ -58,7 +58,7 @@ resource "aws_db_proxy" "rds_proxy" {
     client_password_auth_type = var.aws_db_proxy_client_password_auth_type != "" ? var.aws_db_proxy_client_password_auth_type : local.auth_selected
     description = "RDS Proxy for master user"
     iam_auth    = "DISABLED"
-    secret_arn  = aws_secretsmanager_secret_version.database_credentials.arn
+    secret_arn  = data.aws_secretsmanager_secret_version.database_credentials.arn
   }
   lifecycle {
     ignore_changes = [ debug_logging ]
