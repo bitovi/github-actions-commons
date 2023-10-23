@@ -66,7 +66,7 @@ resource "aws_db_proxy" "rds_proxy" {
 }
 
 resource "aws_db_proxy_default_target_group" "default" {
-  db_proxy_name = aws_db_proxy.rds_proxy.name
+  db_proxy_name = aws_db_proxy.rds_proxy[0].name
 
   connection_pool_config {
     connection_borrow_timeout    = 120
@@ -78,7 +78,7 @@ resource "aws_db_proxy_default_target_group" "default" {
 resource "aws_db_proxy_target" "db_instance" {
   count = var.aws_db_proxy_cluster ? 0 : 1
   db_instance_identifier = var.aws_db_proxy_database_id
-  db_proxy_name          = aws_db_proxy.rds_proxy.name
+  db_proxy_name          = aws_db_proxy.rds_proxy[0].name
   target_group_name      = aws_db_proxy_default_target_group.default.name
 
   depends_on = [ aws_db_proxy.rds_proxy ]
@@ -87,7 +87,7 @@ resource "aws_db_proxy_target" "db_instance" {
 resource "aws_db_proxy_target" "db_cluster" {
   count = var.aws_db_proxy_cluster ? 1 : 0
   db_cluster_identifier  = var.aws_db_proxy_database_id
-  db_proxy_name          = aws_db_proxy.rds_proxy.name
+  db_proxy_name          = aws_db_proxy.rds_proxy[0].name
   target_group_name      = aws_db_proxy_default_target_group.default.name
 
   depends_on = [ aws_db_proxy.rds_proxy ]
@@ -159,7 +159,7 @@ locals {
 
 resource "aws_cloudwatch_log_group" "this" {
   count             = var.aws_db_proxy_cloudwatch_enable ? 1 : 0
-  name              = "/aws/rds/proxy/${aws_db_proxy.rds_proxy.name}"
+  name              = "/aws/rds/proxy/${aws_db_proxy.rds_proxy[0].name}"
   retention_in_days = tonumber(var.aws_db_proxy_cloudwatch_retention_days)
 }
 
@@ -222,5 +222,5 @@ resource "aws_iam_role_policy_attachment" "rds_policy" {
 }
 
 output "aws_db_proxy_endpoint" {
-  value = aws_db_proxy.rds_proxy.endpoint
+  value = aws_db_proxy.rds_proxy[0].endpoint
 }
