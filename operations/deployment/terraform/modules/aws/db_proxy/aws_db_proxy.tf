@@ -43,7 +43,7 @@ data "aws_rds_cluster" "db" {
 }
 
 resource "aws_db_proxy" "rds_proxy" {
-  count                  = local.matching_engine != null ? 1 : 0
+  count                  = one(compact([for key, value in local.engine_mapping : strcontains(lower(local.db_engine), key) ? true : null ])) ? 1 : 0
   name                   = var.aws_db_proxy_name
   debug_logging          = true
   engine_family          = local.matching_engine
