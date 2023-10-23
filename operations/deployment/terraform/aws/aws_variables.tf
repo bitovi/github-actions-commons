@@ -491,7 +491,7 @@ variable "aws_rds_db_cloudwatch_logs_exports" {
   default     = "postgresql"
 }
 
-variable "aws_rds_additional_tags" {
+variable "aws_rds_db_additional_tags" {
   type        = string
   description = "A list of strings that will be added to created resources"
   default     = "{}"
@@ -624,7 +624,7 @@ variable "aws_db_proxy_database_id" {
 variable "aws_db_proxy_cluster" {
   type        = bool
   description = "Define if Database is a cluster or not"
-  default     = ""
+  default     = false
 }
 
 variable "aws_db_proxy_secret_name" {
@@ -654,7 +654,7 @@ variable "aws_db_proxy_security_group_name" {
 variable "aws_db_proxy_database_security_group_allow" {
   type        = bool
   description = "Will add an incoming rule from every security group associated with the DB"
-  default     = ""
+  default     = false
 }
 
 variable "aws_db_proxy_allowed_security_group" {
@@ -672,7 +672,7 @@ variable "aws_db_proxy_allow_all_incoming" {
 variable "aws_db_proxy_cloudwatch_enable" {
   type        = bool
   description = "Toggle Cloudwatch logs. Will be stored in /aws/rds/proxy/rds_proxy.name"
-  default     = ""
+  default     = false
 }
 
 variable "aws_db_proxy_cloudwatch_retention_days" {

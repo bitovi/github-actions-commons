@@ -186,7 +186,7 @@ if [[ $(alpha_only "$AWS_RDS_DB_ENABLE") == true ]]; then
   aws_rds_db_final_snapshot=$(generate_var aws_rds_db_final_snapshot $AWS_RDS_DB_FINAL_SNAPSHOT)
   aws_rds_db_restore_snapshot_identifier=$(generate_var aws_rds_db_restore_snapshot_identifier $AWS_RDS_DB_RESTORE_SNAPSHOT_IDENTIFIER)
   aws_rds_db_cloudwatch_logs_exports=$(generate_var aws_rds_db_cloudwatch_logs_exports $AWS_RDS_DB_CLOUDWATCH_LOGS_EXPORTS)
-  aws_rds_additional_tags=$(generate_var aws_rds_additional_tags $AWS_RDS_DB_ADDITIONAL_TAGS)
+  aws_rds_db_additional_tags=$(generate_var aws_rds_db_additional_tags $AWS_RDS_DB_ADDITIONAL_TAGS)
 fi
 
 #-- AURORA --#
@@ -444,7 +444,7 @@ $aws_rds_db_instance_class
 $aws_rds_db_final_snapshot
 $aws_rds_db_restore_snapshot_identifier
 $aws_rds_db_cloudwatch_logs_exports
-$aws_rds_additional_tags
+$aws_rds_db_additional_tags
 
 #-- AURORA --#
 $aws_aurora_enable

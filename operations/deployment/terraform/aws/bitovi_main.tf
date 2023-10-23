@@ -487,7 +487,7 @@ locals {
   elb_tags      = merge(local.default_tags,jsondecode(var.aws_elb_additional_tags))
   efs_tags      = merge(local.default_tags,jsondecode(var.aws_efs_additional_tags))
   vpc_tags      = merge(local.default_tags,jsondecode(var.aws_vpc_additional_tags))
-  rds_tags      = merge(local.default_tags,jsondecode(var.aws_rds_additional_tags))
+  rds_tags      = merge(local.default_tags,jsondecode(var.aws_rds_db_additional_tags))
   ecs_tags      = merge(local.default_tags,jsondecode(var.aws_ecs_additional_tags))
   aurora_tags   = merge(local.default_tags,jsondecode(var.aws_aurora_additional_tags))
   ecr_tags      = merge(local.default_tags,jsondecode(var.aws_ecr_additional_tags))
