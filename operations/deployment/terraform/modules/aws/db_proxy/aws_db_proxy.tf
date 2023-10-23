@@ -19,9 +19,9 @@ locals {
   }
   auth_selected = one(compact([for key, value in local.auth_mapping : strcontains(lower(local.db_engine), key) ? value : ""]))
   ###
-  db_engine         = var.aws_db_proxy_cluster ? data.aws_rds_cluster.db.engine : data.aws_db_instance.db.engine
-  db_port           = var.aws_db_proxy_cluster ? tonumber(data.aws_rds_cluster.db.port) : tonumber(data.aws_db_instance.db.db_instance_port)
-  db_security_group = var.aws_db_proxy_cluster ? data.aws_rds_cluster.db.vpc_security_group_ids : data.aws_db_instance.db.vpc_security_group_ids
+  db_engine         = var.aws_db_proxy_cluster ? data.aws_rds_cluster.db[0].engine : data.aws_db_instance.db[0].engine
+  db_port           = var.aws_db_proxy_cluster ? tonumber(data.aws_rds_cluster.db[0].port) : tonumber(data.aws_db_instance.db[0].db_instance_port)
+  db_security_group = var.aws_db_proxy_cluster ? data.aws_rds_cluster.db[0].vpc_security_group_ids : data.aws_db_instance.db[0].vpc_security_group_ids
 }
 
 data "aws_region" "current" {}
@@ -198,7 +198,7 @@ resource "aws_iam_policy" "rds_proxy_iam" {
                 "secretsmanager:ListSecretVersionIds"
             ],
             "Resource": [
-                "${aws_secretsmanager_secret.database_credentials.arn}"
+                "${data.aws_secretsmanager_secret_version.database_credentials.arn}"
             ]
         },
         {
