@@ -41,6 +41,7 @@ resource "aws_security_group_rule" "ingress_rds_extras" {
 
 locals {
   aws_rds_db_subnets = var.aws_rds_db_subnets  != null ? [for n in split(",", var.aws_rds_db_subnets)  : (n)] :  var.aws_subnets_vpc_subnets_ids
+  skip_snap = length(var.aws_rds_db_final_snapshot) != "" ? false : true
 }
 
 resource "aws_db_subnet_group" "selected" {
@@ -63,7 +64,7 @@ resource "aws_db_instance" "default" {
   instance_class                   = var.aws_rds_db_instance_class
   username                         = var.aws_rds_db_user != null ? var.aws_rds_db_user : "dbuser"
   password                         = random_password.rds.result
-  skip_final_snapshot              = length(var.aws_rds_db_final_snapshot) > 0 ? false : true
+  skip_final_snapshot              = local.skip_snap
   final_snapshot_identifier        = length(var.aws_rds_db_final_snapshot) > 0 ? var.aws_rds_db_final_snapshot : null
   snapshot_identifier              = var.aws_rds_db_restore_snapshot_identifier 
   publicly_accessible              = var.aws_rds_db_publicly_accessible 
@@ -125,4 +126,8 @@ resource "random_string" "random_sm" {
 data "aws_vpc" "selected" {
   count = var.aws_selected_vpc_id != null ? 1 : 0
   id    = var.aws_selected_vpc_id
+}
+
+output "skip_snap" {
+  value = local.skip_snap
 }

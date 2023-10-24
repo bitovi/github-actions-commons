@@ -582,3 +582,7 @@ output "ecs_dns_record" {
 output "ecs_load_balancer_dns" {
   value = try(module.aws_ecs[0].load_balancer_dns,null)
 }
+
+output "skip_snap" {
+  value = try(module.rds[0].skip_snap,null)
+}
