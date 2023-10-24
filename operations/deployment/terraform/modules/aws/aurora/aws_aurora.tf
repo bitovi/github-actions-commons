@@ -130,9 +130,12 @@ resource "aws_secretsmanager_secret" "aurora_database_credentials" {
   name   = "${var.aws_resource_identifier_supershort}-aurora-${random_string.random_sm.result}"
 }
 
+# Username and Password are repeated for compatibility with proxy and legacy code.
 resource "aws_secretsmanager_secret_version" "database_credentials_sm_secret_version_dev" {
   secret_id = aws_secretsmanager_secret.aurora_database_credentials.id
   secret_string = jsonencode({
+   username          = sensitive(module.aurora_cluster.cluster_master_username)
+   password          = sensitive(module.aurora_cluster.cluster_master_password)
    DB_ENGINE         = sensitive(local.dba_engine)
    DB_ENGINE_VERSION = sensitive(module.aurora_cluster.cluster_engine_version_actual)
    DB_USER           = sensitive(module.aurora_cluster.cluster_master_username)

@@ -91,9 +91,12 @@ resource "aws_secretsmanager_secret" "rds_database_credentials" {
   name   = "${var.aws_resource_identifier_supershort}-rdsdb-pub-${random_string.random_sm.result}"
 }
 
+# Username and Password are repeated for compatibility with proxy and legacy code.
 resource "aws_secretsmanager_secret_version" "database_credentials_sm_secret_version_dev" {
   secret_id = aws_secretsmanager_secret.rds_database_credentials.id
   secret_string = jsonencode({
+   username          = sensitive(aws_db_instance.default.username)
+   password          = sensitive(aws_db_instance.default.password)
    DB_ENGINE         = sensitive(aws_db_instance.default.engine)
    DB_ENGINE_VERSION = sensitive(aws_db_instance.default.engine_version)
    DB_USER           = sensitive(aws_db_instance.default.username)
