@@ -586,6 +586,6 @@ output "ecs_load_balancer_dns" {
 output "skip_snap" {
   value = try(module.rds[0].skip_snap,null)
 }
-output "skip_snap" {
+output "skip_snap_show" {
   value = var.aws_rds_db_final_snapshot
 }
