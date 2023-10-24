@@ -151,7 +151,7 @@ resource "aws_security_group_rule" "sg_rds_proxy_outside" {
   security_group_id        = aws_security_group.sg_rds_proxy.id
 }
 locals {
-  rds_proxy_allowed_security_groups = var.aws_db_proxy_allowed_security_group != null ? [for n in split(",", var.aws_db_proxy_allowed_security_group) : n] : []
+  rds_proxy_allowed_security_groups = var.aws_db_proxy_allowed_security_group != "" ? [for n in split(",", var.aws_db_proxy_allowed_security_group) : n] : []
 }
 
 ##############
