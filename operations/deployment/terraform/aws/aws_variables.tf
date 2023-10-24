@@ -479,6 +479,7 @@ variable "aws_rds_db_final_snapshot" {
   description = "Generates a snapshot of the database before deletion. None if no name is provided."
   default     = null
 }
+
 variable "aws_rds_db_restore_snapshot_identifier" {
     type        = string
   description = "Name of the snapshot to restore the database from."
