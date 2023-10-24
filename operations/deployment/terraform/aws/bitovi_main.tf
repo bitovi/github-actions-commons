@@ -164,7 +164,7 @@ module "db_proxy_rds" {
   source = "../modules/aws/db_proxy"
   count  = var.aws_rds_db_proxy ? 1 : 0
   # PROXY
-  aws_db_proxy_name                           = var.aws_db_proxy_name != "" ? var.aws_db_proxy_name : "${var.var.aws_resource_identifier}"
+  aws_db_proxy_name                           = var.aws_db_proxy_name != "" ? var.aws_db_proxy_name : "${var.aws_resource_identifier}"
   aws_db_proxy_database_id                    = module.rds[0].db_id
   aws_db_proxy_cluster                        = false
   aws_db_proxy_secret_name                    = module.rds[0].db_secret_name
@@ -227,7 +227,7 @@ module "db_proxy_aurora" {
   source = "../modules/aws/db_proxy"
   count  = var.aws_aurora_proxy ? 1 : 0
   # PROXY
-  aws_db_proxy_name                           = var.aws_db_proxy_name != "" ? var.aws_db_proxy_name : "${var.var.aws_resource_identifier}"
+  aws_db_proxy_name                           = var.aws_db_proxy_name != "" ? var.aws_db_proxy_name : "${var.aws_resource_identifier}"
   aws_db_proxy_database_id                    = module.aurora_rds[0].aurora_db_id
   aws_db_proxy_cluster                        = true
   aws_db_proxy_secret_name                    = module.aurora_rds[0].aurora_secret_name
@@ -257,7 +257,7 @@ module "db_proxy" {
   source = "../modules/aws/db_proxy"
   count  = var.aws_db_proxy_enable ? 1 : 0
   # PROXY
-  aws_db_proxy_name                           = var.aws_db_proxy_name != "" ? var.aws_db_proxy_name : "${var.var.aws_resource_identifier}"
+  aws_db_proxy_name                           = var.aws_db_proxy_name != "" ? var.aws_db_proxy_name : "${var.aws_resource_identifier}"
   aws_db_proxy_database_id                    = var.aws_db_proxy_database_id
   aws_db_proxy_cluster                        = var.aws_db_proxy_cluster
   aws_db_proxy_secret_name                    = var.aws_db_proxy_secret_name
