@@ -5,7 +5,7 @@ locals {
   #For RDS for Microsoft SQL Server, specify SQLSERVER. 
   engine_mapping = {
     "sqlserver" = "SQLSERVER"
-    "postgres"  = "POSTGRES"
+    "postgres"  = "POSTGRESQL"
     "mysql"     = "MYSQL"
     "mariadb"   = "MYSQL"
   }
