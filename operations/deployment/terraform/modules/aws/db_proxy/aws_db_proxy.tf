@@ -43,8 +43,8 @@ data "aws_rds_cluster" "db" {
 }
 
 resource "aws_db_proxy" "rds_proxy" {
-  count                 = (strcontains(lower(local.db_engine),"sqlserver") || strcontains(lower(local.db_engine),"postgres") || strcontains(lower(local.db_engine),"mysql") || strcontains(lower(local.db_engine),"mariadb")) ? 1 : 0
-  #count                  = true ? 1 : 0
+  #count                 = (strcontains(lower(local.db_engine),"sqlserver") || strcontains(lower(local.db_engine),"postgres") || strcontains(lower(local.db_engine),"mysql") || strcontains(lower(local.db_engine),"mariadb")) ? 1 : 0
+  count                  = true ? 1 : 0
   name                   = var.aws_db_proxy_name
   debug_logging          = true
   engine_family          = local.matching_engine
@@ -64,7 +64,6 @@ resource "aws_db_proxy" "rds_proxy" {
   lifecycle {
     ignore_changes = [ debug_logging ]
   }
-  depends_on = [ data.aws_rds_cluster.db,data.aws_db_instance.db ]
 }
 
 resource "aws_db_proxy_default_target_group" "default" {
