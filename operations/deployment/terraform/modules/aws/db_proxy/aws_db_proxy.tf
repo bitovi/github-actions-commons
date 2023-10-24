@@ -64,6 +64,7 @@ resource "aws_db_proxy" "rds_proxy" {
   lifecycle {
     ignore_changes = [ debug_logging ]
   }
+  depends_on = [ data.aws_rds_cluster.db,data.aws_db_instance.db ]
 }
 
 resource "aws_db_proxy_default_target_group" "default" {
