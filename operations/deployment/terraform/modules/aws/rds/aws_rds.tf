@@ -63,7 +63,7 @@ resource "aws_db_instance" "default" {
   instance_class                   = var.aws_rds_db_instance_class
   username                         = var.aws_rds_db_user != null ? var.aws_rds_db_user : "dbuser"
   password                         = random_password.rds.result
-  skip_final_snapshot              = var.aws_rds_db_final_snapshot == "" ? true : false
+  skip_final_snapshot              = var.aws_rds_db_final_snapshot == null ? true : false
   final_snapshot_identifier        = var.aws_rds_db_final_snapshot
   snapshot_identifier              = var.aws_rds_db_restore_snapshot_identifier 
   publicly_accessible              = var.aws_rds_db_publicly_accessible 
