@@ -664,9 +664,9 @@ variable "aws_db_proxy_allowed_security_group" {
 }
 
 variable "aws_db_proxy_allow_all_incoming" {
-  type        = string
+  type        = bool
   description = "Allow all incoming traffic to the DB Proxy. Mind that the proxy is only available from the internal network except manually exposed."
-  default     = ""
+  default     = "false"
 }
 
 variable "aws_db_proxy_cloudwatch_enable" {
