@@ -62,7 +62,7 @@ resource "aws_db_proxy" "rds_proxy" {
     secret_arn  = data.aws_secretsmanager_secret_version.database_credentials.arn
   }
   lifecycle {
-    ignore_changes = [ debug_logging ]
+    ignore_changes = [ debug_logging,engine_family,vpc_subnet_ids ] # Need this to avoid recreation each time. 
   }
 }
 
@@ -222,6 +222,6 @@ resource "aws_iam_role_policy_attachment" "rds_policy" {
   policy_arn = aws_iam_policy.rds_proxy_iam.arn
 }
 
-output "aws_db_proxy_endpoint" {
+output "db_proxy_endpoint" {
   value = aws_db_proxy.rds_proxy[0].endpoint
 }
