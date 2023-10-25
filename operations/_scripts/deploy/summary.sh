@@ -97,7 +97,7 @@ if [[ $SUCCESS == 'success' ]]; then
     RDS URL: ${RDS_ENDPOINT}
     RDS Details Secret Manager name: ${RDS_SECRETS_NAME}"
     if [[ -n $RDS_PROXY ]]; then
-      result_string+="\nRDS Proxy URL: ${RDS_PROXY}"
+      result_string+="RDS Proxy URL: ${RDS_PROXY}"
     fi
   elif [[ -n $AURORA_ENDPOINT ]] && [[ -n $AURORA_SECRETS_NAME ]]; then
     SUMMARY_CODE=12
