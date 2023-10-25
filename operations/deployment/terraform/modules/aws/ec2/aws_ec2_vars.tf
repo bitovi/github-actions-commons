@@ -10,6 +10,7 @@ variable "aws_ec2_instance_root_vol_size" {}
 variable "aws_ec2_instance_root_vol_preserve" {}
 variable "aws_ec2_create_keypair_sm" {}
 variable "aws_ec2_security_group_name" {}
+variable "aws_ec2_iam_instance_profile" {}
 variable "aws_ec2_port_list" {}
 # Data inputs
 variable "aws_ec2_selected_vpc_id" {}

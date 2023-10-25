@@ -1,6 +1,12 @@
 resource "aws_iam_instance_profile" "ec2_profile" {
+  count = var.aws_ec2_iam_instance_profile != "" ? 0 : 1
   name = var.aws_resource_identifier
-  role = aws_iam_role.ec2_role.name
+  role = aws_iam_role.ec2_role[0].name
+}
+
+data "aws_iam_instance_profile" "ec2_profile_provided" {
+  count = var.aws_ec2_iam_instance_profile != "" ? 1 : 0
+  name = var.aws_ec2_iam_instance_profile
 }
 
 data "aws_ami" "image_selected" {
@@ -22,7 +28,7 @@ resource "aws_instance" "server" {
   vpc_security_group_ids      = [aws_security_group.ec2_security_group.id]
   key_name                    = aws_key_pair.aws_key.key_name
   monitoring                  = true
-  iam_instance_profile        = aws_iam_instance_profile.ec2_profile.name
+  iam_instance_profile        = var.aws_ec2_iam_instance_profile != "" ? data.aws_iam_instance_profile.ec2_profile_provided[0].name : aws_iam_instance_profile.ec2_profile[0].name
   user_data_base64            = base64encode(try(file("./aws_ec2_incoming_user_data_script.sh"), ""))
   user_data_replace_on_change = var.aws_ec2_user_data_replace_on_change
   root_block_device {
@@ -51,7 +57,7 @@ resource "aws_instance" "server_ignore_ami" {
   vpc_security_group_ids      = [aws_security_group.ec2_security_group.id]
   key_name                    = aws_key_pair.aws_key.key_name
   monitoring                  = true
-  iam_instance_profile        = aws_iam_instance_profile.ec2_profile.name
+  iam_instance_profile        = var.aws_ec2_iam_instance_profile != "" ? data.aws_iam_instance_profile.ec2_profile_provided[0].name : aws_iam_instance_profile.ec2_profile[0].name
   user_data_base64            = base64encode(try(file("./aws_ec2_incoming_user_data_script.sh"), ""))
   user_data_replace_on_change = var.aws_ec2_user_data_replace_on_change
   root_block_device {

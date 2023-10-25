@@ -13,6 +13,7 @@ module "ec2" {
   aws_ec2_instance_root_vol_preserve  = var.aws_ec2_instance_root_vol_preserve
   aws_ec2_create_keypair_sm           = var.aws_ec2_create_keypair_sm 
   aws_ec2_security_group_name         = var.aws_ec2_security_group_name
+  aws_ec2_iam_instance_profile        = var.aws_ec2_iam_instance_profile
   aws_ec2_port_list                   = var.aws_ec2_port_list
   # Data inputs
   aws_ec2_selected_vpc_id             = module.vpc.aws_selected_vpc_id
