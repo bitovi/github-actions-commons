@@ -65,7 +65,7 @@ resource "aws_db_instance" "default" {
   username                         = var.aws_rds_db_user != null ? var.aws_rds_db_user : "dbuser"
   password                         = random_password.rds.result
   skip_final_snapshot              = true
-  final_snapshot_identifier        = length(var.aws_rds_db_final_snapshot) > 0 ? var.aws_rds_db_final_snapshot : var.aws_resource_identifier
+  #final_snapshot_identifier        = length(var.aws_rds_db_final_snapshot) > 0 ? var.aws_rds_db_final_snapshot : var.aws_resource_identifier
   snapshot_identifier              = var.aws_rds_db_restore_snapshot_identifier 
   publicly_accessible              = var.aws_rds_db_publicly_accessible 
   enabled_cloudwatch_logs_exports  = [var.aws_rds_db_cloudwatch_logs_exports]
