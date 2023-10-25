@@ -1072,6 +1072,11 @@ runs:
         AWS_ELB_LISTEN_PORT: ${{ inputs.aws_elb_listen_port }}
         RDS_ENDPOINT: ${{ steps.deploy.outputs.db_endpoint }}
         RDS_SECRETS_NAME: ${{ steps.deploy.outputs.db_secret_details_name }}
+        RDS_PROXY: ${{ steps.deploy.outputs.db_proxy_rds }}
+        AURORA_ENDPOINT: ${{ steps.deploy.outputs.aurora_endpoint }}
+        AURORA_SECRETS_NAME: ${{ steps.deploy.outputs.aurora_secret_details_name }}
+        AURORA_PROXY: ${{ steps.deploy.outputs.db_proxy_aurora }}
+        DB_PROXY: ${{ steps.deploy.outputs.db_proxy_endpoint }}
         ECS_ALB_DNS: ${{ steps.deploy.outputs.ecs_load_balancer_dns }}
         ECS_DNS:  ${{ steps.deploy.outputs.ecs_dns_record }}
         ECR_REPO_ARN: ${{ steps.deploy.outputs.ecr_repository_arn }}
