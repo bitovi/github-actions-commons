@@ -481,9 +481,9 @@ variable "aws_rds_db_final_snapshot" {
 }
 
 variable "aws_rds_db_restore_snapshot_identifier" {
-    type        = string
+  type        = string
   description = "Name of the snapshot to restore the database from."
-  default     = null
+  default     = ""
 }
 
 variable "aws_rds_db_cloudwatch_logs_exports" {
