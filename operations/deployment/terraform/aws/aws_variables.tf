@@ -390,10 +390,22 @@ variable "aws_rds_db_enable" {
   default     = false
 }
 
+variable "aws_rds_db_proxy" {
+  type        = bool
+  description = "DB Proxy Toggle"
+  default     = false
+}
+
 variable "aws_rds_db_name" {
   type        = string
   description = "The name of the database to create when the DB instance is created. If this parameter is not specified, no database is created in the DB instance."
   default     = null
+}
+
+variable "aws_rds_db_user" {
+  type        = string
+  description = "Database username"
+  default     = "dbuser"
 }
 
 variable "aws_rds_db_engine" {
@@ -412,6 +424,24 @@ variable "aws_rds_db_security_group_name" {
   type        = string
   description = "The name of the database security group. Defaults to SG for aws_resource_identifier - RDS"
   default     = null
+}
+
+variable "aws_rds_db_allowed_security_groups" {
+  type        = string
+  description = "Comma separated list of security groups to add to the DB SG"
+  default     = null
+}
+
+variable "aws_rds_db_ingress_allow_all" {
+  type        = bool
+  description = "Allow incoming traffic from 0.0.0.0/0."
+  default     = true
+}
+
+variable "aws_rds_db_publicly_accessible" {
+  type        = bool
+  description = "Allow the database to be publicly accessible."
+  default     = false
 }
 
 variable "aws_rds_db_port" {
@@ -444,19 +474,25 @@ variable "aws_rds_db_instance_class" {
   default     = "db.t3.micro"
 }
 
-variable "aws_rds_db_user" {
+variable "aws_rds_db_final_snapshot" {
   type        = string
-  description = "user"
-  default     = "dbuser"
+  description = "Generates a snapshot of the database before deletion. None if no name is provided."
+  default     = ""
 }
 
-variable "aws_rds_cloudwatch_logs_exports" {
+variable "aws_rds_db_restore_snapshot_identifier" {
+  type        = string
+  description = "Name of the snapshot to restore the database from."
+  default     = ""
+}
+
+variable "aws_rds_db_cloudwatch_logs_exports" {
   type        = string
   description = "logs exports"
   default     = "postgresql"
 }
 
-variable "aws_rds_additional_tags" {
+variable "aws_rds_db_additional_tags" {
   type        = string
   description = "A list of strings that will be added to created resources"
   default     = "{}"
@@ -469,71 +505,91 @@ variable "aws_aurora_enable" {
   description = "deploy a postgres database"
   default     = false
 }
+
+variable "aws_aurora_proxy" {
+  type        = bool
+  description = "Aurora DB Proxy Toggle"
+  default     = false
+}
+
 variable "aws_aurora_engine" {
   type        = string
   description = "The engine to use for postgres.  Defaults to `aurora-postgresql`.  For more details, see: https://aws.amazon.com/rds/, https://registry.terraform.io/modules/terraform-aws-modules/rds-aurora/aws/latest?tab=inputs"
   default     = "aurora-postgresql"
 }
+
 variable "aws_aurora_engine_version" {
   type        = string
   description = "The version of the engine to use for postgres.  Defaults to `11.17`."
   default     = "11.17"
 }
+
 variable "aws_aurora_database_group_family" {
   type        = string
   default     = "aurora-postgresql11"
   description = "postgres group family"
 }
+
 variable "aws_aurora_instance_class" {
   type        = string
   description = "The size of the db instances.  For more details, see: https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Concepts.DBInstanceClass.html, https://registry.terraform.io/modules/terraform-aws-modules/rds-aurora/aws/latest?tab=inputs"
   default     = "db.t3.medium"
 }
+
 variable "aws_aurora_security_group_name" {
   type        = string
   default     = ""
   description = "Name of the security group to use for postgres"
 }
+
 variable "aws_aurora_subnets" {
   type        = string
   description = "The list of subnet ids to use for postgres. For more details, see: https://registry.terraform.io/modules/terraform-aws-modules/rds-aurora/aws/latest?tab=inputs"
   default     = ""
 }
+
 variable "aws_aurora_cluster_name" {
   type        = string
   description = "The name of the cluster. will be created if it does not exist."
   default     = ""
 }
+
 variable "aws_aurora_database_name" {
   type        = string
   description = "The name of the database. will be created if it does not exist."
   default     = "root"
 }
+
 variable "aws_aurora_database_port" {
   type        = string
   default     = "5432"
   description = "database port"
 }
+
 variable "aws_aurora_restore_snapshot" {
   type        = string
   default     = ""
   description = "Restore an initial snapshot of the DB."
 }
+
 variable "aws_aurora_snapshot_name" {
   type        = string
   default     = ""
   description = "Takes a snapshot of the DB."
 }
+
 variable "aws_aurora_snapshot_overwrite" {
   type        = bool
   default     = false
   description = "Overwrites snapshot."
 }
+
 variable "aws_aurora_database_protection" {
   type        = bool
   default     = false
   description = "Protects the database from deletion."
 }
+
 variable "aws_aurora_database_final_snapshot" {
   type        = string
   default     = ""
@@ -541,6 +597,92 @@ variable "aws_aurora_database_final_snapshot" {
 }
 
 variable "aws_aurora_additional_tags" {
+  type        = string
+  description = "A list of strings that will be added to created resources"
+  default     = "{}"
+}
+
+# RDS Proxy
+
+variable "aws_db_proxy_enable" {
+  type        = bool
+  description = "deploy a proxy for the database"
+  default     = false
+}
+
+variable "aws_db_proxy_name" {
+  type        = string
+  description = "DB Proxy name"
+  default     = ""
+}
+
+variable "aws_db_proxy_database_id" {
+  type        = string
+  description = "Database ID to create proxy for"
+  default     = ""
+}
+
+variable "aws_db_proxy_cluster" {
+  type        = bool
+  description = "Define if Database is a cluster or not"
+  default     = false
+}
+
+variable "aws_db_proxy_secret_name" {
+  type        = string
+  description = "Name of the secret containing DB parameters to connect to"
+  default     = ""
+}
+
+variable "aws_db_proxy_client_password_auth_type" {
+  type        = string
+  description = "Auth type to use, will use the following, depending on DB the family. MYSQL_NATIVE_PASSWORD, POSTGRES_SCRAM_SHA_256, and SQL_SERVER_AUTHENTICATION"
+  default     = ""
+}
+
+variable "aws_db_proxy_tls" {
+  type        = bool
+  description = "Toogle TLS enforcement for connection"
+  default     = "true"
+}
+
+variable "aws_db_proxy_security_group_name" {
+  type        = string
+  description = "Name for the proxy security group. Default to aws_resource_identifier if none."
+  default     = ""
+}
+
+variable "aws_db_proxy_database_security_group_allow" {
+  type        = bool
+  description = "Will add an incoming rule from every security group associated with the DB"
+  default     = false
+}
+
+variable "aws_db_proxy_allowed_security_group" {
+  type        = string
+  description = "Comma separated list of SG Ids to add."
+  default     = ""
+}
+
+variable "aws_db_proxy_allow_all_incoming" {
+  type        = bool
+  description = "Allow all incoming traffic to the DB Proxy. Mind that the proxy is only available from the internal network except manually exposed."
+  default     = "false"
+}
+
+variable "aws_db_proxy_cloudwatch_enable" {
+  type        = bool
+  description = "Toggle Cloudwatch logs. Will be stored in /aws/rds/proxy/rds_proxy.name"
+  default     = false
+}
+
+variable "aws_db_proxy_cloudwatch_retention_days" {
+  type        = string
+  description = "Number of days to retain logs"
+  default     = "14"
+}
+
+variable "aws_db_proxy_additional_tags" {
   type        = string
   description = "A list of strings that will be added to created resources"
   default     = "{}"

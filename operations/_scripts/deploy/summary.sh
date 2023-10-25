@@ -13,6 +13,11 @@
 # AWS_ELB_LISTEN_PORT
 # RDS_ENDPOINT
 # RDS_SECRETS_NAME
+# RDS_PROXY
+# AURORA_ENDPOINT
+# AURORA_SECRETS_NAME
+# AURORA_PROXY
+# DB_PROXY
 # ECS_ALB_DNS
 # ECS_DNS
 # ECR_REPO_ARN
@@ -33,7 +38,9 @@
 # 9 - success, destroy infrastructure
 # 10 - success, ECR created
 # 11 - success. RDS created
-# 12 - success, ECS created
+# 12 - success, Aurora created
+# 13 - success, DB Proxy created
+# 14 - success, ECS created
 # 500 - cancelled
 
 # Function to process and return the result as a string
@@ -87,14 +94,31 @@ if [[ $SUCCESS == 'success' ]]; then
   elif [[ -n $RDS_ENDPOINT ]] && [[ -n $RDS_SECRETS_NAME ]]; then
     SUMMARY_CODE=11
     result_string="## Deploy Complete! :rocket:
-    RDS Endpoint: ${RDS_ENDPOINT}
+    RDS URL: ${RDS_ENDPOINT}
     RDS Details Secret Manager name: ${RDS_SECRETS_NAME}"
-  elif [[ -n $ECS_ALB_DNS ]] && ![[ -n $ECS_DNS ]]; then
+    if [[ -n $RDS_PROXY ]]; then
+      result_string+="
+    RDS Proxy URL: ${RDS_PROXY}"
+    fi
+  elif [[ -n $AURORA_ENDPOINT ]] && [[ -n $AURORA_SECRETS_NAME ]]; then
     SUMMARY_CODE=12
+    result_string="## Deploy Complete! :rocket:
+    Aurora URL: ${AURORA_ENDPOINT}
+    Aurora Details Secret Manager name: ${AURORA_SECRETS_NAME}"
+    if [[ -n $AURORA_PROXY ]]; then
+      result_string+="
+      Aurora Proxy URL: ${AURORA_PROXY}"
+    fi
+  elif [[ -n $DB_PROXY ]]; then
+    SUMMARY_CODE=13
+    result_string="## Deploy Complete! :rocket:
+    DB Proxy URL: ${DB_PROXY}"
+  elif [[ -n $ECS_ALB_DNS ]] && ![[ -n $ECS_DNS ]]; then
+    SUMMARY_CODE=14
     result_string="## Deploy Complete! :rocket:
     ECS LB Endpoint: ${ECS_ALB_DNS}"
   elif [[ -n $ECS_ALB_DNS ]] && [[ -n $ECS_DNS ]]; then
-    SUMMARY_CODE=12
+    SUMMARY_CODE=14
     result_string="## Deploy Complete! :rocket:
     ECS LB Endpoing: ${ECS_ALB_DNS}
     ECS Public DNS: ${ECS_DNS}"

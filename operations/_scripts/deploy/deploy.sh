@@ -79,6 +79,7 @@ if [[ $(alpha_only "$TF_STATE_BUCKET_DESTROY") == true ]] && ! [[ $(alpha_only "
      [[ $(alpha_only "$AWS_EFS_ENABLE") == true ]] || 
      [[ $(alpha_only "$AWS_EC2_INSTANCE_CREATE") == true ]] ||
      [[ $(alpha_only "$AWS_ECS_ENABLE") == true ]] || 
+     [[ $(alpha_only "$AWS_DB_PROXY_ENABLE") == true ]] ||
      [[ $(alpha_only "$AWS_ECR_REPO_CREATE") == true ]] ||
      [[ $(alpha_only "$AWS_EKS_CREATE") == true ]]; then 
     export TF_STATE_BUCKET_DESTROY="false"
