@@ -552,7 +552,7 @@ output "aurora_secret_details_name" {
 }
 
 output "db_proxy_aurora" {
-  value = try(module.db_proxy_aurora[0].endpoint,null)
+  value = try(module.db_proxy_aurora[0].db_proxy_endpoint,null)
 }
 
 output "vm_url" {
@@ -568,11 +568,11 @@ output "db_secret_details_name" {
 }
 
 output "db_proxy_rds" {
-  value = try(module.db_proxy_rds[0].db_endpoint,null)
+  value = try(module.db_proxy_rds[0].db_proxy_endpoint,null)
 }
 
 output "db_proxy_endpoint" {
-  value = try(module.db_proxy[0].db_endpoint,null)
+  value = try(module.db_proxy[0].db_proxy_endpoint,null)
 }
 
 output "ecs_dns_record" {
