@@ -44,14 +44,6 @@ aws_resource_identifier="aws_resource_identifier = \"${GITHUB_IDENTIFIER}\""
 aws_resource_identifier_supershort="aws_resource_identifier_supershort = \"${GITHUB_IDENTIFIER_SS}\""
 
 # Special cases - Values that need fallback values or special calculation
-
-aws_ec2_iam_instance_profile=
-if [ -n "${AWS_EC2_IAM_INSTANCE_PROFILE}" ]; then
-  aws_ec2_iam_instance_profile="aws_ec2_iam_instance_profile =\"${AWS_EC2_IAM_INSTANCE_PROFILE}\""
-else
-  aws_ec2_iam_instance_profile="aws_ec2_iam_instance_profile =\"${GITHUB_IDENTIFIER}\""
-fi
-
 aws_r53_sub_domain_name=
 if [ -n "${AWS_R53_SUB_DOMAIN_NAME}" ]; then
   aws_r53_sub_domain_name="aws_r53_sub_domain_name = \"${AWS_R53_SUB_DOMAIN_NAME}\""
@@ -94,7 +86,7 @@ if [[ $(alpha_only "$AWS_EC2_INSTANCE_CREATE") == true ]]; then
   aws_ec2_ami_owner=$(generate_var aws_ec2_ami_owner $AWS_EC2_AMI_OWNER)
   aws_ec2_ami_id=$(generate_var aws_ec2_ami_id $AWS_EC2_AMI_ID)
   aws_ec2_ami_update=$(generate_var aws_ec2_ami_update $AWS_EC2_AMI_UPDATE)
-  # aws_ec2_iam_instance_profile=$(generate_var aws_ec2_iam_instance_profile AWS_EC2_IAM_INSTANCE_PROFILE - Special case
+  aws_ec2_iam_instance_profile=$(generate_var aws_ec2_iam_instance_profile $AWS_EC2_IAM_INSTANCE_PROFILE)
   aws_ec2_instance_type=$(generate_var aws_ec2_instance_type $AWS_EC2_INSTANCE_TYPE)
   aws_ec2_instance_root_vol_size=$(generate_var aws_ec2_instance_root_vol_size $AWS_EC2_INSTANCE_ROOT_VOL_SIZE)
   aws_ec2_instance_root_vol_preserve=$(generate_var aws_ec2_instance_root_vol_preserve $AWS_EC2_INSTANCE_ROOT_VOL_PRESERVE)
