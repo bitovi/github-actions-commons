@@ -26,7 +26,7 @@ fi
 if [[ $(alpha_only "$AWS_EFS_CREATE") == true ]] || [[ $(alpha_only "$AWS_EFS_CREATE_HA") == true ]] || [ -n "$AWS_EFS_FS_ID" ]; then 
   export AWS_EFS_ENABLE="true"
 else
-  export AWS_EFS_ENABLE="false"
+  export AWS_EFS_ENABLE="" # Intentional, being consistent with the rest of incoming vars
 fi
 
 # Generate Github identifiers vars
