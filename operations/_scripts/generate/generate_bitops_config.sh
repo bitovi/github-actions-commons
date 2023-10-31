@@ -37,12 +37,25 @@ function check_aws_bucket_for_file() {
   return $?
 }
 
+function generate_tf_state_file_name () {
+  if [ -n "$TF_STATE_FILE_NAME" ]; then
+    filename="$TF_STATE_FILE_NAME"
+  else
+    filename="tf-state-$1"
+  fi
+
+  if [ -n "$TF_STATE_FILE_NAME_APPEND" ]; then
+    filename="${filename}-${TF_STATE_FILE_NAME_APPEND}"
+  fi
+  echo $filename
+}
+
 function check_statefile() {
   provider="$1"
   bucket="$TF_STATE_BUCKET"
   commons_module="$2"
   if [[ "$provider" == "aws" ]]; then
-    check_aws_bucket_for_file $bucket "tf-state-$commons_module"
+    check_aws_bucket_for_file $bucket $(generate_tf_state_file_name $commons_module)
     return $?
   fi 
 }

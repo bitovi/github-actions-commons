@@ -4,8 +4,21 @@
 
 echo ""
 
-tf_state_file="tf-state-eks"
 bucket="$TF_STATE_BUCKET"
+commons_module="eks"
+
+function generate_tf_state_file_name () {
+  if [ -n "$TF_STATE_FILE_NAME" ]; then
+    filename="$TF_STATE_FILE_NAME"
+  else
+    filename="tf-state-$1"
+  fi
+
+  if [ -n "$TF_STATE_FILE_NAME_APPEND" ]; then
+    filename="${filename}-${TF_STATE_FILE_NAME_APPEND}"
+  fi
+  echo $filename
+}
 
 function check_aws_bucket_for_file() {
   bucket="$1"
@@ -14,6 +27,7 @@ function check_aws_bucket_for_file() {
   return $?
 }
 
+tf_state_file=$(generate_tf_state_file_name $commons_module)
 
 if [[ "$BITOPS_TERRAFORM_COMMAND" == "destroy" ]]; then
   if check_aws_bucket_for_file $bucket "$tf_state_file"; then
