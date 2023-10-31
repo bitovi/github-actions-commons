@@ -4,6 +4,15 @@ set -ex
 
 echo "In generate_bitops_config.sh"
 
+echo "Debugging vars"
+echo "AWS_EC2_INSTANCE_CREATE $AWS_EC2_INSTANCE_CREATE"
+echo "AWS_EFS_ENABLE $AWS_EFS_ENABLE"
+echo "AWS_AURORA_ENABLE $AWS_AURORA_ENABLE"
+echo "AWS_RDS_DB_ENABLE $AWS_RDS_DB_ENABLE"
+echo "AWS_ECS_ENABLE $AWS_ECS_ENABLE"
+echo "AWS_DB_PROXY_ENABLE $AWS_DB_PROXY_ENABLE"
+echo "TF_STACK_DESTROY $TF_STACK_DESTROY"
+
 ### Functions
 function alpha_only() {
   echo "$1" | tr -cd '[:alpha:]' | tr '[:upper:]' '[:lower:]'
@@ -142,33 +151,39 @@ bitops:
     if check_statefile aws aws; then
       add_terraform_module aws
       create_bitops_terraform_config aws false targets
+      echo "1"
     fi
   else
     if [[ $(alpha_only "$AWS_EC2_INSTANCE_CREATE") != "" ]] || [[ $(alpha_only "$AWS_EFS_ENABLE") != "" ]] || [[ "$AWS_AURORA_ENABLE" != "" ]] || [[ "$AWS_RDS_DB_ENABLE" != "" ]] || [[ "$AWS_ECS_ENABLE" != "" ]] || [[ "$AWS_RDS_PROXY_ENABLE" != "" ]]; then
       add_terraform_module aws
       create_bitops_terraform_config aws true targets
+      echo "2"
     fi
   fi
   if [[ $(alpha_only "$AWS_ECR_REPO_CREATE") != true ]]; then
     if check_statefile aws ecr; then
       add_terraform_module ecr
       create_bitops_terraform_config ecr false
+      echo "3"
     fi
   else
     if [[ $(alpha_only "$AWS_ECR_REPO_CREATE") == true ]]; then
       add_terraform_module ecr
       create_bitops_terraform_config ecr true
+      echo "4"
     fi
   fi
   if [[ $(alpha_only "$AWS_EKS_CREATE") != true ]]; then
     if check_statefile aws eks; then
       add_terraform_module eks
       create_bitops_terraform_config eks false
+      echo "5"
     fi
   else
     if [[ $(alpha_only "$AWS_EKS_CREATE") == true ]]; then
       add_terraform_module eks
       create_bitops_terraform_config eks true
+      echo "6"
     fi
   fi
   
