@@ -313,7 +313,7 @@ inputs:
     required: false
   aws_rds_db_identifier:
     description: 'Database identifier that will appear in the AWS Console. Defaults to aws_resource_identifier if none set.'
-    required: false     AWS_RDS_DB_IDENTIFIER: ${{ inputs.aws_rds_db_identifier }}
+    required: false
   aws_rds_db_name:
     description: 'The name of the database to create when the DB instance is created.'
     required: false
