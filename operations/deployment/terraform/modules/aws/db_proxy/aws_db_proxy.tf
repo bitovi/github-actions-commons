@@ -81,7 +81,10 @@ resource "aws_db_proxy_target" "db_instance" {
   db_instance_identifier = data.aws_db_instance.db[0].id
   db_proxy_name          = aws_db_proxy.rds_proxy[0].name
   target_group_name      = aws_db_proxy_default_target_group.default.name
-
+  lifecycle {
+    ignore_changes = [ db_instance_identifier ]
+    replace_triggered_by = [ data.aws_db_instance.db ]
+  }
   depends_on = [ aws_db_proxy.rds_proxy ]
 }
 
@@ -90,7 +93,10 @@ resource "aws_db_proxy_target" "db_cluster" {
   db_cluster_identifier  = data.aws_rds_cluster.db[0].id
   db_proxy_name          = aws_db_proxy.rds_proxy[0].name
   target_group_name      = aws_db_proxy_default_target_group.default.name
-
+  lifecycle {
+    ignore_changes = [ db_instance_identifier ]
+    replace_triggered_by = [ data.aws_rds_cluster.db ]
+  }
   depends_on = [ aws_db_proxy.rds_proxy ]
 }
 
@@ -199,7 +205,7 @@ resource "aws_iam_policy" "rds_proxy_iam" {
                 "secretsmanager:ListSecretVersionIds"
             ],
             "Resource": [
-                "${data.aws_secretsmanager_secret_version.database_credentials.arn}"
+                "arn:aws:secretsmanager:${data.aws_region.current.name}.${data.aws_caller_identity.current.account_id}:secret:${var.aws_db_proxy_secret_name}*"
             ]
         },
         {
@@ -215,6 +221,9 @@ resource "aws_iam_policy" "rds_proxy_iam" {
     ]
 }
 POLICY
+  lifecycle {
+    ignore_changes = [ policy ]
+  }
 }
 
 resource "aws_iam_role_policy_attachment" "rds_policy" {

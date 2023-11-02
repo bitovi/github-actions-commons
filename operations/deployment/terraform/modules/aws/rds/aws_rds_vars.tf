@@ -1,3 +1,4 @@
+variable "aws_rds_db_identifier" {}
 variable "aws_rds_db_name" {}
 variable "aws_rds_db_user" {}
 variable "aws_rds_db_engine" {}

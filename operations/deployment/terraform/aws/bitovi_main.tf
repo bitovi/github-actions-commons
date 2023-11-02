@@ -134,6 +134,7 @@ module "rds" {
   # RDS
   aws_rds_db_name                        = var.aws_rds_db_name
   aws_rds_db_user                        = var.aws_rds_db_user
+  aws_rds_db_identifier                  = var.aws_rds_db_identifier != "" ? var.aws_rds_db_identifier : lower(var.aws_resource_identifier)
   aws_rds_db_engine                      = var.aws_rds_db_engine
   aws_rds_db_engine_version              = var.aws_rds_db_engine_version
   aws_rds_db_security_group_name         = var.aws_rds_db_security_group_name

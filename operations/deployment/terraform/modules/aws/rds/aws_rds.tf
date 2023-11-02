@@ -53,7 +53,7 @@ resource "aws_db_subnet_group" "selected" {
 }
 
 resource "aws_db_instance" "default" {
-  identifier                       = var.aws_rds_db_name != null ? var.aws_rds_db_name : var.aws_resource_identifier
+  identifier                       = var.aws_rds_db_identifier
   engine                           = var.aws_rds_db_engine
   engine_version                   = var.aws_rds_db_engine_version
   db_subnet_group_name             = aws_db_subnet_group.selected.name
@@ -98,13 +98,19 @@ resource "aws_secretsmanager_secret_version" "database_credentials_sm_secret_ver
   secret_string = jsonencode({
    username          = sensitive(aws_db_instance.default.username)
    password          = sensitive(aws_db_instance.default.password)
+   host              = sensitive(aws_db_instance.default.address)
+   port              = sensitive(aws_db_instance.default.port)
+   database          = sensitive(aws_db_instance.default.db_name)
+   engine            = sensitive(aws_db_instance.default.engine)
+   engine_version    = sensitive(aws_db_instance.default.engine_version)
+   DB_USER           = sensitive(aws_db_instance.default.username)
+   DB_USERNAME       = sensitive(aws_db_instance.default.username)
+   DB_PASSWORD       = sensitive(aws_db_instance.default.password)
+   DB_HOST           = sensitive(aws_db_instance.default.address)
+   DB_PORT           = sensitive(aws_db_instance.default.port)
+   DB_NAME           = sensitive(aws_db_instance.default.db_name)
    DB_ENGINE         = sensitive(aws_db_instance.default.engine)
    DB_ENGINE_VERSION = sensitive(aws_db_instance.default.engine_version)
-   DB_USER           = sensitive(aws_db_instance.default.username)
-   DB_PASSWORD       = sensitive(aws_db_instance.default.password)
-   DB_NAME           = sensitive(aws_db_instance.default.db_name)
-   DB_PORT           = sensitive(aws_db_instance.default.port)
-   DB_HOST           = sensitive(aws_db_instance.default.address)
   })
 }
 

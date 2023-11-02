@@ -128,7 +128,7 @@ The following inputs can be used as `step.with` keys
 #### **Secrets and Environment Variables Inputs**
 | Name             | Type    | Description - Check note about [**environment variables**](#environment-variables). |
 |------------------|---------|------------------------------------|
-| `env_aws_secret` | String | Secret name to pull environment variables from AWS Secret Manager. |
+| `env_aws_secret` | String | Secret name to pull environment variables from AWS Secret Manager. Accepts comma separated list of secrets. |
 | `env_repo` | String | `.env` file containing environment variables to be used with the app. Name defaults to `repo_env`. |
 | `env_ghs` | String | `.env` file to be used with the app. This is the name of the [Github secret](https://docs.github.com/es/actions/security-guides/encrypted-secrets). |
 | `env_ghv` | String | `.env` file to be used with the app. This is the name of the [Github variables](https://docs.github.com/en/actions/learn-github-actions/variables). |
@@ -225,6 +225,7 @@ The following inputs can be used as `step.with` keys
 |------------------|---------|------------------------------------|
 | `aws_rds_db_enable`| Boolean | Set to `true` to enable an RDS DB. |
 | `aws_rds_db_proxy`| Boolean | Set to `true` to add a RDS DB Proxy. |
+| `aws_rds_db_identifier`| String | Database identifier that will appear in the AWS Console. Defaults to `aws_resource_identifier` if none set. |
 | `aws_rds_db_name`| String | The name of the database to create when the DB instance is created. If this parameter is not specified, no database is created in the DB instance. |
 | `aws_rds_db_user`| String | Username for the db. Defaults to `dbuser`. |
 | `aws_rds_db_engine`| String | Which Database engine to use. Defaults to `postgres`. |
@@ -508,6 +509,25 @@ The Aurora available environment variables are:
 | `AURORA_CLUSTER_READER_ENDPOINT` | A read-only endpoint for the cluster, automatically load-balanced across replicas |
 | `AURORA_CLUSTER_ENGINE_VERSION_ACTUAL` | The running version of the cluster database |
 | `AURORA_CLUSTER_HOSTED_ZONE_ID`| The Route53 Hosted Zone ID of the endpoint |
+
+### Stored secret in AWS Secrets Manager
+In order to be flexible, the following variables will be used to store DB related info in AWS Secretes Manager
+
+`username`
+`password`
+`host`
+`port`
+`database`
+`engine`
+`engine_version`
+`DB_USER`
+`DB_USERNAME`
+`DB_PASSWORD`
+`DB_HOST`
+`DB_PORT`
+`DB_NAME`
+`DB_ENGINE`
+`DB_ENGINE_VERSION`
 
 ### AWS Root Certs
 The AWS root certificate is downloaded and accessible via the `rds-combined-ca-bundle.pem` file in root of your app repo/directory.
