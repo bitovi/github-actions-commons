@@ -199,7 +199,7 @@ resource "aws_iam_policy" "rds_proxy_iam" {
                 "secretsmanager:ListSecretVersionIds"
             ],
             "Resource": [
-                "${data.aws_secretsmanager_secret_version.database_credentials.arn}"
+                "arn:aws:secretsmanager:${data.aws_region.current.name}.${data.aws_caller_identify.current.account_id}:secret:${var.aws_db_proxy_secret_name}*"
             ]
         },
         {
