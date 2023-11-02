@@ -70,8 +70,8 @@ resource "aws_elasticache_replication_group" "redis_cluster" {
   transit_encryption_enabled  = var.aws_redis_in_transit_encryption
   subnet_group_name           = aws_elasticache_subnet_group.selected.name
   security_group_ids          = [aws_security_group.redis_security_group.id]
-  num_node_groups             = tonumber(var.aws_redis_num_node_groups)
-  replicas_per_node_group     = tonumber(var.aws_redis_replicas_per_node_group)
+  num_node_groups             = try(tonumber(var.aws_redis_num_node_groups),null)
+  replicas_per_node_group     = try(tonumber(var.aws_redis_replicas_per_node_group),null)
   multi_az_enabled            = var.aws_redis_multi_az_enabled
 
 
