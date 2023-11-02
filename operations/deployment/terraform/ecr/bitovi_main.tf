@@ -42,7 +42,7 @@ locals {
   }
   default_tags = merge(local.aws_tags, jsondecode(var.aws_additional_tags))
   # Module tagging
-  ecr_tags    = merge(local.default_tags,jsondecode(var.aws_ecr_additional_tags))
+  ecr_tags     = merge(local.default_tags,jsondecode(var.aws_ecr_additional_tags))
 }
 
 output "ecr_repository_arn" {

@@ -119,7 +119,7 @@ inputs:
 
   # ENV files
   env_aws_secret:
-    description: 'Secret name to pull env variables from AWS Secret Manager'
+    description: 'Secret name to pull env variables from AWS Secret Manager, could be a comma separated list, read in order. Expected JSON content.'
     required: false
   env_repo:
     description: 'File containing environment variables to be used with the app'
