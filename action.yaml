@@ -311,6 +311,9 @@ inputs:
   aws_rds_db_proxy:
     description: 'Set to true to add a RDS DB Proxy'
     required: false
+  aws_rds_db_identifier:
+    description: 'Database identifier that will appear in the AWS Console. Defaults to aws_resource_identifier if none set.'
+    required: false     AWS_RDS_DB_IDENTIFIER: ${{ inputs.aws_rds_db_identifier }}
   aws_rds_db_name:
     description: 'The name of the database to create when the DB instance is created.'
     required: false
@@ -902,6 +905,7 @@ runs:
         # AWS RDS
         AWS_RDS_DB_ENABLE: ${{ inputs.aws_rds_db_enable }}
         AWS_RDS_DB_PROXY: ${{ inputs.aws_rds_db_proxy }}
+        AWS_RDS_DB_IDENTIFIER: ${{ inputs.aws_rds_db_identifier }}
         AWS_RDS_DB_NAME: ${{ inputs.aws_rds_db_name }}
         AWS_RDS_DB_USER: ${{ inputs.aws_rds_db_user }}
         AWS_RDS_DB_ENGINE: ${{ inputs.aws_rds_db_engine }}

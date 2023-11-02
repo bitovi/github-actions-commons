@@ -162,6 +162,7 @@ fi
 if [[ $(alpha_only "$AWS_RDS_DB_ENABLE") == true ]]; then
   aws_rds_db_enable=$(generate_var aws_rds_db_enable $AWS_RDS_DB_ENABLE)
   aws_rds_db_proxy=$(generate_var aws_rds_db_proxy $AWS_RDS_DB_PROXY)
+  aws_rds_db_identifier=$(generate_var aws_rds_db_identifier $AWS_RDS_DB_IDENTIFIER)
   aws_rds_db_name=$(generate_var aws_rds_db_name $AWS_RDS_DB_NAME)
   aws_rds_db_user=$(generate_var aws_rds_db_user $AWS_RDS_DB_USER)
   aws_rds_db_engine=$(generate_var aws_rds_db_engine $AWS_RDS_DB_ENGINE)
@@ -420,6 +421,7 @@ $aws_efs_additional_tags
 #-- RDS --#
 $aws_rds_db_enable
 $aws_rds_db_proxy
+$aws_rds_db_identifier
 $aws_rds_db_name
 $aws_rds_db_user
 $aws_rds_db_engine

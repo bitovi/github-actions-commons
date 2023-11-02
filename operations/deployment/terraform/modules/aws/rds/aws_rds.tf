@@ -53,7 +53,7 @@ resource "aws_db_subnet_group" "selected" {
 }
 
 resource "aws_db_instance" "default" {
-  identifier                       = var.aws_rds_db_name != null ? var.aws_rds_db_name : var.aws_resource_identifier
+  identifier                       = var.aws_rds_db_identifier
   engine                           = var.aws_rds_db_engine
   engine_version                   = var.aws_rds_db_engine_version
   db_subnet_group_name             = aws_db_subnet_group.selected.name

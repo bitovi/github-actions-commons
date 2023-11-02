@@ -396,6 +396,12 @@ variable "aws_rds_db_proxy" {
   default     = false
 }
 
+variable "aws_rds_db_identifier" {
+  type        = string
+  description = "Database identifier that will appear in the AWS Console. Defaults to aws_resource_identifier if none set."
+  default     = ""
+}
+
 variable "aws_rds_db_name" {
   type        = string
   description = "The name of the database to create when the DB instance is created. If this parameter is not specified, no database is created in the DB instance."
