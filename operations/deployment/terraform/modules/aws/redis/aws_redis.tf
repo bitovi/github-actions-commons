@@ -38,8 +38,8 @@ resource "aws_security_group_rule" "ingress_redis_extras" {
 }
 
 locals {
-  aws_redis_allowed_security_groups = var.aws_redis_allowed_security_groups != null ? [for n in split(",", var.aws_redis_allowed_security_groups) : n] : []
-  aws_redis_subnets = var.aws_redis_subnets  != null ? [for n in split(",", var.aws_redis_subnets)  : (n)] :  var.aws_selected_subnets
+  aws_redis_allowed_security_groups = var.aws_redis_allowed_security_groups != "" ? [for n in split(",", var.aws_redis_allowed_security_groups) : n] : []
+  aws_redis_subnets = var.aws_redis_subnets  != "" ? [for n in split(",", var.aws_redis_subnets)  : (n)] :  var.aws_selected_subnets
 }
 
 resource "aws_elasticache_subnet_group" "selected" {
@@ -101,7 +101,7 @@ data "aws_elasticache_user" "default" {
 
 resource "aws_elasticache_user_group" "redis" {
   engine        = "REDIS"
-  user_group_id = var.aws_redis_user_group_name != "" ? var.aws_redis_user_group_name : "${var.aws_resource_identifier}-redis"
+  user_group_id = var.aws_redis_user_group_name != "" ? var.aws_redis_user_group_name : "${var.aws_resource_identifier_supershort}-redis"
   user_ids      = [aws_elasticache_user.redis.user_id,data.aws_elasticache_user.default.user_id]
 }
 
