@@ -818,7 +818,7 @@ variable "aws_redis_snapshot_restore_name" {
 variable "aws_redis_cloudwatch_enabled" {
   type        = bool
   description = "Enable or disables Cloudwatch logging."
-  default     = ""
+  default     = true
 }
 
 variable "aws_redis_cloudwatch_lg_name" {
