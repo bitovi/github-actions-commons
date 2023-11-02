@@ -126,7 +126,7 @@ resource "aws_secretsmanager_secret" "redis_credentials_sl" {
    name   = "${var.aws_resource_identifier_supershort}-redis-single-line${random_string.random.result}"
 }
 
-resource "aws_secretsmanager_secret_version" "rediscredentials_sm_secret_version" {
+resource "aws_secretsmanager_secret_version" "rediscredentials_sm_secret_version_sl" {
   secret_id = aws_secretsmanager_secret.redis_credentials_sl.id
   secret_string = sensitive("${local.redis_protocol}://${aws_elasticache_user.redis.user_name}:${random_password.redis.result}@${local.redis_url}:${aws_elasticache_replication_group.redis_cluster.port}")
 }
