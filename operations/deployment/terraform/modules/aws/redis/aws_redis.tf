@@ -133,7 +133,7 @@ resource "aws_secretsmanager_secret_version" "rediscredentials_sm_secret_version
 
 // Creates a secret manager secret for the databse credentials
 resource "aws_secretsmanager_secret" "redis_credentials" {
-   name   = "${var.aws_resource_identifier_supershort}-redis-single-line${random_string.random.result}"
+   name   = "${var.aws_resource_identifier_supershort}-redis-${random_string.random.result}"
 }
 
 resource "aws_secretsmanager_secret_version" "rediscredentials_sm_secret_version" {
