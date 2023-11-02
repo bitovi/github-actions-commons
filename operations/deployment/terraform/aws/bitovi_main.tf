@@ -626,3 +626,15 @@ output "ecs_dns_record" {
 output "ecs_load_balancer_dns" {
   value = try(module.aws_ecs[0].load_balancer_dns,null)
 }
+
+output "redis_secret_name" {
+  value = try(module.redis[0].redis_secret_name,null)
+}
+
+output "redis_endpoint" {
+  value = try(module.redis[0].redis_endpoint,null)
+}
+
+output "redis_connection_string_secret" {
+  value = try(module.redis[0].redis_connection_string_secret,null)
+}

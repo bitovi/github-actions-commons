@@ -852,7 +852,16 @@ outputs:
   ecr_repository_url:
     description: "ECR Repo URL"
     value: ${{ steps.deploy.outputs.ecr_repository_url }}
-
+  # REDIS
+  redis_endpoint:
+    description: "Redis Endpoint"
+    value: ${{ steps.deploy.outputs.redis_endpoint }}
+  redis_secret_name:
+    description: "Redis Secret name"
+    value: ${{ steps.deploy.outputs.redis_secret_name }}
+  redis_connection_string_secret:
+    description: "Redis secret containing complete URL to connect directly. (e.g. rediss://user:pass@host:port)"
+    value: ${{ steps.deploy.outputs.redis_connection_string_secret }}
 runs:
   using: 'composite'
   steps:

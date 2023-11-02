@@ -5,12 +5,12 @@ resource "local_file" "redis-dotenv" {
   content  = <<-EOT
 
 #### REDIS values
-RD_ENGINE="${aws_db_instance.default.engine}"
-RD_ENGINE_VERSION="${aws_db_instance.default.engine_version}"
-RD_USER="${aws_db_instance.default.username}"
-RD_PASSWORD="${aws_db_instance.default.password}"
-RD_NAME="${aws_db_instance.default.db_name}"
-RD_PORT="${aws_db_instance.default.port}"
-RD_HOST="${aws_db_instance.default.address}"
+RD_PROTOCOL="${local.redis_protocol}"
+RD_USER="${aws_elasticache_user.redis.user_name}"
+RD_USERNAME="${aws_elasticache_user.redis.user_name}"
+RD_PASSWORD="${random_password.redis.result}"
+RD_HOST="${local.redis_url}"
+RD_PORT="${aws_elasticache_replication_group.redis_cluster.port}"
+RD_CONN_STR="${local.redis_protocol}://${aws_elasticache_user.redis.user_name}:${random_password.redis.result}@${local.redis_url}:${aws_elasticache_replication_group.redis_cluster.port}"
 EOT
 }

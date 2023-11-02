@@ -19,8 +19,8 @@ resource "aws_security_group_rule" "ingress_redis" {
   count             = var.aws_redis_ingress_allow_all ? 1 : 0
   type              = "ingress"
   description       = "${var.aws_resource_identifier} - redis Port"
-  from_port         = tonumber(aws_elasticache_replication_group.redisu_cluster.port)
-  to_port           = tonumber(aws_elasticache_replication_group.redisu_cluster.port)
+  from_port         = tonumber(aws_elasticache_replication_group.redis_cluster.port)
+  to_port           = tonumber(aws_elasticache_replication_group.redis_cluster.port)
   protocol          = "tcp"
   cidr_blocks       = ["0.0.0.0/0"]
   security_group_id = aws_security_group.redis_security_group.id
@@ -30,8 +30,8 @@ resource "aws_security_group_rule" "ingress_redis_extras" {
   count                    = length(local.aws_redis_allowed_security_groups)
   type                     = "ingress"
   description              = "${var.aws_resource_identifier} - redis ingress extra SG"
-  from_port                = tonumber(aws_elasticache_replication_group.redisu_cluster.port)
-  to_port                  = tonumber(aws_elasticache_replication_group.redisu_cluster.port)
+  from_port                = tonumber(aws_elasticache_replication_group.redis_cluster.port)
+  to_port                  = tonumber(aws_elasticache_replication_group.redis_cluster.port)
   protocol                 = "tcp"
   source_security_group_id = local.aws_redis_allowed_security_groups[count.index]
   security_group_id        = aws_security_group.redis_security_group.id
@@ -101,7 +101,7 @@ data "aws_elasticache_user" "default" {
 
 resource "aws_elasticache_user_group" "redis" {
   engine        = "REDIS"
-  user_group_id = var.aws_redis_user_group_name != "" ? var.var.aws_redis_user_group_name : "${var.aws_resource_identifier}-redis"
+  user_group_id = var.aws_redis_user_group_name != "" ? var.aws_redis_user_group_name : "${var.aws_resource_identifier}-redis"
   user_ids      = [aws_elasticache_user.redis.user_id,data.aws_elasticache_user.default.user_id]
 }
 
@@ -114,7 +114,7 @@ locals {
   redis_url = ( aws_elasticache_replication_group.redis_cluster.cluster_enabled ? 
     aws_elasticache_replication_group.redis_cluster.configuration_endpoint_address :
     aws_elasticache_replication_group.redis_cluster.primary_endpoint_address )
-  redis_protocol = var.aws_redis_in_transit_encryption ? resiss : redis
+  redis_protocol = var.aws_redis_in_transit_encryption ? "rediss" : "redis"
 }
 
 output "redis_url" {
@@ -122,14 +122,33 @@ output "redis_url" {
 }
 
 // Creates a secret manager secret for the databse credentials
+resource "aws_secretsmanager_secret" "redis_credentials_sl" {
+   name   = "${var.aws_resource_identifier_supershort}-redis-single-line${random_string.random.result}"
+}
+
+resource "aws_secretsmanager_secret_version" "rediscredentials_sm_secret_version" {
+  secret_id = aws_secretsmanager_secret.redis_credentials_sl.id
+  secret_string = sensitive("${local.redis_protocol}://${aws_elasticache_user.redis.user_name}:${random_password.redis.result}@${local.redis_url}:${aws_elasticache_replication_group.redis_cluster.port}")
+}
+
+// Creates a secret manager secret for the databse credentials
 resource "aws_secretsmanager_secret" "redis_credentials" {
-   #name   = "ktpo-redis-${var.aws_resource_identifier_supershort}"
-   name   = "${var.aws_resource_identifier_supershort}-redis-${random_string.random.result}"
+   name   = "${var.aws_resource_identifier_supershort}-redis-single-line${random_string.random.result}"
 }
 
 resource "aws_secretsmanager_secret_version" "rediscredentials_sm_secret_version" {
   secret_id = aws_secretsmanager_secret.redis_credentials.id
-  secret_string = sensitive("${local.redis_protocol}://${aws_elasticache_user.redis.user_name}:${random_password.redis.result}@${local.redis_url}:${aws_elasticache_replication_group.redis_cluster.port}")
+  secret_string = jsonencode({
+   username          = sensitive(aws_elasticache_user.redis.user_name)
+   password          = sensitive(random_password.redis.result)
+   host              = sensitive(local.redis_url)
+   port              = sensitive(aws_elasticache_replication_group.redis_cluster.port)
+   DB_USER           = sensitive(aws_elasticache_user.redis.user_name)
+   DB_USERNAME       = sensitive(aws_elasticache_user.redis.user_name)
+   DB_PASSWORD       = sensitive(random_password.redis.result)
+   DB_HOST           = sensitive(local.redis_url)
+   DB_PORT           = sensitive(aws_elasticache_replication_group.redis_cluster.port)
+  })
 }
 
 resource "random_string" "random" {
@@ -146,8 +165,10 @@ output "redis_secret_name" {
     value = aws_secretsmanager_secret.redis_credentials.name
 }
 
+output "redis_connection_string_secret" {
+    value = aws_secretsmanager_secret.redis_credentials_sl.name
+}
+
 output "redis_endpoint" {
     value =  "${local.redis_protocol}://${local.redis_url}:${aws_elasticache_replication_group.redis_cluster.port}"
 }
-
-
