@@ -81,9 +81,9 @@ resource "aws_db_proxy_target" "db_instance" {
   db_instance_identifier = data.aws_db_instance.db[0].id
   db_proxy_name          = aws_db_proxy.rds_proxy[0].name
   target_group_name      = aws_db_proxy_default_target_group.default.name
-  #lifecycle {
-  #  replace_triggered_by = [ data.aws_db_instance.db ]
-  #}
+  lifecycle {
+    replace_triggered_by = [ data.aws_db_instance.db ]
+  }
   depends_on = [ aws_db_proxy.rds_proxy ]
 }
 
@@ -92,10 +92,10 @@ resource "aws_db_proxy_target" "db_cluster" {
   db_cluster_identifier  = data.aws_rds_cluster.db[0].id
   db_proxy_name          = aws_db_proxy.rds_proxy[0].name
   target_group_name      = aws_db_proxy_default_target_group.default.name
-  #lifecycle {
-  #  replace_triggered_by = []
-  #}
-  depends_on = [ data.aws_rds_cluster.db ]
+  lifecycle {
+    replace_triggered_by = [ data.aws_rds_cluster.db ]
+  }
+  depends_on = [ aws_db_proxy.rds_proxy ]
 }
 
 
