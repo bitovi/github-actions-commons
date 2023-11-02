@@ -215,6 +215,9 @@ resource "aws_iam_policy" "rds_proxy_iam" {
     ]
 }
 POLICY
+  lifecycle {
+    ignore_changes = [ policy ]
+  }
 }
 
 resource "aws_iam_role_policy_attachment" "rds_policy" {
