@@ -788,13 +788,13 @@ variable "aws_redis_parameter_group_name" {
 variable "aws_redis_num_node_groups" {
   type        = string
   description = "Number of node groups. Defaults to 0."
-  default     = ""
+  default     = "0"
 }
 
 variable "aws_redis_replicas_per_node_group" {
   type        = string
   description = "Number of replicas per node group. Defaults to 0"
-  default     = ""
+  default     = "0"
 }
 
 variable "aws_redis_multi_az_enabled" {
