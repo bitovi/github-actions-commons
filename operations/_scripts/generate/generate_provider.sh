@@ -66,7 +66,7 @@ provider \"aws\" {
 done
 }
 
-generate_provider_aws aws ec2,r53,elb,efs,vpc,rds,aurora,ecs,db_proxy
+generate_provider_aws aws ec2,r53,elb,efs,vpc,rds,aurora,ecs,db_proxy,redis
 generate_provider_aws ecr ecr
 generate_provider_aws eks
 

@@ -463,6 +463,83 @@ inputs:
     description: 'A list of strings that will be added to created resources'
     required: false
 
+  # Redis
+  aws_redis_enable:
+    description: 'Enables the creation of a Redis instance'
+    required: false
+  aws_redis_user:
+    description: 'Redis username. Defaults to redisuser'
+    required: false
+  aws_redis_user_access_string:
+    description: 'String expression for user access. Defaults to on ~* +@all'
+    required: false
+  aws_redis_user_group_name:
+    description: 'User group name. Defaults to aws_resource_identifier-redis'
+    required: false
+  aws_redis_security_group_name:
+    description: 'Redis security group name. Defaults to SG for aws_resource_identifier - Redis'
+    required: false
+  aws_redis_ingress_allow_all:
+    description: 'Allow access from 0.0.0.0/0 in the same VPC'
+    required: false
+  aws_redis_allowed_security_groups:
+    description: 'Comma separated list of security groups to be added to the Redis SG.'
+    required: false
+  aws_redis_subnets:
+    description: 'Define a list of specific subnets where Redis will live. Defaults to all of the VPC ones. If not defined, default VPC.'
+    required: false
+  aws_redis_port:
+    description: 'Redis port. Defaults to 6379'
+    required: false
+  aws_redis_at_rest_encryption:
+    description: 'Encryption at rest. Defaults to true.'
+    required: false
+  aws_redis_in_transit_encryption:
+    description: 'In-transit encryption. Defaults to true.'
+    required: false
+  aws_redis_replication_group_id:
+    description: 'Name of the Redis replication group. Defaults to aws_resource_identifier-redis'
+    required: false
+  aws_redis_node_type:
+    description: 'Node type of the Redis instance. Defaults to cache.t2.small'
+    required: false
+  aws_redis_cache_nodes:
+    description: 'Amount of Redis nodes. Defaults to 1'
+    required: false
+  aws_redis_parameter_group_name:
+    description: 'Redis parameters groups name. If cluster wanted, set it to something that includes .cluster.on. Defaults to default.redis7'
+    required: false
+  aws_redis_num_node_groups:
+    description: 'Number of node groups. Defaults to 0.'
+    required: false
+  aws_redis_replicas_per_node_group:
+    description: 'Number of replicas per node group. Defaults to 0'
+    required: false
+  aws_redis_multi_az_enabled:
+    description: 'Enables multi-availability-zone redis. Defaults to false'
+    required: false
+  aws_redis_final_snapshot:
+    description: 'Change name to define a final snapshot.'
+    required: false
+  aws_redis_snapshot_restore_name:
+    description: 'Set name to restore a snapshot to the cluster. The default behaviour is to restore it each time this action runs.'
+    required: false
+  aws_redis_cloudwatch_enabled:
+    description: 'Enable or disables Cloudwatch logging.'
+    required: false
+  aws_redis_cloudwatch_lg_name:
+    description: 'Cloudwatch log group name. Defaults to redis/aws_resource_identifier'
+    required: false
+  aws_redis_cloudwatch_log_format:
+    description: 'Define log format between json (default) and text.'
+    required: false
+  aws_redis_cloudwatch_log_type:
+    description: 'Log type. Older Redis engines need slow-log. Newer support engine-log (default)'
+    required: false
+  aws_redis_additional_tags:
+    description: 'Additional tags to be added to every Redis related resource'
+    required: false
+
   # Docker 
   docker_install: 
     description: 'Define if docker should be installed. After this, docker-compose up will be excecuted.'
@@ -958,6 +1035,33 @@ runs:
         AWS_DB_PROXY_CLOUDWATCH_ENABLE : ${{ inputs.aws_db_proxy_cloudwatch_enable }}
         AWS_DB_PROXY_CLOUDWATCH_RETENTION_DAYS : ${{ inputs.aws_db_proxy_cloudwatch_retention_days }}
         AWS_DB_PROXY_ADDITIONAL_TAGS: ${{ inputs.aws_db_proxy_additional_tags }}
+
+        # AWS_REDIS
+        AWS_REDIS_ENABLE: ${{ inputs.aws_redis_enable }}
+        AWS_REDIS_USER: ${{ inputs.aws_redis_user }}
+        AWS_REDIS_USER_ACCESS_STRING: ${{ inputs.aws_redis_user_access_string }}
+        AWS_REDIS_USER_GROUP_NAME: ${{ inputs.aws_redis_user_group_name }}
+        AWS_REDIS_SECURITY_GROUP_NAME: ${{ inputs.aws_redis_security_group_name }}
+        AWS_REDIS_INGRESS_ALLOW_ALL: ${{ inputs.aws_redis_ingress_allow_all }}
+        AWS_REDIS_ALLOWED_SECURITY_GROUPS: ${{ inputs.aws_redis_allowed_security_groups }}
+        AWS_REDIS_SUBNETS: ${{ inputs.aws_redis_subnets }}
+        AWS_REDIS_PORT: ${{ inputs.aws_redis_port }}
+        AWS_REDIS_AT_REST_ENCRYPTION: ${{ inputs.aws_redis_at_rest_encryption }}
+        AWS_REDIS_IN_TRANSIT_ENCRYPTION: ${{ inputs.aws_redis_in_transit_encryption }}
+        AWS_REDIS_REPLICATION_GROUP_ID: ${{ inputs.aws_redis_replication_group_id }}
+        AWS_REDIS_NODE_TYPE: ${{ inputs.aws_redis_node_type }}
+        AWS_REDIS_CACHE_NODES: ${{ inputs.aws_redis_cache_nodes }}
+        AWS_REDIS_PARAMETER_GROUP_NAME: ${{ inputs.aws_redis_parameter_group_name }}
+        AWS_REDIS_NUM_NODE_GROUPS: ${{ inputs.aws_redis_num_node_groups }}
+        AWS_REDIS_REPLICAS_PER_NODE_GROUP: ${{ inputs.aws_redis_replicas_per_node_group }}
+        AWS_REDIS_MULTI_AZ_ENABLED: ${{ inputs.aws_redis_multi_az_enabled }}
+        AWS_REDIS_FINAL_SNAPSHOT: ${{ inputs.aws_redis_final_snapshot }}
+        AWS_REDIS_SNAPSHOT_RESTORE_NAME: ${{ inputs.aws_redis_snapshot_restore_name }}
+        AWS_REDIS_CLOUDWATCH_ENABLED: ${{ inputs.aws_redis_cloudwatch_enabled }}
+        AWS_REDIS_CLOUDWATCH_LG_NAME: ${{ inputs.aws_redis_cloudwatch_lg_name }}
+        AWS_REDIS_CLOUDWATCH_LOG_FORMAT: ${{ inputs.aws_redis_cloudwatch_log_format }}
+        AWS_REDIS_CLOUDWATCH_LOG_TYPE: ${{ inputs.aws_redis_cloudwatch_log_type }}
+        AWS_REDIS_ADDITIONAL_TAGS: ${{ inputs.aws_redis_additional_tags }}
 
         # Docker
         DOCKER_INSTALL: ${{ inputs.docker_install }}

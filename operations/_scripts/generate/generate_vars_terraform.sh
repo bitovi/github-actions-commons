@@ -219,6 +219,35 @@ aws_db_proxy_cloudwatch_enable=$(generate_var aws_db_proxy_cloudwatch_enable $AW
 aws_db_proxy_cloudwatch_retention_days=$(generate_var aws_db_proxy_cloudwatch_retention_days $AWS_DB_PROXY_CLOUDWATCH_RETENTION_DAYS)
 aws_db_proxy_additional_tags=$(generate_var aws_db_proxy_additional_tags $AWS_DB_PROXY_ADDITIONAL_TAGS)
 
+#-- REDIS --# 
+if [[ $(alpha_only "$AWS_REDIS_ENABLE") == true ]]; then
+  aws_redis_enable=$(generate_var aws_redis_enable $AWS_REDIS_ENABLE)
+  aws_redis_user=$(generate_var aws_redis_user $AWS_REDIS_USER)
+  aws_redis_user_access_string=$(generate_var aws_redis_user_access_string $AWS_REDIS_USER_ACCESS_STRING)
+  aws_redis_user_group_name=$(generate_var aws_redis_user_group_name $AWS_REDIS_USER_GROUP_NAME)
+  aws_redis_security_group_name=$(generate_var aws_redis_security_group_name $AWS_REDIS_SECURITY_GROUP_NAME)
+  aws_redis_ingress_allow_all=$(generate_var aws_redis_ingress_allow_all $AWS_REDIS_INGRESS_ALLOW_ALL)
+  aws_redis_allowed_security_groups=$(generate_var aws_redis_allowed_security_groups $AWS_REDIS_ALLOWED_SECURITY_GROUPS)
+  aws_redis_subnets=$(generate_var aws_redis_subnets $AWS_REDIS_SUBNETS)
+  aws_redis_port=$(generate_var aws_redis_port $AWS_REDIS_PORT)
+  aws_redis_at_rest_encryption=$(generate_var aws_redis_at_rest_encryption $AWS_REDIS_AT_REST_ENCRYPTION)
+  aws_redis_in_transit_encryption=$(generate_var aws_redis_in_transit_encryption $AWS_REDIS_IN_TRANSIT_ENCRYPTION)
+  aws_redis_replication_group_id=$(generate_var aws_redis_replication_group_id $AWS_REDIS_REPLICATION_GROUP_ID)
+  aws_redis_node_type=$(generate_var aws_redis_node_type $AWS_REDIS_NODE_TYPE)
+  aws_redis_cache_nodes=$(generate_var aws_redis_cache_nodes $AWS_REDIS_CACHE_NODES)
+  aws_redis_parameter_group_name=$(generate_var aws_redis_parameter_group_name $AWS_REDIS_PARAMETER_GROUP_NAME)
+  aws_redis_num_node_groups=$(generate_var aws_redis_num_node_groups $AWS_REDIS_NUM_NODE_GROUPS)
+  aws_redis_replicas_per_node_group=$(generate_var aws_redis_replicas_per_node_group $AWS_REDIS_REPLICAS_PER_NODE_GROUP)
+  aws_redis_multi_az_enabled=$(generate_var aws_redis_multi_az_enabled $AWS_REDIS_MULTI_AZ_ENABLED)
+  aws_redis_final_snapshot=$(generate_var aws_redis_final_snapshot $AWS_REDIS_FINAL_SNAPSHOT)
+  aws_redis_snapshot_restore_name=$(generate_var aws_redis_snapshot_restore_name $AWS_REDIS_SNAPSHOT_RESTORE_NAME)
+  aws_redis_cloudwatch_enabled=$(generate_var aws_redis_cloudwatch_enabled $AWS_REDIS_CLOUDWATCH_ENABLED)
+  aws_redis_cloudwatch_lg_name=$(generate_var aws_redis_cloudwatch_lg_name $AWS_REDIS_CLOUDWATCH_LG_NAME)
+  aws_redis_cloudwatch_log_format=$(generate_var aws_redis_cloudwatch_log_format $AWS_REDIS_CLOUDWATCH_LOG_FORMAT)
+  aws_redis_cloudwatch_log_type=$(generate_var aws_redis_cloudwatch_log_type $AWS_REDIS_CLOUDWATCH_LOG_TYPE)
+  aws_redis_additional_tags=$(generate_var aws_redis_additional_tags $AWS_REDIS_ADDITIONAL_TAGS)
+fi
+
 #-- ECS --#
 if [[ $(alpha_only "$AWS_ECS_ENABLE") == true ]]; then
   aws_ecs_enable=$(generate_var aws_ecs_enable $AWS_ECS_ENABLE)
@@ -474,6 +503,33 @@ $aws_db_proxy_allow_all_incoming
 $aws_db_proxy_cloudwatch_enable
 $aws_db_proxy_cloudwatch_retention_days
 $aws_db_proxy_additional_tags
+
+#-- REDIS --#
+$aws_redis_enable
+$aws_redis_user
+$aws_redis_user_access_string
+$aws_redis_user_group_name
+$aws_redis_security_group_name
+$aws_redis_ingress_allow_all
+$aws_redis_allowed_security_groups
+$aws_redis_subnets
+$aws_redis_port
+$aws_redis_at_rest_encryption
+$aws_redis_in_transit_encryption
+$aws_redis_replication_group_id
+$aws_redis_node_type
+$aws_redis_cache_nodes
+$aws_redis_parameter_group_name
+$aws_redis_num_node_groups
+$aws_redis_replicas_per_node_group
+$aws_redis_multi_az_enabled
+$aws_redis_final_snapshot
+$aws_redis_snapshot_restore_name
+$aws_redis_cloudwatch_enabled
+$aws_redis_cloudwatch_lg_name
+$aws_redis_cloudwatch_log_format
+$aws_redis_cloudwatch_log_type
+$aws_redis_additional_tags
 
 #-- ECS --#
 $aws_ecs_enable
