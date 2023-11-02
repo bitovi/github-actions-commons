@@ -56,7 +56,7 @@ resource "aws_elasticache_subnet_group" "selected" {
 
 resource "aws_elasticache_replication_group" "redis_cluster" {
   automatic_failover_enabled  = tonumber(var.aws_redis_cache_nodes) > 1 ? true : false
-  replication_group_id        = var.aws_redis_replication_group_id != "" ? var.aws_redis_replication_group_id : "${var.aws_resource_identifier}-redis"
+  replication_group_id        = var.aws_redis_replication_group_id != "" ? var.aws_redis_replication_group_id : "${var.aws_resource_identifier_supershort}-redis"
   description                 = "Redis cluster for ${var.aws_resource_identifier}" 
   node_type                   = var.aws_redis_node_type
   num_cache_clusters          = tonumber(var.aws_redis_cache_nodes)
