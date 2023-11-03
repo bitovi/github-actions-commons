@@ -59,7 +59,13 @@ resource "aws_elasticache_replication_group" "redis_cluster" {
   replication_group_id        = var.aws_redis_replication_group_id != "" ? var.aws_redis_replication_group_id : "${var.aws_resource_identifier_supershort}-redis"
   description                 = "Redis cluster for ${var.aws_resource_identifier}" 
   node_type                   = var.aws_redis_node_type
-  num_cache_clusters          = try(tonumber(var.aws_redis_num_cache_clusters),null)
+  dynamic "num_cache_clusters" {
+    for_each = tnumber(var.aws_redis_num_cache_clusters) > 1 ? [1] : []
+    content {
+      num_cache_clusters     = tonumber(var.aws_redis_num_cache_clusters)
+    }
+  }
+  #num_cache_clusters          = try(tonumber(var.aws_redis_num_cache_clusters),null)
   parameter_group_name        = var.aws_redis_parameter_group_name
   port                        = tonumber(var.aws_redis_port)
   
@@ -74,10 +80,8 @@ resource "aws_elasticache_replication_group" "redis_cluster" {
   replicas_per_node_group     = try(tonumber(var.aws_redis_replicas_per_node_group),null)
   multi_az_enabled            = var.aws_redis_multi_az_enabled
 
-
   dynamic "log_delivery_configuration" {
-    for_each = var.aws_redis_cloudwatch_enabled ? [var.aws_redis_cloudwatch_enabled] : []
-
+    for_each = var.aws_redis_cloudwatch_enabled ? [1] : []
     content {
       destination      = var.aws_redis_cloudwatch_lg_name != "" ? var.aws_redis_cloudwatch_lg_name : "/redis/${var.aws_resource_identifier}"
       destination_type = "cloudwatch-logs"
