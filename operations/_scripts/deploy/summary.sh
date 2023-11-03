@@ -128,7 +128,7 @@ if [[ $SUCCESS == 'success' ]]; then
     ECS Public DNS: ${ECS_DNS}"
   elif [[ -n $REDIS_ENDPOINT ]] && [[ -n $REDIS_SECRET_NAME ]]; then
     SUMMARY_CODE=15
-    result_string="## Deploy Complete! :rocker:
+    result_string="## Deploy Complete! :rocket:
     Redis endpoint: ${REDIS_ENDPOINT}
     Redis secret name: ${REDIS_SECRET_NAME}"
     if [[ -n $REDIS_SECRET_URL ]]; then
