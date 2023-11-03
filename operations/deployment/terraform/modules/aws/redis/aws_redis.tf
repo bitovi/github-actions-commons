@@ -77,13 +77,13 @@ resource "aws_elasticache_replication_group" "redis_cluster" {
   replicas_per_node_group     = try(tonumber(var.aws_redis_replicas_per_node_group),null)
   multi_az_enabled            = var.aws_redis_multi_az_enabled
 
-  dynamic "log_type" {
+  dynamic "log_delivery_configuration" {
     for_each = aws_cloudwatch_log_group.this
     content {
-      destination      = "/aws/redis/${log_type.value}/${var.aws_resource_identifier}"
+      destination      = "/aws/redis/${log_delivery_configuration.value}/${var.aws_resource_identifier}"
       destination_type = "cloudwatch-logs"
       log_format       = var.aws_redis_cloudwatch_log_format
-      log_type         = log_type.value
+      log_type         = log_delivery_configuration.value
     }
   }
 }
