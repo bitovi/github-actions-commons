@@ -839,6 +839,12 @@ variable "aws_redis_cloudwatch_log_type" {
   default     = "engine-log"
 }
 
+variable "aws_redis_cloudwatch_retention_days" {
+  type        = string
+  description = "Number of days to retain logs. 0 to never expire."
+  default     = "14"
+}
+
 variable "aws_redis_single_line_url_secret" {
   type        = bool
   description = "Creates an AWS secret containing the connection string containing protocol://user@pass:endpoint:port"
