@@ -24,6 +24,7 @@
 # ECR_REPO_URL
 # REDIS_ENDPOINT
 # REDIS_SECRET_NAME
+# REDIS_SECRET_URL
 
 # Create an error code mechanism so we don't have to check the actual static text,
 # just which case we fell into
@@ -130,6 +131,10 @@ if [[ $SUCCESS == 'success' ]]; then
     result_string="## Deploy Complete! :rocker:
     Redis endpoint: ${REDIS_ENDPOINT}
     Redis secret name: ${REDIS_SECRET_NAME}"
+    if [[ -n $REDIS_SECRET_URL ]]; then
+      result_string+="
+      Redis connection URL secret name: ${REDIS_SECRET_URL}"
+    fi
   elif [[ $BITOPS_CODE_ONLY == 'true' ]]; then
     if [[ $BITOPS_CODE_STORE == 'true' ]]; then
       SUMMARY_CODE=6

@@ -170,7 +170,7 @@ output "redis_secret_name" {
 }
 
 output "redis_connection_string_secret" {
-    value = aws_secretsmanager_secret.redis_credentials_url[0].name
+    value = try(aws_secretsmanager_secret.redis_credentials_url[0].name,null)
 }
 
 output "redis_endpoint" {
