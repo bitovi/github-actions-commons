@@ -79,7 +79,7 @@ resource "aws_elasticache_replication_group" "redis_cluster" {
     for_each = var.aws_redis_cloudwatch_enabled ? [var.aws_redis_cloudwatch_enabled] : []
 
     content {
-      destination      = var.aws_redis_cloudwatch_lg_name != "" ? var.aws_redis_cloudwatch_lg_name : "redis/${var.aws_resource_identifier}"
+      destination      = var.aws_redis_cloudwatch_lg_name != "" ? var.aws_redis_cloudwatch_lg_name : "/redis/${var.aws_resource_identifier}"
       destination_type = "cloudwatch-logs"
       log_format       = var.aws_redis_cloudwatch_log_format
       log_type         = var.aws_redis_cloudwatch_log_type
