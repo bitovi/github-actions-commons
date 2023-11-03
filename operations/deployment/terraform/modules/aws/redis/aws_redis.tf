@@ -77,12 +77,18 @@ resource "aws_elasticache_replication_group" "redis_cluster" {
   dynamic "log_delivery_configuration" {
     for_each = var.aws_redis_cloudwatch_enabled ? [1] : []
     content {
-      destination      = var.aws_redis_cloudwatch_lg_name != "" ? var.aws_redis_cloudwatch_lg_name : "/redis/${var.aws_resource_identifier}"
+      destination      = aws_cloudwatch_log_group.this[0].name
       destination_type = "cloudwatch-logs"
       log_format       = var.aws_redis_cloudwatch_log_format
       log_type         = var.aws_redis_cloudwatch_log_type
     }
   }
+}
+
+resource "aws_cloudwatch_log_group" "this" {
+  count             = var.aws_redis_cloudwatch_enabled ? 1 : 0
+  name              = var.aws_redis_cloudwatch_lg_name != "" ? var.aws_redis_cloudwatch_lg_name : "/aws/redis/${var.aws_resource_identifier}"
+  retention_in_days = tonumber(var.aws_redis_cloudwatch_lg_name)
 }
 
 resource "aws_elasticache_user" "redis" {
