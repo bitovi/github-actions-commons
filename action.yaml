@@ -536,6 +536,9 @@ inputs:
   aws_redis_cloudwatch_log_type:
     description: 'Log type. Older Redis engines need slow-log. Newer support engine-log (default)'
     required: false
+  aws_redis_single_line_url_secret:
+    description: 'Creates an AWS secret containing the connection string containing protocol://user@pass:endpoint:port'
+    required: false
   aws_redis_additional_tags:
     description: 'Additional tags to be added to every Redis related resource'
     required: false
@@ -1045,7 +1048,7 @@ runs:
         AWS_DB_PROXY_CLOUDWATCH_RETENTION_DAYS : ${{ inputs.aws_db_proxy_cloudwatch_retention_days }}
         AWS_DB_PROXY_ADDITIONAL_TAGS: ${{ inputs.aws_db_proxy_additional_tags }}
 
-        # AWS_REDIS
+        # AWS REDIS
         AWS_REDIS_ENABLE: ${{ inputs.aws_redis_enable }}
         AWS_REDIS_USER: ${{ inputs.aws_redis_user }}
         AWS_REDIS_USER_ACCESS_STRING: ${{ inputs.aws_redis_user_access_string }}
@@ -1070,6 +1073,7 @@ runs:
         AWS_REDIS_CLOUDWATCH_LG_NAME: ${{ inputs.aws_redis_cloudwatch_lg_name }}
         AWS_REDIS_CLOUDWATCH_LOG_FORMAT: ${{ inputs.aws_redis_cloudwatch_log_format }}
         AWS_REDIS_CLOUDWATCH_LOG_TYPE: ${{ inputs.aws_redis_cloudwatch_log_type }}
+        AWS_REDIS_SINGLE_LINE_URL_SECRET: ${{ inputs.aws_redis_single_line_url_secret }}
         AWS_REDIS_ADDITIONAL_TAGS: ${{ inputs.aws_redis_additional_tags }}
 
         # Docker

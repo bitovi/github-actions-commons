@@ -311,6 +311,7 @@ module "redis" {
   aws_redis_cloudwatch_lg_name      = var.aws_redis_cloudwatch_lg_name
   aws_redis_cloudwatch_log_format   = var.aws_redis_cloudwatch_log_format
   aws_redis_cloudwatch_log_type     = var.aws_redis_cloudwatch_log_type
+  aws_redis_single_line_url_secret  = var.aws_redis_single_line_url_secret
   # Others
   aws_selected_vpc_id                = module.vpc.aws_selected_vpc_id
   aws_selected_subnets               = module.vpc.aws_selected_vpc_subnets

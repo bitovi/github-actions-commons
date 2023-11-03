@@ -245,6 +245,7 @@ if [[ $(alpha_only "$AWS_REDIS_ENABLE") == true ]]; then
   aws_redis_cloudwatch_lg_name=$(generate_var aws_redis_cloudwatch_lg_name $AWS_REDIS_CLOUDWATCH_LG_NAME)
   aws_redis_cloudwatch_log_format=$(generate_var aws_redis_cloudwatch_log_format $AWS_REDIS_CLOUDWATCH_LOG_FORMAT)
   aws_redis_cloudwatch_log_type=$(generate_var aws_redis_cloudwatch_log_type $AWS_REDIS_CLOUDWATCH_LOG_TYPE)
+  aws_redis_single_line_url_secret=$(generate_var aws_redis_single_line_url_secret $AWS_REDIS_SINGLE_LINE_URL_SECRET)
   aws_redis_additional_tags=$(generate_var aws_redis_additional_tags $AWS_REDIS_ADDITIONAL_TAGS)
 fi
 
@@ -529,6 +530,7 @@ $aws_redis_cloudwatch_enabled
 $aws_redis_cloudwatch_lg_name
 $aws_redis_cloudwatch_log_format
 $aws_redis_cloudwatch_log_type
+$aws_redis_single_line_url_secret
 $aws_redis_additional_tags
 
 #-- ECS --#

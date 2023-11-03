@@ -122,12 +122,14 @@ output "redis_url" {
 }
 
 // Creates a secret manager secret for the databse credentials
-resource "aws_secretsmanager_secret" "redis_credentials_sl" {
-   name   = "${var.aws_resource_identifier_supershort}-redis-single-line${random_string.random.result}"
+resource "aws_secretsmanager_secret" "redis_credentials_url" {
+  count = var.aws_redis_single_line_url_secret ? 1 : 0
+  name   = "${var.aws_resource_identifier_supershort}-redis-url${random_string.random.result}"
 }
 
-resource "aws_secretsmanager_secret_version" "rediscredentials_sm_secret_version_sl" {
-  secret_id = aws_secretsmanager_secret.redis_credentials_sl.id
+resource "aws_secretsmanager_secret_version" "rediscredentials_sm_secret_version_url" {
+  count = var.aws_redis_single_line_url_secret ? 1 : 0
+  secret_id = aws_secretsmanager_secret.redis_credentials_url[0].id
   secret_string = sensitive("${local.redis_protocol}://${aws_elasticache_user.redis.user_name}:${random_password.redis.result}@${local.redis_url}:${aws_elasticache_replication_group.redis_cluster.port}")
 }
 
@@ -143,11 +145,13 @@ resource "aws_secretsmanager_secret_version" "rediscredentials_sm_secret_version
    password          = sensitive(random_password.redis.result)
    host              = sensitive(local.redis_url)
    port              = sensitive(aws_elasticache_replication_group.redis_cluster.port)
+   protocol          = sensitive(local.redis_protocol)
    DB_USER           = sensitive(aws_elasticache_user.redis.user_name)
    DB_USERNAME       = sensitive(aws_elasticache_user.redis.user_name)
    DB_PASSWORD       = sensitive(random_password.redis.result)
    DB_HOST           = sensitive(local.redis_url)
    DB_PORT           = sensitive(aws_elasticache_replication_group.redis_cluster.port)
+   DB_PROTOCOL       = sensitive(local.redis_protocol)
   })
 }
 
@@ -166,7 +170,7 @@ output "redis_secret_name" {
 }
 
 output "redis_connection_string_secret" {
-    value = aws_secretsmanager_secret.redis_credentials_sl.name
+    value = aws_secretsmanager_secret.redis_credentials_url[0].name
 }
 
 output "redis_endpoint" {

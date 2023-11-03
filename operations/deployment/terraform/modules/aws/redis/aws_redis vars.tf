@@ -25,6 +25,7 @@ variable "aws_redis_cloudwatch_enabled" {}
 variable "aws_redis_cloudwatch_lg_name" {}
 variable "aws_redis_cloudwatch_log_format" {}
 variable "aws_redis_cloudwatch_log_type" {}
+variable "aws_redis_single_line_url_secret" {}
 
 variable "aws_selected_vpc_id" {} 
 variable "aws_selected_subnets" {}

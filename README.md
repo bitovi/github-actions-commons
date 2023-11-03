@@ -333,6 +333,7 @@ The following inputs can be used as `step.with` keys
 | `aws_redis_cloudwatch_lg_name` | String | Cloudwatch log group name. Defaults to `redis/aws_resource_identifier`. |
 | `aws_redis_cloudwatch_log_format` | String | Define log format between `json`(default) and text. |
 | `aws_redis_cloudwatch_log_type` | String | Log type. Older Redis engines need `slow-log`. Newer support `engine-log` (default) |
+| `aws_redis_single_line_url_secret`| Boolean | Creates an AWS secret containing the connection string containing `protocol://user@pass:endpoint:port` |
 | `aws_redis_additional_tags` | String | Additional tags to be added to every Redis related resource. |
 <hr/>
 <br/>

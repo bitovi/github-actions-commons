@@ -839,6 +839,12 @@ variable "aws_redis_cloudwatch_log_type" {
   default     = "engine-log"
 }
 
+variable "aws_redis_single_line_url_secret" {
+  type        = bool
+  description = "Creates an AWS secret containing the connection string containing protocol://user@pass:endpoint:port"
+  default     = false
+}
+
 variable "aws_redis_additional_tags" {
   type        = string
   description = "Additional tags to be added to every Redis related resource"
