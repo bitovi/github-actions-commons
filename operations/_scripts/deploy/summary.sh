@@ -22,6 +22,9 @@
 # ECS_DNS
 # ECR_REPO_ARN
 # ECR_REPO_URL
+# REDIS_ENDPOINT
+# REDIS_SECRET_NAME
+# REDIS_SECRET_URL
 
 # Create an error code mechanism so we don't have to check the actual static text,
 # just which case we fell into
@@ -41,6 +44,7 @@
 # 12 - success, Aurora created
 # 13 - success, DB Proxy created
 # 14 - success, ECS created
+# 15 - success, Redis created
 # 500 - cancelled
 
 # Function to process and return the result as a string
@@ -122,6 +126,15 @@ if [[ $SUCCESS == 'success' ]]; then
     result_string="## Deploy Complete! :rocket:
     ECS LB Endpoing: ${ECS_ALB_DNS}
     ECS Public DNS: ${ECS_DNS}"
+  elif [[ -n $REDIS_ENDPOINT ]] && [[ -n $REDIS_SECRET_NAME ]]; then
+    SUMMARY_CODE=15
+    result_string="## Deploy Complete! :rocket:
+    Redis endpoint: ${REDIS_ENDPOINT}
+    Redis secret name: ${REDIS_SECRET_NAME}"
+    if [[ -n $REDIS_SECRET_URL ]]; then
+    result_string+="
+    Redis connection URL secret name: ${REDIS_SECRET_URL}"
+    fi
   elif [[ $BITOPS_CODE_ONLY == 'true' ]]; then
     if [[ $BITOPS_CODE_STORE == 'true' ]]; then
       SUMMARY_CODE=6

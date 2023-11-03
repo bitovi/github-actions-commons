@@ -694,6 +694,199 @@ variable "aws_db_proxy_additional_tags" {
   default     = "{}"
 }
 
+# Redis
+variable "aws_redis_enable" {
+  type        = bool
+  description = "Enables the creation of a Redis instance"
+  default     = false
+}
+
+variable "aws_redis_user" {
+  type        = string
+  description = "Redis username. Defaults to redisuser"
+  default     = "redisuser"
+}
+
+variable "aws_redis_user_access_string" {
+  type        = string
+  description = "String expression for user access. Defaults to on ~* +@all"
+  default     = "on ~* +@all"
+}
+
+variable "aws_redis_user_group_name" {
+  type        = string
+  description = "User group name. Defaults to aws_resource_identifier-redis"
+  default     = ""
+}
+
+variable "aws_redis_security_group_name" {
+  type        = string
+  description = "Redis security group name. Defaults to SG for aws_resource_identifier - Redis"
+  default     = ""
+}
+
+variable "aws_redis_ingress_allow_all" {
+  type        = bool
+  description = "Allow access from 0.0.0.0/0 in the same VPC"
+  default     = true
+}
+
+variable "aws_redis_allowed_security_groups" {
+  type        = string
+  description = "Comma separated list of security groups to be added to the Redis SG."
+  default     = ""
+}
+
+variable "aws_redis_subnets" {
+  type        = string
+  description = "Define a list of specific subnets where Redis will live. Defaults to all of the VPC ones. If not defined, default VPC."
+  default     = ""
+}
+
+variable "aws_redis_port" {
+  type        = string
+  description = "Redis port. Defaults to 6379"
+  default     = "6379"
+}
+
+variable "aws_redis_at_rest_encryption" {
+  type        = bool
+  description = "Encryption at rest. Defaults to true."
+  default     = true
+}
+
+variable "aws_redis_in_transit_encryption" {
+  type        = bool
+  description = "In-transit encryption. Defaults to true."
+  default     = true
+}
+
+variable "aws_redis_replication_group_id" {
+  type        = string
+  description = "Name of the Redis replication group. Defaults to aws_resource_identifier-redis"
+  default     = ""
+}
+
+variable "aws_redis_node_type" {
+  type        = string
+  description = "Node type of the Redis instance. Defaults to cache.t2.small"
+  default     = "cache.t2.small"
+}
+
+variable "aws_redis_num_cache_clusters" {
+  type        = string
+  description = "Amount of Redis nodes. Defaults to 1"
+  default     = "1"
+}
+
+variable "aws_redis_parameter_group_name" {
+  type        = string
+  description = "Redis parameters groups name. If cluster wanted, set it to something that includes .cluster.on. Defaults to default.redis7"
+  default     = "default.redis7"
+}
+
+variable "aws_redis_num_node_groups" {
+  type        = string
+  description = "Number of node groups. Defaults to 0."
+  default     = null
+}
+
+variable "aws_redis_replicas_per_node_group" {
+  type        = string
+  description = "Number of replicas per node group. Defaults to 0"
+  default     = null
+}
+
+variable "aws_redis_multi_az_enabled" {
+  type        = bool
+  description = "Enables multi-availability-zone redis. Defaults to false"
+  default     = false
+}
+
+variable "aws_redis_automatic_failover" {
+  type        = bool
+  description = "Allows overriding the automatic configuration of this value, only needed when playing with resources in a non-conventional way."
+  default     = null
+}
+
+variable "aws_redis_apply_immediately" {
+  type        = bool
+  description = "Specifies whether any modifications are applied immediately, or during the next maintenance window. Default is false."
+  default     = false
+}
+
+variable "aws_redis_auto_minor_upgrade" {
+  type        = bool
+  description = "Specifies whether minor version engine upgrades will be applied automatically to the underlying Cache Cluster instances during the maintenance window. Defaults to true."
+  default     = true
+}
+
+variable "aws_redis_maintenance_window" {
+  type        = string
+  description = "Specifies the weekly time range for when maintenance on the cache cluster is performed. Example:sun:05:00-sun:06:00. Defaults to null."
+  default     = null
+}
+
+variable "aws_redis_snapshot_window" {
+  type        = string
+  description = "Daily time range (in UTC) when to start taking a daily snapshot. Minimum is a 60 minute period. Example: 05:00-09:00. Defaults to null."
+  default     = null
+}
+
+variable "aws_redis_final_snapshot" {
+  type        = string
+  description = "Change name to define a final snapshot."
+  default     = ""
+}
+
+variable "aws_redis_snapshot_restore_name" {
+  type        = string
+  description = "Set name to restore a snapshot to the cluster. The default behaviour is to restore it each time this action runs."
+  default     = ""
+}
+
+variable "aws_redis_cloudwatch_enabled" {
+  type        = bool
+  description = "Enable or disables Cloudwatch logging."
+  default     = true
+}
+
+variable "aws_redis_cloudwatch_lg_name" {
+  type        = string
+  description = "Cloudwatch log group name. Defaults to redis/aws_resource_identifier. Will append log_type to it."
+  default     = ""
+}
+
+variable "aws_redis_cloudwatch_log_format" {
+  type        = string
+  description = "Define log format between json (default) and text."
+  default     = "json"
+}
+
+variable "aws_redis_cloudwatch_log_type" {
+  type        = string
+  description = "Log type. Older Redis engines need slow-log. Newer support engine-log (default)"
+  default     = "engine-log"
+}
+
+variable "aws_redis_cloudwatch_retention_days" {
+  type        = string
+  description = "Number of days to retain logs. 0 to never expire."
+  default     = "14"
+}
+
+variable "aws_redis_single_line_url_secret" {
+  type        = bool
+  description = "Creates an AWS secret containing the connection string containing protocol://user@pass:endpoint:port"
+  default     = false
+}
+
+variable "aws_redis_additional_tags" {
+  type        = string
+  description = "Additional tags to be added to every Redis related resource"
+  default     = "{}"
+}
+
 # Docker
 
 variable "docker_efs_mount_target" {

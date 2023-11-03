@@ -284,6 +284,54 @@ module "db_proxy" {
   }
 }
 
+module "redis" {
+  source = "../modules/aws/redis"
+  count  = var.aws_redis_enable ? 1 : 0
+  # Redis
+  aws_redis_user                      = var.aws_redis_user
+  aws_redis_user_access_string        = var.aws_redis_user_access_string
+  aws_redis_user_group_name           = var.aws_redis_user_group_name
+  aws_redis_security_group_name       = var.aws_redis_security_group_name
+  aws_redis_ingress_allow_all         = var.aws_redis_ingress_allow_all
+  aws_redis_allowed_security_groups   = var.aws_redis_allowed_security_groups
+  aws_redis_subnets                   = var.aws_redis_subnets
+  aws_redis_port                      = var.aws_redis_port
+  aws_redis_at_rest_encryption        = var.aws_redis_at_rest_encryption
+  aws_redis_in_transit_encryption     = var.aws_redis_in_transit_encryption
+  aws_redis_replication_group_id      = var.aws_redis_replication_group_id
+  aws_redis_node_type                 = var.aws_redis_node_type
+  aws_redis_num_cache_clusters        = var.aws_redis_num_cache_clusters
+  aws_redis_parameter_group_name      = var.aws_redis_parameter_group_name
+  aws_redis_num_node_groups           = var.aws_redis_num_node_groups
+  aws_redis_replicas_per_node_group   = var.aws_redis_replicas_per_node_group
+  aws_redis_multi_az_enabled          = var.aws_redis_multi_az_enabled
+  aws_redis_automatic_failover        = var.aws_redis_automatic_failover
+  aws_redis_apply_immediately         = var.aws_redis_apply_immediately
+  aws_redis_auto_minor_upgrade        = var.aws_redis_auto_minor_upgrade
+  aws_redis_maintenance_window        = var.aws_redis_maintenance_window
+  aws_redis_snapshot_window           = var.aws_redis_snapshot_window
+  aws_redis_final_snapshot            = var.aws_redis_final_snapshot
+  aws_redis_snapshot_restore_name     = var.aws_redis_snapshot_restore_name
+  aws_redis_cloudwatch_enabled        = var.aws_redis_cloudwatch_enabled
+  aws_redis_cloudwatch_lg_name        = var.aws_redis_cloudwatch_lg_name
+  aws_redis_cloudwatch_log_format     = var.aws_redis_cloudwatch_log_format
+  aws_redis_cloudwatch_log_type       = var.aws_redis_cloudwatch_log_type
+  aws_redis_cloudwatch_retention_days = var.aws_redis_cloudwatch_retention_days
+  aws_redis_single_line_url_secret    = var.aws_redis_single_line_url_secret
+  # Others
+  aws_selected_vpc_id                 = module.vpc.aws_selected_vpc_id
+  aws_selected_subnets                = module.vpc.aws_selected_vpc_subnets
+  aws_resource_identifier             = var.aws_resource_identifier
+  aws_resource_identifier_supershort  = var.aws_resource_identifier_supershort
+
+  # Dependencies
+  depends_on = [module.vpc]
+
+  providers = {
+    aws = aws.redis
+  }
+}
+
 module "vpc" {
   source = "../modules/aws/vpc"
   #count  = var.aws_ec2_instance_create || var.aws_efs_enable || var.aws_aurora_enable ? 1 : 0
@@ -494,6 +542,7 @@ locals {
   aurora_tags   = merge(local.default_tags,jsondecode(var.aws_aurora_additional_tags))
   ecr_tags      = merge(local.default_tags,jsondecode(var.aws_ecr_additional_tags))
   db_proxy_tags = merge(local.default_tags,jsondecode(var.aws_db_proxy_additional_tags))
+  redis_tags    = merge(local.default_tags,jsondecode(var.aws_redis_additional_tags))
 
   fqdn_provided = (
     (var.aws_r53_domain_name != "") ?
@@ -583,4 +632,16 @@ output "ecs_dns_record" {
 
 output "ecs_load_balancer_dns" {
   value = try(module.aws_ecs[0].load_balancer_dns,null)
+}
+
+output "redis_secret_name" {
+  value = try(module.redis[0].redis_secret_name,null)
+}
+
+output "redis_endpoint" {
+  value = try(module.redis[0].redis_endpoint,null)
+}
+
+output "redis_connection_string_secret" {
+  value = try(module.redis[0].redis_connection_string_secret,null)
 }

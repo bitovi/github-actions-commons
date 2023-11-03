@@ -61,6 +61,7 @@ jobs:
 1. [RDS](#rds-inputs)
 1. [Amazon Aurora Inputs](#aurora-inputs)
 1. [Docker](#docker-inputs)
+1. [Redis](#redis-inputs)
 1. [ECS](#ecs-inputs)
 1. [ECR](#ecr-inputs)
 1. [EKS](#eks-inputs)
@@ -302,6 +303,44 @@ The following inputs can be used as `step.with` keys
 | `docker_cloudwatch_lg_name` | String| Log group name. Will default to `${aws_resource_identifier}-docker-logs` if none. |
 | `docker_cloudwatch_skip_destroy` | Boolean | Toggle deletion or not when destroying the stack. Defaults to `false`. |
 | `docker_cloudwatch_retention_days` | String | Number of days to retain logs. 0 to never expire. Defaults to `14`. See [note](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/cloudwatch_log_group#retention_in_days). |
+<hr/>
+<br/>
+
+#### **Redis Inputs**
+| Name             | Type    | Description                        |
+|------------------|---------|------------------------------------|
+| `aws_redis_enable` | Boolean | Enables the creation of a Redis instance. |
+| `aws_redis_user` | String | Redis username. Defaults to `redisuser`. |
+| `aws_redis_user_access_string` | String | String expression for user access. Defaults to `on ~* +@all`. |
+| `aws_redis_user_group_name` | String | User group name. Defaults to `aws_resource_identifier-redis`. |
+| `aws_redis_security_group_name` | String | Redis security group name. Defaults to `SG for aws_resource_identifier - Redis`. |
+| `aws_redis_ingress_allow_all` | Boolean | Allow access from 0.0.0.0/0. Defaults to `true`. |
+| `aws_redis_allowed_security_groups` | String | Comma separated list of security groups to be added to the Redis SG. |
+| `aws_redis_subnets` | String | Define a list of specific subnets where Redis will live. Defaults to all of the VPC ones. If nome defined, default VPC. |
+| `aws_redis_port` | String | Redis port. Defaults to `6379`. |
+| `aws_redis_at_rest_encryption` | Boolean | Encryption at rest. Defaults to `true`. |
+| `aws_redis_in_transit_encryption` | Boolean | In-transit encryption. Defaults to `true`. |
+| `aws_redis_replication_group_id` | String | Name of the Redis replication group. Defaults to `aws_resource_identifier-redis`. |
+| `aws_redis_node_type` | String | Node type of the Redis instance. Defaults to `cache.t2.small`. |
+| `aws_redis_num_cache_clusters` | String | Amount of Redis nodes. Defaults to `1`. |
+| `aws_redis_parameter_group_name` | String | Redis parameters groups name. If cluster wanted, set it to something that includes *.cluster.on.* Defaults to `default.redis7`. |
+| `aws_redis_num_node_groups` | String | Number of node groups. Defaults to `0`. |
+| `aws_redis_replicas_per_node_group` | String | Number of replicas per node group. Defaults to `0`. |
+| `aws_redis_multi_az_enabled` | Boolean | Enables multi-availability-zone redis. Defaults to `false`. |
+| `aws_redis_automatic_failover` | Boolean | Allows overriding the automatic configuration of this value, only needed when playing with resources in a non-conventional way. |
+| `aws_redis_apply_immediately` | Boolean | Specifies whether any modifications are applied immediately, or during the next maintenance window. Defaults to `false`. |
+| `aws_redis_auto_minor_upgrade` | Boolean | Specifies whether minor version engine upgrades will be applied automatically to the underlying Cache Cluster instances during the maintenance window. Defaults to `true`. |
+| `aws_redis_maintenance_window` | String | Specifies the weekly time range for when maintenance on the cache cluster is performed. Example:`sun:05:00-sun:06:00`. Defaults to `null`. |
+| `aws_redis_snapshot_window` | String | Daily time range (in UTC) when to start taking a daily snapshot. Minimum is a 60 minute period. Example: `05:00-09:00`. Defaults to `null`. |
+| `aws_redis_final_snapshot` | String | Change name to define a final snapshot. |
+| `aws_redis_snapshot_restore_name` | String | Set name to restore a snapshot to the cluster. The default behaviour is to restore it each time this action runs. |
+| `aws_redis_cloudwatch_enabled` | String | Enable or disables Cloudwatch logging. |
+| `aws_redis_cloudwatch_lg_name` | String | Cloudwatch log group name. Defaults to `/aws/redis/aws_resource_identifier` **Will append log_type to it** eg. `/your/name/slow-log`. |
+| `aws_redis_cloudwatch_log_format` | String | Define log format between `json`(default) and text. |
+| `aws_redis_cloudwatch_log_type` | String | Log type. Older Redis engines need `slow-log`. Newer support `engine-log` (default). You could add both by setting `slow-log,engine-log`.  |
+| `aws_redis_cloudwatch_retention_days` | String | Number of days to retain cloudwatch logs. Defaults to `14`. |
+| `aws_redis_single_line_url_secret`| Boolean | Creates an AWS secret containing the connection string containing `protocol://user@pass:endpoint:port` |
+| `aws_redis_additional_tags` | String | Additional tags to be added to every Redis related resource. |
 <hr/>
 <br/>
 
