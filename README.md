@@ -322,7 +322,7 @@ The following inputs can be used as `step.with` keys
 | `aws_redis_in_transit_encryption` | Boolean | In-transit encryption. Defaults to `true`. |
 | `aws_redis_replication_group_id` | String | Name of the Redis replication group. Defaults to `aws_resource_identifier-redis`. |
 | `aws_redis_node_type` | String | Node type of the Redis instance. Defaults to `cache.t2.small`. |
-| `aws_redis_cache_nodes` | String | Amount of Redis nodes. Defaults to `1`. |
+| `aws_redis_num_cache_clusters` | String | Amount of Redis nodes. Defaults to `1`. |
 | `aws_redis_parameter_group_name` | String | Redis parameters groups name. If cluster wanted, set it to something that includes *.cluster.on.* Defaults to `default.redis7`. |
 | `aws_redis_num_node_groups` | String | Number of node groups. Defaults to `0`. |
 | `aws_redis_replicas_per_node_group` | String | Number of replicas per node group. Defaults to `0`. |

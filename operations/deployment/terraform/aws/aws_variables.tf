@@ -773,7 +773,7 @@ variable "aws_redis_node_type" {
   default     = "cache.t2.small"
 }
 
-variable "aws_redis_cache_nodes" {
+variable "aws_redis_num_cache_clusters" {
   type        = string
   description = "Amount of Redis nodes. Defaults to 1"
   default     = "1"

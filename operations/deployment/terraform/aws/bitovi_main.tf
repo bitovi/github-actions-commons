@@ -300,7 +300,7 @@ module "redis" {
   aws_redis_in_transit_encryption   = var.aws_redis_in_transit_encryption
   aws_redis_replication_group_id    = var.aws_redis_replication_group_id
   aws_redis_node_type               = var.aws_redis_node_type
-  aws_redis_cache_nodes             = var.aws_redis_cache_nodes
+  aws_redis_num_cache_clusters      = var.aws_redis_num_cache_clusters
   aws_redis_parameter_group_name    = var.aws_redis_parameter_group_name
   aws_redis_num_node_groups         = var.aws_redis_num_node_groups
   aws_redis_replicas_per_node_group = var.aws_redis_replicas_per_node_group

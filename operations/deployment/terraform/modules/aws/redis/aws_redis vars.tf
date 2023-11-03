@@ -12,7 +12,7 @@ variable "aws_redis_in_transit_encryption" {}
 
 variable "aws_redis_replication_group_id" {}
 variable "aws_redis_node_type" {}
-variable "aws_redis_cache_nodes" {}
+variable "aws_redis_num_cache_clusters" {}
 variable "aws_redis_parameter_group_name" {}
 variable "aws_redis_num_node_groups" {}
 variable "aws_redis_replicas_per_node_group" {}

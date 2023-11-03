@@ -503,7 +503,7 @@ inputs:
   aws_redis_node_type:
     description: 'Node type of the Redis instance. Defaults to cache.t2.small'
     required: false
-  aws_redis_cache_nodes:
+  aws_redis_num_cache_clusters:
     description: 'Amount of Redis nodes. Defaults to 1'
     required: false
   aws_redis_parameter_group_name:
@@ -1062,7 +1062,7 @@ runs:
         AWS_REDIS_IN_TRANSIT_ENCRYPTION: ${{ inputs.aws_redis_in_transit_encryption }}
         AWS_REDIS_REPLICATION_GROUP_ID: ${{ inputs.aws_redis_replication_group_id }}
         AWS_REDIS_NODE_TYPE: ${{ inputs.aws_redis_node_type }}
-        AWS_REDIS_CACHE_NODES: ${{ inputs.aws_redis_cache_nodes }}
+        AWS_REDIS_NUM_CACHE_CLUSTER: ${{ inputs.aws_redis_num_cache_clusters }}
         AWS_REDIS_PARAMETER_GROUP_NAME: ${{ inputs.aws_redis_parameter_group_name }}
         AWS_REDIS_NUM_NODE_GROUPS: ${{ inputs.aws_redis_num_node_groups }}
         AWS_REDIS_REPLICAS_PER_NODE_GROUP: ${{ inputs.aws_redis_replicas_per_node_group }}

@@ -234,7 +234,7 @@ if [[ $(alpha_only "$AWS_REDIS_ENABLE") == true ]]; then
   aws_redis_in_transit_encryption=$(generate_var aws_redis_in_transit_encryption $AWS_REDIS_IN_TRANSIT_ENCRYPTION)
   aws_redis_replication_group_id=$(generate_var aws_redis_replication_group_id $AWS_REDIS_REPLICATION_GROUP_ID)
   aws_redis_node_type=$(generate_var aws_redis_node_type $AWS_REDIS_NODE_TYPE)
-  aws_redis_cache_nodes=$(generate_var aws_redis_cache_nodes $AWS_REDIS_CACHE_NODES)
+  aws_redis_num_cache_clusters=$(generate_var aws_redis_num_cache_clusters $AWS_REDIS_NUM_CACHE_CLUSTER)
   aws_redis_parameter_group_name=$(generate_var aws_redis_parameter_group_name $AWS_REDIS_PARAMETER_GROUP_NAME)
   aws_redis_num_node_groups=$(generate_var aws_redis_num_node_groups $AWS_REDIS_NUM_NODE_GROUPS)
   aws_redis_replicas_per_node_group=$(generate_var aws_redis_replicas_per_node_group $AWS_REDIS_REPLICAS_PER_NODE_GROUP)
@@ -519,7 +519,7 @@ $aws_redis_at_rest_encryption
 $aws_redis_in_transit_encryption
 $aws_redis_replication_group_id
 $aws_redis_node_type
-$aws_redis_cache_nodes
+$aws_redis_num_cache_clusters
 $aws_redis_parameter_group_name
 $aws_redis_num_node_groups
 $aws_redis_replicas_per_node_group

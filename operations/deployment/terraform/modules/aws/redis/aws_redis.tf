@@ -55,11 +55,11 @@ resource "aws_elasticache_subnet_group" "selected" {
 #########
 
 resource "aws_elasticache_replication_group" "redis_cluster" {
-  automatic_failover_enabled  = tonumber(var.aws_redis_cache_nodes) > 1 ? true : false
+  automatic_failover_enabled  = tonumber(var.aws_redis_num_cache_clusters) > 1 ? true : false
   replication_group_id        = var.aws_redis_replication_group_id != "" ? var.aws_redis_replication_group_id : "${var.aws_resource_identifier_supershort}-redis"
   description                 = "Redis cluster for ${var.aws_resource_identifier}" 
   node_type                   = var.aws_redis_node_type
-  num_cache_clusters          = try(tonumber(var.aws_redis_cache_nodes),null)
+  num_cache_clusters          = try(tonumber(var.aws_redis_num_cache_clusters),null)
   parameter_group_name        = var.aws_redis_parameter_group_name
   port                        = tonumber(var.aws_redis_port)
   
