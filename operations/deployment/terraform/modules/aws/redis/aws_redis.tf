@@ -78,19 +78,28 @@ resource "aws_elasticache_replication_group" "redis_cluster" {
   multi_az_enabled            = var.aws_redis_multi_az_enabled
 
   dynamic "log_delivery_configuration" {
-    for_each = aws_cloudwatch_log_group.this
+    for_each = contains(local.aws_redis_cloudwatch_log_type, "slow-log") ? [1] : []
     content {
-      destination      = "/aws/redis/${log_delivery_configuration.value}/${var.aws_resource_identifier}"
+      destination      = var.aws_redis_cloudwatch_lg_name != "" ? "${var.aws_redis_cloudwatch_lg_name}/slow-log" : "/aws/redis/${var.aws_resource_identifier}/slow-log"
       destination_type = "cloudwatch-logs"
       log_format       = var.aws_redis_cloudwatch_log_format
-      log_type         = log_delivery_configuration.value
+      log_type         = "slow-log"
+    }
+  }
+  dynamic "log_delivery_configuration" {
+    for_each = contains(local.aws_redis_cloudwatch_log_type, "engine-log") ? [1] : []
+    content {
+      destination      = var.aws_redis_cloudwatch_lg_name != "" ? "${var.aws_redis_cloudwatch_lg_name}/engine-log" : "/aws/redis/${var.aws_resource_identifier}/engine-log"
+      destination_type = "cloudwatch-logs"
+      log_format       = var.aws_redis_cloudwatch_log_format
+      log_type         = "engine-log"
     }
   }
 }
 
 resource "aws_cloudwatch_log_group" "this" {
   count             = length(local.aws_redis_cloudwatch_log_type)
-  name              = var.aws_redis_cloudwatch_lg_name != "" ? var.aws_redis_cloudwatch_lg_name : "/aws/redis/${local.aws_redis_cloudwatch_log_type[count.index]}/${var.aws_resource_identifier}"
+  name              = var.aws_redis_cloudwatch_lg_name != "" ? "${var.aws_redis_cloudwatch_lg_name}/${local.aws_redis_cloudwatch_log_type[count.index]}" : "/aws/redis/${var.aws_resource_identifier}/${local.aws_redis_cloudwatch_log_type[count.index]}"
   retention_in_days = tonumber(var.aws_redis_cloudwatch_retention_days)
 }
 
