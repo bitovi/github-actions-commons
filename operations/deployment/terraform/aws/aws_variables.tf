@@ -806,7 +806,7 @@ variable "aws_redis_multi_az_enabled" {
 variable "aws_redis_automatic_failover" {
   type        = bool
   description = "Allows overriding the automatic configuration of this value, only needed when playing with resources in a non-conventional way."
-  default     = ""
+  default     = null
 }
 
 variable "aws_redis_apply_immediately" {
