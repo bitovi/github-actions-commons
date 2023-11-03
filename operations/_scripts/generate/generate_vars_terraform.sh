@@ -239,6 +239,10 @@ if [[ $(alpha_only "$AWS_REDIS_ENABLE") == true ]]; then
   aws_redis_num_node_groups=$(generate_var aws_redis_num_node_groups $AWS_REDIS_NUM_NODE_GROUPS)
   aws_redis_replicas_per_node_group=$(generate_var aws_redis_replicas_per_node_group $AWS_REDIS_REPLICAS_PER_NODE_GROUP)
   aws_redis_multi_az_enabled=$(generate_var aws_redis_multi_az_enabled $AWS_REDIS_MULTI_AZ_ENABLED)
+  aws_redis_apply_immediately=$(generate_var aws_redis_apply_immediately $AWS_REDIS_APPLY_IMMEDIATELY)
+  aws_redis_auto_minor_upgrade=$(generate_var aws_redis_auto_minor_upgrade $AWS_REDIS_AUTO_MINOR_UPGRADE)
+  aws_redis_maintenance_window=$(generate_var aws_redis_maintenance_window $AWS_REDIS_MAINTENANCE_WINDOW)
+  aws_redis_snapshot_window=$(generate_var aws_redis_snapshot_window $AWS_REDIS_SNAPSHOT_WINDOW)
   aws_redis_final_snapshot=$(generate_var aws_redis_final_snapshot $AWS_REDIS_FINAL_SNAPSHOT)
   aws_redis_snapshot_restore_name=$(generate_var aws_redis_snapshot_restore_name $AWS_REDIS_SNAPSHOT_RESTORE_NAME)
   aws_redis_cloudwatch_enabled=$(generate_var aws_redis_cloudwatch_enabled $AWS_REDIS_CLOUDWATCH_ENABLED)
@@ -525,6 +529,10 @@ $aws_redis_parameter_group_name
 $aws_redis_num_node_groups
 $aws_redis_replicas_per_node_group
 $aws_redis_multi_az_enabled
+$aws_redis_apply_immediately
+$aws_redis_auto_minor_upgrade
+$aws_redis_maintenance_window
+$aws_redis_snapshot_window
 $aws_redis_final_snapshot
 $aws_redis_snapshot_restore_name
 $aws_redis_cloudwatch_enabled

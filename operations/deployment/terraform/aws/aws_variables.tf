@@ -803,6 +803,30 @@ variable "aws_redis_multi_az_enabled" {
   default     = false
 }
 
+variable "aws_redis_apply_immediately" {
+  type        = bool
+  description = "Specifies whether any modifications are applied immediately, or during the next maintenance window. Default is false."
+  default     = false
+}
+
+variable "aws_redis_auto_minor_upgrade" {
+  type        = bool
+  description = "Specifies whether minor version engine upgrades will be applied automatically to the underlying Cache Cluster instances during the maintenance window. Defaults to true."
+  default     = true
+}
+
+variable "aws_redis_maintenance_window" {
+  type        = string
+  description = "Specifies the weekly time range for when maintenance on the cache cluster is performed. Example:sun:05:00-sun:06:00. Defaults to null."
+  default     = null
+}
+
+variable "aws_redis_snapshot_window" {
+  type        = string
+  description = "Daily time range (in UTC) when to start taking a daily snapshot. Minimum is a 60 minute period. Example: 05:00-09:00. Defaults to null."
+  default     = null
+}
+
 variable "aws_redis_final_snapshot" {
   type        = string
   description = "Change name to define a final snapshot."

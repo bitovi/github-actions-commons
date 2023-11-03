@@ -518,6 +518,18 @@ inputs:
   aws_redis_multi_az_enabled:
     description: 'Enables multi-availability-zone redis. Defaults to false'
     required: false
+  aws_redis_apply_immediately:
+    description: 'Specifies whether any modifications are applied immediately, or during the next maintenance window. Default is false.'
+    required: false
+  aws_redis_auto_minor_upgrade:
+    description: 'Specifies whether minor version engine upgrades will be applied automatically to the underlying Cache Cluster instances during the maintenance window. Defaults to true.'
+    required: false
+  aws_redis_maintenance_window:
+    description: 'Specifies the weekly time range for when maintenance on the cache cluster is performed. Example:sun:05:00-sun:06:00. Defaults to null.'
+    required: false
+  aws_redis_snapshot_window:
+    description: 'Daily time range (in UTC) when to start taking a daily snapshot. Minimum is a 60 minute period. Example: 05:00-09:00. Defaults to null.'
+    required: false
   aws_redis_final_snapshot:
     description: 'Change name to define a final snapshot.'
     required: false
@@ -528,7 +540,7 @@ inputs:
     description: 'Enable or disables Cloudwatch logging.'
     required: false
   aws_redis_cloudwatch_lg_name:
-    description: 'Cloudwatch log group name. Defaults to redis/aws_resource_identifier'
+    description: 'Cloudwatch log group name. Defaults to /aws/redis/log_type/aws_resource_identifier'
     required: false
   aws_redis_cloudwatch_log_format:
     description: 'Define log format between json (default) and text.'
@@ -1070,6 +1082,10 @@ runs:
         AWS_REDIS_NUM_NODE_GROUPS: ${{ inputs.aws_redis_num_node_groups }}
         AWS_REDIS_REPLICAS_PER_NODE_GROUP: ${{ inputs.aws_redis_replicas_per_node_group }}
         AWS_REDIS_MULTI_AZ_ENABLED: ${{ inputs.aws_redis_multi_az_enabled }}
+        AWS_REDIS_APPLY_IMMEDIATELY: ${{ inputs.aws_redis_apply_immediately }}
+        AWS_REDIS_AUTO_MINOR_UPGRADE: ${{ inputs.aws_redis_auto_minor_upgrade }}
+        AWS_REDIS_MAINTENANCE_WINDOW: ${{ inputs.aws_redis_maintenance_window }}
+        AWS_REDIS_SNAPSHOT_WINDOW: ${{ inputs.aws_redis_snapshot_window }}
         AWS_REDIS_FINAL_SNAPSHOT: ${{ inputs.aws_redis_final_snapshot }}
         AWS_REDIS_SNAPSHOT_RESTORE_NAME: ${{ inputs.aws_redis_snapshot_restore_name }}
         AWS_REDIS_CLOUDWATCH_ENABLED: ${{ inputs.aws_redis_cloudwatch_enabled }}

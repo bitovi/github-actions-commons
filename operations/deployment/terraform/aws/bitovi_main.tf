@@ -305,6 +305,10 @@ module "redis" {
   aws_redis_num_node_groups           = var.aws_redis_num_node_groups
   aws_redis_replicas_per_node_group   = var.aws_redis_replicas_per_node_group
   aws_redis_multi_az_enabled          = var.aws_redis_multi_az_enabled
+  aws_redis_apply_immediately         = var.aws_redis_apply_immediately
+  aws_redis_auto_minor_upgrade        = var.aws_redis_auto_minor_upgrade
+  aws_redis_maintenance_window        = var.aws_redis_maintenance_window
+  aws_redis_snapshot_window           = var.aws_redis_snapshot_window
   aws_redis_final_snapshot            = var.aws_redis_final_snapshot
   aws_redis_snapshot_restore_name     = var.aws_redis_snapshot_restore_name
   aws_redis_cloudwatch_enabled        = var.aws_redis_cloudwatch_enabled

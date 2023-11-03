@@ -18,6 +18,10 @@ variable "aws_redis_num_node_groups" {}
 variable "aws_redis_replicas_per_node_group" {}
 variable "aws_redis_multi_az_enabled" {}
 
+variable "aws_redis_apply_immediately" {}
+variable "aws_redis_auto_minor_upgrade" {}
+variable "aws_redis_maintenance_window" {}
+variable "aws_redis_snapshot_window" {}
 variable "aws_redis_final_snapshot" {}
 variable "aws_redis_snapshot_restore_name" {}
 
