@@ -122,7 +122,7 @@ output "redis_url" {
 // Creates a secret manager secret for the databse credentials
 resource "aws_secretsmanager_secret" "redis_credentials_url" {
   count = var.aws_redis_single_line_url_secret ? 1 : 0
-  name   = "${var.aws_resource_identifier_supershort}-redis-url${random_string.random.result}"
+  name   = "${var.aws_resource_identifier_supershort}-redis-url-${random_string.random.result}"
 }
 
 resource "aws_secretsmanager_secret_version" "rediscredentials_sm_secret_version_url" {

@@ -132,8 +132,8 @@ if [[ $SUCCESS == 'success' ]]; then
     Redis endpoint: ${REDIS_ENDPOINT}
     Redis secret name: ${REDIS_SECRET_NAME}"
     if [[ -n $REDIS_SECRET_URL ]]; then
-      result_string+="
-      Redis connection URL secret name: ${REDIS_SECRET_URL}"
+    result_string+="
+    Redis connection URL secret name: ${REDIS_SECRET_URL}"
     fi
   elif [[ $BITOPS_CODE_ONLY == 'true' ]]; then
     if [[ $BITOPS_CODE_STORE == 'true' ]]; then
