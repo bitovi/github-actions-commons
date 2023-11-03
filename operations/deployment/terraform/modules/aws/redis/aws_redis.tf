@@ -55,7 +55,7 @@ resource "aws_elasticache_subnet_group" "selected" {
 #########
 
 resource "aws_elasticache_replication_group" "redis_cluster" {
-  automatic_failover_enabled  = tonumber(var.aws_redis_num_cache_clusters) > 1 ? true : false
+  automatic_failover_enabled  = tonumber(var.aws_redis_num_cache_clusters) > 1 ? true : contains(var.aws_redis_parameter_group_name, "cluster")
   replication_group_id        = var.aws_redis_replication_group_id != "" ? var.aws_redis_replication_group_id : "${var.aws_resource_identifier_supershort}-redis"
   description                 = "Redis cluster for ${var.aws_resource_identifier}" 
   node_type                   = var.aws_redis_node_type
@@ -69,7 +69,7 @@ resource "aws_elasticache_replication_group" "redis_cluster" {
   at_rest_encryption_enabled  = var.aws_redis_at_rest_encryption 
   transit_encryption_enabled  = var.aws_redis_in_transit_encryption
   subnet_group_name           = aws_elasticache_subnet_group.selected.name
-  security_group_ids          = [aws_security_group.redis_security_group.id]
+  security_group_ids          = [aws_security_group.rdis_security_group.id]
   num_node_groups             = try(tonumber(var.aws_redis_num_node_groups),null)
   replicas_per_node_group     = try(tonumber(var.aws_redis_replicas_per_node_group),null)
   multi_az_enabled            = var.aws_redis_multi_az_enabled
