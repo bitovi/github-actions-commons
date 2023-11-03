@@ -88,7 +88,7 @@ resource "aws_elasticache_replication_group" "redis_cluster" {
 resource "aws_cloudwatch_log_group" "this" {
   count             = var.aws_redis_cloudwatch_enabled ? 1 : 0
   name              = var.aws_redis_cloudwatch_lg_name != "" ? var.aws_redis_cloudwatch_lg_name : "/aws/redis/${var.aws_resource_identifier}"
-  retention_in_days = tonumber(var.aws_redis_cloudwatch_lg_name)
+  retention_in_days = tonumber(var.aws_redis_cloudwatch_retention_days)
 }
 
 resource "aws_elasticache_user" "redis" {
