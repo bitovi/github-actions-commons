@@ -540,7 +540,7 @@ inputs:
     description: 'Enable or disables Cloudwatch logging.'
     required: false
   aws_redis_cloudwatch_lg_name:
-    description: 'Cloudwatch log group name. Defaults to /aws/redis/log_type/aws_resource_identifier'
+    description: 'Cloudwatch log group name. Defaults to /aws/redis/aws_resource_identifier. Will append log_type to it.'
     required: false
   aws_redis_cloudwatch_log_format:
     description: 'Define log format between json (default) and text.'

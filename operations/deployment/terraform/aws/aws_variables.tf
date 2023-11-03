@@ -847,7 +847,7 @@ variable "aws_redis_cloudwatch_enabled" {
 
 variable "aws_redis_cloudwatch_lg_name" {
   type        = string
-  description = "Cloudwatch log group name. Defaults to redis/aws_resource_identifier"
+  description = "Cloudwatch log group name. Defaults to redis/aws_resource_identifier. Will append log_type to it."
   default     = ""
 }
 

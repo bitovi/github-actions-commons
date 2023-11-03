@@ -334,7 +334,7 @@ The following inputs can be used as `step.with` keys
 | `aws_redis_final_snapshot` | String | Change name to define a final snapshot. |
 | `aws_redis_snapshot_restore_name` | String | Set name to restore a snapshot to the cluster. The default behaviour is to restore it each time this action runs. |
 | `aws_redis_cloudwatch_enabled` | String | Enable or disables Cloudwatch logging. |
-| `aws_redis_cloudwatch_lg_name` | String | Cloudwatch log group name. Defaults to `/aws/redis/<log_type>/aws_resource_identifier`. |
+| `aws_redis_cloudwatch_lg_name` | String | Cloudwatch log group name. Defaults to `/aws/redis/aws_resource_identifier` **Will append log_type to it** eg. `/your/name/slow-log`. |
 | `aws_redis_cloudwatch_log_format` | String | Define log format between `json`(default) and text. |
 | `aws_redis_cloudwatch_log_type` | String | Log type. Older Redis engines need `slow-log`. Newer support `engine-log` (default). You could add both by setting `slow-log,engine-log`.  |
 | `aws_redis_cloudwatch_retention_days` | String | Number of days to retain cloudwatch logs. Defaults to `14`. |
