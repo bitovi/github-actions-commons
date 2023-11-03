@@ -77,25 +77,25 @@ resource "aws_elasticache_replication_group" "redis_cluster" {
   replicas_per_node_group     = try(tonumber(var.aws_redis_replicas_per_node_group),null)
   multi_az_enabled            = var.aws_redis_multi_az_enabled
 
-  dynamic "log_delivery_configuration" {
-    for_each = var.aws_redis_cloudwatch_enabled ? [length(local.aws_redis_cloudwatch_log_type)] : []
+  dynamic "log_type" {
+    for_each = aws_cloudwatch_log_group.this
     content {
-      destination      = aws_cloudwatch_log_group.this[count.index].name
+      destination      = "/aws/redis/${log_type.value}/${var.aws_resource_identifier}"
       destination_type = "cloudwatch-logs"
       log_format       = var.aws_redis_cloudwatch_log_format
-      log_type         = local.aws_redis_cloudwatch_log_type[count.index]
+      log_type         = log_type.value
     }
   }
 }
 
 resource "aws_cloudwatch_log_group" "this" {
-  count             = var.aws_redis_cloudwatch_enabled ? length(local.aws_redis_cloudwatch_log_type) : 0
+  count             = length(local.aws_redis_cloudwatch_log_type)
   name              = var.aws_redis_cloudwatch_lg_name != "" ? var.aws_redis_cloudwatch_lg_name : "/aws/redis/${local.aws_redis_cloudwatch_log_type[count.index]}/${var.aws_resource_identifier}"
   retention_in_days = tonumber(var.aws_redis_cloudwatch_retention_days)
 }
 
 locals {
-  aws_redis_cloudwatch_log_type = var.aws_redis_cloudwatch_log_type != "" ? [for n in split(",", var.aws_redis_cloudwatch_log_type)  : (n)] :  []
+  aws_redis_cloudwatch_log_type = var.aws_redis_cloudwatch_enabled ? [for n in split(",", var.aws_redis_cloudwatch_log_type)  : (n)] :  []
 }
 
 resource "aws_elasticache_user" "redis" {
