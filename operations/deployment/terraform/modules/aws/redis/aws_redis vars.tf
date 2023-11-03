@@ -17,7 +17,7 @@ variable "aws_redis_parameter_group_name" {}
 variable "aws_redis_num_node_groups" {}
 variable "aws_redis_replicas_per_node_group" {}
 variable "aws_redis_multi_az_enabled" {}
-
+variable "aws_redis_automatic_failover" {}
 variable "aws_redis_apply_immediately" {}
 variable "aws_redis_auto_minor_upgrade" {}
 variable "aws_redis_maintenance_window" {}

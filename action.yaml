@@ -518,6 +518,9 @@ inputs:
   aws_redis_multi_az_enabled:
     description: 'Enables multi-availability-zone redis. Defaults to false'
     required: false
+  aws_redis_automatic_failover:
+    description: 'Allows overriding the automatic configuration of this value, only needed when playing with resources in a non-conventional way.'
+    required: false
   aws_redis_apply_immediately:
     description: 'Specifies whether any modifications are applied immediately, or during the next maintenance window. Default is false.'
     required: false
@@ -1082,6 +1085,7 @@ runs:
         AWS_REDIS_NUM_NODE_GROUPS: ${{ inputs.aws_redis_num_node_groups }}
         AWS_REDIS_REPLICAS_PER_NODE_GROUP: ${{ inputs.aws_redis_replicas_per_node_group }}
         AWS_REDIS_MULTI_AZ_ENABLED: ${{ inputs.aws_redis_multi_az_enabled }}
+        AWS_REDIS_AUTOMATIC_FAILOVER: ${{ inputs.aws_redis_automatic_failover }}
         AWS_REDIS_APPLY_IMMEDIATELY: ${{ inputs.aws_redis_apply_immediately }}
         AWS_REDIS_AUTO_MINOR_UPGRADE: ${{ inputs.aws_redis_auto_minor_upgrade }}
         AWS_REDIS_MAINTENANCE_WINDOW: ${{ inputs.aws_redis_maintenance_window }}

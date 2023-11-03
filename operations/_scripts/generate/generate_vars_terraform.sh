@@ -239,6 +239,7 @@ if [[ $(alpha_only "$AWS_REDIS_ENABLE") == true ]]; then
   aws_redis_num_node_groups=$(generate_var aws_redis_num_node_groups $AWS_REDIS_NUM_NODE_GROUPS)
   aws_redis_replicas_per_node_group=$(generate_var aws_redis_replicas_per_node_group $AWS_REDIS_REPLICAS_PER_NODE_GROUP)
   aws_redis_multi_az_enabled=$(generate_var aws_redis_multi_az_enabled $AWS_REDIS_MULTI_AZ_ENABLED)
+  aws_redis_automatic_failover=$(generate_var aws_redis_automatic_failover $AWS_REDIS_AUTOMATIC_FAILOVER)
   aws_redis_apply_immediately=$(generate_var aws_redis_apply_immediately $AWS_REDIS_APPLY_IMMEDIATELY)
   aws_redis_auto_minor_upgrade=$(generate_var aws_redis_auto_minor_upgrade $AWS_REDIS_AUTO_MINOR_UPGRADE)
   aws_redis_maintenance_window=$(generate_var aws_redis_maintenance_window $AWS_REDIS_MAINTENANCE_WINDOW)
@@ -529,6 +530,7 @@ $aws_redis_parameter_group_name
 $aws_redis_num_node_groups
 $aws_redis_replicas_per_node_group
 $aws_redis_multi_az_enabled
+$aws_redis_automatic_failover
 $aws_redis_apply_immediately
 $aws_redis_auto_minor_upgrade
 $aws_redis_maintenance_window

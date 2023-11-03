@@ -305,6 +305,7 @@ module "redis" {
   aws_redis_num_node_groups           = var.aws_redis_num_node_groups
   aws_redis_replicas_per_node_group   = var.aws_redis_replicas_per_node_group
   aws_redis_multi_az_enabled          = var.aws_redis_multi_az_enabled
+  aws_redis_automatic_failover        = var.aws_redis_automatic_failover
   aws_redis_apply_immediately         = var.aws_redis_apply_immediately
   aws_redis_auto_minor_upgrade        = var.aws_redis_auto_minor_upgrade
   aws_redis_maintenance_window        = var.aws_redis_maintenance_window

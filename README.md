@@ -327,10 +327,11 @@ The following inputs can be used as `step.with` keys
 | `aws_redis_num_node_groups` | String | Number of node groups. Defaults to `0`. |
 | `aws_redis_replicas_per_node_group` | String | Number of replicas per node group. Defaults to `0`. |
 | `aws_redis_multi_az_enabled` | Boolean | Enables multi-availability-zone redis. Defaults to `false`. |
+| `aws_redis_automatic_failover` | Boolean | Allows overriding the automatic configuration of this value, only needed when playing with resources in a non-conventional way. |
 | `aws_redis_apply_immediately` | Boolean | Specifies whether any modifications are applied immediately, or during the next maintenance window. Defaults to `false`. |
 | `aws_redis_auto_minor_upgrade` | Boolean | Specifies whether minor version engine upgrades will be applied automatically to the underlying Cache Cluster instances during the maintenance window. Defaults to `true`. |
-| `aws_redis_maintenance_window` | String | Specifies the weekly time range for when maintenance on the cache cluster is performed. Example:sun:05:00-sun:06:00. Defaults to `null`. |
-| `aws_redis_snapshot_window` | String | Daily time range (in UTC) when to start taking a daily snapshot. Minimum is a 60 minute period. Example: 05:00-09:00. Defaults to `null`. |
+| `aws_redis_maintenance_window` | String | Specifies the weekly time range for when maintenance on the cache cluster is performed. Example:`sun:05:00-sun:06:00`. Defaults to `null`. |
+| `aws_redis_snapshot_window` | String | Daily time range (in UTC) when to start taking a daily snapshot. Minimum is a 60 minute period. Example: `05:00-09:00`. Defaults to `null`. |
 | `aws_redis_final_snapshot` | String | Change name to define a final snapshot. |
 | `aws_redis_snapshot_restore_name` | String | Set name to restore a snapshot to the cluster. The default behaviour is to restore it each time this action runs. |
 | `aws_redis_cloudwatch_enabled` | String | Enable or disables Cloudwatch logging. |

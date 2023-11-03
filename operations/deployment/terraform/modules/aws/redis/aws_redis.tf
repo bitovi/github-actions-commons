@@ -55,7 +55,7 @@ resource "aws_elasticache_subnet_group" "selected" {
 #########
 
 resource "aws_elasticache_replication_group" "redis_cluster" {
-  automatic_failover_enabled  = tonumber(var.aws_redis_num_cache_clusters) > 1 ? true : strcontains(var.aws_redis_parameter_group_name, "cluster")
+  automatic_failover_enabled  = var.aws_redis_automatic_failover == "" ? tonumber(var.aws_redis_num_cache_clusters) > 1 ? true : strcontains(var.aws_redis_parameter_group_name, "cluster") : var.aws_redis_automatic_failover
   replication_group_id        = var.aws_redis_replication_group_id != "" ? var.aws_redis_replication_group_id : "${var.aws_resource_identifier_supershort}-redis"
   description                 = "Redis cluster for ${var.aws_resource_identifier}" 
   node_type                   = var.aws_redis_node_type
@@ -64,8 +64,8 @@ resource "aws_elasticache_replication_group" "redis_cluster" {
   port                        = tonumber(var.aws_redis_port)
   apply_immediately           = var.aws_redis_apply_immediately
   auto_minor_version_upgrade  = var.aws_redis_auto_minor_upgrade
-  maintenance_window          = var.aws_redis_maintenance_window # "tue:06:30-tue:07:30"
-  snapshot_window             = var.aws_redis_snapshot_window    # "01:00-02:00"  
+  maintenance_window          = var.aws_redis_maintenance_window
+  snapshot_window             = var.aws_redis_snapshot_window
   snapshot_name               = var.aws_redis_snapshot_restore_name
   final_snapshot_identifier   = var.aws_redis_final_snapshot
   user_group_ids              = [aws_elasticache_user_group.redis.user_group_id]
