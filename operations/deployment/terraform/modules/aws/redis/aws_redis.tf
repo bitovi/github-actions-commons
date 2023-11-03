@@ -59,13 +59,7 @@ resource "aws_elasticache_replication_group" "redis_cluster" {
   replication_group_id        = var.aws_redis_replication_group_id != "" ? var.aws_redis_replication_group_id : "${var.aws_resource_identifier_supershort}-redis"
   description                 = "Redis cluster for ${var.aws_resource_identifier}" 
   node_type                   = var.aws_redis_node_type
-  dynamic "num_cache_clusters" {
-    for_each = tnumber(var.aws_redis_num_cache_clusters) > 1 ? [1] : []
-    content {
-      num_cache_clusters     = tonumber(var.aws_redis_num_cache_clusters)
-    }
-  }
-  #num_cache_clusters          = try(tonumber(var.aws_redis_num_cache_clusters),null)
+  num_cache_clusters          = tonumber(var.aws_redis_num_cache_clusters) > 0 ? tonumber(var.aws_redis_num_cache_clusters) : null
   parameter_group_name        = var.aws_redis_parameter_group_name
   port                        = tonumber(var.aws_redis_port)
   
