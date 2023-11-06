@@ -154,6 +154,8 @@ module "rds" {
   aws_subnets_vpc_subnets_ids            = module.vpc.aws_selected_vpc_subnets
   aws_resource_identifier                = var.aws_resource_identifier
   aws_resource_identifier_supershort     = var.aws_resource_identifier_supershort
+  # Incoming proxy
+  aws_rds_db_proxy_endpoint              = try(module.db_proxy_rds[0].db_proxy_endpoint,"")
   # Dependencies
   depends_on = [module.vpc]
 
@@ -217,6 +219,8 @@ module "aurora_rds" {
   # Others
   aws_resource_identifier            = var.aws_resource_identifier
   aws_resource_identifier_supershort = var.aws_resource_identifier_supershort
+  # Incoming proxy
+  aws_aurora_proxy_endpoint          = try(module.db_proxy_aurora[0].db_proxy_endpoint,"")
   # Dependencies
   depends_on = [module.vpc]
 

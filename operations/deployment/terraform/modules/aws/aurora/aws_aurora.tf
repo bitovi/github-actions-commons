@@ -149,6 +149,7 @@ resource "aws_secretsmanager_secret_version" "database_credentials_sm_secret_ver
    DB_NAME           = sensitive(module.aurora_cluster.cluster_database_name == null ? "" : module.aurora_cluster.cluster_database_name)
    DB_ENGINE         = sensitive(local.dba_engine)
    DB_ENGINE_VERSION = sensitive(module.aurora_cluster.cluster_engine_version_actual)
+   DB_PROXY          = sensitive(var.aws_aurora_proxy_endpoint)
   })
 }
 

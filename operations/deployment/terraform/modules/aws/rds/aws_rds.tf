@@ -111,6 +111,7 @@ resource "aws_secretsmanager_secret_version" "database_credentials_sm_secret_ver
    DB_NAME           = sensitive(aws_db_instance.default.db_name)
    DB_ENGINE         = sensitive(aws_db_instance.default.engine)
    DB_ENGINE_VERSION = sensitive(aws_db_instance.default.engine_version)
+   DB_PROXY          = sensitive(var.aws_rds_db_proxy_endpoint)
   })
 }
 

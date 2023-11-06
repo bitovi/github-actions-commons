@@ -12,5 +12,6 @@ DB_PASSWORD="${aws_db_instance.default.password}"
 DB_NAME="${aws_db_instance.default.db_name}"
 DB_PORT="${aws_db_instance.default.port}"
 DB_HOST="${aws_db_instance.default.address}"
+DB_PROXY="${var.aws_rds_db_proxy_endpoint}"
 EOT
 }
