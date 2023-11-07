@@ -154,8 +154,6 @@ module "rds" {
   aws_subnets_vpc_subnets_ids            = module.vpc.aws_selected_vpc_subnets
   aws_resource_identifier                = var.aws_resource_identifier
   aws_resource_identifier_supershort     = var.aws_resource_identifier_supershort
-  # Incoming proxy
-  aws_rds_db_proxy_endpoint              = try(module.db_proxy_rds[0].db_proxy_endpoint,"")
   # Dependencies
   depends_on = [module.vpc]
 
@@ -168,6 +166,8 @@ module "db_proxy_rds" {
   source = "../modules/aws/db_proxy"
   count  = var.aws_rds_db_proxy ? 1 : 0
   # PROXY
+  aws_aurora_proxy                            = var.aws_aurora_proxy
+  aws_rds_db_proxy                            = var.aws_rds_db_proxy
   aws_db_proxy_name                           = var.aws_db_proxy_name != "" ? var.aws_db_proxy_name : lower(var.aws_resource_identifier)
   aws_db_proxy_database_id                    = module.rds[0].db_id
   aws_db_proxy_cluster                        = false
@@ -219,8 +219,6 @@ module "aurora_rds" {
   # Others
   aws_resource_identifier            = var.aws_resource_identifier
   aws_resource_identifier_supershort = var.aws_resource_identifier_supershort
-  # Incoming proxy
-  aws_aurora_proxy_endpoint          = try(module.db_proxy_aurora[0].db_proxy_endpoint,"")
   # Dependencies
   depends_on = [module.vpc]
 
@@ -233,6 +231,8 @@ module "db_proxy_aurora" {
   source = "../modules/aws/db_proxy"
   count  = var.aws_aurora_proxy ? 1 : 0
   # PROXY
+  aws_aurora_proxy                            = var.aws_aurora_proxy
+  aws_rds_db_proxy                            = var.aws_rds_db_proxy
   aws_db_proxy_name                           = var.aws_db_proxy_name != "" ? var.aws_db_proxy_name : lower(var.aws_resource_identifier)
   aws_db_proxy_database_id                    = module.aurora_rds[0].aurora_db_id
   aws_db_proxy_cluster                        = true
@@ -263,6 +263,8 @@ module "db_proxy" {
   source = "../modules/aws/db_proxy"
   count  = var.aws_db_proxy_enable ? 1 : 0
   # PROXY
+  aws_aurora_proxy                            = var.aws_aurora_proxy
+  aws_rds_db_proxy                            = var.aws_rds_db_proxy
   aws_db_proxy_name                           = var.aws_db_proxy_name != "" ? var.aws_db_proxy_name : lower(var.aws_resource_identifier)
   aws_db_proxy_database_id                    = var.aws_db_proxy_database_id
   aws_db_proxy_cluster                        = var.aws_db_proxy_cluster

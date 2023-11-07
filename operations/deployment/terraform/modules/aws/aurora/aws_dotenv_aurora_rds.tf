@@ -40,6 +40,5 @@ DBA_PASSWORD="${module.aurora_cluster.cluster_master_password}"
 DBA_NAME=${module.aurora_cluster.cluster_database_name == null ? "" : module.aurora_cluster.cluster_database_name}
 DBA_PORT=${module.aurora_cluster.cluster_port}
 DBA_HOST="${module.aurora_cluster.cluster_endpoint}"
-DBA_PROXY="${var.aws_aurora_proxy_endpoint}"
 EOT
 }

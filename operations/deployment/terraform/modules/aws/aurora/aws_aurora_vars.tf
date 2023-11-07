@@ -16,7 +16,6 @@ variable "aws_aurora_database_final_snapshot" {}
 variable "aws_subnets_vpc_subnets_ids" {}
 variable "aws_resource_identifier" {}
 variable "aws_resource_identifier_supershort" {}
-variable "aws_aurora_proxy_endpoint" {}
 variable "aws_allowed_sg_id" {}
 variable "aws_selected_vpc_id" {}
 variable "aws_region_current_name" {}

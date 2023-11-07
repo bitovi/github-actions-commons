@@ -1,3 +1,5 @@
+variable aws_rds_db_proxy {}
+variable aws_aurora_proxy {}
 variable aws_db_proxy_name {}
 variable aws_db_proxy_database_id {}
 variable aws_db_proxy_cluster {}
