@@ -31,7 +31,7 @@ resource "aws_ecs_task_definition" "ecs_task" {
   requires_compatibilities = [local.aws_ecs_task_type[count.index]]
   cpu                      = local.aws_ecs_task_cpu[count.index]
   memory                   = local.aws_ecs_task_mem[count.index]
-  execution_role_arn       = aws_iam_role.ecsTaskExecutionRole.arn
+  execution_role_arn       = local.ecsTaskExecutionRole
   container_definitions = sensitive(jsonencode([
     {
       "image": local.aws_ecs_app_image[count.index],
@@ -69,7 +69,7 @@ resource "aws_ecs_task_definition" "ecs_task_from_json" {
   requires_compatibilities = ["${local.aws_ecs_task_type[count.index +length(local.aws_ecs_app_image)]}"]
   cpu                      = local.aws_ecs_task_cpu[count.index+length(local.aws_ecs_app_image)]
   memory                   = local.aws_ecs_task_mem[count.index+length(local.aws_ecs_app_image)]
-  execution_role_arn       = aws_iam_role.ecsTaskExecutionRole.arn
+  execution_role_arn       = local.ecsTaskExecutionRole
   container_definitions    = sensitive(file("../../ansible/clone_repo/app/${var.app_repo_name}/${local.aws_ecs_task_json_definition_file[count.index]}"))
 }
 
@@ -111,8 +111,14 @@ resource "aws_cloudwatch_log_group" "ecs_cw_log_group" {
 }
 
 # IAM
-resource "aws_iam_role" "ecsTaskExecutionRole" {
+data "aws_iam_role" "ecsTaskExecutionRole" {
+  count = var.aws_ecs_task_execution_role != "" ? 1 : 0
   name = var.aws_ecs_task_execution_role
+}
+
+resource "aws_iam_role" "ecsTaskExecutionRole" {
+  count = var.aws_ecs_task_execution_role != "" ? 0 : 1
+  name  = "${var.aws_resource_identifier}-ecsTaskExecutionRole"
   assume_role_policy = jsonencode({
     "Version" : "2012-10-17",
     "Statement" : [
@@ -131,4 +137,8 @@ resource "aws_iam_policy_attachment" "ecsTaskExecutionRolePolicy" {
   name       = "AmazonECSTaskExecutionRolePolicyAttachment"
   roles      = [aws_iam_role.ecsTaskExecutionRole.name]
   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
+}
+
+locals {
+  ecsTaskExecutionRole = var.aws_ecs_task_execution_role != "" ? data.aws_iam_role.ecsTaskExecutionRole[0].arn : aws_iam_role.ecsTaskExecutionRole[0].arn
 }
