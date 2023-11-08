@@ -118,7 +118,7 @@ data "aws_iam_role" "ecsTaskExecutionRole" {
 
 resource "aws_iam_role" "ecsTaskExecutionRole" {
   count = var.aws_ecs_task_execution_role != "" ? 0 : 1
-  name  = "${var.aws_resource_identifier}-ecsTaskExecutionRole"
+  name  = "${var.aws_resource_identifier}-ecs"
   assume_role_policy = jsonencode({
     "Version" : "2012-10-17",
     "Statement" : [
