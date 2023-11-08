@@ -268,3 +268,19 @@ output "db_proxy_endpoint" {
 output "db_proxy_secret_name" {
   value = aws_secretsmanager_secret.proxy_credentials.name
 }
+
+
+resource "random_password" "rds" {
+  length = 25
+  special = false
+  lifecycle {
+  ignore_changes = all
+  }
+}
+
+resource "random_string" "random_sm" {
+  length    = 5
+  lower     = true
+  special   = false
+  numeric   = false
+}
