@@ -158,6 +158,7 @@ resource "aws_security_group" "sg_rds_proxy" {
 resource "aws_security_group_rule" "sg_rds_proxy_db_sgs" {
   count                    = var.aws_db_proxy_database_security_group_allow ? length(local.db_security_group) : 0
   type                     = "ingress"
+  description              = "${var.aws_resource_identifier} - RDS SG"
   from_port                = local.db_port
   to_port                  = local.db_port
   protocol                 = "tcp"
@@ -169,6 +170,7 @@ resource "aws_security_group_rule" "sg_rds_proxy_db_sgs" {
 resource "aws_security_group_rule" "sg_rds_proxy_extras" {
   count                    = length(local.rds_proxy_allowed_security_groups)
   type                     = "ingress"
+  description              = "${var.aws_resource_identifier} - RDS Extras"
   from_port                = local.db_port
   to_port                  = local.db_port
   protocol                 = "tcp"
@@ -180,12 +182,14 @@ resource "aws_security_group_rule" "sg_rds_proxy_extras" {
 resource "aws_security_group_rule" "sg_rds_proxy_outside" {
   count                    = var.aws_db_proxy_allow_all_incoming ? 1 : 0
   type                     = "ingress"
+  description              = "${var.aws_resource_identifier} - RDS All internal"
   from_port                = local.db_port
   to_port                  = local.db_port
   protocol                 = "tcp"
-  source_security_group_id = local.rds_proxy_allowed_security_groups[count.index]
+  cidr_blocks              = ["0.0.0.0/0"]
   security_group_id        = aws_security_group.sg_rds_proxy.id
 }
+
 locals {
   rds_proxy_allowed_security_groups = var.aws_db_proxy_allowed_security_group != "" ? [for n in split(",", var.aws_db_proxy_allowed_security_group) : n] : []
 }
