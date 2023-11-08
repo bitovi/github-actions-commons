@@ -183,6 +183,7 @@ module "db_proxy_rds" {
   aws_selected_subnets                        = module.vpc.aws_selected_vpc_subnets
   aws_resource_identifier                     = var.aws_resource_identifier
   aws_resource_identifier_supershort          = var.aws_resource_identifier_supershort
+  incoming_random_string                      = module.rds[0].random_string
   # Dependencies
   depends_on = [module.vpc,module.rds]
 
@@ -246,6 +247,7 @@ module "db_proxy_aurora" {
   aws_selected_subnets                        = module.vpc.aws_selected_vpc_subnets
   aws_resource_identifier                     = var.aws_resource_identifier
   aws_resource_identifier_supershort          = var.aws_resource_identifier_supershort
+  incoming_random_string                      = module.aurora_rds[0].random_string
   # Dependencies
   depends_on = [module.vpc,module.rds]
 
@@ -276,6 +278,7 @@ module "db_proxy" {
   aws_selected_subnets                        = module.vpc.aws_selected_vpc_subnets
   aws_resource_identifier                     = var.aws_resource_identifier
   aws_resource_identifier_supershort          = var.aws_resource_identifier_supershort
+  incoming_random_string                      = null
   # Dependencies
   depends_on = [module.vpc]
 

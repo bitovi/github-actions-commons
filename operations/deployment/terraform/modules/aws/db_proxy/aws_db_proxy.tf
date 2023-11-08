@@ -106,7 +106,7 @@ resource "aws_db_proxy_target" "db_cluster" {
 
 // Creates a secret manager secret for the databse credentials
 resource "aws_secretsmanager_secret" "proxy_credentials" {
-  name   = "${var.aws_resource_identifier_supershort}-proxy-${random_string.random_sm.result}"
+  name   = "${var.aws_resource_identifier_supershort}-proxy-${local.random_string}"
 }
 
 # Username and Password are repeated for compatibility with proxy and legacy code.
@@ -269,18 +269,13 @@ output "db_proxy_secret_name" {
   value = aws_secretsmanager_secret.proxy_credentials.name
 }
 
-
-resource "random_password" "rds" {
-  length = 25
-  special = false
-  lifecycle {
-  ignore_changes = all
-  }
-}
-
 resource "random_string" "random_sm" {
   length    = 5
   lower     = true
   special   = false
   numeric   = false
+}
+
+locals {
+  random_string = var.incoming_random_string != null ? var.incoming_random_string : random_string.random_sm.result
 }
