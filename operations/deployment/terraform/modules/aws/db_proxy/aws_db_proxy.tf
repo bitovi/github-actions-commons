@@ -105,13 +105,13 @@ resource "aws_db_proxy_target" "db_cluster" {
 }
 
 // Creates a secret manager secret for the databse credentials
-resource "aws_secretsmanager_secret" "rds_database_credentials" {
+resource "aws_secretsmanager_secret" "proxy_credentials" {
   name   = "${var.aws_resource_identifier_supershort}-proxy-${random_string.random_sm.result}"
 }
 
 # Username and Password are repeated for compatibility with proxy and legacy code.
 resource "aws_secretsmanager_secret_version" "database_credentials_sm_secret_version_dev" {
-  secret_id = aws_secretsmanager_secret.rds_database_credentials.id
+  secret_id = aws_secretsmanager_secret.proxy_credentials.id
   secret_string = jsonencode({
    username          = sensitive(try(local.secret_json.DB_USER,local.secret_json.DB_USERNAME,local.secret_json.username))
    password          = sensitive(try(local.secret_json.DB_PASS,local.secret_json.DB_PASSWORD,local.secret_json.password))
@@ -263,4 +263,8 @@ resource "aws_iam_role_policy_attachment" "rds_policy" {
 
 output "db_proxy_endpoint" {
   value = aws_db_proxy.rds_proxy[0].endpoint
+}
+
+output "db_proxy_secret_name" {
+  value = aws_secretsmanager_secret.proxy_credentials.name
 }
