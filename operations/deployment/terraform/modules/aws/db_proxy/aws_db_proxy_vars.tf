@@ -13,3 +13,4 @@ variable aws_db_proxy_cloudwatch_retention_days {}
 variable aws_selected_vpc_id {}
 variable aws_selected_subnets {}
 variable aws_resource_identifier {}
+variable "aws_resource_identifier_supershort" {}

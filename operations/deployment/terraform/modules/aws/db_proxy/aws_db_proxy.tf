@@ -32,6 +32,10 @@ data "aws_secretsmanager_secret_version" "database_credentials" {
   secret_id = var.aws_db_proxy_secret_name
 }
 
+locals {
+  secret_json = jsondecode(data.aws_secretsmanager_secret_version.database_credentials.secret_string)
+}
+
 data "aws_db_instance" "db" {
   count = var.aws_db_proxy_cluster ? 0 : 1
   db_instance_identifier = var.aws_db_proxy_database_id
@@ -100,6 +104,32 @@ resource "aws_db_proxy_target" "db_cluster" {
   depends_on = [ aws_db_proxy.rds_proxy ]
 }
 
+// Creates a secret manager secret for the databse credentials
+resource "aws_secretsmanager_secret" "rds_database_credentials" {
+  name   = "${var.aws_resource_identifier_supershort}-proxy-${random_string.random_sm.result}"
+}
+
+# Username and Password are repeated for compatibility with proxy and legacy code.
+resource "aws_secretsmanager_secret_version" "database_credentials_sm_secret_version_dev" {
+  secret_id = aws_secretsmanager_secret.rds_database_credentials.id
+  secret_string = jsonencode({
+   username          = sensitive(try(local.secret_json.DB_USER,local.secret_json.DB_USERNAME,local.secret_json.username))
+   password          = sensitive(try(local.secret_json.DB_PASS,local.secret_json.DB_PASSWORD,local.secret_json.password))
+   host              = sensitive(aws_db_proxy.rds_proxy[0].endpoint)
+   port              = sensitive(try(local.secret_json.DB_PORT,local.secret_json.port))
+   database          = sensitive(try(local.secret_json.DB_NAME,local.secret_json.database))
+   engine            = sensitive(try(local.secret_json.DB_ENGINE,local.secret_json.engine))
+   engine_version    = sensitive(try(local.secret_json.DB_ENGINE_VERSION,local.secret_json.engine_version))
+   DB_USER           = sensitive(try(local.secret_json.DB_USER,local.secret_json.DB_USERNAME,local.secret_json.username))
+   DB_USERNAME       = sensitive(try(local.secret_json.DB_USER,local.secret_json.DB_USERNAME,local.secret_json.username))
+   DB_PASSWORD       = sensitive(try(local.secret_json.DB_PASS,local.secret_json.DB_PASSWORD,local.secret_json.password))
+   DB_HOST           = sensitive(aws_db_proxy.rds_proxy[0].endpoint)
+   DB_PORT           = sensitive(try(local.secret_json.DB_PORT,local.secret_json.port))
+   DB_NAME           = sensitive(try(local.secret_json.DB_NAME,local.secret_json.database))
+   DB_ENGINE         = sensitive(try(local.secret_json.DB_ENGINE,local.secret_json.engine))
+   DB_ENGINE_VERSION = sensitive(try(local.secret_json.DB_ENGINE_VERSION,local.secret_json.engine_version))
+  })
+}
 
 ################
 # RDS Proxy SG #
