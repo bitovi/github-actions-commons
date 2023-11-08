@@ -842,9 +842,12 @@ outputs:
   db_secret_details_name:
     description: "ECS DNS URL"
     value: ${{ steps.deploy.outputs.db_secret_details_name }}
-  db_proxy_rds_endpoing:
+  db_proxy_rds_endpoint:
     description: "Database proxy endpoint"
     value: ${{ steps.deploy.outputs.db_proxy_rds }}
+  db_proxy_secret_name_rds:
+    description: "Database proxy secret_name"
+    value: ${{ steps.deploy.outputs.db_proxy_secret_name_rds }}
   # Aurora
   aurora_db_endpoint:
     description: "ECS ALB DNS Record"
@@ -855,10 +858,16 @@ outputs:
   aurora_proxy_endpoint:
     description: "Database proxy endpoint"
     value: ${{ steps.deploy.outputs.db_proxy_aurora }}
+  aurora_proxy_secret_name_rds:
+    description: "Database proxy secret_name"
+    value: ${{ steps.deploy.outputs.db_proxy_secret_name_aurora }}
   # DB Proxy
   db_proxy_endpoint:
     description: "Database proxy endpoint"
     value: ${{ steps.deploy.outputs.db_proxy_endpoint }}
+  db_proxy_secret_name:
+    description: "Database proxy secret_name"
+    value: ${{ steps.deploy.outputs.db_proxy_secret_name }}
   # ECS
   ecs_load_balancer_dns:
     description: "ECS ALB DNS Record"
@@ -1218,10 +1227,13 @@ runs:
         RDS_ENDPOINT: ${{ steps.deploy.outputs.db_endpoint }}
         RDS_SECRETS_NAME: ${{ steps.deploy.outputs.db_secret_details_name }}
         RDS_PROXY: ${{ steps.deploy.outputs.db_proxy_rds }}
+        RDS_PROXY_SECRET: ${{ steps.deploy.outputs.db_proxy_secret_name_rds }}
         AURORA_ENDPOINT: ${{ steps.deploy.outputs.aurora_endpoint }}
         AURORA_SECRETS_NAME: ${{ steps.deploy.outputs.aurora_secret_details_name }}
         AURORA_PROXY: ${{ steps.deploy.outputs.db_proxy_aurora }}
+        AURORA_PROXY_SECRET: ${{ steps.deploy.outputs.db_proxy_secret_name_aurora }}
         DB_PROXY: ${{ steps.deploy.outputs.db_proxy_endpoint }}
+        DB_PROXY_SECRET: ${{ steps.deploy.outputs.db_proxy_secret_name }}
         ECS_ALB_DNS: ${{ steps.deploy.outputs.ecs_load_balancer_dns }}
         ECS_DNS:  ${{ steps.deploy.outputs.ecs_dns_record }}
         ECR_REPO_ARN: ${{ steps.deploy.outputs.ecr_repository_arn }}

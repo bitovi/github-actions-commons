@@ -102,7 +102,8 @@ if [[ $SUCCESS == 'success' ]]; then
     RDS Details Secret Manager name: ${RDS_SECRETS_NAME}"
     if [[ -n $RDS_PROXY ]]; then
       result_string+="
-    RDS Proxy URL: ${RDS_PROXY}"
+    RDS Proxy URL: ${RDS_PROXY}
+    RDS Proxy SECRET: ${RDS_PROXY_SECRET}"
     fi
   elif [[ -n $AURORA_ENDPOINT ]] && [[ -n $AURORA_SECRETS_NAME ]]; then
     SUMMARY_CODE=12
@@ -111,12 +112,14 @@ if [[ $SUCCESS == 'success' ]]; then
     Aurora Details Secret Manager name: ${AURORA_SECRETS_NAME}"
     if [[ -n $AURORA_PROXY ]]; then
       result_string+="
-      Aurora Proxy URL: ${AURORA_PROXY}"
+      Aurora Proxy URL: ${AURORA_PROXY}
+      Aurora Proxy Secret: ${AURORA_PROXY_SECRET}"
     fi
   elif [[ -n $DB_PROXY ]]; then
     SUMMARY_CODE=13
     result_string="## Deploy Complete! :rocket:
-    DB Proxy URL: ${DB_PROXY}"
+    DB Proxy URL: ${DB_PROXY}
+    DB Proxy SECRET: ${DB_PROXY_SECRET}"
   elif [[ -n $ECS_ALB_DNS ]] && ![[ -n $ECS_DNS ]]; then
     SUMMARY_CODE=14
     result_string="## Deploy Complete! :rocket:
