@@ -134,8 +134,9 @@ resource "aws_iam_role" "ecsTaskExecutionRole" {
 }
 
 resource "aws_iam_policy_attachment" "ecsTaskExecutionRolePolicy" {
+  count = var.aws_ecs_task_execution_role != "" ? 0 : 1
   name       = "AmazonECSTaskExecutionRolePolicyAttachment"
-  roles      = [aws_iam_role.ecsTaskExecutionRole.name]
+  roles      = [aws_iam_role.ecsTaskExecutionRole[0].name]
   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
 }
 
