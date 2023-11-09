@@ -184,7 +184,8 @@ module "db_proxy_rds" {
   aws_selected_vpc_id                         = module.vpc.aws_selected_vpc_id
   aws_selected_subnets                        = module.vpc.aws_selected_vpc_subnets
   aws_resource_identifier                     = var.aws_resource_identifier
-
+  aws_resource_identifier_supershort          = var.aws_resource_identifier_supershort
+  incoming_random_string                      = module.rds[0].random_string
   # Dependencies
   depends_on = [module.vpc,module.rds]
 
@@ -249,7 +250,8 @@ module "db_proxy_aurora" {
   aws_selected_vpc_id                         = module.vpc.aws_selected_vpc_id
   aws_selected_subnets                        = module.vpc.aws_selected_vpc_subnets
   aws_resource_identifier                     = var.aws_resource_identifier
-
+  aws_resource_identifier_supershort          = var.aws_resource_identifier_supershort
+  incoming_random_string                      = module.aurora_rds[0].random_string
   # Dependencies
   depends_on = [module.vpc,module.rds]
 
@@ -281,7 +283,8 @@ module "db_proxy" {
   aws_selected_vpc_id                         = module.vpc.aws_selected_vpc_id
   aws_selected_subnets                        = module.vpc.aws_selected_vpc_subnets
   aws_resource_identifier                     = var.aws_resource_identifier
-
+  aws_resource_identifier_supershort          = var.aws_resource_identifier_supershort
+  incoming_random_string                      = null
   # Dependencies
   depends_on = [module.vpc]
 
@@ -612,6 +615,10 @@ output "db_proxy_aurora" {
   value = try(module.db_proxy_aurora[0].db_proxy_endpoint,null)
 }
 
+output "db_proxy_secret_name_aurora" {
+  value = try(module.db_proxy_aurora[0].db_proxy_secret_name,null)
+}
+
 output "vm_url" {
   value = try(module.aws_route53[0].vm_url,local.elb_url)
 }
@@ -628,8 +635,16 @@ output "db_proxy_rds" {
   value = try(module.db_proxy_rds[0].db_proxy_endpoint,null)
 }
 
+output "db_proxy_secret_name_rds" {
+  value = try(module.db_proxy_rds[0].db_proxy_secret_name,null)
+}
+
 output "db_proxy_endpoint" {
   value = try(module.db_proxy[0].db_proxy_endpoint,null)
+}
+
+output "db_proxy_secret_name" {
+  value = try(module.db_proxy[0].db_proxy_secret_name,null)
 }
 
 output "ecs_dns_record" {

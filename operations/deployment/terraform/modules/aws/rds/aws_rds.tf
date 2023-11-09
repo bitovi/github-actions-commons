@@ -133,3 +133,7 @@ data "aws_vpc" "selected" {
   count = var.aws_selected_vpc_id != null ? 1 : 0
   id    = var.aws_selected_vpc_id
 }
+
+output "random_string" {
+  value = random_string.random_sm.result
+}

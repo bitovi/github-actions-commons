@@ -194,3 +194,7 @@ output "aurora_secret_name" {
 output "aurora_db_endpoint" {
   value = module.aurora_cluster.cluster_endpoint
 }
+
+output "random_string" {
+  value = random_string.random_sm.result
+}
