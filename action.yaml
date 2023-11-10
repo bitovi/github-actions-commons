@@ -326,6 +326,9 @@ inputs:
   aws_rds_db_engine_version:
     description: 'Which Database engine version to use.'
     required: false
+  aws_rds_db_ca_cert_identifier:
+    description: 'Certificate to use with the database. Defaults to rds-ca-ecc384-g1'
+    required: false
   aws_rds_db_security_group_name:
     description: 'The name of the database security group. Defaults to SG for aws_resource_identifier - RDS.'
     required: false
@@ -1026,6 +1029,7 @@ runs:
         AWS_RDS_DB_USER: ${{ inputs.aws_rds_db_user }}
         AWS_RDS_DB_ENGINE: ${{ inputs.aws_rds_db_engine }}
         AWS_RDS_DB_ENGINE_VERSION: ${{ inputs.aws_rds_db_engine_version }}
+        AWS_RDS_DB_CA_CERT_IDENTIFIER: ${{ inputs.aws_rds_db_ca_cert_identifier }}
         AWS_RDS_DB_SECURITY_GROUP_NAME: ${{ inputs.aws_rds_db_security_group_name }}
         AWS_RDS_DB_ALLOWED_SECURITY_GROUPS: ${{ inputs.aws_rds_db_allowed_security_groups }}
         AWS_RDS_DB_INGRESS_ALLOW_ALL: ${{ inputs.aws_rds_db_ingress_allow_all }}

@@ -231,6 +231,7 @@ The following inputs can be used as `step.with` keys
 | `aws_rds_db_user`| String | Username for the db. Defaults to `dbuser`. |
 | `aws_rds_db_engine`| String | Which Database engine to use. Defaults to `postgres`. |
 | `aws_rds_db_engine_version`| String | Which Database engine version to use. |
+| `aws_rds_db_ca_cert_identifier`| String | Certificate to use with the database. Defaults to `rds-ca-ecc384-g1`.|
 | `aws_rds_db_security_group_name`| String | The name of the database security group. Defaults to `SG for ${aws_resource_identifier} - RDS`. |
 | `aws_rds_db_allowed_security_groups` | String | Comma separated list of security groups to add to the DB SG. | 
 | `aws_rds_db_ingress_allow_all` | Boolean | Allow incoming traffic from 0.0.0.0/0. Defaults to `true`. |

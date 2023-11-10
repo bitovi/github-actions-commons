@@ -426,6 +426,12 @@ variable "aws_rds_db_engine_version" {
   default     = null
 }
 
+variable "aws_rds_db_ca_cert_identifier" {
+  type        = string
+  description = "Certificate to use with the database"
+  default     = "rds-ca-ecc384-g1"
+}
+
 variable "aws_rds_db_security_group_name" {
   type        = string
   description = "The name of the database security group. Defaults to SG for aws_resource_identifier - RDS"
