@@ -120,14 +120,13 @@ if [[ $SUCCESS == 'success' ]]; then
     result_string="## Deploy Complete! :rocket:
     DB Proxy URL: ${DB_PROXY}
     DB Proxy SECRET: ${DB_PROXY_SECRET}"
-  elif [[ -n $ECS_ALB_DNS ]] && ![[ -n $ECS_DNS ]]; then
+  elif [[ -n $ECS_ALB_DNS ]]; then
     SUMMARY_CODE=14
     result_string="## Deploy Complete! :rocket:
     ECS LB Endpoint: ${ECS_ALB_DNS}"
-  elif [[ -n $ECS_ALB_DNS ]] && [[ -n $ECS_DNS ]]; then
+    if [[ -n $ECS_DNS ]]; then
     SUMMARY_CODE=14
-    result_string="## Deploy Complete! :rocket:
-    ECS LB Endpoing: ${ECS_ALB_DNS}
+    result_string+="
     ECS Public DNS: ${ECS_DNS}"
   elif [[ -n $REDIS_ENDPOINT ]] && [[ -n $REDIS_SECRET_NAME ]]; then
     SUMMARY_CODE=15
@@ -135,8 +134,8 @@ if [[ $SUCCESS == 'success' ]]; then
     Redis endpoint: ${REDIS_ENDPOINT}
     Redis secret name: ${REDIS_SECRET_NAME}"
     if [[ -n $REDIS_SECRET_URL ]]; then
-    result_string+="
-    Redis connection URL secret name: ${REDIS_SECRET_URL}"
+      result_string+="
+      Redis connection URL secret name: ${REDIS_SECRET_URL}"
     fi
   elif [[ $BITOPS_CODE_ONLY == 'true' ]]; then
     if [[ $BITOPS_CODE_STORE == 'true' ]]; then
