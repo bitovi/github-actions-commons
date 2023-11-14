@@ -412,6 +412,8 @@ module "aws_ecs" {
   aws_resource_identifier            = var.aws_resource_identifier
   aws_resource_identifier_supershort = var.aws_resource_identifier_supershort
   app_repo_name                      = var.app_repo_name
+  # Dependencies
+  depends_on = [ module.aws_route53_ecs ]
   providers = {
     aws = aws.ecs
   }
