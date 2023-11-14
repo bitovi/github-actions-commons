@@ -167,6 +167,7 @@ if [[ $(alpha_only "$AWS_RDS_DB_ENABLE") == true ]]; then
   aws_rds_db_user=$(generate_var aws_rds_db_user $AWS_RDS_DB_USER)
   aws_rds_db_engine=$(generate_var aws_rds_db_engine $AWS_RDS_DB_ENGINE)
   aws_rds_db_engine_version=$(generate_var aws_rds_db_engine_version $AWS_RDS_DB_ENGINE_VERSION)
+  aws_rds_db_ca_cert_identifier=$(generate_var aws_rds_db_ca_cert_identifier $AWS_RDS_DB_CA_CERT_IDENTIFIER)
   aws_rds_db_security_group_name=$(generate_var aws_rds_db_security_group_name $AWS_RDS_DB_SECURITY_GROUP_NAME)
   aws_rds_db_allowed_security_groups=$(generate_var aws_rds_db_allowed_security_groups $AWS_RDS_DB_ALLOWED_SECURITY_GROUPS)
   aws_rds_db_ingress_allow_all=$(generate_var aws_rds_db_ingress_allow_all $AWS_RDS_DB_INGRESS_ALLOW_ALL)
@@ -462,6 +463,7 @@ $aws_rds_db_name
 $aws_rds_db_user
 $aws_rds_db_engine
 $aws_rds_db_engine_version
+$aws_rds_db_ca_cert_identifier
 $aws_rds_db_security_group_name
 $aws_rds_db_allowed_security_groups
 $aws_rds_db_ingress_allow_all

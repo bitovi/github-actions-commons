@@ -192,7 +192,7 @@ bitops:
       add_ansible_module efs
     fi
     # Ansible - Install CloudWatch
-    if [[ $(alpha_only "$DOCKER_CLOUDWATCH_ENABLE") == true ]]; then
+    if [[ $(alpha_only "$DOCKER_CLOUDWATCH_ENABLE") == true ]] && [[ $(alpha_only "$DOCKER_INSTALL") == true ]]; then
       add_ansible_module cloudwatch
     fi
     # Ansible - Install Docker

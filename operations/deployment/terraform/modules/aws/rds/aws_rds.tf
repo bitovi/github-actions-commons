@@ -56,6 +56,7 @@ resource "aws_db_instance" "default" {
   identifier                       = var.aws_rds_db_identifier
   engine                           = var.aws_rds_db_engine
   engine_version                   = var.aws_rds_db_engine_version
+  ca_cert_identifier               = var.aws_rds_db_ca_cert_identifier
   db_subnet_group_name             = aws_db_subnet_group.selected.name
   db_name                          = var.aws_rds_db_name != null ? var.aws_rds_db_name : null
   port                             = var.aws_rds_db_port != null ? tonumber(var.aws_rds_db_port) : null

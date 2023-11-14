@@ -3,6 +3,7 @@ variable "aws_rds_db_name" {}
 variable "aws_rds_db_user" {}
 variable "aws_rds_db_engine" {}
 variable "aws_rds_db_engine_version" {}
+variable "aws_rds_db_ca_cert_identifier" {}
 variable "aws_rds_db_security_group_name" {}
 variable "aws_rds_db_allowed_security_groups" {}
 variable "aws_rds_db_ingress_allow_all" {}
