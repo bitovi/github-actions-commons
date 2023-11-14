@@ -121,7 +121,8 @@ resource "aws_security_group_rule" "incoming_alb_http" {
 }
 
 resource "aws_alb_listener" "https_redirect" {
-  count             = var.aws_ecs_lb_redirect_enable ? !contains(local.aws_ecs_lb_port,443) ? var.aws_certificates_selected_arn != "" ? 1 : 0 : 0 : 0
+  count             = var.aws_certificates_selected_arn != "" ? 1 : 0
+  #count             = var.aws_ecs_lb_redirect_enable && var.aws_certificates_selected_arn != "" && !contains(local.aws_ecs_lb_port,443) ? 1 : 0
   load_balancer_arn = "${aws_alb.ecs_lb.id}"
   port              = "443"
   protocol          = "HTTPS"
