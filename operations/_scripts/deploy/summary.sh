@@ -125,9 +125,10 @@ if [[ $SUCCESS == 'success' ]]; then
     result_string="## Deploy Complete! :rocket:
     ECS LB Endpoint: ${ECS_ALB_DNS}"
     if [[ -n $ECS_DNS ]]; then
-    SUMMARY_CODE=14
-    result_string+="
-    ECS Public DNS: ${ECS_DNS}"
+      SUMMARY_CODE=14
+      result_string+="
+      ECS Public DNS: ${ECS_DNS}"
+    fi
   elif [[ -n $REDIS_ENDPOINT ]] && [[ -n $REDIS_SECRET_NAME ]]; then
     SUMMARY_CODE=15
     result_string="## Deploy Complete! :rocket:
