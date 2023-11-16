@@ -326,6 +326,9 @@ inputs:
   aws_rds_db_engine_version:
     description: 'Which Database engine version to use.'
     required: false
+  aws_rds_db_ca_cert_identifier:
+    description: 'Certificate to use with the database. Defaults to rds-ca-ecc384-g1'
+    required: false
   aws_rds_db_security_group_name:
     description: 'The name of the database security group. Defaults to SG for aws_resource_identifier - RDS.'
     required: false
@@ -674,6 +677,9 @@ inputs:
     required: false
   aws_ecs_lb_container_path:
     description: 'Path for subsequent deployed images. eg. api.'
+    required: false
+  aws_ecs_lb_ssl_policy:
+    description: 'SSL Policy for HTTPS listener in ALB. Will default to ELBSecurityPolicy-TLS13-1-2-2021-06 if none provided.'
     required: false
   aws_ecs_autoscaling_enable:
     description: 'Toggle ecs autoscaling policy'
@@ -1044,6 +1050,7 @@ runs:
         AWS_RDS_DB_USER: ${{ inputs.aws_rds_db_user }}
         AWS_RDS_DB_ENGINE: ${{ inputs.aws_rds_db_engine }}
         AWS_RDS_DB_ENGINE_VERSION: ${{ inputs.aws_rds_db_engine_version }}
+        AWS_RDS_DB_CA_CERT_IDENTIFIER: ${{ inputs.aws_rds_db_ca_cert_identifier }}
         AWS_RDS_DB_SECURITY_GROUP_NAME: ${{ inputs.aws_rds_db_security_group_name }}
         AWS_RDS_DB_ALLOWED_SECURITY_GROUPS: ${{ inputs.aws_rds_db_allowed_security_groups }}
         AWS_RDS_DB_INGRESS_ALLOW_ALL: ${{ inputs.aws_rds_db_ingress_allow_all }}
@@ -1167,6 +1174,7 @@ runs:
         AWS_ECS_LB_PORT: ${{ inputs.aws_ecs_lb_port }}
         AWS_ECS_LB_REDIRECT_ENABLE: ${{ inputs.aws_ecs_lb_redirect_enable }}
         AWS_ECS_LB_CONTAINER_PATH : ${{ inputs.aws_ecs_lb_container_path }}
+        AWS_ECS_LB_SSL_POLICY: ${{ inputs.aws_ecs_lb_ssl_policy }}
         AWS_ECS_AUTOSCALING_ENABLE: ${{ inputs.aws_ecs_autoscaling_enable }}
         AWS_ECS_AUTOSCALING_MAX_NODES: ${{ inputs.aws_ecs_autoscaling_max_nodes }}
         AWS_ECS_AUTOSCALING_MIN_NODES: ${{ inputs.aws_ecs_autoscaling_min_nodes }}

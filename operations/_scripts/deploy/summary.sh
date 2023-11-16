@@ -112,30 +112,30 @@ if [[ $SUCCESS == 'success' ]]; then
     Aurora Details Secret Manager name: ${AURORA_SECRETS_NAME}"
     if [[ -n $AURORA_PROXY ]]; then
       result_string+="
-      Aurora Proxy URL: ${AURORA_PROXY}
-      Aurora Proxy Secret: ${AURORA_PROXY_SECRET}"
+    Aurora Proxy URL: ${AURORA_PROXY}
+    Aurora Proxy Secret: ${AURORA_PROXY_SECRET}"
     fi
   elif [[ -n $DB_PROXY ]]; then
     SUMMARY_CODE=13
     result_string="## Deploy Complete! :rocket:
     DB Proxy URL: ${DB_PROXY}
     DB Proxy SECRET: ${DB_PROXY_SECRET}"
-  elif [[ -n $ECS_ALB_DNS ]] && ![[ -n $ECS_DNS ]]; then
+  elif [[ -n $ECS_ALB_DNS ]]; then
     SUMMARY_CODE=14
     result_string="## Deploy Complete! :rocket:
     ECS LB Endpoint: ${ECS_ALB_DNS}"
-  elif [[ -n $ECS_ALB_DNS ]] && [[ -n $ECS_DNS ]]; then
-    SUMMARY_CODE=14
-    result_string="## Deploy Complete! :rocket:
-    ECS LB Endpoing: ${ECS_ALB_DNS}
+    if [[ -n $ECS_DNS ]]; then
+      SUMMARY_CODE=14
+      result_string+="
     ECS Public DNS: ${ECS_DNS}"
+    fi
   elif [[ -n $REDIS_ENDPOINT ]] && [[ -n $REDIS_SECRET_NAME ]]; then
     SUMMARY_CODE=15
     result_string="## Deploy Complete! :rocket:
     Redis endpoint: ${REDIS_ENDPOINT}
     Redis secret name: ${REDIS_SECRET_NAME}"
     if [[ -n $REDIS_SECRET_URL ]]; then
-    result_string+="
+      result_string+="
     Redis connection URL secret name: ${REDIS_SECRET_URL}"
     fi
   elif [[ $BITOPS_CODE_ONLY == 'true' ]]; then

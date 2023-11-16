@@ -426,6 +426,12 @@ variable "aws_rds_db_engine_version" {
   default     = null
 }
 
+variable "aws_rds_db_ca_cert_identifier" {
+  type        = string
+  description = "Certificate to use with the database"
+  default     = "rds-ca-ecc384-g1"
+}
+
 variable "aws_rds_db_security_group_name" {
   type        = string
   description = "The name of the database security group. Defaults to SG for aws_resource_identifier - RDS"
@@ -1086,6 +1092,12 @@ variable "aws_ecs_lb_container_path" {
   type        = string
   description = "Path for subsequent images. eg. api"
   default     = ""
+}
+
+variable "aws_ecs_lb_ssl_policy" {
+  type        = string
+  description = "SSL Policy to use in the ALB HTTPS protocol"
+  default     = "ELBSecurityPolicy-TLS13-1-2-2021-06"
 }
 
 variable "aws_ecs_autoscaling_enable" {

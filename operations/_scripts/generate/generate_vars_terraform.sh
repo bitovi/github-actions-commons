@@ -167,6 +167,7 @@ if [[ $(alpha_only "$AWS_RDS_DB_ENABLE") == true ]]; then
   aws_rds_db_user=$(generate_var aws_rds_db_user $AWS_RDS_DB_USER)
   aws_rds_db_engine=$(generate_var aws_rds_db_engine $AWS_RDS_DB_ENGINE)
   aws_rds_db_engine_version=$(generate_var aws_rds_db_engine_version $AWS_RDS_DB_ENGINE_VERSION)
+  aws_rds_db_ca_cert_identifier=$(generate_var aws_rds_db_ca_cert_identifier $AWS_RDS_DB_CA_CERT_IDENTIFIER)
   aws_rds_db_security_group_name=$(generate_var aws_rds_db_security_group_name $AWS_RDS_DB_SECURITY_GROUP_NAME)
   aws_rds_db_allowed_security_groups=$(generate_var aws_rds_db_allowed_security_groups $AWS_RDS_DB_ALLOWED_SECURITY_GROUPS)
   aws_rds_db_ingress_allow_all=$(generate_var aws_rds_db_ingress_allow_all $AWS_RDS_DB_INGRESS_ALLOW_ALL)
@@ -285,6 +286,7 @@ if [[ $(alpha_only "$AWS_ECS_ENABLE") == true ]]; then
   aws_ecs_lb_port=$(generate_var aws_ecs_lb_port $AWS_ECS_LB_PORT)
   aws_ecs_lb_redirect_enable=$(generate_var aws_ecs_lb_redirect_enable $AWS_ECS_LB_REDIRECT_ENABLE)
   aws_ecs_lb_container_path=$(generate_var aws_ecs_lb_container_path $AWS_ECS_LB_CONTAINER_PATH)
+  aws_ecs_lb_ssl_policy=$(generate_var aws_ecs_lb_ssl_policy $AWS_ECS_LB_SSL_POLICY)
   aws_ecs_autoscaling_enable=$(generate_var aws_ecs_autoscaling_enable $AWS_ECS_AUTOSCALING_ENABLE)
   aws_ecs_autoscaling_max_nodes=$(generate_var aws_ecs_autoscaling_max_nodes $AWS_ECS_AUTOSCALING_MAX_NODES)
   aws_ecs_autoscaling_min_nodes=$(generate_var aws_ecs_autoscaling_min_nodes $AWS_ECS_AUTOSCALING_MIN_NODES)
@@ -468,6 +470,7 @@ $aws_rds_db_name
 $aws_rds_db_user
 $aws_rds_db_engine
 $aws_rds_db_engine_version
+$aws_rds_db_ca_cert_identifier
 $aws_rds_db_security_group_name
 $aws_rds_db_allowed_security_groups
 $aws_rds_db_ingress_allow_all
@@ -580,6 +583,7 @@ $aws_ecs_container_port
 $aws_ecs_lb_port
 $aws_ecs_lb_redirect_enable
 $aws_ecs_lb_container_path
+$aws_ecs_lb_ssl_policy
 $aws_ecs_autoscaling_enable
 $aws_ecs_autoscaling_max_nodes
 $aws_ecs_autoscaling_min_nodes

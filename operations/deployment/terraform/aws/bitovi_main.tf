@@ -137,6 +137,7 @@ module "rds" {
   aws_rds_db_identifier                  = var.aws_rds_db_identifier != "" ? var.aws_rds_db_identifier : lower(var.aws_resource_identifier)
   aws_rds_db_engine                      = var.aws_rds_db_engine
   aws_rds_db_engine_version              = var.aws_rds_db_engine_version
+  aws_rds_db_ca_cert_identifier          = var.aws_rds_db_ca_cert_identifier
   aws_rds_db_security_group_name         = var.aws_rds_db_security_group_name
   aws_rds_db_allowed_security_groups     = var.aws_rds_db_allowed_security_groups
   aws_rds_db_ingress_allow_all           = var.aws_rds_db_ingress_allow_all
@@ -172,6 +173,8 @@ module "db_proxy_rds" {
   source = "../modules/aws/db_proxy"
   count  = var.aws_rds_db_proxy ? 1 : 0
   # PROXY
+  aws_aurora_proxy                            = var.aws_aurora_proxy
+  aws_rds_db_proxy                            = var.aws_rds_db_proxy
   aws_db_proxy_name                           = var.aws_db_proxy_name != "" ? var.aws_db_proxy_name : lower(var.aws_resource_identifier)
   aws_db_proxy_database_id                    = module.rds[0].db_id
   aws_db_proxy_cluster                        = false
@@ -236,6 +239,8 @@ module "db_proxy_aurora" {
   source = "../modules/aws/db_proxy"
   count  = var.aws_aurora_proxy ? 1 : 0
   # PROXY
+  aws_aurora_proxy                            = var.aws_aurora_proxy
+  aws_rds_db_proxy                            = var.aws_rds_db_proxy
   aws_db_proxy_name                           = var.aws_db_proxy_name != "" ? var.aws_db_proxy_name : lower(var.aws_resource_identifier)
   aws_db_proxy_database_id                    = module.aurora_rds[0].aurora_db_id
   aws_db_proxy_cluster                        = true
@@ -267,6 +272,8 @@ module "db_proxy" {
   source = "../modules/aws/db_proxy"
   count  = var.aws_db_proxy_enable ? 1 : 0
   # PROXY
+  aws_aurora_proxy                            = var.aws_aurora_proxy
+  aws_rds_db_proxy                            = var.aws_rds_db_proxy
   aws_db_proxy_name                           = var.aws_db_proxy_name != "" ? var.aws_db_proxy_name : lower(var.aws_resource_identifier)
   aws_db_proxy_database_id                    = var.aws_db_proxy_database_id
   aws_db_proxy_cluster                        = var.aws_db_proxy_cluster
@@ -394,6 +401,7 @@ module "aws_ecs" {
   aws_ecs_lb_port                    = var.aws_ecs_lb_port
   aws_ecs_lb_redirect_enable         = var.aws_ecs_lb_redirect_enable
   aws_ecs_lb_container_path          = var.aws_ecs_lb_container_path
+  aws_ecs_lb_ssl_policy              = var.aws_ecs_lb_ssl_policy
   aws_ecs_autoscaling_enable         = var.aws_ecs_autoscaling_enable
   aws_ecs_autoscaling_max_nodes      = var.aws_ecs_autoscaling_max_nodes
   aws_ecs_autoscaling_min_nodes      = var.aws_ecs_autoscaling_min_nodes
@@ -407,10 +415,13 @@ module "aws_ecs" {
   aws_selected_vpc_id                = module.vpc.aws_selected_vpc_id
   aws_selected_subnets               = module.vpc.aws_selected_vpc_subnets
   # Others
+  aws_certificate_enabled            = var.aws_r53_enable_cert && length(module.aws_certificates) > 0 ? true : false
   aws_certificates_selected_arn      = var.aws_r53_enable_cert && var.aws_r53_domain_name != "" ? module.aws_certificates[0].selected_arn : ""
   aws_resource_identifier            = var.aws_resource_identifier
   aws_resource_identifier_supershort = var.aws_resource_identifier_supershort
   app_repo_name                      = var.app_repo_name
+  # Dependencies
+  depends_on = [ module.aws_certificates ]
   providers = {
     aws = aws.ecs
   }
@@ -431,7 +442,7 @@ module "aws_route53_ecs" {
   aws_certificates_selected_arn = var.aws_r53_enable_cert && var.aws_r53_domain_name != "" ? module.aws_certificates[0].selected_arn : ""
   # Others
   fqdn_provided                 = local.fqdn_provided
-
+  depends_on = [ module.aws_certificates,module.aws_ecs ]
   providers = {
     aws = aws.r53
   }
