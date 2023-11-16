@@ -74,7 +74,13 @@ resource "aws_alb_listener" "lb_listener_ssl" {
   lifecycle {
     replace_triggered_by = [ aws_alb_listener.http_redirect ]
   }
-  depends_on = [ (var.aws_certificate_enabled ? aws_alb_listener.lb_listener : "") ]
+  dynamic "depends_on" {
+      for_each = var.aws_certificate_enabled ? [1] : [0]
+      content {
+        depdens_on = [aws_alb_listener.http_redirect]
+      }
+    }
+  #depends_on = [ (var.aws_certificate_enabled ? aws_alb_listener.lb_listener : "") ]
 }
 
 resource "aws_alb_listener" "lb_listener" {
