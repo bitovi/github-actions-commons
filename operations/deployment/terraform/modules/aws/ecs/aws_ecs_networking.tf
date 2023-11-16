@@ -64,15 +64,15 @@ resource "aws_alb_listener" "lb_listener_ssl" {
   load_balancer_arn = "${aws_alb.ecs_lb.id}"
   port              = local.aws_ecs_lb_port[count.index]
   # https://docs.aws.amazon.com/elasticloadbalancing/latest/application/create-https-listener.html
-  ssl_policy        = var.aws_certificate_enabled ? "ELBSecurityPolicy-TLS13-1-2-2021-06" : ""
-  protocol          = var.aws_certificate_enabled ? "HTTPS" : "HTTP"
+  ssl_policy        = "ELBSecurityPolicy-TLS13-1-2-2021-06"
+  protocol          = "HTTPS"
   certificate_arn   = var.aws_certificates_selected_arn
   default_action {
     target_group_arn = aws_alb_target_group.lb_targets[count.index].id
     type             = "forward"
   }
   lifecycle {
-    replace_triggered_by = [ aws_alb_listener.http_redirect,aws_alb_listener.lb_listener ]
+    replace_triggered_by = [ aws_alb_listener.http_redirect ]
   }
 }
 
@@ -86,7 +86,7 @@ resource "aws_alb_listener" "lb_listener" {
     type             = "forward"
   }
   lifecycle {
-    replace_triggered_by = [ aws_alb_listener.http_redirect,aws_alb_listener.lb_listener_ssl ]
+    replace_triggered_by = [ aws_alb_listener.http_redirect ]
   }
 }
 
