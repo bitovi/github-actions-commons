@@ -75,19 +75,30 @@ resource "aws_alb_listener" "lb_listener" {
   lifecycle {
     replace_triggered_by = [ aws_alb_listener.http_redirect ]
   }
-  dynamic "ssl_on" {
+  dynamic "ssl_policy_block" {
     for_each = var.aws_certificate_enabled ? [1] : []
     content {
       protocol = "HTTPS"
       ssl_policy = "ELBSecurityPolicy-TLS13-1-2-2021-06"
     }
   }
-
-  dynamic "ssl_off" {
+  dynamic "protocol_block" {
+    for_each = var.aws_certificate_enabled ? [1] : []
+    content {
+      protocol = "HTTPS"
+      ssl_policy = "ELBSecurityPolicy-TLS13-1-2-2021-06"
+    }
+  }
+  dynamic "ssl_policy_block" {
+    for_each = var.aws_certificate_enabled ? [] : [1]
+    content {
+      ssl_policy = ""
+    }
+  }
+  dynamic "protocol_block" {
     for_each = var.aws_certificate_enabled ? [] : [1]
     content {
       protocol = "HTTP"
-      ssl_policy = ""
     }
   }
 }
