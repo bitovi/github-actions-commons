@@ -660,6 +660,9 @@ inputs:
   aws_ecs_lb_container_path:
     description: 'Path for subsequent deployed images. eg. api.'
     required: false
+  aws_ecs_lb_ssl_policy:
+    description; 'SSL Policy for HTTPS listener in ALB. Will default to ELBSecurityPolicy-TLS13-1-2-2021-06 if none provided.'
+    required: false
   aws_ecs_autoscaling_enable:
     description: 'Toggle ecs autoscaling policy'
     required: false
@@ -1147,6 +1150,7 @@ runs:
         AWS_ECS_LB_PORT: ${{ inputs.aws_ecs_lb_port }}
         AWS_ECS_LB_REDIRECT_ENABLE: ${{ inputs.aws_ecs_lb_redirect_enable }}
         AWS_ECS_LB_CONTAINER_PATH : ${{ inputs.aws_ecs_lb_container_path }}
+        AWS_ECS_LB_SSL_POLICY: ${{ inputs.aws_ecs_lb_ssl_policy }}
         AWS_ECS_AUTOSCALING_ENABLE: ${{ inputs.aws_ecs_autoscaling_enable }}
         AWS_ECS_AUTOSCALING_MAX_NODES: ${{ inputs.aws_ecs_autoscaling_max_nodes }}
         AWS_ECS_AUTOSCALING_MIN_NODES: ${{ inputs.aws_ecs_autoscaling_min_nodes }}

@@ -1058,6 +1058,12 @@ variable "aws_ecs_lb_container_path" {
   default     = ""
 }
 
+variable "aws_ecs_lb_ssl_policy" {
+  type        = string
+  description = "SSL Policy to use in the ALB HTTPS protocol"
+  default     = "ELBSecurityPolicy-TLS13-1-2-2021-06"
+}
+
 variable "aws_ecs_autoscaling_enable" {
   type        = bool
   description = "Toggle ecs autoscaling policy"

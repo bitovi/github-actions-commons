@@ -369,6 +369,7 @@ The following inputs can be used as `step.with` keys
 | `aws_ecs_lb_port`| String | Comma serparated list of ports exposed by the load balancer. One for each. |
 | `aws_ecs_lb_redirect_enable`| String | Toggle redirect from HTTP and/or HTTPS to the main port. |
 | `aws_ecs_lb_container_path`| String | Comma separated list of paths for subsequent deployed containers. Need `aws_ecs_lb_redirect_enable` to be true. eg. api. (For http://bitovi.com/api/). If you have multiple, set them to `api,monitor,prom,,` (This example is for 6 containers) |
+| `aws_ecs_lb_ssl_policy` | String | SSL Policy for HTTPS listener in ALB. Will default to ELBSecurityPolicy-TLS13-1-2-2021-06 if none provided. See [this link](https://docs.aws.amazon.com/elasticloadbalancing/latest/application/create-https-listener.html) for other policies. |
 | `aws_ecs_autoscaling_enable`| Boolean | Toggle ecs autoscaling policy. |
 | `aws_ecs_autoscaling_max_nodes`| String | Max ammount of nodes to scale up to. |
 | `aws_ecs_autoscaling_min_nodes`| String | Min ammount of nodes to scale down to. |
@@ -613,50 +614,6 @@ Additional details about the cluster that's created:
 - Sends logs to AWS Cloudwatch
 
 > _**For more details**, see [link-to-be-updated](operations/deployment/terraform/postgres.tf)_
-
-
-## ECS Deployment example
-Say you have a frontend and backend deployment. Backend will live and listen on bitovi.com/api/
-
-
-### Basic example
-```yaml
-name: Basic deploy
-on:
-  push:
-    branches: [ main ]
-
-jobs:
-  EC2-Deploy:
-    runs-on: ubuntu-latest
-    steps:
-      - id: deploy
-        uses: bitovi/github-actions-deploy-commons@main # <--- Check version to use, main for now.
-        with:
-          aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID_SANDBOX }}
-          aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY_SANDBOX }}
-          aws_default_region: us-east-1
-  
-          stack_destroy: 
-          tf_state_bucket: ecs-leo-testing
-          tf_state_bucket_destroy: 
-      
-          aws_ecs_enable: true
-          aws_ecs_task_name: frontend,backend
-          aws_ecs_task_network_mode: awsvpc
-          aws_ecs_task_cpu: 1024,2048
-          aws_ecs_task_mem: 2048,6144
-          aws_ecs_app_image: 123.dkr.ecr.us-east-1.amazonaws.com/testing-repo:fe,123.dkr.ecr.us-east-1.amazonaws.com/testing-repo-leo:be
-          aws_ecs_assign_public_ip: true
-          aws_ecs_container_port: 3000,3001
-          aws_ecs_lb_port: 3000,3001
-          aws_ecs_lb_redirect_enable: true
-          aws_ecs_lb_container_path: 'api'
-          aws_ecs_cloudwatch_enable: true
-          aws_r53_enable: true
-          domain_name: bitovi.com
-          aws_ecs_additional_tags: '{\"key\":\"value\",\"key2\":\"value2\"}'
-```
 
 ## Made with BitOps
 [BitOps](https://bitops.sh) allows you to define Infrastructure-as-Code for multiple tools in a central place.  This action uses a BitOps [Operations Repository](https://bitops.sh/operations-repo-structure/) to set up the necessary Terraform and Ansible to create infrastructure and deploy to it.
