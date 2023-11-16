@@ -661,7 +661,7 @@ inputs:
     description: 'Path for subsequent deployed images. eg. api.'
     required: false
   aws_ecs_lb_ssl_policy:
-    description; 'SSL Policy for HTTPS listener in ALB. Will default to ELBSecurityPolicy-TLS13-1-2-2021-06 if none provided.'
+    description: 'SSL Policy for HTTPS listener in ALB. Will default to ELBSecurityPolicy-TLS13-1-2-2021-06 if none provided.'
     required: false
   aws_ecs_autoscaling_enable:
     description: 'Toggle ecs autoscaling policy'
