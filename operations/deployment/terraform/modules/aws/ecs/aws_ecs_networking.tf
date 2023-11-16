@@ -59,49 +59,79 @@ resource "aws_alb_target_group" "lb_targets" {
 }
 
 # Redirect all traffic from the ALB to the target group
+#resource "aws_alb_listener" "lb_listener" {
+#  count             = length(local.aws_ecs_lb_port)
+#  load_balancer_arn = "${aws_alb.ecs_lb.id}"
+#  port              = local.aws_ecs_lb_port[count.index]
+#  #ssl_policy        = var.aws_certificate_enabled ? "ELBSecurityPolicy-TLS13-1-2-2021-06" : ""
+#  #protocol          = var.aws_certificate_enabled ?  "HTTPS" : "HTTP"
+#  certificate_arn   = var.aws_certificates_selected_arn
+#  #protocol          = var.aws_certificates_selected_arn != "" ? "HTTPS" : "HTTP"
+#  #ssl_policy        = var.aws_certificates_selected_arn != "" ? "ELBSecurityPolicy-TLS13-1-2-2021-06" : "" # https://docs.aws.amazon.com/elasticloadbalancing/latest/application/create-https-listener.html
+#  default_action {
+#    target_group_arn = aws_alb_target_group.lb_targets[count.index].id
+#    type             = "forward"
+#  }
+#  lifecycle {
+#    replace_triggered_by = [ aws_alb_listener.http_redirect ]
+#  }
+#  dynamic "ssl_policy_block" {
+#    for_each = var.aws_certificate_enabled ? [1] : []
+#    content {
+#      protocol = "HTTPS"
+#      ssl_policy = "ELBSecurityPolicy-TLS13-1-2-2021-06"
+#    }
+#  }
+#  dynamic "protocol_block" {
+#    for_each = var.aws_certificate_enabled ? [1] : []
+#    content {
+#      protocol = "HTTPS"
+#      ssl_policy = "ELBSecurityPolicy-TLS13-1-2-2021-06"
+#    }
+#  }
+#  dynamic "ssl_policy_block" {
+#    for_each = var.aws_certificate_enabled ? [] : [1]
+#    content {
+#      ssl_policy = ""
+#    }
+#  }
+#  dynamic "protocol_block" {
+#    for_each = var.aws_certificate_enabled ? [] : [1]
+#    content {
+#      protocol = "HTTP"
+#    }
+#  }
+#}
+
 resource "aws_alb_listener" "lb_listener" {
   count             = length(local.aws_ecs_lb_port)
-  load_balancer_arn = "${aws_alb.ecs_lb.id}"
+  load_balancer_arn = aws_alb.ecs_lb.id
   port              = local.aws_ecs_lb_port[count.index]
-  #ssl_policy        = var.aws_certificate_enabled ? "ELBSecurityPolicy-TLS13-1-2-2021-06" : ""
-  #protocol          = var.aws_certificate_enabled ?  "HTTPS" : "HTTP"
   certificate_arn   = var.aws_certificates_selected_arn
-  #protocol          = var.aws_certificates_selected_arn != "" ? "HTTPS" : "HTTP"
-  #ssl_policy        = var.aws_certificates_selected_arn != "" ? "ELBSecurityPolicy-TLS13-1-2-2021-06" : "" # https://docs.aws.amazon.com/elasticloadbalancing/latest/application/create-https-listener.html
-  default_action {
-    target_group_arn = aws_alb_target_group.lb_targets[count.index].id
-    type             = "forward"
+  
+  dynamic "default_action" {
+    for_each = var.aws_certificate_enabled ? [1] : []
+    content {
+      target_group_arn = aws_alb_target_group.lb_targets[count.index].id
+      type             = "forward"
+    }
   }
-  lifecycle {
-    replace_triggered_by = [ aws_alb_listener.http_redirect ]
-  }
+
   dynamic "ssl_policy_block" {
     for_each = var.aws_certificate_enabled ? [1] : []
     content {
-      protocol = "HTTPS"
       ssl_policy = "ELBSecurityPolicy-TLS13-1-2-2021-06"
     }
   }
+
   dynamic "protocol_block" {
     for_each = var.aws_certificate_enabled ? [1] : []
     content {
       protocol = "HTTPS"
-      ssl_policy = "ELBSecurityPolicy-TLS13-1-2-2021-06"
-    }
-  }
-  dynamic "ssl_policy_block" {
-    for_each = var.aws_certificate_enabled ? [] : [1]
-    content {
-      ssl_policy = ""
-    }
-  }
-  dynamic "protocol_block" {
-    for_each = var.aws_certificate_enabled ? [] : [1]
-    content {
-      protocol = "HTTP"
     }
   }
 }
+
 
 resource "aws_alb_listener_rule" "redirect_based_on_path" {
   for_each = { for idx, path in local.aws_ecs_lb_container_path : idx => path if length(path) > 0 }
