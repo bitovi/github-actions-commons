@@ -114,20 +114,20 @@ resource "aws_alb_listener" "lb_listener" {
     content {
       target_group_arn = aws_alb_target_group.lb_targets[count.index].id
       type             = "forward"
-    }
-  }
 
-  dynamic "ssl_policy_block" {
-    for_each = var.aws_certificate_enabled ? [1] : []
-    content {
-      ssl_policy = "ELBSecurityPolicy-TLS13-1-2-2021-06"
-    }
-  }
+      dynamic "ssl_policy_block" {
+        for_each = var.aws_certificate_enabled ? [1] : []
+        content {
+          ssl_policy = "ELBSecurityPolicy-TLS13-1-2-2021-06"
+        }
+      }
 
-  dynamic "protocol_block" {
-    for_each = var.aws_certificate_enabled ? [1] : []
-    content {
-      protocol = "HTTPS"
+      dynamic "protocol_block" {
+        for_each = var.aws_certificate_enabled ? [1] : []
+        content {
+          protocol = "HTTPS"
+        }
+      }
     }
   }
 }
