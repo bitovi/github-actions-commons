@@ -112,8 +112,8 @@ if [[ $SUCCESS == 'success' ]]; then
     Aurora Details Secret Manager name: ${AURORA_SECRETS_NAME}"
     if [[ -n $AURORA_PROXY ]]; then
       result_string+="
-      Aurora Proxy URL: ${AURORA_PROXY}
-      Aurora Proxy Secret: ${AURORA_PROXY_SECRET}"
+    Aurora Proxy URL: ${AURORA_PROXY}
+    Aurora Proxy Secret: ${AURORA_PROXY_SECRET}"
     fi
   elif [[ -n $DB_PROXY ]]; then
     SUMMARY_CODE=13
@@ -127,7 +127,7 @@ if [[ $SUCCESS == 'success' ]]; then
     if [[ -n $ECS_DNS ]]; then
       SUMMARY_CODE=14
       result_string+="
-      ECS Public DNS: ${ECS_DNS}"
+    ECS Public DNS: ${ECS_DNS}"
     fi
   elif [[ -n $REDIS_ENDPOINT ]] && [[ -n $REDIS_SECRET_NAME ]]; then
     SUMMARY_CODE=15
@@ -136,7 +136,7 @@ if [[ $SUCCESS == 'success' ]]; then
     Redis secret name: ${REDIS_SECRET_NAME}"
     if [[ -n $REDIS_SECRET_URL ]]; then
       result_string+="
-      Redis connection URL secret name: ${REDIS_SECRET_URL}"
+    Redis connection URL secret name: ${REDIS_SECRET_URL}"
     fi
   elif [[ $BITOPS_CODE_ONLY == 'true' ]]; then
     if [[ $BITOPS_CODE_STORE == 'true' ]]; then
