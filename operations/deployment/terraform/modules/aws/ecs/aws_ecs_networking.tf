@@ -96,7 +96,8 @@ resource "aws_alb_listener" "http_redirect" {
 
 
   default_action {
-    type = var.aws_certificates_selected_arn != "" ? "redirect" : "forward"
+    #type = var.aws_certificates_selected_arn != "" ? "redirect" : "forward"
+    type = var.aws_certificate_enabled != "" ? "redirect" : "forward"
     target_group_arn = var.aws_certificates_selected_arn != "" ? null : aws_alb_target_group.lb_targets[0].id
 
     dynamic "redirect" {
