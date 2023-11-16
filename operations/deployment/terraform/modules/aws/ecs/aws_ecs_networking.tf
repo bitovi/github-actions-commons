@@ -108,9 +108,6 @@ resource "aws_alb_listener" "http_redirect" {
       }
     }
   }
-  lifecycle {
-    replace_triggered_by = [ aws_alb_listener.lb_listener ]
-  }
 }
 
 resource "aws_security_group_rule" "incoming_alb_http" {
@@ -137,9 +134,6 @@ resource "aws_alb_listener" "https_redirect" {
     target_group_arn = aws_alb_target_group.lb_targets[0].id
     type             = "forward"
   }
-  lifecycle {
-    replace_triggered_by = [ aws_alb_listener.lb_listener ]
-  }
 }
 
 resource "aws_alb_listener_rule" "redirect_based_on_path_for_http" {
@@ -155,9 +149,6 @@ resource "aws_alb_listener_rule" "redirect_based_on_path_for_http" {
     path_pattern {
       values = ["/${each.value}/*"]
     }
-  }
-  lifecycle {
-    replace_triggered_by = [ aws_alb_listener.lb_listener ]
   }
 }
 
