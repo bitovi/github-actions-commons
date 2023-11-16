@@ -414,7 +414,7 @@ module "aws_ecs" {
   aws_resource_identifier_supershort = var.aws_resource_identifier_supershort
   app_repo_name                      = var.app_repo_name
   # Dependencies
-  depends_on = [ module.aws_certificates ]
+  #depends_on = [ module.aws_certificates ]
   providers = {
     aws = aws.ecs
   }
@@ -435,7 +435,7 @@ module "aws_route53_ecs" {
   aws_certificates_selected_arn = var.aws_r53_enable_cert && var.aws_r53_domain_name != "" ? module.aws_certificates[0].selected_arn : ""
   # Others
   fqdn_provided                 = local.fqdn_provided
-  depends_on = [ module.aws_certificates,module.aws_ecs ]
+  #depends_on = [ module.aws_certificates,module.aws_ecs ]
   providers = {
     aws = aws.r53
   }
