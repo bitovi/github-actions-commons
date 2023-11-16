@@ -59,83 +59,41 @@ resource "aws_alb_target_group" "lb_targets" {
 }
 
 # Redirect all traffic from the ALB to the target group
-#resource "aws_alb_listener" "lb_listener" {
-#  count             = length(local.aws_ecs_lb_port)
-#  load_balancer_arn = "${aws_alb.ecs_lb.id}"
-#  port              = local.aws_ecs_lb_port[count.index]
-#  #ssl_policy        = var.aws_certificate_enabled ? "ELBSecurityPolicy-TLS13-1-2-2021-06" : ""
-#  #protocol          = var.aws_certificate_enabled ?  "HTTPS" : "HTTP"
-#  certificate_arn   = var.aws_certificates_selected_arn
-#  #protocol          = var.aws_certificates_selected_arn != "" ? "HTTPS" : "HTTP"
-#  #ssl_policy        = var.aws_certificates_selected_arn != "" ? "ELBSecurityPolicy-TLS13-1-2-2021-06" : "" # https://docs.aws.amazon.com/elasticloadbalancing/latest/application/create-https-listener.html
-#  default_action {
-#    target_group_arn = aws_alb_target_group.lb_targets[count.index].id
-#    type             = "forward"
-#  }
-#  lifecycle {
-#    replace_triggered_by = [ aws_alb_listener.http_redirect ]
-#  }
-#  dynamic "ssl_policy_block" {
-#    for_each = var.aws_certificate_enabled ? [1] : []
-#    content {
-#      protocol = "HTTPS"
-#      ssl_policy = "ELBSecurityPolicy-TLS13-1-2-2021-06"
-#    }
-#  }
-#  dynamic "protocol_block" {
-#    for_each = var.aws_certificate_enabled ? [1] : []
-#    content {
-#      protocol = "HTTPS"
-#      ssl_policy = "ELBSecurityPolicy-TLS13-1-2-2021-06"
-#    }
-#  }
-#  dynamic "ssl_policy_block" {
-#    for_each = var.aws_certificate_enabled ? [] : [1]
-#    content {
-#      ssl_policy = ""
-#    }
-#  }
-#  dynamic "protocol_block" {
-#    for_each = var.aws_certificate_enabled ? [] : [1]
-#    content {
-#      protocol = "HTTP"
-#    }
-#  }
-#}
+resource "aws_alb_listener" "lb_listener_ssl" {
+  count             = var.aws_certificate_enabled ? length(local.aws_ecs_lb_port) : 0
+  load_balancer_arn = "${aws_alb.ecs_lb.id}"
+  port              = local.aws_ecs_lb_port[count.index]
+  # https://docs.aws.amazon.com/elasticloadbalancing/latest/application/create-https-listener.html
+  ssl_policy        = var.aws_certificate_enabled ? "ELBSecurityPolicy-TLS13-1-2-2021-06" : ""
+  protocol          = var.aws_certificate_enabled ? "HTTPS" : "HTTP"
+  certificate_arn   = var.aws_certificates_selected_arn
+  default_action {
+    target_group_arn = aws_alb_target_group.lb_targets[count.index].id
+    type             = "forward"
+  }
+  lifecycle {
+    replace_triggered_by = [ aws_alb_listener.http_redirect ]
+  }
+}
 
 resource "aws_alb_listener" "lb_listener" {
-  count             = length(local.aws_ecs_lb_port)
-  load_balancer_arn = aws_alb.ecs_lb.id
+  count             = var.aws_certificate_enabled ? 0 : length(local.aws_ecs_lb_port)
+  load_balancer_arn = "${aws_alb.ecs_lb.id}"
   port              = local.aws_ecs_lb_port[count.index]
-  certificate_arn   = var.aws_certificates_selected_arn
-  
-  dynamic "default_action" {
-    for_each = var.aws_certificate_enabled ? [1] : []
-    content {
-      target_group_arn = aws_alb_target_group.lb_targets[count.index].id
-      type             = "forward"
-
-      dynamic "ssl_policy_block" {
-        for_each = var.aws_certificate_enabled ? [1] : []
-        content {
-          ssl_policy = "ELBSecurityPolicy-TLS13-1-2-2021-06"
-        }
-      }
-
-      dynamic "protocol_block" {
-        for_each = var.aws_certificate_enabled ? [1] : []
-        content {
-          protocol = "HTTPS"
-        }
-      }
-    }
+  protocol          = "HTTP"
+  default_action {
+    target_group_arn = aws_alb_target_group.lb_targets[count.index].id
+    type             = "forward"
+  }
+  lifecycle {
+    replace_triggered_by = [ aws_alb_listener.http_redirect ]
   }
 }
 
 
 resource "aws_alb_listener_rule" "redirect_based_on_path" {
   for_each = { for idx, path in local.aws_ecs_lb_container_path : idx => path if length(path) > 0 }
-  listener_arn = aws_alb_listener.lb_listener[0].arn
+  listener_arn = var.aws_certificate_enabled ? aws_alb_listener.lb_listener_ssl[0].arn : aws_alb_listener.lb_listener[0].arn
 
   action {
     type             = "forward"
@@ -255,11 +213,11 @@ output "load_balancer_dns" {
 }
 
 output "load_balancer_port" {
-  value = aws_alb_listener.lb_listener[0].port
+  value = var.aws_certificate_enabled ? aws_alb_listener.lb_listener_ssl[0].port : aws_alb_listener.lb_listener[0].port
 }
 
 output "load_balancer_protocol" {
-  value = aws_alb_listener.lb_listener[0].protocol
+  value = var.aws_certificate_enabled ? aws_alb_listener.lb_listener_ssl[0].protocol : aws_alb_listener.lb_listener[0].protocol
 }
 
 output "load_balancer_zone_id" {
