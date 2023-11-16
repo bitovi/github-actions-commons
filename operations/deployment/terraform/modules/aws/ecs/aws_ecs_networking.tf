@@ -77,7 +77,7 @@ resource "aws_alb_listener" "lb_listener_ssl" {
   dynamic "depends_on" {
       for_each = var.aws_certificate_enabled ? [1] : [0]
       content {
-        depdens_on = [aws_alb_listener.lb_listener]
+        depends_on = [aws_alb_listener.lb_listener]
       }
     }
   #depends_on = [ (var.aws_certificate_enabled ? aws_alb_listener.lb_listener : "") ]
@@ -98,7 +98,7 @@ resource "aws_alb_listener" "lb_listener" {
   dynamic "depends_on" {
       for_each = var.aws_certificate_enabled ? [1] : [0]
       content {
-        depdens_on = [aws_alb_listener.lb_listener_ssl]
+        depends_on = [aws_alb_listener.lb_listener_ssl]
       }
   }
 }
