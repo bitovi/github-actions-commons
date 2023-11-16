@@ -175,10 +175,16 @@ if [[ $(alpha_only "$AWS_RDS_DB_ENABLE") == true ]]; then
   aws_rds_db_subnets=$(generate_var aws_rds_db_subnets $AWS_RDS_DB_SUBNETS)
   aws_rds_db_allocated_storage=$(generate_var aws_rds_db_allocated_storage $AWS_RDS_DB_ALLOCATED_STORAGE)
   aws_rds_db_max_allocated_storage=$(generate_var aws_rds_db_max_allocated_storage $AWS_RDS_DB_MAX_ALLOCATED_STORAGE)
+  aws_rds_db_storage_encrypted=$(generate_var aws_rds_db_storage_encrypted $AWS_RDS_DB_STORAGE_ENCRYPTED)
+  aws_rds_db_storage_type=$(generate_var aws_rds_db_storage_type $AWS_RDS_DB_STORAGE_TYPE)
+  aws_rds_db_kms_key_id=$(generate_var aws_rds_db_kms_key_id $AWS_RDS_DB_KMS_KEY_ID)
   aws_rds_db_instance_class=$(generate_var aws_rds_db_instance_class $AWS_RDS_DB_INSTANCE_CLASS)
   aws_rds_db_final_snapshot=$(generate_var aws_rds_db_final_snapshot $AWS_RDS_DB_FINAL_SNAPSHOT)
   aws_rds_db_restore_snapshot_identifier=$(generate_var aws_rds_db_restore_snapshot_identifier $AWS_RDS_DB_RESTORE_SNAPSHOT_IDENTIFIER)
   aws_rds_db_cloudwatch_logs_exports=$(generate_var aws_rds_db_cloudwatch_logs_exports $AWS_RDS_DB_CLOUDWATCH_LOGS_EXPORTS)
+  aws_rds_db_multi_az=$(generate_var aws_rds_db_multi_az $AWS_RDS_DB_MULTI_AZ)
+  aws_rds_db_maintenance_window=$(generate_var aws_rds_db_maintenance_window $AWS_RDS_DB_MAINTENANCE_WINDOWS)
+  aws_rds_db_apply_immediately=$(generate_var aws_rds_db_apply_immediately $AWS_RDS_DB_APPLY_IMMEDIATELY)
   aws_rds_db_additional_tags=$(generate_var aws_rds_db_additional_tags $AWS_RDS_DB_ADDITIONAL_TAGS)
 fi
 
@@ -470,10 +476,16 @@ $aws_rds_db_port
 $aws_rds_db_subnets
 $aws_rds_db_allocated_storage
 $aws_rds_db_max_allocated_storage
+$aws_rds_db_storage_encrypted
+$aws_rds_db_storage_type
+$aws_rds_db_kms_key_id
 $aws_rds_db_instance_class
 $aws_rds_db_final_snapshot
 $aws_rds_db_restore_snapshot_identifier
 $aws_rds_db_cloudwatch_logs_exports
+$aws_rds_db_multi_az
+$aws_rds_db_maintenance_window
+$aws_rds_db_apply_immediately
 $aws_rds_db_additional_tags
 
 #-- AURORA --#

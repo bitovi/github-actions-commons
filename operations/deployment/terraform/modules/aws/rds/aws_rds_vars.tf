@@ -11,10 +11,16 @@ variable "aws_rds_db_port" {}
 variable "aws_rds_db_subnets" {}
 variable "aws_rds_db_allocated_storage" {}
 variable "aws_rds_db_max_allocated_storage" {}
+variable "aws_rds_db_storage_encrypted" {}
+variable "aws_rds_db_storage_type" {}
+variable "aws_rds_db_kms_key_id" {}
 variable "aws_rds_db_instance_class" {}
 variable "aws_rds_db_final_snapshot" {}
 variable "aws_rds_db_restore_snapshot_identifier" {}
 variable "aws_rds_db_cloudwatch_logs_exports" {}
+variable "aws_rds_db_multi_az" {}
+variable "aws_rds_db_maintenance_window" {}
+variable "aws_rds_db_apply_immediately" {}
 variable "aws_resource_identifier" {}
 variable "aws_resource_identifier_supershort" {}
 variable "aws_selected_vpc_id" {}
