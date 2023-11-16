@@ -408,8 +408,8 @@ module "aws_ecs" {
   aws_selected_vpc_id                = module.vpc.aws_selected_vpc_id
   aws_selected_subnets               = module.vpc.aws_selected_vpc_subnets
   # Others
+  aws_certificate_enabled            = module.aws_certificates.count > 0 ? true : false
   aws_certificates_selected_arn      = var.aws_r53_enable_cert && var.aws_r53_domain_name != "" ? module.aws_certificates[0].selected_arn : ""
-  #aws_certificates_selected_arn      = var.aws_r53_enable_cert && var.aws_r53_domain_name != "" ? try(module.aws_certificates[0].selected_arn,"") : ""
   aws_resource_identifier            = var.aws_resource_identifier
   aws_resource_identifier_supershort = var.aws_resource_identifier_supershort
   app_repo_name                      = var.app_repo_name
