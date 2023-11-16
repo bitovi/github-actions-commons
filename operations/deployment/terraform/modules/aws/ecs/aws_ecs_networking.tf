@@ -72,6 +72,9 @@ resource "aws_alb_listener" "lb_listener" {
     target_group_arn = aws_alb_target_group.lb_targets[count.index].id
     type             = "forward"
   }
+  lifecycle {
+    replace_triggered_by = [ aws_alb_listener.http_redirect ]
+  }
 }
 
 resource "aws_alb_listener_rule" "redirect_based_on_path" {
