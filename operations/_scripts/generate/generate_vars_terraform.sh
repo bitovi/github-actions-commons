@@ -280,6 +280,7 @@ if [[ $(alpha_only "$AWS_ECS_ENABLE") == true ]]; then
   aws_ecs_lb_port=$(generate_var aws_ecs_lb_port $AWS_ECS_LB_PORT)
   aws_ecs_lb_redirect_enable=$(generate_var aws_ecs_lb_redirect_enable $AWS_ECS_LB_REDIRECT_ENABLE)
   aws_ecs_lb_container_path=$(generate_var aws_ecs_lb_container_path $AWS_ECS_LB_CONTAINER_PATH)
+  aws_ecs_lb_ssl_policy=$(generate_var aws_ecs_lb_ssl_policy $AWS_ECS_LB_SSL_POLICY)
   aws_ecs_autoscaling_enable=$(generate_var aws_ecs_autoscaling_enable $AWS_ECS_AUTOSCALING_ENABLE)
   aws_ecs_autoscaling_max_nodes=$(generate_var aws_ecs_autoscaling_max_nodes $AWS_ECS_AUTOSCALING_MAX_NODES)
   aws_ecs_autoscaling_min_nodes=$(generate_var aws_ecs_autoscaling_min_nodes $AWS_ECS_AUTOSCALING_MIN_NODES)
@@ -570,6 +571,7 @@ $aws_ecs_container_port
 $aws_ecs_lb_port
 $aws_ecs_lb_redirect_enable
 $aws_ecs_lb_container_path
+$aws_ecs_lb_ssl_policy
 $aws_ecs_autoscaling_enable
 $aws_ecs_autoscaling_max_nodes
 $aws_ecs_autoscaling_min_nodes

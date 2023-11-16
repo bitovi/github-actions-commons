@@ -64,7 +64,7 @@ resource "aws_alb_listener" "lb_listener_ssl" {
   load_balancer_arn = "${aws_alb.ecs_lb.id}"
   port              = local.aws_ecs_lb_port[count.index]
   # https://docs.aws.amazon.com/elasticloadbalancing/latest/application/create-https-listener.html
-  ssl_policy        = "ELBSecurityPolicy-TLS13-1-2-2021-06"
+  ssl_policy        = var.aws_ecs_lb_ssl_policy
   protocol          = "HTTPS"
   certificate_arn   = var.aws_certificates_selected_arn
   default_action {

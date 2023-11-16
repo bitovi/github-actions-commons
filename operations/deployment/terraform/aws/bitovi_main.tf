@@ -395,6 +395,7 @@ module "aws_ecs" {
   aws_ecs_lb_port                    = var.aws_ecs_lb_port
   aws_ecs_lb_redirect_enable         = var.aws_ecs_lb_redirect_enable
   aws_ecs_lb_container_path          = var.aws_ecs_lb_container_path
+  aws_ecs_lb_ssl_policy              = var.aws_ecs_lb_ssl_policy
   aws_ecs_autoscaling_enable         = var.aws_ecs_autoscaling_enable
   aws_ecs_autoscaling_max_nodes      = var.aws_ecs_autoscaling_max_nodes
   aws_ecs_autoscaling_min_nodes      = var.aws_ecs_autoscaling_min_nodes
