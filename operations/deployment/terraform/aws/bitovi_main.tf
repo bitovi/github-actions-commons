@@ -303,7 +303,7 @@ module "db_proxy" {
 module "proxy_dot_env" {
   source   = "../modules/commons/dot_env"
   filename = "proxy.env"
-  content  = join("\n",[try(module.db_proxy_aurora.proxy_dot_env,""),try(module.db_proxy_rds.proxy_dot_env,""),try(module.db_proxy.proxy_dot_env,"")])
+  content  = join("\n",[try(module.db_proxy_aurora[0].proxy_dot_env,""),try(module.db_proxy_rds[0].proxy_dot_env,""),try(module.db_proxy[0].proxy_dot_env,"")])
   depends_on = [ module.db_proxy_aurora,module.db_proxy_rds,module.db_proxy_rds ]
 }
 
