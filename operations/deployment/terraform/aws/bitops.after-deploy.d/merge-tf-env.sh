@@ -6,28 +6,32 @@ set -e
 echo "BitOps Ansible before script: Merge Terraform Enviornment Variables..."
 
 ANSIBLE_DIR=ansible/clone_repo
-TERRAFORM_PATH=terraform/aws
+AWS_TERRAFORM_PATH=terraform/aws
+#COMMONS_TERRAFORM_PATH=terraform/commons
 
 # Merging order
-order=ec2,efs,rds,aurora,reids,repo,ghv,ghs,aws
+order=ec2,efs,rds,aurora,redis,proxy,repo,ghv,ghs,aws
 
 # Ansible dotenv file -> The final destination of all
 ENV_OUT_FILE="${BITOPS_ENVROOT}/${ANSIBLE_DIR}/app.env"
 
 # TF dotenv file
-ENV_EC2_FILE="${BITOPS_ENVROOT}/${TERRAFORM_PATH}/ec2.env"
+ENV_EC2_FILE="${BITOPS_ENVROOT}/${AWS_TERRAFORM_PATH}/ec2.env"
 
 # EFS dotenv file
-ENV_EFS_FILE="${BITOPS_ENVROOT}/${TERRAFORM_PATH}/efs.env"
+ENV_EFS_FILE="${BITOPS_ENVROOT}/${AWS_TERRAFORM_PATH}/efs.env"
 
 # RDS dotenv file
-ENV_RDS_FILE="${BITOPS_ENVROOT}/${TERRAFORM_PATH}/rds.env"
+ENV_RDS_FILE="${BITOPS_ENVROOT}/${AWS_TERRAFORM_PATH}/rds.env"
 
 # Aurora dotenv file
-ENV_AURORA_FILE="${BITOPS_ENVROOT}/${TERRAFORM_PATH}/aurora.env"
+ENV_AURORA_FILE="${BITOPS_ENVROOT}/${AWS_TERRAFORM_PATH}/aurora.env"
 
 # Redis dotenv file
-ENV_REDIS_FILE="${BITOPS_ENVROOT}/${TERRAFORM_PATH}/redis.env"
+ENV_REDIS_FILE="${BITOPS_ENVROOT}/${AWS_TERRAFORM_PATH}/redis.env"
+
+# Proxy dotenv file
+ENV_PROXY_FILE="${BITOPS_ENVROOT}/${AWS_TERRAFORM_PATH}/proxy.env"
 
 # Repo env file
 ENV_REPO_FILE="${BITOPS_ENVROOT}/env-files/repo.env"
@@ -39,7 +43,7 @@ ENV_GHV_FILE="${BITOPS_ENVROOT}/env-files/ghv.env"
 ENV_GHS_FILE="${BITOPS_ENVROOT}/env-files/ghs.env"
 
 # TF AWS dotenv file
-ENV_AWS_SECRET_FILE="${BITOPS_ENVROOT}/${TERRAFORM_PATH}/aws.env"
+ENV_AWS_SECRET_FILE="${BITOPS_ENVROOT}/${AWS_TERRAFORM_PATH}/aws.env"
 
 # Make sure app.env is empty, if not, delete it and create one.
 
@@ -97,6 +101,10 @@ function process {
     redis)
       # Code to be executed for option9
       merge $ENV_REDIS_FILE "Redis"
+      ;;
+    proxy)
+      # Code to be executed for option9
+      merge $ENV_PROXY_FILE "Proxy"
       ;;
     *)
       # Code to be executed if no matching option is found

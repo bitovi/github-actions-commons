@@ -62,6 +62,9 @@ resource "aws_db_instance" "default" {
   port                             = var.aws_rds_db_port != null ? tonumber(var.aws_rds_db_port) : null
   allocated_storage                = tonumber(var.aws_rds_db_allocated_storage)
   max_allocated_storage            = tonumber(var.aws_rds_db_max_allocated_storage)
+  storage_encrypted                = var.aws_rds_db_storage_encrypted
+  storage_type                     = var.aws_rds_db_storage_type
+  kms_key_id                       = var.aws_rds_db_kms_key_id
   instance_class                   = var.aws_rds_db_instance_class
   username                         = var.aws_rds_db_user != null ? var.aws_rds_db_user : "dbuser"
   password                         = random_password.rds.result
@@ -71,6 +74,9 @@ resource "aws_db_instance" "default" {
   publicly_accessible              = var.aws_rds_db_publicly_accessible 
   enabled_cloudwatch_logs_exports  = [var.aws_rds_db_cloudwatch_logs_exports]
   vpc_security_group_ids           = [aws_security_group.rds_db_security_group.id]
+  multi_az                         = var.aws_rds_db_multi_az
+  maintenance_window               = var.aws_rds_db_maintenance_window
+  apply_immediately                = var.aws_rds_db_apply_immediately
   tags = {
     Name = "${var.aws_resource_identifier}-rds"
   }

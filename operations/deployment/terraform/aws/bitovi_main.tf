@@ -146,10 +146,16 @@ module "rds" {
   aws_rds_db_subnets                     = var.aws_rds_db_subnets
   aws_rds_db_allocated_storage           = var.aws_rds_db_allocated_storage
   aws_rds_db_max_allocated_storage       = var.aws_rds_db_max_allocated_storage
+  aws_rds_db_storage_encrypted           = var.aws_rds_db_storage_encrypted
+  aws_rds_db_storage_type                = var.aws_rds_db_storage_type
+  aws_rds_db_kms_key_id                  = var.aws_rds_db_kms_key_id
   aws_rds_db_instance_class              = var.aws_rds_db_instance_class
   aws_rds_db_final_snapshot              = var.aws_rds_db_final_snapshot
   aws_rds_db_restore_snapshot_identifier = var.aws_rds_db_restore_snapshot_identifier
   aws_rds_db_cloudwatch_logs_exports     = var.aws_rds_db_cloudwatch_logs_exports
+  aws_rds_db_multi_az                    = var.aws_rds_db_multi_az
+  aws_rds_db_maintenance_window          = var.aws_rds_db_maintenance_window
+  aws_rds_db_apply_immediately           = var.aws_rds_db_apply_immediately
   # Others
   aws_selected_vpc_id                    = module.vpc.aws_selected_vpc_id
   aws_subnets_vpc_subnets_ids            = module.vpc.aws_selected_vpc_subnets
@@ -292,6 +298,13 @@ module "db_proxy" {
   providers = {
     aws = aws.db_proxy
   }
+}
+
+module "proxy_dot_env" {
+  source   = "../modules/commons/dot_env"
+  filename = "proxy.env"
+  content  = join("\n",[try(module.db_proxy_aurora.proxy_dot_env,""),try(module.db_proxy_rds.proxy_dot_env,""),try(module.db_proxy.proxy_dot_env,"")])
+  depends_on = [ module.db_proxy_aurora,module.db_proxy_rds,module.db_proxy_rds ]
 }
 
 module "redis" {

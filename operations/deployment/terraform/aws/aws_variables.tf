@@ -480,6 +480,24 @@ variable "aws_rds_db_max_allocated_storage" {
   default     = "0"
 }
 
+variable "aws_rds_db_storage_encrypted" {
+  type        = bool
+  description = "Toogle storage encryption. Defatuls to false."
+  default     = false
+}
+
+variable "aws_rds_db_storage_type" {
+  type        = string
+  description = "Storage type. Like gp2 / gp3. Defaults to gp2."
+  default     = ""
+}
+
+variable "aws_rds_db_kms_key_id" {
+  type        = string
+  description = "The ARN for the KMS encryption key."
+  default     = ""
+}
+
 variable "aws_rds_db_instance_class" {
   type        = string
   description = "Server size"
@@ -502,6 +520,24 @@ variable "aws_rds_db_cloudwatch_logs_exports" {
   type        = string
   description = "logs exports"
   default     = "postgresql"
+}
+
+variable "aws_rds_db_multi_az" {
+  type        = bool
+  description = "Specifies if the RDS instance is multi-AZ"
+  default     = false
+}
+
+variable "aws_rds_db_maintenance_window" {
+  type        = string
+  description = "The window to perform maintenance in. Eg: Mon:00:00-Mon:03:00 "
+  default     = ""
+}
+
+variable "aws_rds_db_apply_immediately" {
+  type        = bool
+  description = "Specifies whether any database modifications are applied immediately, or during the next maintenance window"
+  default     = false
 }
 
 variable "aws_rds_db_additional_tags" {

@@ -353,6 +353,15 @@ inputs:
   aws_rds_db_max_allocated_storage:
     description: 'Max storage size. Defaults to 0 to disable auto-scaling.'
     required: false
+  aws_rds_db_storage_encrypted:
+    description: 'Toogle storage encryption. Defatuls to false.'
+    required: false
+  aws_rds_db_storage_type:
+    description: 'Storage type. Like gp2 / gp3. Defaults to gp2.'
+    required: false
+  aws_rds_db_kms_key_id:
+    description: 'The ARN for the KMS encryption key.'
+    required: false
   aws_rds_db_instance_class:
     description: 'DB instance server type. Defaults to db.t3.micro.'
     required: false
@@ -364,6 +373,15 @@ inputs:
     required: false
   aws_rds_db_cloudwatch_logs_exports:
     description: 'Set of log types to enable for exporting to CloudWatch logs.'
+    required: false
+  aws_rds_db_multi_az:
+    description: 'Specifies if the RDS instance is multi-AZ'
+    required: false
+  aws_rds_db_maintenance_window:
+    description: 'The window to perform maintenance in. Eg: Mon:00:00-Mon:03:00 '
+    required: false
+  aws_rds_db_apply_immediately:
+    description: 'Specifies whether any database modifications are applied immediately, or during the next maintenance window'
     required: false
   aws_rds_db_additional_tags:
     description: 'A JSON object of additional tags that will be included on created resources. Example: `{"key1": "value1", "key2": "value2"}`'
@@ -1041,10 +1059,16 @@ runs:
         AWS_RDS_DB_SUBNETS: ${{ inputs.aws_rds_db_subnets }}
         AWS_RDS_DB_ALLOCATED_STORAGE: ${{ inputs.aws_rds_db_allocated_storage }}
         AWS_RDS_DB_MAX_ALLOCATED_STORAGE: ${{ inputs.aws_rds_db_max_allocated_storage }}
+        AWS_RDS_DB_STORAGE_ENCRYPTED: ${{ inputs.aws_rds_db_storage_encrypted }}
+        AWS_RDS_DB_STORAGE_TYPE: ${{ inputs.aws_rds_db_storage_type }}
+        AWS_RDS_DB_KMS_KEY_ID: ${{ inputs.aws_rds_db_kms_key_id }}
         AWS_RDS_DB_INSTANCE_CLASS: ${{ inputs.aws_rds_db_instance_class }}
         AWS_RDS_DB_FINAL_SNAPSHOT: ${{ inputs.aws_rds_db_final_snapshot }}
         AWS_RDS_DB_RESTORE_SNAPSHOT_IDENTIFIER: ${{ inputs.aws_rds_db_restore_snapshot_identifier }}
         AWS_RDS_DB_CLOUDWATCH_LOGS_EXPORTS: ${{ inputs.aws_rds_db_cloudwatch_logs_exports }}
+        AWS_RDS_DB_MULTI_AZ: ${{ inputs.aws_rds_db_multi_az }}
+        AWS_RDS_DB_MAINTENANCE_WINDOWS: ${{ inputs.aws_rds_db_maintenance_window }}
+        AWS_RDS_DB_APPLY_IMMEDIATELY: ${{ inputs.aws_rds_db_apply_immediately }}
         AWS_RDS_DB_ADDITIONAL_TAGS: ${{ inputs.aws_rds_db_additional_tags }}
 
         # AWS AURORA
