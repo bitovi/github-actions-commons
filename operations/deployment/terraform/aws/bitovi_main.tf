@@ -300,6 +300,13 @@ module "db_proxy" {
   }
 }
 
+module "proxy_dot_env" {
+  source   = "../modules/commons/dot_env"
+  filename = "proxy.env"
+  content  = join("\n",[try(module.db_proxy_aurora.proxy_dot_env,""),try(module.db_proxy_rds.proxy_dot_env,""),try(module.db_proxy.proxy_dot_env,"")])
+  depends_on = [ module.db_proxy_aurora,module.db_proxy_rds,module.db_proxy_rds ]
+}
+
 module "redis" {
   source = "../modules/aws/redis"
   count  = var.aws_redis_enable ? 1 : 0
