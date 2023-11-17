@@ -525,13 +525,13 @@ variable "aws_rds_db_cloudwatch_logs_exports" {
 variable "aws_rds_db_multi_az" {
   type        = bool
   description = "Specifies if the RDS instance is multi-AZ"
-  default     = "value"
+  default     = false
 }
 
 variable "aws_rds_db_maintenance_window" {
   type        = string
   description = "The window to perform maintenance in. Eg: Mon:00:00-Mon:03:00 "
-  default     = "value"
+  default     = ""
 }
 
 variable "aws_rds_db_apply_immediately" {
