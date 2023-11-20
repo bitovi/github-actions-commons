@@ -32,7 +32,7 @@ AURORA_CLUSTER_MASTER_PASSWORD=${aws_rds_cluster.aurora.master_password}
 # The database master username
 AURORA_CLUSTER_MASTER_USERNAME=${aws_rds_cluster.aurora.master_username}
 # The Route53 Hosted Zone ID of the endpoint
-AURORA_CLUSTER_HOSTED_ZONE_ID=${aws_rds_cluster.aurora.availability_zone}
+AURORA_CLUSTER_HOSTED_ZONE_ID={aws_rds_cluster.aurora.availability_zones} #DISABLED
 # AURORA specific env vars
 DBA_ENGINE="${local.dba_engine}
 DBA_USER="${aws_rds_cluster.aurora.master_username}"
