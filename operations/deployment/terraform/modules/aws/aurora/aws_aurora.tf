@@ -199,7 +199,7 @@ resource "aws_secretsmanager_secret_version" "database_credentials_sm_secret_ver
    password          = sensitive(aws_rds_cluster.aurora.master_password)
    host              = sensitive(aws_rds_cluster.aurora.endpoint)
    port              = sensitive(aws_rds_cluster.aurora.port)
-   database          = sensitive(aws_rds_cluster.aurora.cluster_database_name == null ? "" : aws_rds_cluster.aurora.database_name)
+   database          = sensitive(aws_rds_cluster.aurora.database_name == null ? "" : aws_rds_cluster.aurora.database_name)
    engine            = sensitive(local.dba_engine)
    engine_version    = sensitive(aws_rds_cluster.aurora.engine_version_actual)
    DB_USER           = sensitive(aws_rds_cluster.aurora.master_username)

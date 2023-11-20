@@ -14,7 +14,7 @@ AURORA_CLUSTER_ARN=${aws_rds_cluster.aurora.arn}
 # The RDS Cluster Identifier
 AURORA_CLUSTER_ID=${aws_rds_cluster.aurora.cluster_identifier}
 # The RDS Cluster Resource ID
-AURORA_CLUSTER_RESOURCE_ID=${aws_rds_cluster.aurora.cluster_resource_id}
+AURORA_CLUSTER_RESOURCE_ID=${aws_rds_cluster.aurora.resource_id}
 # Writer endpoint for the cluster
 AURORA_CLUSTER_ENDPOINT=${aws_rds_cluster.aurora.endpoint}
 # A read-only endpoint for the cluster, automatically load-balanced across replicas
