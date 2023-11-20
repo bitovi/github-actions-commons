@@ -686,7 +686,7 @@ variable "aws_aurora_db_publicly_accessible" {
 variable "aws_aurora_cloudwatch_enable" {
   type        = bool
   description = "Toggles cloudwatch"
-  default     = "true"
+  default     = true
 }
 
 variable "aws_aurora_cloudwatch_log_type" {

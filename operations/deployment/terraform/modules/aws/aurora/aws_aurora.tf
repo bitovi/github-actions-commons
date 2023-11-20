@@ -31,11 +31,11 @@ resource "aws_security_group_rule" "ingress_aurora_extras" {
   count                    = length(local.aws_aurora_allowed_security_groups)
   type                     = "ingress"
   description              = "${var.aws_resource_identifier} - RDS ingress extra SG"
-  from_port                = tonumber(aws_db_instance.default.port)
-  to_port                  = tonumber(aws_db_instance.default.port)
+  from_port                = tonumber(aws_rds_cluster.aurora.port)
+  to_port                  = tonumber(aws_rds_cluster.aurora.port)
   protocol                 = "tcp"
   source_security_group_id = local.aws_aurora_allowed_security_groups[count.index]
-  security_group_id        = aws_security_group.rds_db_security_group.id
+  security_group_id        = aws_security_group.aurora_security_group.id
 }
 
 locals {
@@ -83,7 +83,7 @@ resource "aws_rds_cluster" "aurora" {
   # Net
   db_subnet_group_name                = aws_db_subnet_group.selected.id
   db_cluster_instance_class           = var.aws_aurora_instance_class
-  vpc_security_group_ids              = [aws_security_group.rds_security_group.id]
+  vpc_security_group_ids              = [aws_security_group.aurora_security_group.id]
   port                                = var.aws_aurora_database_port
 
   dynamic "restore_to_point_in_time" {
