@@ -550,7 +550,7 @@ variable "aws_rds_db_additional_tags" {
 
 variable "aws_aurora_enable" {
   type        = bool
-  description = "deploy a postgres database"
+  description = "Toggles deployment of an Aurora database"
   default     = false
 }
 
@@ -558,6 +558,12 @@ variable "aws_aurora_proxy" {
   type        = bool
   description = "Aurora DB Proxy Toggle"
   default     = false
+}
+
+variable "aws_aurora_cluster_name" {
+  type        = string
+  description = "The name of the cluster. will be created if it does not exist."
+  default     = ""
 }
 
 variable "aws_aurora_engine" {
@@ -568,14 +574,76 @@ variable "aws_aurora_engine" {
 
 variable "aws_aurora_engine_version" {
   type        = string
-  description = "The version of the engine to use for postgres.  Defaults to `11.17`."
-  default     = "11.17"
+  description = "The version of the engine to use for postgres."
+  default     = ""
+}
+
+variable "aws_aurora_engine_mode" {
+  type        = string
+  description = "Database engine mode. global, multimaster, parallelquey, provisioned, serverless."
+  default     = ""
+}
+
+variable "aws_aurora_cluster_apply_immediately" {
+  type        = bool
+  description = "Apply changes immediately to the cluster. If not, will be done in next maintenance window."
+  default     = false
+}
+
+# Storage 
+variable "aws_aurora_allocated_storage" {
+  type        = string
+  description = "Amount of storage in gigabytes. Required for multi-az cluster."
+  default     = ""
+}
+
+variable "aws_aurora_storage_encrypted" {
+  type        = bool
+  description = "Toggles whether the DB cluster is encrypted."
+  default     = ""
+}
+
+variable "aws_aurora_kms_key_id" {
+  type        = string
+  description = "KMS Key ID to use with the cluster encrypted storage"
+  default     = ""
+}
+
+variable "aws_aurora_storage_type" {
+  type        = string
+  description = "Define type of storage to use. Required for multi-az cluster."
+  default     = ""
+}
+
+# DB Details
+variable "aws_aurora_database_name" {
+  type        = string
+  description = "The name of the database. will be created if it does not exist."
+  default     = "aurora"
+}
+
+variable "aws_aurora_master_username" {
+  type        = string
+  description = "Master username"
+  default     = "aurora"
 }
 
 variable "aws_aurora_database_group_family" {
   type        = string
-  default     = "aurora-postgresql11"
-  description = "postgres group family"
+  description = "The family of the DB cluster parameter group. See https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/AuroraMySQL.Reference.html https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/AuroraPostgreSQL.Reference.html"
+  default     = ""
+}
+
+variable "aws_aurora_iam_auth_enabled" {
+  type        = bool
+  description = "Toggles IAM Authentication"
+  default     = true
+}
+
+variable "aws_aurora_iam_roles" {
+  type        = string
+  description = "Define the ARN list of allowed roles"
+  default     = ""
 }
 
 variable "aws_aurora_instance_class" {
@@ -586,8 +654,14 @@ variable "aws_aurora_instance_class" {
 
 variable "aws_aurora_security_group_name" {
   type        = string
-  default     = ""
   description = "Name of the security group to use for postgres"
+  default     = ""
+}
+
+variable "aws_aurora_allowed_security_groups" {
+  type        = string
+  description = "Name of the security groups to access Aurora"
+  default     = ""
 }
 
 variable "aws_aurora_subnets" {
@@ -596,52 +670,132 @@ variable "aws_aurora_subnets" {
   default     = ""
 }
 
-variable "aws_aurora_cluster_name" {
-  type        = string
-  description = "The name of the cluster. will be created if it does not exist."
-  default     = ""
-}
-
-variable "aws_aurora_database_name" {
-  type        = string
-  description = "The name of the database. will be created if it does not exist."
-  default     = "root"
-}
-
 variable "aws_aurora_database_port" {
   type        = string
+  description = "Database port"
   default     = "5432"
-  description = "database port"
 }
 
-variable "aws_aurora_restore_snapshot" {
-  type        = string
-  default     = ""
-  description = "Restore an initial snapshot of the DB."
-}
-
-variable "aws_aurora_snapshot_name" {
-  type        = string
-  default     = ""
-  description = "Takes a snapshot of the DB."
-}
-
-variable "aws_aurora_snapshot_overwrite" {
+variable "aws_aurora_db_publicly_accessible" {
   type        = bool
-  default     = false
-  description = "Overwrites snapshot."
+  description = "Make database publicly accessible"
+  default     = "false"
 }
 
-variable "aws_aurora_database_protection" {
+# Backup & maint
+variable "aws_aurora_cloudwatch_enable" {
   type        = bool
-  default     = false
-  description = "Protects the database from deletion."
+  description = "Toggles cloudwatch"
+  default     = "true"
+}
+
+variable "aws_aurora_cloudwatch_log_type" {
+  type        = string
+  description = "Comma separated list of log types to include in cloudwatch. If none defined, will use [postgresql] or  [audit,error,general,slowquery]. "
+  default     = ""
+}
+
+variable "aws_aurora_cloudwatch_retention_days" {
+  type        = string
+  description = "Days to store cloudwatch logs. Defaults to 7."
+  default     = "7"
+}
+
+variable "aws_aurora_backtrack_window" {
+  type        = string
+  description = "Target backtrack window, in seconds. Only available for aurora and aurora-mysql engines currently. 0 to disable (default)."
+  default     = "0"
+}
+
+variable "aws_aurora_backup_retention_period" {
+  type        = string
+  description = "Days to retain backups for. Defaults to 5"
+  default     = "5"
+}
+
+variable "aws_aurora_backup_window" {
+  type        = string
+  description = "Daily time range during which the backups happen"
+  default     = ""
+}
+
+variable "aws_aurora_maintenance_window" {
+  type        = string
+  description = "Maintenance window"
+  default     = ""
 }
 
 variable "aws_aurora_database_final_snapshot" {
   type        = string
-  default     = ""
   description = "Generates a snapshot of the database before deletion."
+  default     = ""
+}
+
+variable "aws_aurora_deletion_protection" {
+  type        = bool
+  description = "Protects the database from deletion."
+  default     = false
+}
+
+variable "aws_aurora_delete_auto_backups" {
+  type        = bool
+  description = "Specifies whether to remove automated backups immediately after the DB cluster is deleted. Default is true."
+  default     = true
+}
+
+variable "aws_aurora_restore_snapshot_id" {
+  type        = string
+  description = "Restore an initial snapshot of the DB."
+  default     = ""
+}
+
+variable "aws_aurora_restore_to_point_in_time" {
+  type        = map(string)
+  description = "Restore database to a point in time. Will require a map of strings."
+  default     = {}
+}
+
+variable "aws_aurora_snapshot_name" {
+  type        = string
+  description = "Takes a snapshot of the DB."
+  default     = ""
+}
+
+variable "aws_aurora_snapshot_overwrite" {
+  type        = bool
+  description = "Overwrites snapshot if same name is set. Defaults to false."
+  default     = false
+}
+
+# DB Parameters
+variable "aws_aurora_db_instances_count" {
+  type        = string
+  description = "Amount of instances to create"
+  default     = ""
+}
+
+variable "aws_aurora_db_instance_class" {
+  type        = string
+  description = "Database instance size"
+  default     = "db.t3.micro"
+}
+
+variable "aws_aurora_db_apply_immediately" {
+  type        = bool
+  description = "Specifies whether any modifications are applied immediately, or during the next maintenance window. Default is false."
+  default     = false
+}
+
+variable "aws_aurora_db_ca_cert_identifier" {
+  type        = string
+  description = "Certificate to use with the database"
+  default     = "rds-ca-ecc384-g1"
+}
+
+variable "aws_aurora_db_maintenance_window" {
+  type        = string
+  description = "Maintenance window"
+  default     = ""
 }
 
 variable "aws_aurora_additional_tags" {
