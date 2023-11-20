@@ -24,84 +24,145 @@ resource "aws_security_group_rule" "ingress_aurora" {
 }
 
 locals {
-  aws_aurora_subnets = var.aws_aurora_subnets != "" ? [for n in split(",", var.aws_aurora_subnets) : (n)] : []
+  aws_aurora_allowed_security_groups = var.aws_aurora_allowed_security_groups != null ? [for n in split(",", var.aws_aurora_allowed_security_groups) : n] : []
 }
 
-module "aurora_cluster" {
-  source         = "terraform-aws-modules/rds-aurora/aws"
-  version        = "v7.7.1"
-  name           = var.aws_aurora_cluster_name != "" ? var.aws_aurora_cluster_name : var.aws_resource_identifier
+resource "aws_security_group_rule" "ingress_aurora_extras" {
+  count                    = length(local.aws_aurora_allowed_security_groups)
+  type                     = "ingress"
+  description              = "${var.aws_resource_identifier} - RDS ingress extra SG"
+  from_port                = tonumber(aws_db_instance.default.port)
+  to_port                  = tonumber(aws_db_instance.default.port)
+  protocol                 = "tcp"
+  source_security_group_id = local.aws_aurora_allowed_security_groups[count.index]
+  security_group_id        = aws_security_group.rds_db_security_group.id
+}
 
-  engine         = var.aws_aurora_engine
-  engine_version = var.aws_aurora_engine_version
-  instance_class = var.aws_aurora_instance_class
-  instances = {
-    1 = {
-      instance_class = var.aws_aurora_instance_class
-    }
+locals {
+  aws_aurora_subnets = var.aws_aurora_subnets  != null ? [for n in split(",", var.aws_aurora_subnets)  : (n)] :  var.aws_subnets_vpc_subnets_ids
+  skip_snap = length(var.aws_aurora_database_final_snapshot) != "" ? false : true
+  aws_aurora_cloudwatch_log_type = var.aws_aurora_cloudwatch_log_type != "" ? [for n in split(",", var.aws_aurora_cloudwatch_log_type) : n] : ( var.aws_aurora_engine == "aurora-postgresql" ? ["postgresql"] : ["audit","error","general","slowquery"])
+}
+
+resource "aws_db_subnet_group" "selected" {
+  name       = "${var.aws_resource_identifier}-rds"
+  subnet_ids = local.aws_aurora_subnets
+  tags = {
+    Name = "${var.aws_resource_identifier}-rds"
+  }
+}
+
+resource "aws_rds_cluster" "aurora" {
+  # DB Parameters
+  cluster_identifier                  = var.aws_aurora_cluster_name != "" ? var.aws_aurora_cluster_name : var.aws_resource_identifier
+  engine                              = var.aws_aurora_engine # "aurora-postgresql"
+  engine_version                      = var.aws_aurora_engine_version
+  engine_mode                         = var.aws_aurora_engine_mode
+  apply_immediately                   = var.aws_aurora_cluster_apply_immediately
+  # Storage
+  allocated_storage                   = tonumber(var.aws_aurora_allocated_storage)
+  storage_encrypted                   = var.aws_aurora_storage_encrypted
+  kms_key_id                          = var.aws_aurora_kms_key_id 
+  storage_type                        = var.aws_aurora_storage_type
+  # DB Details
+  database_name                       = var.aws_aurora_database_name
+  master_username                     = var.aws_aurora_master_username
+  iam_database_authentication_enabled = var.aws_aurora_iam_auth_enabled
+  iam_roles                           = var.aws_aurora_iam_roles
+  db_cluster_parameter_group_name     = var.aws_resource_identifier
+  # Backup & Maint
+  enabled_cloudwatch_logs_exports     = var.aws_aurora_cloudwatch_enable
+  backtrack_window                    = var.aws_aurora_backtrack_window # 0 
+  backup_retention_period             = var.aws_aurora_backup_retention_period # 5
+  preferred_backup_window             = var.aws_aurora_backup_window #"04:00-06:00"
+  preferred_maintenance_window        = var.aws_aurora_maintenance_window
+  deletion_protection                 = var.aws_aurora_deletion_protection
+  delete_automated_backups            = var.aws_aurora_delete_auto_backups
+  final_snapshot_identifier           = var.aws_aurora_database_final_snapshot
+  snapshot_identifier                 = var.aws_aurora_restore_snapshot_id
+  # Net
+  db_subnet_group_name                = aws_db_subnet_group.selected.id
+  db_cluster_instance_class           = var.aws_aurora_instance_class
+  vpc_security_group_ids              = [aws_security_group.rds_security_group.id]
+  port                                = var.aws_aurora_database_port
+
+  dynamic "restore_to_point_in_time" {
+     for_each = length(var.aws_aurora_restore_to_point_in_time) > 0 ? [var.aws_aurora_restore_to_point_in_time] : []
+
+     content {
+       restore_to_time            = try(aws_aurora_restore_to_point_in_time.value.restore_to_time, null)
+       restore_type               = try(aws_aurora_restore_to_point_in_time.value.restore_type, null)
+       source_cluster_identifier  = aws_aurora_restore_to_point_in_time.value.source_cluster_identifier
+       use_latest_restorable_time = try(aws_aurora_restore_to_point_in_time.value.use_latest_restorable_time, null)
+     }
   }
 
-  vpc_id                 = var.aws_selected_vpc_id
-  subnets                = length(local.aws_aurora_subnets) != 0 ? local.aws_aurora_subnets : var.aws_subnets_vpc_subnets_ids
-  
-  allowed_security_groups = [var.aws_allowed_sg_id]
-  allowed_cidr_blocks     = [data.aws_vpc.selected[0].cidr_block]
+  lifecycle {
+    ignore_changes = [
+      # See https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/rds_cluster#replication_source_identifier
+      # Since this is used either in read-replica clusters or global clusters, this should be acceptable to specify
+      replication_source_identifier,
+      # See docs here https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/rds_global_cluster#new-global-cluster-from-existing-db-cluster
+      global_cluster_identifier,
+      snapshot_identifier,
+    ]
+  }
+}
 
-  database_name          = var.aws_aurora_database_name
-  port                   = var.aws_aurora_database_port
-  deletion_protection    = var.aws_aurora_database_protection
-  storage_encrypted      = true
-  monitoring_interval    = 60
-  create_db_subnet_group = true
-  db_subnet_group_name   = "${var.aws_resource_identifier}-aurora"
-  create_security_group  = false
-  vpc_security_group_ids = [aws_security_group.aurora_security_group.id]
+resource "aws_rds_cluster_instance" "cluster_instance" {
+  count                        = tonumber(var.aws_aurora_db_instances_count)
+  identifier                   = "${aws_rds_cluster.aurora.cluster_identifier}-${count.index}"
+  cluster_identifier           = aws_rds_cluster.aurora.id
+  instance_class               = var.aws_aurora_db_instance_class
+  publicly_accessible          = var.aws_aurora_db_publicly_accessible
+  db_subnet_group_name         = aws_db_subnet_group.selected.id
+  engine                       = aws_rds_cluster.aurora.engine
+  engine_version               = aws_rds_cluster.aurora.engine_version
+  apply_immediately            = var.aws_aurora_db_apply_immediately
+  ca_cert_identifier           = var.aws_aurora_db_ca_cert_identifier
+  preferred_maintenance_window = var.aws_aurora_db_maintenance_window
+}
 
-  # TODO: take advantage of iam database auth
-  iam_database_authentication_enabled    = true
-  master_password                        = random_password.rds.result
-  create_random_password                 = false
-  apply_immediately                      = true
-  skip_final_snapshot                    = var.aws_aurora_database_final_snapshot == "" ? true : false
-  final_snapshot_identifier_prefix       = var.aws_aurora_database_final_snapshot
-  snapshot_identifier                    = var.aws_aurora_restore_snapshot
-  create_db_cluster_parameter_group      = true
-  db_cluster_parameter_group_name        = var.aws_resource_identifier
+resource "aws_rds_cluster_parameter_group" "mysql" {
+  count       = var.aws_aurora_engine == "aurora-mysql" ? 1 : 0
+  name        = var.aws_resource_identifier
+  description = "${var.aws_resource_identifier} cluster parameter group"
+  family      = "aurora-mysql${regex("([0-9]+\\.[0-9]+)", aws_rds_cluster.aurora.engine_version_actual)}"
+  #family      = var.aws_aurora_engine == "aurora-mysql" ? "aurora-mysql5.7" 
+  #family      = "${aws_rds_cluster.aurora.engine_version_actual}${aws_rds_cluster.aurora.engine}"
 
-  db_cluster_parameter_group_family      = var.aws_aurora_database_group_family
-  db_cluster_parameter_group_description = "${var.aws_resource_identifier}  cluster parameter group"
-  db_cluster_parameter_group_parameters = var.aws_aurora_engine == "aurora-postgresql" ? [
-    {
-      name         = "log_min_duration_statement"
-      value        = 4000
-      apply_method = "immediate"
-      }, {
-      name         = "rds.force_ssl"
-      value        = 1
-      apply_method = "immediate"
-    }
-  ] : [
-    {
+  parameter {
       name         = "require_secure_transport"
       value        = "ON"
       apply_method = "immediate"
-    }
-  ]
+  }
 
-  create_db_parameter_group      = true
-  db_parameter_group_name        = var.aws_resource_identifier
-  db_parameter_group_family      = var.aws_aurora_database_group_family
-  db_parameter_group_description = "${var.aws_resource_identifier} example DB parameter group"
-  db_parameter_group_parameters = var.aws_aurora_engine == "aurora-postgresql" ? [
-    {
-      name         = "log_min_duration_statement"
-      value        = 4000
-      apply_method = "immediate"
-    }
-  ] : []
-  enabled_cloudwatch_logs_exports = var.aws_aurora_engine == "aurora-postgresql" ? ["postgresql"] : ["audit","error","general","slowquery"]
-  tags = {
-    Name = "${var.aws_resource_identifier} - Aurora"
+  lifecycle {
+    create_before_destroy = true
+  }
+}
+
+resource "aws_rds_cluster_parameter_group" "postgresql" {
+  count       = var.aws_aurora_engine == "aurora-postgresql" ? 1 : 0
+  name        = var.aws_resource_identifier
+  description = "${var.aws_resource_identifier} cluster parameter group"
+  family      = "aurora-postgresql${regex("([0-9]+\\.[0-9]+)", aws_rds_cluster.aurora.engine_version_actual)}"
+  #family      = var.aws_aurora_database_group_family
+
+  parameter {
+    name         = "log_min_duration_statement"
+    value        = 4000
+    apply_method = "immediate"
+  }
+
+  parameter {
+    name         = "rds.force_ssl"
+    value        = 1
+    apply_method = "immediate"
+  }
+
+  lifecycle {
+    create_before_destroy = true
   }
 }
 
@@ -111,19 +172,19 @@ resource "random_password" "rds" {
 }
 
 // Creates a secret manager secret for the databse credentials
-resource "aws_secretsmanager_secret" "database_credentials" {
-   name   = "${var.aws_resource_identifier_supershort}-ec2db-pub-${random_string.random_sm.result}"
-}
- 
-resource "aws_secretsmanager_secret_version" "database_credentials_sm_secret_version" {
-  secret_id = aws_secretsmanager_secret.database_credentials.id
-  secret_string = <<EOF
-   {
-    "key": "database_password",
-    "value": "${sensitive(random_password.rds.result)}"
-   }
-EOF
-}
+#resource "aws_secretsmanager_secret" "database_credentials" {
+#   name   = "${var.aws_resource_identifier_supershort}-ec2db-pub-${random_string.random_sm.result}"
+#}
+# 
+#resource "aws_secretsmanager_secret_version" "database_credentials_sm_secret_version" {
+#  secret_id = aws_secretsmanager_secret.database_credentials.id
+#  secret_string = <<EOF
+#   {
+#    "key": "database_password",
+#    "value": "${sensitive(random_password.rds.result)}"
+#   }
+#EOF
+#}
 
 // Creates a secret manager secret for the databse credentials
 resource "aws_secretsmanager_secret" "aurora_database_credentials" {
@@ -134,21 +195,21 @@ resource "aws_secretsmanager_secret" "aurora_database_credentials" {
 resource "aws_secretsmanager_secret_version" "database_credentials_sm_secret_version_dev" {
   secret_id = aws_secretsmanager_secret.aurora_database_credentials.id
   secret_string = jsonencode({
-   username          = sensitive(module.aurora_cluster.cluster_master_username)
-   password          = sensitive(module.aurora_cluster.cluster_master_password)
-   host              = sensitive(module.aurora_cluster.cluster_endpoint)
-   port              = sensitive(module.aurora_cluster.cluster_port)
-   database          = sensitive(module.aurora_cluster.cluster_database_name == null ? "" : module.aurora_cluster.cluster_database_name)
+   username          = sensitive(aws_rds_cluster.aurora.cluster_master_username)
+   password          = sensitive(aws_rds_cluster.aurora.cluster_master_password)
+   host              = sensitive(aws_rds_cluster.aurora.cluster_endpoint)
+   port              = sensitive(aws_rds_cluster.aurora.cluster_port)
+   database          = sensitive(aws_rds_cluster.aurora.cluster_database_name == null ? "" : aws_rds_cluster.aurora.cluster_database_name)
    engine            = sensitive(local.dba_engine)
-   engine_version    = sensitive(module.aurora_cluster.cluster_engine_version_actual)
-   DB_USER           = sensitive(module.aurora_cluster.cluster_master_username)
-   DB_USERNAME       = sensitive(module.aurora_cluster.cluster_master_username)
-   DB_PASSWORD       = sensitive(module.aurora_cluster.cluster_master_password)
-   DB_HOST           = sensitive(module.aurora_cluster.cluster_endpoint)
-   DB_PORT           = sensitive(module.aurora_cluster.cluster_port)
-   DB_NAME           = sensitive(module.aurora_cluster.cluster_database_name == null ? "" : module.aurora_cluster.cluster_database_name)
+   engine_version    = sensitive(aws_rds_cluster.aurora.cluster_engine_version_actual)
+   DB_USER           = sensitive(aws_rds_cluster.aurora.cluster_master_username)
+   DB_USERNAME       = sensitive(aws_rds_cluster.aurora.cluster_master_username)
+   DB_PASSWORD       = sensitive(aws_rds_cluster.aurora.cluster_master_password)
+   DB_HOST           = sensitive(aws_rds_cluster.aurora.cluster_endpoint)
+   DB_PORT           = sensitive(aws_rds_cluster.aurora.cluster_port)
+   DB_NAME           = sensitive(aws_rds_cluster.aurora.cluster_database_name == null ? "" : aws_rds_cluster.aurora.cluster_database_name)
    DB_ENGINE         = sensitive(local.dba_engine)
-   DB_ENGINE_VERSION = sensitive(module.aurora_cluster.cluster_engine_version_actual)
+   DB_ENGINE_VERSION = sensitive(aws_rds_cluster.aurora.cluster_engine_version_actual)
   })
 }
 
@@ -157,6 +218,11 @@ resource "random_string" "random_sm" {
   lower     = true
   special   = false
   numeric   = false
+}
+
+resource "aws_cloudwatch_log_group" "logs" {
+  name              = "/aws/rds/cluster/${aws_rds_cluster.aurora.cluster_identifier}/"
+  retention_in_days = var.aws_aurora_cloudwatch_retention_days
 }
 
 ### All of this added to handle snapshots
@@ -184,7 +250,7 @@ data "aws_vpc" "selected" {
 }
 
 output "aurora_db_id" {
-  value = module.aurora_cluster.cluster_id
+  value = aws_rds_cluster.aurora.cluster_id
 }
 
 output "aurora_secret_name" {
@@ -192,7 +258,7 @@ output "aurora_secret_name" {
 }
 
 output "aurora_db_endpoint" {
-  value = module.aurora_cluster.cluster_endpoint
+  value = aws_rds_cluster.aurora.cluster_endpoint
 }
 
 output "random_string" {
