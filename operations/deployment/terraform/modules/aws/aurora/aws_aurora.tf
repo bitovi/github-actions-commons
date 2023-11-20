@@ -195,21 +195,21 @@ resource "aws_secretsmanager_secret" "aurora_database_credentials" {
 resource "aws_secretsmanager_secret_version" "database_credentials_sm_secret_version_dev" {
   secret_id = aws_secretsmanager_secret.aurora_database_credentials.id
   secret_string = jsonencode({
-   username          = sensitive(aws_rds_cluster.aurora.cluster_master_username)
-   password          = sensitive(aws_rds_cluster.aurora.cluster_master_password)
-   host              = sensitive(aws_rds_cluster.aurora.cluster_endpoint)
-   port              = sensitive(aws_rds_cluster.aurora.cluster_port)
-   database          = sensitive(aws_rds_cluster.aurora.cluster_database_name == null ? "" : aws_rds_cluster.aurora.cluster_database_name)
+   username          = sensitive(aws_rds_cluster.aurora.master_username)
+   password          = sensitive(aws_rds_cluster.aurora.master_password)
+   host              = sensitive(aws_rds_cluster.aurora.endpoint)
+   port              = sensitive(aws_rds_cluster.aurora.port)
+   database          = sensitive(aws_rds_cluster.aurora.cluster_database_name == null ? "" : aws_rds_cluster.aurora.database_name)
    engine            = sensitive(local.dba_engine)
-   engine_version    = sensitive(aws_rds_cluster.aurora.cluster_engine_version_actual)
-   DB_USER           = sensitive(aws_rds_cluster.aurora.cluster_master_username)
-   DB_USERNAME       = sensitive(aws_rds_cluster.aurora.cluster_master_username)
-   DB_PASSWORD       = sensitive(aws_rds_cluster.aurora.cluster_master_password)
-   DB_HOST           = sensitive(aws_rds_cluster.aurora.cluster_endpoint)
-   DB_PORT           = sensitive(aws_rds_cluster.aurora.cluster_port)
-   DB_NAME           = sensitive(aws_rds_cluster.aurora.cluster_database_name == null ? "" : aws_rds_cluster.aurora.cluster_database_name)
+   engine_version    = sensitive(aws_rds_cluster.aurora.engine_version_actual)
+   DB_USER           = sensitive(aws_rds_cluster.aurora.master_username)
+   DB_USERNAME       = sensitive(aws_rds_cluster.aurora.master_username)
+   DB_PASSWORD       = sensitive(aws_rds_cluster.aurora.master_password)
+   DB_HOST           = sensitive(aws_rds_cluster.aurora.endpoint)
+   DB_PORT           = sensitive(aws_rds_cluster.aurora.port)
+   DB_NAME           = sensitive(aws_rds_cluster.aurora.database_name == null ? "" : aws_rds_cluster.aurora.database_name)
    DB_ENGINE         = sensitive(local.dba_engine)
-   DB_ENGINE_VERSION = sensitive(aws_rds_cluster.aurora.cluster_engine_version_actual)
+   DB_ENGINE_VERSION = sensitive(aws_rds_cluster.aurora.engine_version_actual)
   })
 }
 
@@ -250,7 +250,7 @@ data "aws_vpc" "selected" {
 }
 
 output "aurora_db_id" {
-  value = aws_rds_cluster.aurora.cluster_id
+  value = aws_rds_cluster.aurora.cluster_identifier
 }
 
 output "aurora_secret_name" {
@@ -258,7 +258,7 @@ output "aurora_secret_name" {
 }
 
 output "aurora_db_endpoint" {
-  value = aws_rds_cluster.aurora.cluster_endpoint
+  value = aws_rds_cluster.aurora.endpoint
 }
 
 output "random_string" {
