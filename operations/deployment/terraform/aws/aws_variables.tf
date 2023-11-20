@@ -599,8 +599,8 @@ variable "aws_aurora_allocated_storage" {
 
 variable "aws_aurora_storage_encrypted" {
   type        = bool
-  description = "Toggles whether the DB cluster is encrypted."
-  default     = ""
+  description = "Toggles whether the DB cluster is encrypted. Defaults to true."
+  default     = true
 }
 
 variable "aws_aurora_kms_key_id" {
@@ -679,7 +679,7 @@ variable "aws_aurora_database_port" {
 variable "aws_aurora_db_publicly_accessible" {
   type        = bool
   description = "Make database publicly accessible"
-  default     = "false"
+  default     = false
 }
 
 # Backup & maint
