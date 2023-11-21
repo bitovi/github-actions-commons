@@ -68,7 +68,7 @@ resource "aws_rds_cluster" "aurora" {
   database_name                       = var.aws_aurora_database_name
   master_username                     = var.aws_aurora_master_username
   iam_database_authentication_enabled = var.aws_aurora_iam_auth_enabled
-  iam_roles                           = try(var.aws_aurora_iam_roles,null)
+  iam_roles                           = var.aws_aurora_iam_roles != "" ? var.aws_aurora_iam_roles : null
   db_cluster_parameter_group_name     = var.aws_resource_identifier
   # Backup & Maint
   enabled_cloudwatch_logs_exports     = var.aws_aurora_cloudwatch_enable ? local.aws_aurora_cloudwatch_log_type : []
