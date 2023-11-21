@@ -39,7 +39,7 @@ resource "aws_security_group_rule" "ingress_aurora_extras" {
 }
 
 locals {
-  aws_aurora_subnets = var.aws_aurora_subnets  != null ? [for n in split(",", var.aws_aurora_subnets)  : (n)] :  var.aws_subnets_vpc_subnets_ids
+  aws_aurora_subnets = var.aws_aurora_subnets  != "" ? [for n in split(",", var.aws_aurora_subnets)  : (n)] :  var.aws_subnets_vpc_subnets_ids
   skip_snap = length(var.aws_aurora_database_final_snapshot) != "" ? false : true
   aws_aurora_cloudwatch_log_type = var.aws_aurora_cloudwatch_log_type != "" ? [for n in split(",", var.aws_aurora_cloudwatch_log_type) : n] : ( var.aws_aurora_engine == "aurora-postgresql" ? ["postgresql"] : ["audit","error","general","slowquery"])
 }
