@@ -139,7 +139,7 @@ module "rds" {
   aws_rds_db_engine_version              = var.aws_rds_db_engine_version
   aws_rds_db_ca_cert_identifier          = var.aws_rds_db_ca_cert_identifier
   aws_rds_db_security_group_name         = var.aws_rds_db_security_group_name
-  aws_rds_db_allowed_security_groups     = var.aws_ec2_instance_create ? join(",",[var.aws_rds_db_allowed_security_groups,module.ec2[0].aws_security_group_ec2_sg_id]) : var.aws_rds_db_allowed_security_groups
+  aws_rds_db_allowed_security_groups     = var.aws_rds_db_allowed_security_groups
   aws_rds_db_ingress_allow_all           = var.aws_rds_db_ingress_allow_all
   aws_rds_db_publicly_accessible         = var.aws_rds_db_publicly_accessible
   aws_rds_db_port                        = var.aws_rds_db_port
@@ -163,7 +163,7 @@ module "rds" {
   aws_resource_identifier                = var.aws_resource_identifier
   aws_resource_identifier_supershort     = var.aws_resource_identifier_supershort
   # Dependencies
-  depends_on = [module.vpc,module.ec2]
+  depends_on = [module.vpc]
 
   providers = {
     aws = aws.rds
@@ -189,14 +189,14 @@ module "db_proxy_rds" {
   aws_db_proxy_cloudwatch_enable              = var.aws_db_proxy_cloudwatch_enable
   aws_db_proxy_cloudwatch_retention_days      = var.aws_db_proxy_cloudwatch_retention_days
   # Others
-  aws_ec2_security_group                      = var.aws_ec2_instance_create ? module.ec2[0].aws_security_group_ec2_sg_id : ""
+  #aws_ec2_security_group                      = var.aws_ec2_instance_create ? module.ec2[0].aws_security_group_ec2_sg_id : ""
   aws_selected_vpc_id                         = module.vpc.aws_selected_vpc_id
   aws_selected_subnets                        = module.vpc.aws_selected_vpc_subnets
   aws_resource_identifier                     = var.aws_resource_identifier
   aws_resource_identifier_supershort          = var.aws_resource_identifier_supershort
   incoming_random_string                      = module.rds[0].random_string
   # Dependencies
-  depends_on = [module.vpc,module.rds,module.ec2]
+  depends_on = [module.vpc,module.rds]
 
   providers = {
     aws = aws.db_proxy
@@ -226,7 +226,7 @@ module "aurora_rds" {
   aws_aurora_iam_roles                 = var.aws_aurora_iam_roles
   # Net
   aws_aurora_cluster_db_instance_class = var.aws_aurora_cluster_db_instance_class
-  aws_aurora_security_group_name       = var.aws_ec2_instance_create ? join(",",[var.aws_aurora_security_group_name,module.ec2[0].aws_security_group_ec2_sg_id]) : var.aws_aurora_security_group_name
+  aws_aurora_security_group_name       = var.aws_aurora_security_group_name
   aws_aurora_allowed_security_groups   = var.aws_aurora_allowed_security_groups
   aws_aurora_ingress_allow_all         = var.aws_aurora_ingress_allow_all
   aws_aurora_subnets                   = var.aws_aurora_subnets
@@ -254,7 +254,7 @@ module "aurora_rds" {
   aws_aurora_db_ca_cert_identifier     = var.aws_aurora_db_ca_cert_identifier
   aws_aurora_db_maintenance_window     = var.aws_aurora_db_maintenance_window
   # Incoming
-  aws_ec2_security_group               = var.aws_ec2_instance_create ? module.ec2[0].aws_security_group_ec2_sg_id : ""
+  #aws_ec2_security_group               = var.aws_ec2_instance_create ? module.ec2[0].aws_security_group_ec2_sg_id : ""
   aws_selected_vpc_id                  = module.vpc.aws_selected_vpc_id
   aws_subnets_vpc_subnets_ids          = module.vpc.aws_selected_vpc_subnets
   aws_resource_identifier              = var.aws_resource_identifier
@@ -286,7 +286,7 @@ module "db_proxy_aurora" {
   aws_db_proxy_cloudwatch_enable              = var.aws_db_proxy_cloudwatch_enable
   aws_db_proxy_cloudwatch_retention_days      = var.aws_db_proxy_cloudwatch_retention_days
   # Others
-  aws_ec2_security_group                      = var.aws_ec2_instance_create ? module.ec2[0].aws_security_group_ec2_sg_id : ""
+  #aws_ec2_security_group                      = var.aws_ec2_instance_create ? module.ec2[0].aws_security_group_ec2_sg_id : ""
   aws_selected_vpc_id                         = module.vpc.aws_selected_vpc_id
   aws_selected_subnets                        = module.vpc.aws_selected_vpc_subnets
   aws_resource_identifier                     = var.aws_resource_identifier
@@ -320,7 +320,7 @@ module "db_proxy" {
   aws_db_proxy_cloudwatch_enable              = var.aws_db_proxy_cloudwatch_enable
   aws_db_proxy_cloudwatch_retention_days      = var.aws_db_proxy_cloudwatch_retention_days
   # Others
-  aws_ec2_security_group                      = var.aws_ec2_instance_create ? module.ec2[0].aws_security_group_ec2_sg_id : ""
+  #aws_ec2_security_group                      = var.aws_ec2_instance_create ? module.ec2[0].aws_security_group_ec2_sg_id : ""
   aws_selected_vpc_id                         = module.vpc.aws_selected_vpc_id
   aws_selected_subnets                        = module.vpc.aws_selected_vpc_subnets
   aws_resource_identifier                     = var.aws_resource_identifier
@@ -376,7 +376,7 @@ module "redis" {
   aws_redis_cloudwatch_retention_days = var.aws_redis_cloudwatch_retention_days
   aws_redis_single_line_url_secret    = var.aws_redis_single_line_url_secret
   # Others
-  aws_ec2_security_group              = var.aws_ec2_instance_create ? module.ec2[0].aws_security_group_ec2_sg_id : ""
+  #aws_ec2_security_group              = var.aws_ec2_instance_create ? module.ec2[0].aws_security_group_ec2_sg_id : ""
   aws_selected_vpc_id                 = module.vpc.aws_selected_vpc_id
   aws_selected_subnets                = module.vpc.aws_selected_vpc_subnets
   aws_resource_identifier             = var.aws_resource_identifier

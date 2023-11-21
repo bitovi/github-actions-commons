@@ -37,16 +37,16 @@ resource "aws_security_group_rule" "ingress_redis_extras" {
   security_group_id        = aws_security_group.redis_security_group.id
 }
 
-resource "aws_security_group_rule" "ingress_ec2" {
-  count                    = var.aws_ec2_security_group != "" ? 1 : 0
-  type                     = "ingress"
-  description              = "${var.aws_resource_identifier} - EC2 Incoming"
-  from_port                = tonumber(aws_elasticache_replication_group.redis_cluster.port)
-  to_port                  = tonumber(aws_elasticache_replication_group.redis_cluster.port)
-  protocol                 = "tcp"
-  source_security_group_id = var.aws_ec2_security_group
-  security_group_id        = aws_security_group.redis_security_group.id
-}
+#resource "aws_security_group_rule" "ingress_ec2" {
+#  count                    = var.aws_ec2_security_group != "" ? 1 : 0
+#  type                     = "ingress"
+#  description              = "${var.aws_resource_identifier} - EC2 Incoming"
+#  from_port                = tonumber(aws_elasticache_replication_group.redis_cluster.port)
+#  to_port                  = tonumber(aws_elasticache_replication_group.redis_cluster.port)
+#  protocol                 = "tcp"
+#  source_security_group_id = var.aws_ec2_security_group
+#  security_group_id        = aws_security_group.redis_security_group.id
+#}
 
 locals {
   aws_redis_allowed_security_groups = var.aws_redis_allowed_security_groups != "" ? [for n in split(",", var.aws_redis_allowed_security_groups) : n] : []
