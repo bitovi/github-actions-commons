@@ -783,7 +783,7 @@ variable "aws_aurora_db_instances_count" {
 variable "aws_aurora_db_instance_class" {
   type        = string
   description = "Database instance size"
-  default     = "db.t3.micro"
+  default     = "db.r6g.large"
 }
 
 variable "aws_aurora_db_apply_immediately" {
