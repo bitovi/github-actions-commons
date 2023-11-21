@@ -57,7 +57,7 @@ resource "aws_rds_cluster" "aurora" {
   cluster_identifier                  = var.aws_aurora_cluster_name != "" ? var.aws_aurora_cluster_name : var.aws_resource_identifier
   engine                              = var.aws_aurora_engine # "aurora-postgresql"
   engine_version                      = var.aws_aurora_engine_version
-  engine_mode                         = var.aws_aurora_engine_mode
+  engine_mode                         = var.aws_aurora_engine_mode != "" ? var.aws_aurora_engine_mode : null
   apply_immediately                   = var.aws_aurora_cluster_apply_immediately
   # Storage
   allocated_storage                   = try(tonumber(var.aws_aurora_allocated_storage),null)
@@ -78,7 +78,8 @@ resource "aws_rds_cluster" "aurora" {
   preferred_maintenance_window        = var.aws_aurora_maintenance_window
   deletion_protection                 = var.aws_aurora_deletion_protection
   delete_automated_backups            = var.aws_aurora_delete_auto_backups
-  final_snapshot_identifier           = var.aws_aurora_database_final_snapshot
+  final_snapshot_identifier           = var.aws_aurora_database_final_snapshot != "" ? var.aws_aurora_database_final_snapshot : null
+  skip_final_snapshot                 = var.aws_aurora_database_final_snapshot != "" ? false : true
   snapshot_identifier                 = var.aws_aurora_restore_snapshot_id
   # Net
   db_subnet_group_name                = aws_db_subnet_group.selected.id
