@@ -157,7 +157,7 @@ module "rds" {
   aws_rds_db_maintenance_window          = var.aws_rds_db_maintenance_window
   aws_rds_db_apply_immediately           = var.aws_rds_db_apply_immediately
   # Others
-  aws_ec2_security_group                 = try(module.ec2[0].aws_security_group_ec2_sg_id,"")
+  aws_ec2_security_group                 = var.aws_ec2_instance_create ? module.ec2[0].aws_security_group_ec2_sg_id : ""
   aws_selected_vpc_id                    = module.vpc.aws_selected_vpc_id
   aws_subnets_vpc_subnets_ids            = module.vpc.aws_selected_vpc_subnets
   aws_resource_identifier                = var.aws_resource_identifier
@@ -189,7 +189,7 @@ module "db_proxy_rds" {
   aws_db_proxy_cloudwatch_enable              = var.aws_db_proxy_cloudwatch_enable
   aws_db_proxy_cloudwatch_retention_days      = var.aws_db_proxy_cloudwatch_retention_days
   # Others
-  aws_ec2_security_group                      = try(module.ec2[0].aws_security_group_ec2_sg_id,"")
+  aws_ec2_security_group                      = var.aws_ec2_instance_create ? module.ec2[0].aws_security_group_ec2_sg_id : ""
   aws_selected_vpc_id                         = module.vpc.aws_selected_vpc_id
   aws_selected_subnets                        = module.vpc.aws_selected_vpc_subnets
   aws_resource_identifier                     = var.aws_resource_identifier
@@ -254,7 +254,7 @@ module "aurora_rds" {
   aws_aurora_db_ca_cert_identifier     = var.aws_aurora_db_ca_cert_identifier
   aws_aurora_db_maintenance_window     = var.aws_aurora_db_maintenance_window
   # Incoming
-  aws_ec2_security_group               = try(module.ec2[0].aws_security_group_ec2_sg_id,"")
+  aws_ec2_security_group               = var.aws_ec2_instance_create ? module.ec2[0].aws_security_group_ec2_sg_id : ""
   aws_selected_vpc_id                  = module.vpc.aws_selected_vpc_id
   aws_subnets_vpc_subnets_ids          = module.vpc.aws_selected_vpc_subnets
   aws_resource_identifier              = var.aws_resource_identifier
@@ -286,7 +286,7 @@ module "db_proxy_aurora" {
   aws_db_proxy_cloudwatch_enable              = var.aws_db_proxy_cloudwatch_enable
   aws_db_proxy_cloudwatch_retention_days      = var.aws_db_proxy_cloudwatch_retention_days
   # Others
-  aws_ec2_security_group                      = try(module.ec2[0].aws_security_group_ec2_sg_id,"")
+  aws_ec2_security_group                      = var.aws_ec2_instance_create ? module.ec2[0].aws_security_group_ec2_sg_id : ""
   aws_selected_vpc_id                         = module.vpc.aws_selected_vpc_id
   aws_selected_subnets                        = module.vpc.aws_selected_vpc_subnets
   aws_resource_identifier                     = var.aws_resource_identifier
@@ -320,7 +320,7 @@ module "db_proxy" {
   aws_db_proxy_cloudwatch_enable              = var.aws_db_proxy_cloudwatch_enable
   aws_db_proxy_cloudwatch_retention_days      = var.aws_db_proxy_cloudwatch_retention_days
   # Others
-  aws_ec2_security_group                      = try(module.ec2[0].aws_security_group_ec2_sg_id,"")
+  aws_ec2_security_group                      = var.aws_ec2_instance_create ? module.ec2[0].aws_security_group_ec2_sg_id : ""
   aws_selected_vpc_id                         = module.vpc.aws_selected_vpc_id
   aws_selected_subnets                        = module.vpc.aws_selected_vpc_subnets
   aws_resource_identifier                     = var.aws_resource_identifier
@@ -376,7 +376,7 @@ module "redis" {
   aws_redis_cloudwatch_retention_days = var.aws_redis_cloudwatch_retention_days
   aws_redis_single_line_url_secret    = var.aws_redis_single_line_url_secret
   # Others
-  aws_ec2_security_group              = try(module.ec2[0].aws_security_group_ec2_sg_id,"")
+  aws_ec2_security_group              = var.aws_ec2_instance_create ? module.ec2[0].aws_security_group_ec2_sg_id : ""
   aws_selected_vpc_id                 = module.vpc.aws_selected_vpc_id
   aws_selected_subnets                = module.vpc.aws_selected_vpc_subnets
   aws_resource_identifier             = var.aws_resource_identifier
