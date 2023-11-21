@@ -163,7 +163,7 @@ module "rds" {
   aws_resource_identifier                = var.aws_resource_identifier
   aws_resource_identifier_supershort     = var.aws_resource_identifier_supershort
   # Dependencies
-  depends_on = [module.vpc]
+  depends_on = [module.vpc,module.ec2]
 
   providers = {
     aws = aws.rds
@@ -196,7 +196,7 @@ module "db_proxy_rds" {
   aws_resource_identifier_supershort          = var.aws_resource_identifier_supershort
   incoming_random_string                      = module.rds[0].random_string
   # Dependencies
-  depends_on = [module.vpc,module.rds]
+  depends_on = [module.vpc,module.rds,module.ec2]
 
   providers = {
     aws = aws.db_proxy
@@ -260,7 +260,7 @@ module "aurora_rds" {
   aws_resource_identifier              = var.aws_resource_identifier
   aws_resource_identifier_supershort   = var.aws_resource_identifier_supershort
   # Dependencies
-  depends_on = [module.vpc]
+  depends_on = [module.vpc,module.ec2]
 
   providers = {
     aws = aws.aurora
@@ -293,7 +293,7 @@ module "db_proxy_aurora" {
   aws_resource_identifier_supershort          = var.aws_resource_identifier_supershort
   incoming_random_string                      = module.aurora_rds[0].random_string
   # Dependencies
-  depends_on = [module.vpc,module.aurora_rds]
+  depends_on = [module.vpc,module.aurora_rds,module.ec2]
 
   providers = {
     aws = aws.db_proxy
@@ -327,7 +327,7 @@ module "db_proxy" {
   aws_resource_identifier_supershort          = var.aws_resource_identifier_supershort
   incoming_random_string                      = null
   # Dependencies
-  depends_on = [module.vpc]
+  depends_on = [module.vpc,module.ec2]
 
   providers = {
     aws = aws.db_proxy
@@ -383,7 +383,7 @@ module "redis" {
   aws_resource_identifier_supershort  = var.aws_resource_identifier_supershort
 
   # Dependencies
-  depends_on = [module.vpc]
+  depends_on = [module.vpc,module.ec2]
 
   providers = {
     aws = aws.redis
