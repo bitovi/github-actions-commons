@@ -636,7 +636,7 @@ variable "aws_aurora_master_username" {
 
 variable "aws_aurora_database_group_family" {
   type        = string
-  description = "The family of the DB cluster parameter group. See https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/AuroraMySQL.Reference.html https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/AuroraPostgreSQL.Reference.html"
+  description = "The family of the DB parameter group. See https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/AuroraMySQL.Reference.html https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/AuroraPostgreSQL.Reference.html"
   default     = ""
 }
 

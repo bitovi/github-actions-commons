@@ -70,7 +70,7 @@ resource "aws_rds_cluster" "aurora" {
   master_username                     = var.aws_aurora_master_username
   master_password                     = sensitive(random_password.rds.result)
   iam_database_authentication_enabled = var.aws_aurora_iam_auth_enabled
-  iam_roles                           = [var.aws_aurora_iam_roles]
+  iam_roles                           = var.aws_aurora_iam_roles != "" ? [var.aws_aurora_iam_roles] : []
   #db_cluster_parameter_group_name     = var.aws_resource_identifier
   # Backup & Maint
   enabled_cloudwatch_logs_exports     = var.aws_aurora_cloudwatch_enable ? local.aws_aurora_cloudwatch_log_type : []
@@ -111,6 +111,14 @@ resource "aws_rds_cluster" "aurora" {
     ]
   }
 }
+
+#resource "aws_rds_cluster_role_association" "iam" {
+#  for_each = { for k, v in var.aws_aurora_iam_roles : k => v }
+#
+#  db_cluster_identifier = aws_rds_cluster.aurora.id
+#  feature_name          = each.value.feature_name
+#  role_arn              = each.value.role_arn
+#}
 
 resource "aws_rds_cluster_instance" "cluster_instance" {
   count                        = tonumber(var.aws_aurora_db_instances_count)
