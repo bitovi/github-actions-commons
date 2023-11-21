@@ -64,6 +64,7 @@ resource "aws_rds_cluster" "aurora" {
   storage_encrypted                   = var.aws_aurora_storage_encrypted
   kms_key_id                          = var.aws_aurora_kms_key_id 
   storage_type                        = var.aws_aurora_storage_type
+  iops                                = var.aws_aurora_storage_iops  
   # DB Details
   database_name                       = var.aws_aurora_database_name
   master_username                     = var.aws_aurora_master_username
@@ -84,7 +85,7 @@ resource "aws_rds_cluster" "aurora" {
   snapshot_identifier                 = var.aws_aurora_restore_snapshot_id
   # Net
   db_subnet_group_name                = aws_db_subnet_group.selected.id
-  db_cluster_instance_class           = var.aws_aurora_instance_class != "" ? var.aws_aurora_instance_class : null
+  db_cluster_instance_class           = var.aws_aurora_cluster_db_instance_class
   vpc_security_group_ids              = [aws_security_group.aurora_security_group.id]
   port                                = var.aws_aurora_database_port
 

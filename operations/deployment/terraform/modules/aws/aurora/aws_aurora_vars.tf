@@ -9,6 +9,7 @@ variable "aws_aurora_allocated_storage" {}
 variable "aws_aurora_storage_encrypted" {}
 variable "aws_aurora_kms_key_id" {}
 variable "aws_aurora_storage_type" {}
+variable "aws_aurora_storage_iops" {}
 # DB Details
 variable "aws_aurora_database_name" {}
 variable "aws_aurora_master_username" {}
@@ -16,7 +17,7 @@ variable "aws_aurora_database_group_family" {}
 variable "aws_aurora_iam_auth_enabled" {}
 variable "aws_aurora_iam_roles" {}
 # Net
-variable "aws_aurora_instance_class" {}
+variable "aws_aurora_cluster_db_instance_class" {}
 variable "aws_aurora_security_group_name" {}
 variable "aws_aurora_allowed_security_groups" {}
 variable "aws_aurora_subnets" {}

@@ -215,6 +215,7 @@ module "aurora_rds" {
   aws_aurora_storage_encrypted         = var.aws_aurora_storage_encrypted
   aws_aurora_kms_key_id                = var.aws_aurora_kms_key_id
   aws_aurora_storage_type              = var.aws_aurora_storage_type
+  aws_aurora_storage_iops              = var.aws_aurora_storage_iops
   # DB Details
   aws_aurora_database_name             = var.aws_aurora_database_name
   aws_aurora_master_username           = var.aws_aurora_master_username
@@ -222,7 +223,7 @@ module "aurora_rds" {
   aws_aurora_iam_auth_enabled          = var.aws_aurora_iam_auth_enabled
   aws_aurora_iam_roles                 = var.aws_aurora_iam_roles
   # Net
-  aws_aurora_instance_class            = var.aws_aurora_instance_class
+  aws_aurora_cluster_db_instance_class = var.aws_aurora_cluster_db_instance_class
   aws_aurora_security_group_name       = var.aws_aurora_security_group_name
   aws_aurora_allowed_security_groups   = var.aws_aurora_allowed_security_groups
   aws_aurora_subnets                   = var.aws_aurora_subnets

@@ -615,6 +615,12 @@ variable "aws_aurora_storage_type" {
   default     = ""
 }
 
+variable "aws_aurora_storage_iops" {
+  type        = string
+  description = "iops for storage"
+  default     = ""
+}
+
 # DB Details
 variable "aws_aurora_database_name" {
   type        = string
@@ -646,10 +652,10 @@ variable "aws_aurora_iam_roles" {
   default     = ""
 }
 
-variable "aws_aurora_instance_class" {
+variable "aws_aurora_cluster_db_instance_class" {
   type        = string
-  description = "The size of the db instances.  For more details, see: https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Concepts.DBInstanceClass.html, https://registry.terraform.io/modules/terraform-aws-modules/rds-aurora/aws/latest?tab=inputs"
-  default     = "db.t3.medium"
+  description = "To create a Multi-AZ RDS cluster, you must additionally specify the engine, storage_type, allocated_storage, iops and aws_aurora_db_cluster_instance_class attributes."
+  default     = ""
 }
 
 variable "aws_aurora_security_group_name" {
