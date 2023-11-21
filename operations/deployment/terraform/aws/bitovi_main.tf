@@ -139,7 +139,7 @@ module "rds" {
   aws_rds_db_engine_version              = var.aws_rds_db_engine_version
   aws_rds_db_ca_cert_identifier          = var.aws_rds_db_ca_cert_identifier
   aws_rds_db_security_group_name         = var.aws_rds_db_security_group_name
-  aws_rds_db_allowed_security_groups     = var.aws_rds_db_allowed_security_groups
+  aws_rds_db_allowed_security_groups     = var.aws_ec2_instance_create ? join(",",[var.aws_rds_db_allowed_security_groups,module.ec2[0].aws_security_group_ec2_sg_id]) : var.aws_rds_db_allowed_security_groups
   aws_rds_db_ingress_allow_all           = var.aws_rds_db_ingress_allow_all
   aws_rds_db_publicly_accessible         = var.aws_rds_db_publicly_accessible
   aws_rds_db_port                        = var.aws_rds_db_port
@@ -157,7 +157,7 @@ module "rds" {
   aws_rds_db_maintenance_window          = var.aws_rds_db_maintenance_window
   aws_rds_db_apply_immediately           = var.aws_rds_db_apply_immediately
   # Others
-  aws_ec2_security_group                 = var.aws_ec2_instance_create ? module.ec2[0].aws_security_group_ec2_sg_id : ""
+  #aws_ec2_security_group                 = var.aws_ec2_instance_create ? module.ec2[0].aws_security_group_ec2_sg_id : ""
   aws_selected_vpc_id                    = module.vpc.aws_selected_vpc_id
   aws_subnets_vpc_subnets_ids            = module.vpc.aws_selected_vpc_subnets
   aws_resource_identifier                = var.aws_resource_identifier
