@@ -14,11 +14,11 @@ AURORA_CLUSTER_ARN=${aws_rds_cluster.aurora.arn}
 # The RDS Cluster Identifier
 AURORA_CLUSTER_ID=${aws_rds_cluster.aurora.cluster_identifier}
 # The RDS Cluster Resource ID
-AURORA_CLUSTER_RESOURCE_ID=${aws_rds_cluster.aurora.id}
+AURORA_CLUSTER_RESOURCE_ID=${aws_rds_cluster.aurora.cluster_resource_id}
 # Writer endpoint for the cluster
 AURORA_CLUSTER_ENDPOINT=${aws_rds_cluster.aurora.endpoint}
 # A read-only endpoint for the cluster, automatically load-balanced across replicas
-AURORA_CLUSTER_READER_ENDPOINT=${aws_rds_cluster.aurora.endpoint}
+AURORA_CLUSTER_READER_ENDPOINT=${aws_rds_cluster.aurora.reader_endpoint}
 # The running version of the cluster database
 AURORA_CLUSTER_ENGINE_VERSION_ACTUAL=${aws_rds_cluster.aurora.engine_version_actual}
 # Name for an automatically created database on cluster creation
@@ -32,7 +32,7 @@ AURORA_CLUSTER_MASTER_PASSWORD=${aws_rds_cluster.aurora.master_password}
 # The database master username
 AURORA_CLUSTER_MASTER_USERNAME=${aws_rds_cluster.aurora.master_username}
 # The Route53 Hosted Zone ID of the endpoint
-AURORA_CLUSTER_HOSTED_ZONE_ID={aws_rds_cluster.aurora.availability_zones} #DISABLED
+AURORA_CLUSTER_HOSTED_ZONE_ID=${aws_rds_cluster.aurora.hosted_zone_id}
 # AURORA specific env vars
 DBA_ENGINE="${local.dba_engine}
 DBA_USER="${aws_rds_cluster.aurora.master_username}"

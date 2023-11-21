@@ -635,6 +635,7 @@ locals {
   elb_url              = try(module.aws_elb[0].aws_elb_dns_name,null ) != null ? "http://${module.aws_elb[0].aws_elb_dns_name}" : null
 }
 
+# EC2
 output "instance_public_dns" {
   description = "Public DNS address of the EC2 instance"
   value       = try(module.ec2[0].instance_public_dns,null)
@@ -670,12 +671,17 @@ output "application_public_dns" {
   value       = try(module.aws_route53[0].vm_url,null)
 }
 
+output "vm_url" {
+  value = try(module.aws_route53[0].vm_url,local.elb_url)
+}
+
+# Aurora
 output "aurora_endpoint" {
-  value = try(module.aurora_rds[0].db_endpoint,null)
+  value = try(module.aurora_rds[0].aurora_db_endpoint,null)
 }
 
 output "aurora_secret_details_name" {
-  value = try(module.aurora_rds[0].db_secret_name,null)
+  value = try(module.aurora_rds[0].aurora_secret_name,null)
 }
 
 output "db_proxy_aurora" {
@@ -686,10 +692,7 @@ output "db_proxy_secret_name_aurora" {
   value = try(module.db_proxy_aurora[0].db_proxy_secret_name,null)
 }
 
-output "vm_url" {
-  value = try(module.aws_route53[0].vm_url,local.elb_url)
-}
-
+# RDS
 output "db_endpoint" {
   value = try(module.rds[0].db_endpoint,null)
 }
@@ -702,6 +705,7 @@ output "db_proxy_rds" {
   value = try(module.db_proxy_rds[0].db_proxy_endpoint,null)
 }
 
+# Proxy
 output "db_proxy_secret_name_rds" {
   value = try(module.db_proxy_rds[0].db_proxy_secret_name,null)
 }
@@ -714,6 +718,7 @@ output "db_proxy_secret_name" {
   value = try(module.db_proxy[0].db_proxy_secret_name,null)
 }
 
+# ECS
 output "ecs_dns_record" {
   value = try(module.aws_route53_ecs[0].vm_url,null)
 }
@@ -722,6 +727,7 @@ output "ecs_load_balancer_dns" {
   value = try(module.aws_ecs[0].load_balancer_dns,null)
 }
 
+# Redis
 output "redis_secret_name" {
   value = try(module.redis[0].redis_secret_name,null)
 }

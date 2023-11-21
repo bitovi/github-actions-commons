@@ -112,14 +112,6 @@ resource "aws_rds_cluster" "aurora" {
   }
 }
 
-#resource "aws_rds_cluster_role_association" "iam" {
-#  for_each = { for k, v in var.aws_aurora_iam_roles : k => v }
-#
-#  db_cluster_identifier = aws_rds_cluster.aurora.id
-#  feature_name          = each.value.feature_name
-#  role_arn              = each.value.role_arn
-#}
-
 resource "aws_rds_cluster_instance" "cluster_instance" {
   count                        = tonumber(var.aws_aurora_db_instances_count)
   identifier                   = "${aws_rds_cluster.aurora.cluster_identifier}-${count.index}"
@@ -180,21 +172,6 @@ resource "random_password" "rds" {
 }
 
 // Creates a secret manager secret for the databse credentials
-#resource "aws_secretsmanager_secret" "database_credentials" {
-#   name   = "${var.aws_resource_identifier_supershort}-ec2db-pub-${random_string.random_sm.result}"
-#}
-# 
-#resource "aws_secretsmanager_secret_version" "database_credentials_sm_secret_version" {
-#  secret_id = aws_secretsmanager_secret.database_credentials.id
-#  secret_string = <<EOF
-#   {
-#    "key": "database_password",
-#    "value": "${sensitive(random_password.rds.result)}"
-#   }
-#EOF
-#}
-
-// Creates a secret manager secret for the databse credentials
 resource "aws_secretsmanager_secret" "aurora_database_credentials" {
   name   = "${var.aws_resource_identifier_supershort}-aurora-${random_string.random_sm.result}"
 }
@@ -203,6 +180,7 @@ resource "aws_secretsmanager_secret" "aurora_database_credentials" {
 resource "aws_secretsmanager_secret_version" "database_credentials_sm_secret_version_dev" {
   secret_id = aws_secretsmanager_secret.aurora_database_credentials.id
   secret_string = jsonencode({
+   database_password = sensitive(aws_rds_cluster.aurora.master_password)
    username          = sensitive(aws_rds_cluster.aurora.master_username)
    password          = sensitive(aws_rds_cluster.aurora.master_password)
    host              = sensitive(aws_rds_cluster.aurora.endpoint)
