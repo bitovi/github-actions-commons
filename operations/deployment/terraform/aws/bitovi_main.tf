@@ -224,7 +224,7 @@ module "aurora_rds" {
   aws_aurora_iam_roles                 = var.aws_aurora_iam_roles
   # Net
   aws_aurora_cluster_db_instance_class = var.aws_aurora_cluster_db_instance_class
-  aws_aurora_security_group_name       = join(",",[var.aws_aurora_security_group_name,try(module.ec2[0].aws_security_group_ec2_sg_id,null)])
+  aws_aurora_security_group_name       = join(",",[var.aws_aurora_security_group_name,try(module.ec2[0].aws_security_group_ec2_sg_id,"")])
   aws_aurora_allowed_security_groups   = var.aws_aurora_allowed_security_groups
   aws_aurora_ingress_allow_all         = var.aws_aurora_ingress_allow_all
   aws_aurora_subnets                   = var.aws_aurora_subnets
