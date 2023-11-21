@@ -664,6 +664,12 @@ variable "aws_aurora_security_group_name" {
   default     = ""
 }
 
+variable "aws_aurora_ingress_allow_all" {
+  type        = bool
+  description = "Allow access from 0.0.0.0/0 in the same VPC"
+  default     = true
+}
+
 variable "aws_aurora_allowed_security_groups" {
   type        = string
   description = "Name of the security groups to access Aurora"

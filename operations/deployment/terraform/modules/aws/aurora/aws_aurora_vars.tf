@@ -20,6 +20,7 @@ variable "aws_aurora_iam_roles" {}
 variable "aws_aurora_cluster_db_instance_class" {}
 variable "aws_aurora_security_group_name" {}
 variable "aws_aurora_allowed_security_groups" {}
+variable "aws_aurora_ingress_allow_all" {}
 variable "aws_aurora_subnets" {}
 variable "aws_aurora_database_port" {}
 variable "aws_aurora_db_publicly_accessible" {}

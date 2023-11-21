@@ -14,6 +14,7 @@ resource "aws_security_group" "aurora_security_group" {
 }
 
 resource "aws_security_group_rule" "ingress_aurora" {
+  count             = var.aws_aurora_ingress_allow_all ? 1 : 0
   type              = "ingress"
   description       = "${var.aws_resource_identifier} - Aurora Port"
   from_port         = tonumber(var.aws_aurora_database_port)
