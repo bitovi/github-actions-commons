@@ -771,7 +771,7 @@ variable "aws_aurora_snapshot_overwrite" {
 variable "aws_aurora_db_instances_count" {
   type        = string
   description = "Amount of instances to create"
-  default     = ""
+  default     = "1"
 }
 
 variable "aws_aurora_db_instance_class" {

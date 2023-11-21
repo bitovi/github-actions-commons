@@ -67,6 +67,7 @@ resource "aws_rds_cluster" "aurora" {
   # DB Details
   database_name                       = var.aws_aurora_database_name
   master_username                     = var.aws_aurora_master_username
+  master_password                     = sensitive(random_password.rds.result)
   iam_database_authentication_enabled = var.aws_aurora_iam_auth_enabled
   iam_roles                           = [var.aws_aurora_iam_roles]
   db_cluster_parameter_group_name     = var.aws_resource_identifier
