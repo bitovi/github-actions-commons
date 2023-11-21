@@ -643,7 +643,7 @@ variable "aws_aurora_iam_auth_enabled" {
 variable "aws_aurora_iam_roles" {
   type        = string
   description = "Define the ARN list of allowed roles"
-  default     = ""
+  default     = null
 }
 
 variable "aws_aurora_instance_class" {
