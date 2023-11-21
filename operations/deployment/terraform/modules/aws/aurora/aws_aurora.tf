@@ -71,7 +71,7 @@ resource "aws_rds_cluster" "aurora" {
   master_password                     = sensitive(random_password.rds.result)
   iam_database_authentication_enabled = var.aws_aurora_iam_auth_enabled
   iam_roles                           = [var.aws_aurora_iam_roles]
-  db_cluster_parameter_group_name     = var.aws_resource_identifier
+  #db_cluster_parameter_group_name     = var.aws_resource_identifier
   # Backup & Maint
   enabled_cloudwatch_logs_exports     = var.aws_aurora_cloudwatch_enable ? local.aws_aurora_cloudwatch_log_type : []
   backtrack_window                    = var.aws_aurora_backtrack_window # 0 
@@ -130,9 +130,7 @@ resource "aws_rds_cluster_parameter_group" "mysql" {
   count       = var.aws_aurora_engine == "aurora-mysql" ? 1 : 0
   name        = var.aws_resource_identifier
   description = "${var.aws_resource_identifier} cluster parameter group"
-  family      = "aurora-mysql${regex("([0-9]+\\.[0-9]+)", aws_rds_cluster.aurora.engine_version_actual)}"
-  #family      = var.aws_aurora_engine == "aurora-mysql" ? "aurora-mysql5.7" 
-  #family      = "${aws_rds_cluster.aurora.engine_version_actual}${aws_rds_cluster.aurora.engine}"
+  family      = var.aws_aurora_database_group_family != "" ? var.aws_aurora_database_group_family : "aurora-mysql8.0"
 
   parameter {
       name         = "require_secure_transport"
@@ -149,8 +147,7 @@ resource "aws_rds_cluster_parameter_group" "postgresql" {
   count       = var.aws_aurora_engine == "aurora-postgresql" ? 1 : 0
   name        = var.aws_resource_identifier
   description = "${var.aws_resource_identifier} cluster parameter group"
-  family      = "aurora-postgresql${regex("([0-9]+\\.[0-9]+)", aws_rds_cluster.aurora.engine_version_actual)}"
-  #family      = var.aws_aurora_database_group_family
+  family      = var.aws_aurora_database_group_family != "" ? var.aws_aurora_database_group_family : "aurora-postgresql15"
 
   parameter {
     name         = "log_min_duration_statement"
