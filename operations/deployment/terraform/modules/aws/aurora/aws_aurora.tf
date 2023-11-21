@@ -64,7 +64,7 @@ resource "aws_rds_cluster" "aurora" {
   storage_encrypted                   = var.aws_aurora_storage_encrypted
   kms_key_id                          = var.aws_aurora_kms_key_id 
   storage_type                        = var.aws_aurora_storage_type
-  iops                                = var.aws_aurora_storage_iops  
+  iops                                = try(tonumber(var.aws_aurora_storage_iops),null)
   # DB Details
   database_name                       = var.aws_aurora_database_name
   master_username                     = var.aws_aurora_master_username
