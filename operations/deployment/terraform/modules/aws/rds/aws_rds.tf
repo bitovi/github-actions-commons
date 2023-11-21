@@ -39,6 +39,17 @@ resource "aws_security_group_rule" "ingress_rds_extras" {
   security_group_id        = aws_security_group.rds_db_security_group.id
 }
 
+resource "aws_security_group_rule" "ingress_ec2" {
+  count                    = var.aws_ec2_security_group != "" ? 1 : 0
+  type                     = "ingress"
+  description              = "${var.aws_resource_identifier} - EC2 Incoming"
+  from_port                = tonumber(aws_db_instance.default.port)
+  to_port                  = tonumber(aws_db_instance.default.port)
+  protocol                 = "tcp"
+  source_security_group_id = var.aws_ec2_security_group
+  security_group_id        = aws_security_group.rds_db_security_group.id
+}
+
 locals {
   aws_rds_db_subnets = var.aws_rds_db_subnets  != null ? [for n in split(",", var.aws_rds_db_subnets)  : (n)] :  var.aws_subnets_vpc_subnets_ids
   skip_snap = length(var.aws_rds_db_final_snapshot) != "" ? false : true

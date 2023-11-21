@@ -178,6 +178,18 @@ resource "aws_security_group_rule" "sg_rds_proxy_extras" {
   security_group_id        = aws_security_group.sg_rds_proxy.id
 }
 
+# Proxy SG incoming from EC2
+resource "aws_security_group_rule" "ingress_ec2" {
+  count                    = var.aws_ec2_security_group != "" ? 1 : 0
+  type                     = "ingress"
+  description              = "${var.aws_resource_identifier} - EC2 Incoming"
+  from_port                = local.db_port
+  to_port                  = local.db_port
+  protocol                 = "tcp"
+  source_security_group_id = var.aws_ec2_security_group
+  security_group_id        = aws_security_group.sg_rds_proxy.id
+}
+
 # Proxy SG incoming from 0.0.0.0
 resource "aws_security_group_rule" "sg_rds_proxy_outside" {
   count                    = var.aws_db_proxy_allow_all_incoming ? 1 : 0

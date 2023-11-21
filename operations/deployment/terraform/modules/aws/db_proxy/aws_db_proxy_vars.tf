@@ -12,6 +12,7 @@ variable aws_db_proxy_allowed_security_group {}
 variable aws_db_proxy_allow_all_incoming {}
 variable aws_db_proxy_cloudwatch_enable {} 
 variable aws_db_proxy_cloudwatch_retention_days {}
+variable aws_ec2_security_group {}
 variable aws_selected_vpc_id {}
 variable aws_selected_subnets {}
 variable aws_resource_identifier {}
