@@ -60,7 +60,7 @@ resource "aws_rds_cluster" "aurora" {
   engine_mode                         = var.aws_aurora_engine_mode
   apply_immediately                   = var.aws_aurora_cluster_apply_immediately
   # Storage
-  allocated_storage                   = tonumber(var.aws_aurora_allocated_storage)
+  allocated_storage                   = try(tonumber(var.aws_aurora_allocated_storage),null)
   storage_encrypted                   = var.aws_aurora_storage_encrypted
   kms_key_id                          = var.aws_aurora_kms_key_id 
   storage_type                        = var.aws_aurora_storage_type
@@ -68,10 +68,10 @@ resource "aws_rds_cluster" "aurora" {
   database_name                       = var.aws_aurora_database_name
   master_username                     = var.aws_aurora_master_username
   iam_database_authentication_enabled = var.aws_aurora_iam_auth_enabled
-  iam_roles                           = var.aws_aurora_iam_roles
+  iam_roles                           = try(var.aws_aurora_iam_roles,null)
   db_cluster_parameter_group_name     = var.aws_resource_identifier
   # Backup & Maint
-  enabled_cloudwatch_logs_exports     = var.aws_aurora_cloudwatch_enable
+  enabled_cloudwatch_logs_exports     = var.aws_aurora_cloudwatch_enable ? local.aws_aurora_cloudwatch_log_type : []
   backtrack_window                    = var.aws_aurora_backtrack_window # 0 
   backup_retention_period             = var.aws_aurora_backup_retention_period # 5
   preferred_backup_window             = var.aws_aurora_backup_window #"04:00-06:00"
