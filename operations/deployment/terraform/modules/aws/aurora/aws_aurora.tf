@@ -152,9 +152,9 @@ resource "aws_rds_cluster_parameter_group" "mysql" {
       apply_method = "immediate"
   }
 
-  #lifecycle {
-  #  create_before_destroy = true
-  #}
+  lifecycle {
+    create_before_destroy = true
+  }
 }
 
 resource "aws_rds_cluster_parameter_group" "postgresql" {
@@ -175,9 +175,9 @@ resource "aws_rds_cluster_parameter_group" "postgresql" {
     apply_method = "immediate"
   }
 
-  #lifecycle {
-  #  create_before_destroy = true
-  #}
+  lifecycle {
+    create_before_destroy = true
+  }
 }
 
 resource "random_password" "rds" {
