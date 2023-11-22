@@ -220,9 +220,9 @@ resource "aws_db_cluster_snapshot" "db_snapshot" {
   count                          = var.aws_aurora_snapshot_name != "" ? ( var.aws_aurora_snapshot_overwrite ? 0 : 1 ) : 0 
   db_cluster_identifier          = aws_rds_cluster.aurora.cluster_identifier
   db_cluster_snapshot_identifier = var.aws_aurora_snapshot_name
-  #lifecycle {
-  #  ignore_changes = all
-  #}
+  lifecycle {
+    ignore_changes = all
+  }
 }
 
 resource "aws_db_cluster_snapshot" "overwrite_db_snapshot" {
