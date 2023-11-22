@@ -122,6 +122,7 @@ resource "aws_rds_cluster" "aurora" {
       # See docs here https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/rds_global_cluster#new-global-cluster-from-existing-db-cluster
       global_cluster_identifier,
       snapshot_identifier,
+      availability_zones
     ]
   }
 }
