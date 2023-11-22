@@ -130,6 +130,11 @@ resource "aws_rds_cluster_instance" "cluster_instance" {
   preferred_maintenance_window = var.aws_aurora_db_maintenance_window
 }
 
+resource "time_sleep" "wait_before_deletion" {
+  depends_on = [aws_rds_cluster.aurora]
+  create_duration = "5s" 
+}
+
 resource "aws_rds_cluster_parameter_group" "mysql" {
   count       = strcontains(var.aws_aurora_engine, "mysql") ? 1 : 0
   name        = var.aws_resource_identifier
@@ -142,6 +147,7 @@ resource "aws_rds_cluster_parameter_group" "mysql" {
       apply_method = "immediate"
   }
 
+  depends_on = [ time_sleep.wait_before_deletion ]
   #lifecycle {
   #  create_before_destroy = true
   #}
@@ -164,6 +170,8 @@ resource "aws_rds_cluster_parameter_group" "postgresql" {
     value        = 1
     apply_method = "immediate"
   }
+
+  depends_on = [ time_sleep.wait_before_deletion ]
 
   #lifecycle {
   #  create_before_destroy = true
