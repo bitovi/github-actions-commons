@@ -128,10 +128,6 @@ resource "aws_rds_cluster_instance" "cluster_instance" {
   apply_immediately            = var.aws_aurora_db_apply_immediately
   ca_cert_identifier           = var.aws_aurora_db_ca_cert_identifier
   preferred_maintenance_window = var.aws_aurora_db_maintenance_window
-
-  lifecycle {
-    prevent_destroy = var.aws_aurora_deletion_protection ? true : false
-  }
 }
 
 resource "aws_rds_cluster_parameter_group" "mysql" {
