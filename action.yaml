@@ -488,7 +488,7 @@ inputs:
     description: 'Set the name to Generate a snapshot of the database before deletion.'
     required: false
   aws_aurora_deletion_protection:
-    description: 'Protects the database from deletion. Defaults to false. This won't prevent Terraform from destroying it.'
+    description: 'Protects the database from deletion. Defaults to false. This wont prevent Terraform from destroying it.'
     required: false
   aws_aurora_delete_auto_backups:
     description: 'Specifies whether to remove automated backups immediately after the DB cluster is deleted. Default is true.'
