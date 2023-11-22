@@ -129,11 +129,8 @@ resource "aws_rds_cluster_instance" "cluster_instance" {
   ca_cert_identifier           = var.aws_aurora_db_ca_cert_identifier
   preferred_maintenance_window = var.aws_aurora_db_maintenance_window
 
-  dynamic "lifecycle" {
-    for_each = var.aws_aurora_deletion_protection ? [1] : []  # Use a non-empty list for dynamic block to work
-    content {
-      prevent_destroy = true
-    }
+  lifecycle {
+    prevent_destroy = var.aws_aurora_deletion_protection ? true : false
   }
 }
 
