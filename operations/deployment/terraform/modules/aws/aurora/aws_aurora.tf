@@ -70,6 +70,7 @@ resource "aws_rds_cluster" "aurora" {
   engine                              = var.aws_aurora_engine
   engine_version                      = var.aws_aurora_engine_version
   engine_mode                         = var.aws_aurora_engine_mode != "" ? var.aws_aurora_engine_mode : null
+  availability_zones                  = var.aws_aurora_availability_zones
   apply_immediately                   = var.aws_aurora_cluster_apply_immediately
   # Storage
   allocated_storage                   = try(tonumber(var.aws_aurora_allocated_storage),null)

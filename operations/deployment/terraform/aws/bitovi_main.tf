@@ -211,6 +211,7 @@ module "aurora_rds" {
   aws_aurora_engine                    = var.aws_aurora_engine
   aws_aurora_engine_version            = var.aws_aurora_engine_version
   aws_aurora_engine_mode               = var.aws_aurora_engine_mode
+  aws_aurora_availability_zones        = var.aws_aurora_availability_zones
   aws_aurora_cluster_apply_immediately = var.aws_aurora_cluster_apply_immediately
   # Storage 
   aws_aurora_allocated_storage         = var.aws_aurora_allocated_storage

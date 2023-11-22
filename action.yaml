@@ -406,6 +406,9 @@ inputs:
   aws_aurora_engine_mode:
     description: 'Database engine mode. Could be global, multimaster, parallelquey, provisioned, serverless.'
     required: false
+  aws_aurora_availability_zones:
+    description: 'List of availability zones for the DB cluster storage where DB cluster instances can be created.'
+    required: false
   aws_aurora_cluster_apply_immediately:
     description: 'Apply changes immediately to the cluster. If not, will be done in next maintenance window.. Default false'
     required: false
@@ -1162,6 +1165,7 @@ runs:
         AWS_AURORA_ENGINE: ${{ inputs.aws_aurora_engine }}
         AWS_AURORA_ENGINE_VERSION: ${{ inputs.aws_aurora_engine_version }}
         AWS_AURORA_ENGINE_MODE: ${{ inputs.aws_aurora_engine_mode }}
+        AWS_AURORA_AVAILABILITY_ZONES: ${{ inputs.aws_aurora_availability_zones }}
         AWS_AURORA_CLUSTER_APPLY_IMMEDIATELY: ${{ inputs.aws_aurora_cluster_apply_immediately }}
         AWS_AURORA_ALLOCATED_STORAGE: ${{ inputs.aws_aurora_allocated_storage }}
         AWS_AURORA_STORAGE_ENCRYPTED: ${{ inputs.aws_aurora_storage_encrypted }}

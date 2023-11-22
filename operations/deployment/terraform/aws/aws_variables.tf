@@ -584,6 +584,12 @@ variable "aws_aurora_engine_mode" {
   default     = ""
 }
 
+variable "aws_aurora_availability_zones" {
+  type        = string
+  description = "List of availability zones for the DB cluster storage where DB cluster instances can be created."
+  default     = ""
+}
+
 variable "aws_aurora_cluster_apply_immediately" {
   type        = bool
   description = "Apply changes immediately to the cluster. If not, will be done in next maintenance window."

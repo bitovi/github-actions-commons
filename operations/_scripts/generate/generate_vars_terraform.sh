@@ -197,6 +197,7 @@ if [[ $(alpha_only "$AWS_AURORA_ENABLE") == true ]]; then
   aws_aurora_engine=$(generate_var aws_aurora_engine $AWS_AURORA_ENGINE)
   aws_aurora_engine_version=$(generate_var aws_aurora_engine_version $AWS_AURORA_ENGINE_VERSION)
   aws_aurora_engine_mode=$(generate_var aws_aurora_engine_mode $AWS_AURORA_ENGINE_MODE)
+  aws_aurora_availability_zones=$(generate_var aws_aurora_availability_zones $AWS_AURORA_AVAILABILITY_ZONES)
   aws_aurora_cluster_apply_immediately=$(generate_var aws_aurora_cluster_apply_immediately $AWS_AURORA_CLUSTER_APPLY_IMMEDIATELY)
   aws_aurora_allocated_storage=$(generate_var aws_aurora_allocated_storage $AWS_AURORA_ALLOCATED_STORAGE)
   aws_aurora_storage_encrypted=$(generate_var aws_aurora_storage_encrypted $AWS_AURORA_STORAGE_ENCRYPTED)
@@ -525,6 +526,7 @@ $aws_aurora_cluster_name
 $aws_aurora_engine
 $aws_aurora_engine_version
 $aws_aurora_engine_mode
+$aws_aurora_availability_zones
 $aws_aurora_cluster_apply_immediately
 $aws_aurora_allocated_storage
 $aws_aurora_storage_encrypted

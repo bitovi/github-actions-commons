@@ -3,6 +3,7 @@ variable "aws_aurora_cluster_name" {}
 variable "aws_aurora_engine" {}
 variable "aws_aurora_engine_version" {}
 variable "aws_aurora_engine_mode" {}
+variable "aws_aurora_availability_zones" {}
 variable "aws_aurora_cluster_apply_immediately" {}
 # Storage 
 variable "aws_aurora_allocated_storage" {}
