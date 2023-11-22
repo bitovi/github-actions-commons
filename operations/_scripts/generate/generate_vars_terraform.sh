@@ -193,20 +193,47 @@ fi
 if [[ $(alpha_only "$AWS_AURORA_ENABLE") == true ]]; then
   aws_aurora_enable=$(generate_var aws_aurora_enable $AWS_AURORA_ENABLE)
   aws_aurora_proxy=$(generate_var aws_aurora_proxy $AWS_AURORA_PROXY)
+  aws_aurora_cluster_name=$(generate_var aws_aurora_cluster_name $AWS_AURORA_CLUSTER_NAME)
   aws_aurora_engine=$(generate_var aws_aurora_engine $AWS_AURORA_ENGINE)
   aws_aurora_engine_version=$(generate_var aws_aurora_engine_version $AWS_AURORA_ENGINE_VERSION)
-  aws_aurora_database_group_family=$(generate_var aws_aurora_database_group_family $AWS_AURORA_DATABASE_GROUP_FAMILY)
-  aws_aurora_instance_class=$(generate_var aws_aurora_instance_class $AWS_AURORA_INSTANCE_CLASS)
-  aws_aurora_security_group_name=$(generate_var aws_aurora_security_group_name $AWS_AURORA_SECURITY_GROUP_NAME )
-  aws_aurora_subnets=$(generate_var aws_aurora_subnets $AWS_AURORA_SUBNETS)
-  aws_aurora_cluster_name=$(generate_var aws_aurora_cluster_name $AWS_AURORA_CLUSTER_NAME)
+  aws_aurora_engine_mode=$(generate_var aws_aurora_engine_mode $AWS_AURORA_ENGINE_MODE)
+  aws_aurora_cluster_apply_immediately=$(generate_var aws_aurora_cluster_apply_immediately $AWS_AURORA_CLUSTER_APPLY_IMMEDIATELY)
+  aws_aurora_allocated_storage=$(generate_var aws_aurora_allocated_storage $AWS_AURORA_ALLOCATED_STORAGE)
+  aws_aurora_storage_encrypted=$(generate_var aws_aurora_storage_encrypted $AWS_AURORA_STORAGE_ENCRYPTED)
+  aws_aurora_kms_key_id=$(generate_var aws_aurora_kms_key_id $AWS_AURORA_KMS_KEY_ID)
+  aws_aurora_storage_type=$(generate_var aws_aurora_storage_type $AWS_AURORA_STORAGE_TYPE)
+  aws_aurora_storage_iops=$(generate_var aws_aurora_storage_iops $AWS_AURORA_STORAGE_IOPS)
   aws_aurora_database_name=$(generate_var aws_aurora_database_name $AWS_AURORA_DATABASE_NAME)
+  aws_aurora_master_username=$(generate_var aws_aurora_master_username $AWS_AURORA_MASTER_USERNAME)
+  aws_aurora_database_group_family=$(generate_var aws_aurora_database_group_family $AWS_AURORA_DATABASE_GROUP_FAMILY)
+  aws_aurora_iam_auth_enabled=$(generate_var aws_aurora_iam_auth_enabled $AWS_AURORA_IAM_AUTH_ENABLED)
+  aws_aurora_iam_roles=$(generate_var aws_aurora_iam_roles $AWS_AURORA_IAM_ROLES)
+  aws_aurora_cluster_db_instance_class=$(generate_var aws_aurora_cluster_db_instance_class $AWS_AURORA_CLUSTER_DB_INSTANCE_CLASS)
+  aws_aurora_security_group_name=$(generate_var aws_aurora_security_group_name $AWS_AURORA_SECURITY_GROUP_NAME)
+  aws_aurora_ingress_allow_all=$(generate_var aws_aurora_ingress_allow_all $AWS_AURORA_INGRESS_ALLOW_ALL)
+  aws_aurora_allowed_security_groups=$(generate_var aws_aurora_allowed_security_groups $AWS_AURORA_ALLOWED_SECURITY_GROUPS)
+  aws_aurora_db_publicly_accessible=$(generate_var aws_aurora_db_publicly_accessible $AWS_AURORA_DB_PUBLICLY_ACCESSIBLE)
+  aws_aurora_subnets=$(generate_var aws_aurora_subnets $AWS_AURORA_SUBNETS)
   aws_aurora_database_port=$(generate_var aws_aurora_database_port $AWS_AURORA_DATABASE_PORT)
-  aws_aurora_restore_snapshot=$(generate_var aws_aurora_restore_snapshot $AWS_AURORA_RESTORE_SNAPSHOT)
+  aws_aurora_cloudwatch_enable=$(generate_var aws_aurora_cloudwatch_enable $AWS_AURORA_CLOUDWATCH_enable)
+  aws_aurora_cloudwatch_log_type=$(generate_var aws_aurora_cloudwatch_log_type $AWS_AURORA_CLOUDWATCH_log_type)
+  aws_aurora_cloudwatch_retention_days=$(generate_var aws_aurora_cloudwatch_retention_days $AWS_AURORA_CLOUDWATCH_retention_days)
+  aws_aurora_backtrack_window=$(generate_var aws_aurora_backtrack_window $AWS_AURORA_BACKTRACK_WINDOW)
+  aws_aurora_backup_retention_period=$(generate_var aws_aurora_backup_retention_period $AWS_AURORA_BACKUP_RETENTION_PERIOD)
+  aws_aurora_backup_window=$(generate_var aws_aurora_backup_window $AWS_AURORA_BACKUP_WINDOW)
+  aws_aurora_maintenance_window=$(generate_var aws_aurora_maintenance_window $AWS_AURORA_MAINTENANCE_WINDOW)
+  aws_aurora_database_final_snapshot=$(generate_var aws_aurora_database_final_snapshot $AWS_AURORA_DATABASE_FINAL_SNAPSHOT)
+  aws_aurora_deletion_protection=$(generate_var aws_aurora_deletion_protection $AWS_AURORA_DELETION_PROTECTION)
+  aws_aurora_delete_auto_backups=$(generate_var aws_aurora_delete_auto_backups $AWS_AURORA_DELETE_AUTO_BACKUPS)
+  aws_aurora_restore_snapshot_id=$(generate_var aws_aurora_restore_snapshot_id $AWS_AURORA_RESTORE_SNAPSHOT_ID)
+  aws_aurora_restore_to_point_in_time=$(generate_var aws_aurora_restore_to_point_in_time $AWS_AURORA_RESTORE_TO_POINT_IN_TIME)
   aws_aurora_snapshot_name=$(generate_var aws_aurora_snapshot_name $AWS_AURORA_SNAPSHOT_NAME)
   aws_aurora_snapshot_overwrite=$(generate_var aws_aurora_snapshot_overwrite $AWS_AURORA_SNAPSHOT_OVERWRITE)
-  aws_aurora_database_protection=$(generate_var aws_aurora_database_protection $AWS_AURORA_DATABASE_PROTECTION )
-  # aws_aurora_database_final_snapshot=$(generate_var aws_aurora_database_final_snapshot $AWS_AURORA_DATABASE_FINAL_SNAPSHOT ) - Special case
+  aws_aurora_db_instances_count=$(generate_var aws_aurora_db_instances_count $AWS_AURORA_DB_INSTANCES_COUNT)
+  aws_aurora_db_instance_class=$(generate_var aws_aurora_db_instance_class $AWS_AURORA_DB_INSTANCE_CLASS)
+  aws_aurora_db_apply_immediately=$(generate_var aws_aurora_db_apply_immediately $AWS_AURORA_DB_APPLY_IMMEDIATELY)
+  aws_aurora_db_ca_cert_identifier=$(generate_var aws_aurora_db_ca_cert_identifier $AWS_AURORA_DB_CA_CERT_IDENTIFIER)
+  aws_aurora_db_maintenance_window=$(generate_var aws_aurora_db_maintenance_window $AWS_AURORA_DB_MAINTENANCE_WINDOW)
   aws_aurora_additional_tags=$(generate_var aws_aurora_additional_tags $AWS_AURORA_ADDITIONAL_TAGS)
 fi
 
@@ -494,20 +521,47 @@ $aws_rds_db_additional_tags
 #-- AURORA --#
 $aws_aurora_enable
 $aws_aurora_proxy
+$aws_aurora_cluster_name
 $aws_aurora_engine
 $aws_aurora_engine_version
-$aws_aurora_database_group_family
-$aws_aurora_instance_class
-$aws_aurora_security_group_name
-$aws_aurora_subnets
-$aws_aurora_cluster_name
+$aws_aurora_engine_mode
+$aws_aurora_cluster_apply_immediately
+$aws_aurora_allocated_storage
+$aws_aurora_storage_encrypted
+$aws_aurora_kms_key_id
+$aws_aurora_storage_type
+$aws_aurora_storage_iops
 $aws_aurora_database_name
+$aws_aurora_master_username
+$aws_aurora_database_group_family
+$aws_aurora_iam_auth_enabled
+$aws_aurora_iam_roles
+$aws_aurora_cluster_db_instance_class
+$aws_aurora_security_group_name
+$aws_aurora_ingress_allow_all
+$aws_aurora_allowed_security_groups
+$aws_aurora_db_publicly_accessible
+$aws_aurora_subnets
 $aws_aurora_database_port
-$aws_aurora_restore_snapshot
+$aws_aurora_cloudwatch_enable
+$aws_aurora_cloudwatch_log_type
+$aws_aurora_cloudwatch_retention_days
+$aws_aurora_backtrack_window
+$aws_aurora_backup_retention_period
+$aws_aurora_backup_window
+$aws_aurora_maintenance_window
+$aws_aurora_database_final_snapshot
+$aws_aurora_deletion_protection
+$aws_aurora_delete_auto_backups
+$aws_aurora_restore_snapshot_id
+$aws_aurora_restore_to_point_in_time
 $aws_aurora_snapshot_name
 $aws_aurora_snapshot_overwrite
-$aws_aurora_database_protection
-$aws_aurora_database_final_snapshot
+$aws_aurora_db_instances_count
+$aws_aurora_db_instance_class
+$aws_aurora_db_apply_immediately
+$aws_aurora_db_ca_cert_identifier
+$aws_aurora_db_maintenance_window
 $aws_aurora_additional_tags
 
 #-- DB PROXY --#

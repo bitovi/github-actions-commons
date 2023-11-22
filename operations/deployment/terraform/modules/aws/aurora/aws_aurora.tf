@@ -67,7 +67,7 @@ resource "aws_db_subnet_group" "selected" {
 resource "aws_rds_cluster" "aurora" {
   # DB Parameters
   cluster_identifier                  = var.aws_aurora_cluster_name != "" ? var.aws_aurora_cluster_name : var.aws_resource_identifier
-  engine                              = var.aws_aurora_engine # "aurora-postgresql"
+  engine                              = var.aws_aurora_engine
   engine_version                      = var.aws_aurora_engine_version
   engine_mode                         = var.aws_aurora_engine_mode != "" ? var.aws_aurora_engine_mode : null
   apply_immediately                   = var.aws_aurora_cluster_apply_immediately
@@ -83,12 +83,12 @@ resource "aws_rds_cluster" "aurora" {
   master_password                     = sensitive(random_password.rds.result)
   iam_database_authentication_enabled = var.aws_aurora_iam_auth_enabled
   iam_roles                           = var.aws_aurora_iam_roles != "" ? [var.aws_aurora_iam_roles] : []
-  #db_cluster_parameter_group_name     = var.aws_resource_identifier
+  db_cluster_parameter_group_name     = var.aws_resource_identifier
   # Backup & Maint
   enabled_cloudwatch_logs_exports     = var.aws_aurora_cloudwatch_enable ? local.aws_aurora_cloudwatch_log_type : []
-  backtrack_window                    = var.aws_aurora_backtrack_window # 0 
-  backup_retention_period             = var.aws_aurora_backup_retention_period # 5
-  preferred_backup_window             = var.aws_aurora_backup_window #"04:00-06:00"
+  backtrack_window                    = var.aws_aurora_backtrack_window 
+  backup_retention_period             = var.aws_aurora_backup_retention_period
+  preferred_backup_window             = var.aws_aurora_backup_window
   preferred_maintenance_window        = var.aws_aurora_maintenance_window
   deletion_protection                 = var.aws_aurora_deletion_protection
   delete_automated_backups            = var.aws_aurora_delete_auto_backups

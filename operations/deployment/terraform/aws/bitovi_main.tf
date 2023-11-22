@@ -376,7 +376,6 @@ module "redis" {
   aws_redis_cloudwatch_retention_days = var.aws_redis_cloudwatch_retention_days
   aws_redis_single_line_url_secret    = var.aws_redis_single_line_url_secret
   # Others
-  #aws_ec2_security_group              = var.aws_ec2_instance_create ? module.ec2[0].aws_security_group_ec2_sg_id : ""
   aws_selected_vpc_id                 = module.vpc.aws_selected_vpc_id
   aws_selected_subnets                = module.vpc.aws_selected_vpc_subnets
   aws_resource_identifier             = var.aws_resource_identifier

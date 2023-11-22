@@ -16,14 +16,13 @@ variable "aws_aurora_master_username" {}
 variable "aws_aurora_database_group_family" {}
 variable "aws_aurora_iam_auth_enabled" {}
 variable "aws_aurora_iam_roles" {}
-# Net
 variable "aws_aurora_cluster_db_instance_class" {}
+# Net
 variable "aws_aurora_security_group_name" {}
 variable "aws_aurora_allowed_security_groups" {}
 variable "aws_aurora_ingress_allow_all" {}
 variable "aws_aurora_subnets" {}
 variable "aws_aurora_database_port" {}
-variable "aws_aurora_db_publicly_accessible" {}
 # Backup & maint
 variable "aws_aurora_cloudwatch_enable" {}
 variable "aws_aurora_cloudwatch_log_type" {}
@@ -45,6 +44,7 @@ variable "aws_aurora_db_instance_class" {}
 variable "aws_aurora_db_apply_immediately" {}
 variable "aws_aurora_db_ca_cert_identifier" {}
 variable "aws_aurora_db_maintenance_window" {}
+variable "aws_aurora_db_publicly_accessible" {}
 # Incoming
 #variable "aws_ec2_security_group" {}
 variable "aws_selected_vpc_id" {}
