@@ -389,52 +389,139 @@ inputs:
 
   # AWS Aurora
   aws_aurora_enable:
-    description: 'Set to "true" to enable a postgres database'
+    description: 'Toggles deployment of an Aurora database. Defaults to false.'
     required: false
   aws_aurora_proxy:
-    description: 'Set to true to add a RDS DB Proxy'
-    required: false
-  aws_aurora_engine: 
-    description: 'Which Database engine to use'
-    required: false
-  aws_aurora_engine_version:
-    description: 'Specify Postgres version'
-    required: false
-  aws_aurora_database_group_family:
-    description: 'Postgres database group family'
-    required: false 
-  aws_aurora_instance_class:
-    description: 'Define the size of the instances in the DB cluster'
-    required: false
-  aws_aurora_security_group_name:
-    description:  'The name of the Postgres security group'
-    required: false
-  aws_aurora_subnets:
-    description: 'Specify which subnets to use as a list of strings.  Example: `i-1234,i-5678,i-9101`'
+    description: 'Aurora DB Proxy Toggle. Defaults to false.'
     required: false
   aws_aurora_cluster_name:
-    description: 'Specify a cluster name. Will be created if it does not exist'
+    description: 'The name of the cluster. Will be created if it does not exist. Defaults to aws_resource_identifier if none set.'
     required: false
+  aws_aurora_engine:
+    description: 'The database engine to use. Defaults to aurora-postgresql.'
+    required: false
+  aws_aurora_engine_version:
+    description: 'The DB version of the engine to use.'
+    required: false
+  aws_aurora_engine_mode:
+    description: 'Database engine mode. Could be global, multimaster, parallelquey, provisioned, serverless.'
+    required: false
+  aws_aurora_availability_zones:
+    description: 'List of availability zones for the DB cluster storage where DB cluster instances can be created.'
+    required: false
+  aws_aurora_cluster_apply_immediately:
+    description: 'Apply changes immediately to the cluster. If not, will be done in next maintenance window.. Default false'
+    required: false
+  # Storage
+  aws_aurora_allocated_storage:
+    description: 'Amount of storage in gigabytes. Required for multi-az cluster.'
+    required: false
+  aws_aurora_storage_encrypted:
+    description: 'Toggles whether the DB cluster is encrypted. Defaults to true.'
+    required: false
+  aws_aurora_kms_key_id:
+    description: 'KMS Key ID to use with the cluster encrypted storage.'
+    required: false
+  aws_aurora_storage_type:
+    description: 'Define type of storage to use. Required for multi-az cluster.'
+    required: false
+  aws_aurora_storage_iops:
+    description: 'iops for storage. Required for multi-az cluster. '
+    required: false
+  # Cluster details
   aws_aurora_database_name:
-    description: 'Specify a database name. Will be created if it does not exist'
+    description: 'The name of the database. will be created if it does not exist. Defaults to aurora'
+    required: false
+  aws_aurora_master_username:
+    description: 'Master username. Defaults to aurora'
+    required: false
+  aws_aurora_database_group_family:
+    description: 'The family of the DB parameter group. See https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/AuroraMySQL.Reference.html https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/AuroraPostgreSQL.Reference.html. Defaults set for Postges and MySQL.'
+    required: false
+  aws_aurora_iam_auth_enabled:
+    description: 'Toggles IAM Authentication. Defaults to false.'
+    required: false
+  aws_aurora_iam_roles:
+    description: 'Define the ARN list of allowed roles.'
+    required: false
+  aws_aurora_cluster_db_instance_class:
+    description: 'To create a Multi-AZ RDS cluster, you must additionally specify the engine, storage_type, allocated_storage, iops and aws_aurora_db_cluster_instance_class attributes.'
+    required: false
+  aws_aurora_security_group_name:
+    description: 'Name of the security group to use for postgres. Defaults to SG for ${var.aws_resource_identifier} - Aurora'
+    required: false
+  aws_aurora_ingress_allow_all:
+    description: 'Allow access from 0.0.0.0/0 in the same VPC. Defaults to true'
+    required: false
+  aws_aurora_allowed_security_groups:
+    description: 'Extra names of the security groups to access Aurora.'
+    required: false
+  aws_aurora_subnets:
+    description: 'The list of subnet ids to use for postgres.'
     required: false
   aws_aurora_database_port:
-    description: 'Postgres database port'
+    description: 'Database port. Defaults to 5432'
     required: false
-  aws_aurora_restore_snapshot:
-    description: 'Restore a snapshot to the DB. Should be used only once. Changes in this value will destroy and recreate the database completely.'
+  aws_aurora_db_publicly_accessible:
+    description: 'Make database publicly accessible. Defaults to false.'
     required: false
-  aws_aurora_snapshot_name:
-    description: 'Takes a snapshot of the cluster using that name. If none definded, no snapshot will be made. If snap already exists, no new one will be created.'
+  # Backup & maint
+  aws_aurora_cloudwatch_enable:
+    description: 'Toggles cloudwatch. Defaults to true'
     required: false
-  aws_aurora_snapshot_overwrite:
-    description: 'If the snapshot name is the same as an existing one, will destroy and create a new one.'
+  aws_aurora_cloudwatch_log_type:
+    description: 'Comma separated list of log types to include in cloudwatch. If none defined, will use [postgresql] or [audit,error,general,slowquery]. Based on the db engine.'
     required: false
-  aws_aurora_database_protection:
-    description: 'Protects the database from deletion.'
+  aws_aurora_cloudwatch_retention_days:
+    description: 'Days to store cloudwatch logs. Defaults to 7.'
+    required: false
+  aws_aurora_backtrack_window:
+    description: 'Target backtrack window, in seconds. Only available for aurora and aurora-mysql engines currently. 0 to disable. Defaults to 0'
+    required: false
+  aws_aurora_backup_retention_period:
+    description: 'Days to retain backups for. Defaults to 5.'
+    required: false
+  aws_aurora_backup_window:
+    description: 'Daily time range during which the backups happen.'
+    required: false
+  aws_aurora_maintenance_window:
+    description: 'Maintenance window.'
     required: false
   aws_aurora_database_final_snapshot:
-    description: 'Generates a snapshot of the database before deletion.'
+    description: 'Set the name to Generate a snapshot of the database before deletion.'
+    required: false
+  aws_aurora_deletion_protection:
+    description: 'Protects the database from deletion. Defaults to false. This wont prevent Terraform from destroying it.'
+    required: false
+  aws_aurora_delete_auto_backups:
+    description: 'Specifies whether to remove automated backups immediately after the DB cluster is deleted. Default is true.'
+    required: false
+  aws_aurora_restore_snapshot_id:
+    description: 'Restore an initial snapshot of the DB if specified.'
+    required: false
+  aws_aurora_restore_to_point_in_time:
+    description: 'Restore database to a point in time. Will require a map of strings. Like {"restore_to_time"="W","restore_type"="X","source_cluster_identifier"="Y", "use_latest_restorable_time"="Z"}. Default {}'
+    required: false
+  aws_aurora_snapshot_name:
+    description: 'Takes a snapshot of the DB.'
+    required: false
+  aws_aurora_snapshot_overwrite:
+    description: 'Overwrites snapshot if same name is set. Defaults to false.'
+    required: false
+  aws_aurora_db_instances_count:
+    description: 'Amount of instances to create. Defaults to 1.'
+    required: false
+  aws_aurora_db_instance_class:
+    description: 'Database instance size. Defaults to db.r6g.large.'
+    required: false
+  aws_aurora_db_apply_immediately:
+    description: 'Specifies whether any modifications are applied immediately, or during the next maintenance window. Defaults to false.'
+    required: false
+  aws_aurora_db_ca_cert_identifier:
+    description: 'Certificate to use with the database. Defaults to rds-ca-ecc384-g1.'
+    required: false
+  aws_aurora_db_maintenance_window:
+    description: 'Maintenance window.'
     required: false
   aws_aurora_additional_tags:
     description: 'A JSON object of additional tags that will be included on created resources. Example: `{"key1": "value1", "key2": "value2"}`'
@@ -1074,20 +1161,48 @@ runs:
         # AWS AURORA
         AWS_AURORA_ENABLE: ${{ inputs.aws_aurora_enable }}
         AWS_AURORA_PROXY: ${{ inputs.aws_aurora_proxy }}
-        AWS_AURORA_ENGINE:  ${{ inputs.aws_aurora_engine }}
-        AWS_AURORA_ENGINE_VERSION:  ${{ inputs.aws_aurora_engine_version }}
-        AWS_AURORA_DATABASE_GROUP_FAMILY:  ${{ inputs.aws_aurora_database_group_family }}
-        AWS_AURORA_INSTANCE_CLASS: ${{ inputs.aws_aurora_instance_class }}
-        AWS_AURORA_SECURITY_GROUP_NAME: ${{ inputs.aws_aurora_security_group_name }}
-        AWS_AURORA_SUBNETS: ${{ inputs.aws_aurora_subnets }}
         AWS_AURORA_CLUSTER_NAME: ${{ inputs.aws_aurora_cluster_name }}
+        AWS_AURORA_ENGINE: ${{ inputs.aws_aurora_engine }}
+        AWS_AURORA_ENGINE_VERSION: ${{ inputs.aws_aurora_engine_version }}
+        AWS_AURORA_ENGINE_MODE: ${{ inputs.aws_aurora_engine_mode }}
+        AWS_AURORA_AVAILABILITY_ZONES: ${{ inputs.aws_aurora_availability_zones }}
+        AWS_AURORA_CLUSTER_APPLY_IMMEDIATELY: ${{ inputs.aws_aurora_cluster_apply_immediately }}
+        AWS_AURORA_ALLOCATED_STORAGE: ${{ inputs.aws_aurora_allocated_storage }}
+        AWS_AURORA_STORAGE_ENCRYPTED: ${{ inputs.aws_aurora_storage_encrypted }}
+        AWS_AURORA_KMS_KEY_ID: ${{ inputs.aws_aurora_kms_key_id }}
+        AWS_AURORA_STORAGE_TYPE: ${{ inputs.aws_aurora_storage_type }}
+        AWS_AURORA_STORAGE_IOPS: ${{ inputs.aws_aurora_storage_iops }}
         AWS_AURORA_DATABASE_NAME: ${{ inputs.aws_aurora_database_name }}
-        AWS_AURORA_DATABASE_PORT: ${{ inputs.aws_aurora_database_port}}
-        AWS_AURORA_RESTORE_SNAPSHOT: ${{ inputs.aws_aurora_restore_snapshot }}
+        AWS_AURORA_MASTER_USERNAME: ${{ inputs.aws_aurora_master_username }}
+        AWS_AURORA_DATABASE_GROUP_FAMILY: ${{ inputs.aws_aurora_database_group_family }}
+        AWS_AURORA_IAM_AUTH_ENABLED: ${{ inputs.aws_aurora_iam_auth_enabled }}
+        AWS_AURORA_IAM_ROLES: ${{ inputs.aws_aurora_iam_roles }}
+        AWS_AURORA_CLUSTER_DB_INSTANCE_CLASS: ${{ inputs.aws_aurora_cluster_db_instance_class }}
+        AWS_AURORA_SECURITY_GROUP_NAME: ${{ inputs.aws_aurora_security_group_name }}
+        AWS_AURORA_INGRESS_ALLOW_ALL: ${{ inputs.aws_aurora_ingress_allow_all }}
+        AWS_AURORA_ALLOWED_SECURITY_GROUPS: ${{ inputs.aws_aurora_allowed_security_groups }}
+        AWS_AURORA_DB_PUBLICLY_ACCESSIBLE: ${{ inputs.aws_aurora_db_publicly_accessible }}
+        AWS_AURORA_SUBNETS: ${{ inputs.aws_aurora_subnets }}
+        AWS_AURORA_DATABASE_PORT: ${{ inputs.aws_aurora_database_port }}
+        AWS_AURORA_CLOUDWATCH_enable: ${{ inputs.aws_aurora_cloudwatch_enable }}
+        AWS_AURORA_CLOUDWATCH_log_type: ${{ inputs.aws_aurora_cloudwatch_log_type }}
+        AWS_AURORA_CLOUDWATCH_retention_days: ${{ inputs.aws_aurora_cloudwatch_retention_days }}
+        AWS_AURORA_BACKTRACK_WINDOW: ${{ inputs.aws_aurora_backtrack_window }}
+        AWS_AURORA_BACKUP_RETENTION_PERIOD: ${{ inputs.aws_aurora_backup_retention_period }}
+        AWS_AURORA_BACKUP_WINDOW: ${{ inputs.aws_aurora_backup_window }}
+        AWS_AURORA_MAINTENANCE_WINDOW: ${{ inputs.aws_aurora_maintenance_window }}
+        AWS_AURORA_DATABASE_FINAL_SNAPSHOT: ${{ inputs.aws_aurora_database_final_snapshot }}
+        AWS_AURORA_DELETION_PROTECTION: ${{ inputs.aws_aurora_deletion_protection }}
+        AWS_AURORA_DELETE_AUTO_BACKUPS: ${{ inputs.aws_aurora_delete_auto_backups }}
+        AWS_AURORA_RESTORE_SNAPSHOT_ID: ${{ inputs.aws_aurora_restore_snapshot_id }}
+        AWS_AURORA_RESTORE_TO_POINT_IN_TIME: ${{ inputs.aws_aurora_restore_to_point_in_time }}
         AWS_AURORA_SNAPSHOT_NAME: ${{ inputs.aws_aurora_snapshot_name }}
         AWS_AURORA_SNAPSHOT_OVERWRITE: ${{ inputs.aws_aurora_snapshot_overwrite }}
-        AWS_AURORA_DATABASE_PROTECTION: ${{ inputs.aws_aurora_database_protection }}
-        AWS_AURORA_DATABASE_FINAL_SNAPSHOT: ${{ inputs.aws_aurora_database_final_snapshot }}
+        AWS_AURORA_DB_INSTANCES_COUNT: ${{ inputs.aws_aurora_db_instances_count }}
+        AWS_AURORA_DB_INSTANCE_CLASS: ${{ inputs.aws_aurora_db_instance_class }}
+        AWS_AURORA_DB_APPLY_IMMEDIATELY: ${{ inputs.aws_aurora_db_apply_immediately }}
+        AWS_AURORA_DB_CA_CERT_IDENTIFIER: ${{ inputs.aws_aurora_db_ca_cert_identifier }}
+        AWS_AURORA_DB_MAINTENANCE_WINDOW: ${{ inputs.aws_aurora_db_maintenance_window }}
         AWS_AURORA_ADDITIONAL_TAGS: ${{ inputs.aws_aurora_additional_tags }}
 
         # AWS DB PROXY

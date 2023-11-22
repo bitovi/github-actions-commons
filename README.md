@@ -257,23 +257,56 @@ The following inputs can be used as `step.with` keys
 #### **Aurora Inputs**
 | Name             | Type    | Description                        |
 |------------------|---------|------------------------------------|
-| `aws_aurora_enable` | Boolean | Set to `true` to enable an [Aurora database](https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/CHAP_AuroraOverview.html). (Postgres or MySQL). |
-| `aws_aurora_proxy`| Boolean | Set to `true` to add an Aurora DB Proxy |
-| `aws_aurora_engine` | String |  Which Database engine to use. Default is `aurora-postgresql`.|
-| `aws_aurora_engine_version` | String |  Specify database version.  More information [Postgres](https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/AuroraPostgreSQL.Updates.20180305.html) or [MySQL](https://docs.aws.amazon.com/AmazonRDS/latest/AuroraMySQLReleaseNotes/Welcome.html). Default is `11.17`. (Postgres) |
-| `aws_aurora_database_group_family` | String | Specify aws database group family. Default is `aurora-postgresql11`. See [this](https://awscli.amazonaws.com/v2/documentation/api/latest/reference/rds/create-db-parameter-group.html).|
-| `aws_aurora_instance_class` | String | Define the size of the instances in the DB cluster. Default is `db.t3.medium`. | 
-| `aws_aurora_security_group_name` | String | The name of the database security group. Defaults to `SG for ${aws_resource_identifier} - Aurora`. |
-| `aws_aurora_subnets` | String | Specify which subnets to use as a list of strings.  Example: `i-1234,i-5678,i-9101`. |
-| `aws_aurora_cluster_name` | String | Specify a cluster name. Will be created if it does not exist. Defaults to `aws_resource_identifier`. |
-| `aws_aurora_database_name` | String | Specify a database name. Will be created if it does not exist. Defaults to `aws_resource_identifier`. |
-| `aws_aurora_database_port` | String | Specify a listening port for the database. Default is `5432`.|
-| `aws_aurora_restore_snapshot` | String | Restore a snapshot to the DB. Should be set only once. Changes in this value will destroy and recreate the database completely. | 
-| `aws_aurora_snapshot_name` | String | Specify a database name. Will be created if it does not exist. Won't overwrite. |
-| `aws_aurora_snapshot_overwrite` | Boolean | Set to true to overwrite the snapshot. |
-| `aws_aurora_database_protection` | Boolean | Protects the database from deletion. Default is `false`.|
-| `aws_aurora_database_final_snapshot` | Boolean | Creates a snapshot before deletion. If a string is passed, it will be used as the snapsthot name. Defaults to `false`.|
-| `aws_aurora_additional_tags` | JSON | Add additional tags to the terraform [default tags](https://www.hashicorp.com/blog/default-tags-in-the-terraform-aws-provider), any tags put here will be added to aurora provisioned resources.|
+| `aws_aurora_enable` | Boolean | Toggles deployment of an Aurora database. Defaults to `true`. |
+| `aws_aurora_proxy` | Boolean | Aurora DB Proxy Toggle. Defaults to `false`. |
+| `aws_aurora_cluster_name` | String | The name of the cluster. Defaults to `aws_resource_identifier` if none set. |
+| `aws_aurora_engine` | String | The database engine to use. Defaults to `aurora-postgresql`. |
+| `aws_aurora_engine_version` | String | The DB version of the engine to use. Will default to one of the latest selected by AWS. More information [Postgres](https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/AuroraPostgreSQL.Updates.20180305.html) or [MySQL](https://docs.aws.amazon.com/AmazonRDS/latest/AuroraMySQLReleaseNotes/Welcome.html)|
+| `aws_aurora_engine_mode` | String | Database engine mode. Could be global, multimaster, parallelquey, provisioned, serverless. |
+| `aws_aurora_availability_zones` | String | Comma separated list of zones to deploy DB to. If none, will automatically set this. | 
+| `aws_aurora_cluster_apply_immediately` | Boolean | Apply changes immediately to the cluster. If not, will be done in next maintenance window. Defaults to `false`. |
+| **Storage** |||
+| `aws_aurora_allocated_storage` | String | Amount of storage in gigabytes. Required for multi-az cluster. |
+| `aws_aurora_storage_encrypted` | Boolean | Toggles whether the DB cluster is encrypted. Defaults to `true`. |
+| `aws_aurora_kms_key_id` | String | KMS Key ID to use with the cluster encrypted storage. |
+| `aws_aurora_storage_type` | String | Define type of storage to use. Required for multi-az cluster. |
+| `aws_aurora_storage_iops` | String | iops for storage. Required for multi-az cluster. | 
+| **Cluster details** |||
+| `aws_aurora_database_name` | String | The name of the database. will be created if it does not exist. Defaults to `aurora`. |
+| `aws_aurora_master_username` | String | Master username. Defaults to `aurora`. |
+| `aws_aurora_database_group_family` | String | The family of the DB parameter group. See [MySQL Reference](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/AuroraMySQL.Reference.html) or [Postgres Reference](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/AuroraPostgreSQL.Reference.html). Defaults automatically set for MySQL(`aurora-mysql8.0`) and Postgres (`aurora-postgresql15`). |
+| `aws_aurora_iam_auth_enabled` | Boolean | Toggles IAM Authentication. Defaults to `false`. |
+| `aws_aurora_iam_roles` | String | Define the ARN list of allowed roles. |
+| `aws_aurora_cluster_db_instance_class` | String | To create a Multi-AZ RDS cluster, you must additionally specify the engine, storage_type, allocated_storage, iops and aws_aurora_db_cluster_instance_class attributes. |
+| **Networking** |||
+| `aws_aurora_security_group_name` | String | Name of the security group to use for postgres. Defaults to `SG for {aws_resource_identifier} - Aurora`.| 
+| `aws_aurora_allowed_security_groups` | String | Extra names of the security groups to access Aurora. Accepts comma separated list of. |
+| `aws_aurora_ingress_allow_all` | Boolean | Allow access from 0.0.0.0/0 in the same VPC. Defaults to `true`. |
+| `aws_aurora_subnets` | String | Subnet ids to use for postgres. Accepts comma separated list of. |
+| `aws_aurora_database_port` | String | Database port. Defaults to `5432`. |
+| **Backup & maint** |||
+| `aws_aurora_cloudwatch_enable` | Boolean | Toggles cloudwatch. Defaults to `true`. |
+| `aws_aurora_cloudwatch_log_type` | String | Comma separated list of log types to include in cloudwatch. If none defined, will use [postgresql] or [audit,error,general,slowquery]. Based on the db engine. |
+| `aws_aurora_cloudwatch_retention_days` | String | Days to store cloudwatch logs. Defaults to `7`. |
+| `aws_aurora_backtrack_window` | String | Target backtrack window, in seconds. Only available for aurora and aurora-mysql engines currently. 0 to disable. Defaults to `0`. |
+| `aws_aurora_backup_retention_period` | String | Days to retain backups for. Defaults to `5`. |
+| `aws_aurora_backup_window` | String | Daily time range during which the backups happen. |
+| `aws_aurora_maintenance_window` | String | Maintenance window. |
+| `aws_aurora_database_final_snapshot` | String | Set the name to generate a snapshot of the database before deletion. |
+| `aws_aurora_deletion_protection` | Boolean | Protects the database from deletion. Defaults to `false`. This won't prevent Terraform from destroying it. |
+| `aws_aurora_delete_auto_backups` | Boolean | Specifies whether to remove automated backups immediately after the DB cluster is deleted. Default is `true`. |
+| `aws_aurora_restore_snapshot_id` | String | Restore an initial snapshot of the DB if specified. |
+| `aws_aurora_restore_to_point_in_time` | map{String} | Restore database to a point in time. Will require a map of strings. Like `{"restore_to_time"="W","restore_type"="X","source_cluster_identifier"="Y", "use_latest_restorable_time"="Z"}`. Default `{}`. |
+| `aws_aurora_snapshot_name` | String | Takes a snapshot of the DB. |
+| `aws_aurora_snapshot_overwrite` | Boolean | Overwrites snapshot if same name is set. Defaults to `false`. |
+| **DB Instance** |||
+| `aws_aurora_db_instances_count` | String | Amount of instances to create. Defaults to `1`. |
+| `aws_aurora_db_instance_class` | String | Database instance size. Defaults to `db.r6g.large`. |
+| `aws_aurora_db_apply_immediately` | String | Specifies whether any modifications are applied immediately, or during the next maintenance window. Defaults to `false`. |
+| `aws_aurora_db_ca_cert_identifier` | String | Certificate to use with the database. Defaults to `rds-ca-ecc384-g1`. |
+| `aws_aurora_db_maintenance_window` | String | Maintenance window. |
+| `aws_aurora_db_publicly_accessible` | Boolean | Make database publicly accessible. Defaults to `false`. | 
+| `aws_aurora_additional_tags` | JSON | A JSON object of additional tags that will be included on created resources. Example: `{"key1": "value1", "key2": "value2"}`. |
 <hr/>
 <br/>
 

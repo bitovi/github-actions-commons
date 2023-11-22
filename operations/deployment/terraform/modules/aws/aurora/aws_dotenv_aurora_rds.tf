@@ -10,35 +10,35 @@ resource "local_file" "aurora-dotenv" {
 
 #### Aurora values
 # Amazon Resource Name (ARN) of cluster
-AURORA_CLUSTER_ARN=${module.aurora_cluster.cluster_arn}
+AURORA_CLUSTER_ARN=${aws_rds_cluster.aurora.arn}
 # The RDS Cluster Identifier
-AURORA_CLUSTER_ID=${module.aurora_cluster.cluster_id}
+AURORA_CLUSTER_ID=${aws_rds_cluster.aurora.cluster_identifier}
 # The RDS Cluster Resource ID
-AURORA_CLUSTER_RESOURCE_ID=${module.aurora_cluster.cluster_resource_id}
+AURORA_CLUSTER_RESOURCE_ID=${aws_rds_cluster.aurora.cluster_resource_id}
 # Writer endpoint for the cluster
-AURORA_CLUSTER_ENDPOINT=${module.aurora_cluster.cluster_endpoint}
+AURORA_CLUSTER_ENDPOINT=${aws_rds_cluster.aurora.endpoint}
 # A read-only endpoint for the cluster, automatically load-balanced across replicas
-AURORA_CLUSTER_READER_ENDPOINT=${module.aurora_cluster.cluster_reader_endpoint}
+AURORA_CLUSTER_READER_ENDPOINT=${aws_rds_cluster.aurora.reader_endpoint}
 # The running version of the cluster database
-AURORA_CLUSTER_ENGINE_VERSION_ACTUAL=${module.aurora_cluster.cluster_engine_version_actual}
+AURORA_CLUSTER_ENGINE_VERSION_ACTUAL=${aws_rds_cluster.aurora.engine_version_actual}
 # Name for an automatically created database on cluster creation
 # database_name is not set on `aws_aurora_cluster[0]` resource if it was not specified, so can't be used in output
-AURORA_CLUSTER_DATABASE_NAME=${module.aurora_cluster.cluster_database_name == null ? "" : module.aurora_cluster.cluster_database_name}
+AURORA_CLUSTER_DATABASE_NAME=${aws_rds_cluster.aurora.database_name == null ? "" : aws_rds_cluster.aurora.database_name}
 # The database port
-AURORA_CLUSTER_PORT="${module.aurora_cluster.cluster_port}"
+AURORA_CLUSTER_PORT="${aws_rds_cluster.aurora.port}"
 # TODO: use IAM (give ec2 instance(s) access to the DB via a role)
 # The database master password
-AURORA_CLUSTER_MASTER_PASSWORD=${module.aurora_cluster.cluster_master_password}
+AURORA_CLUSTER_MASTER_PASSWORD=${aws_rds_cluster.aurora.master_password}
 # The database master username
-AURORA_CLUSTER_MASTER_USERNAME=${module.aurora_cluster.cluster_master_username}
+AURORA_CLUSTER_MASTER_USERNAME=${aws_rds_cluster.aurora.master_username}
 # The Route53 Hosted Zone ID of the endpoint
-AURORA_CLUSTER_HOSTED_ZONE_ID=${module.aurora_cluster.cluster_hosted_zone_id}
+AURORA_CLUSTER_HOSTED_ZONE_ID=${aws_rds_cluster.aurora.hosted_zone_id}
 # AURORA specific env vars
 DBA_ENGINE="${local.dba_engine}
-DBA_USER="${module.aurora_cluster.cluster_master_username}"
-DBA_PASSWORD="${module.aurora_cluster.cluster_master_password}"
-DBA_NAME=${module.aurora_cluster.cluster_database_name == null ? "" : module.aurora_cluster.cluster_database_name}
-DBA_PORT=${module.aurora_cluster.cluster_port}
-DBA_HOST="${module.aurora_cluster.cluster_endpoint}"
+DBA_USER="${aws_rds_cluster.aurora.master_username}"
+DBA_PASSWORD="${aws_rds_cluster.aurora.master_password}"
+DBA_NAME=${aws_rds_cluster.aurora.database_name == null ? "" : aws_rds_cluster.aurora.database_name}
+DBA_PORT=${aws_rds_cluster.aurora.port}
+DBA_HOST="${aws_rds_cluster.aurora.endpoint}"
 EOT
 }
