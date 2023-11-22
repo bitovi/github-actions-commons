@@ -114,6 +114,9 @@ resource "aws_rds_cluster" "aurora" {
       availability_zones
     ]
   }
+
+    depends_on = [ time_sleep.wait_before_deletion ]
+
 }
 
 resource "aws_rds_cluster_instance" "cluster_instance" {
