@@ -263,6 +263,7 @@ The following inputs can be used as `step.with` keys
 | `aws_aurora_engine` | String | The database engine to use. Defaults to `aurora-postgresql`. |
 | `aws_aurora_engine_version` | String | The DB version of the engine to use. Will default to one of the latest selected by AWS. More information [Postgres](https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/AuroraPostgreSQL.Updates.20180305.html) or [MySQL](https://docs.aws.amazon.com/AmazonRDS/latest/AuroraMySQLReleaseNotes/Welcome.html)|
 | `aws_aurora_engine_mode` | String | Database engine mode. Could be global, multimaster, parallelquey, provisioned, serverless. |
+| `aws_aurora_availability_zones` | String | Comma separated list of zones to deploy DB to. If none, will automatically set this. | 
 | `aws_aurora_cluster_apply_immediately` | Boolean | Apply changes immediately to the cluster. If not, will be done in next maintenance window. Defaults to `false`. |
 | **Storage** |||
 | `aws_aurora_allocated_storage` | String | Amount of storage in gigabytes. Required for multi-az cluster. |
@@ -274,7 +275,7 @@ The following inputs can be used as `step.with` keys
 | `aws_aurora_database_name` | String | The name of the database. will be created if it does not exist. Defaults to `aurora`. |
 | `aws_aurora_master_username` | String | Master username. Defaults to `aurora`. |
 | `aws_aurora_database_group_family` | String | The family of the DB parameter group. See [MySQL Reference](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/AuroraMySQL.Reference.html) or [Postgres Reference](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/AuroraPostgreSQL.Reference.html). Defaults automatically set for MySQL(`aurora-mysql8.0`) and Postgres (`aurora-postgresql15`). |
-| `aws_aurora_iam_auth_enabled` | Boolean | Toggles IAM Authentication. Defaults to `true`. |
+| `aws_aurora_iam_auth_enabled` | Boolean | Toggles IAM Authentication. Defaults to `false`. |
 | `aws_aurora_iam_roles` | String | Define the ARN list of allowed roles. |
 | `aws_aurora_cluster_db_instance_class` | String | To create a Multi-AZ RDS cluster, you must additionally specify the engine, storage_type, allocated_storage, iops and aws_aurora_db_cluster_instance_class attributes. |
 | **Networking** |||

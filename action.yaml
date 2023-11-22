@@ -439,7 +439,7 @@ inputs:
     description: 'The family of the DB parameter group. See https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/AuroraMySQL.Reference.html https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/AuroraPostgreSQL.Reference.html. Defaults set for Postges and MySQL.'
     required: false
   aws_aurora_iam_auth_enabled:
-    description: 'Toggles IAM Authentication. Defaults to true.'
+    description: 'Toggles IAM Authentication. Defaults to false.'
     required: false
   aws_aurora_iam_roles:
     description: 'Define the ARN list of allowed roles.'

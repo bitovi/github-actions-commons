@@ -649,7 +649,7 @@ variable "aws_aurora_database_group_family" {
 variable "aws_aurora_iam_auth_enabled" {
   type        = bool
   description = "Toggles IAM Authentication"
-  default     = true
+  default     = false
 }
 
 variable "aws_aurora_iam_roles" {
