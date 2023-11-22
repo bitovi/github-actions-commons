@@ -384,7 +384,6 @@ module "redis" {
 
   # Dependencies
   depends_on = [module.vpc,module.ec2]
-
   providers = {
     aws = aws.redis
   }

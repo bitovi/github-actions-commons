@@ -24,6 +24,5 @@ variable "aws_rds_db_maintenance_window" {}
 variable "aws_rds_db_apply_immediately" {}
 variable "aws_resource_identifier" {}
 variable "aws_resource_identifier_supershort" {}
-#variable "aws_ec2_security_group" {}
 variable "aws_selected_vpc_id" {}
 variable "aws_subnets_vpc_subnets_ids" {}

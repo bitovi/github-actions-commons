@@ -47,7 +47,6 @@ variable "aws_aurora_db_ca_cert_identifier" {}
 variable "aws_aurora_db_maintenance_window" {}
 variable "aws_aurora_db_publicly_accessible" {}
 # Incoming
-#variable "aws_ec2_security_group" {}
 variable "aws_selected_vpc_id" {}
 variable "aws_subnets_vpc_subnets_ids" {}
 variable "aws_resource_identifier" {}

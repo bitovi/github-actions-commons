@@ -32,7 +32,6 @@ variable "aws_redis_cloudwatch_log_type" {}
 variable "aws_redis_cloudwatch_retention_days" {}
 variable "aws_redis_single_line_url_secret" {}
 
-### variable "aws_ec2_security_group" {}
 variable "aws_selected_vpc_id" {} 
 variable "aws_selected_subnets" {}
 variable "aws_resource_identifier" {}
