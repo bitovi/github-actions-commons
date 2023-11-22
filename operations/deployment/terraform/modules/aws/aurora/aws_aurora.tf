@@ -141,10 +141,10 @@ resource "aws_rds_cluster_instance" "cluster_instance" {
 }
 
 resource "aws_rds_cluster_parameter_group" "mysql" {
-  count       = var.aws_aurora_engine == "aurora-mysql" ? 1 : 0
+  count       = strcontains(var.aws_aurora_engine, "mysql") ? 1 : 0
   name        = var.aws_resource_identifier
   description = "${var.aws_resource_identifier} cluster parameter group"
-  family      = var.aws_aurora_database_group_family != "" ? var.aws_aurora_database_group_family : "aurora-mysql8.0"
+  family      = var.aws_aurora_database_group_family != "" ? var.aws_aurora_database_group_family : "${var.aws_aurora_engine}8.0"
 
   parameter {
       name         = "require_secure_transport"
@@ -152,16 +152,16 @@ resource "aws_rds_cluster_parameter_group" "mysql" {
       apply_method = "immediate"
   }
 
-  #lifecycle {
-  #  create_before_destroy = true
-  #}
+  lifecycle {
+    create_before_destroy = true
+  }
 }
 
 resource "aws_rds_cluster_parameter_group" "postgresql" {
-  count       = var.aws_aurora_engine == "aurora-postgresql" ? 1 : 0
+  count       = strcontains(var.aws_aurora_engine, "postgres")? 1 : 0
   name        = var.aws_resource_identifier
   description = "${var.aws_resource_identifier} cluster parameter group"
-  family      = var.aws_aurora_database_group_family != "" ? var.aws_aurora_database_group_family : "aurora-postgresql15"
+  family      = var.aws_aurora_database_group_family != "" ? var.aws_aurora_database_group_family : "${var.aws_aurora_engine}15"
 
   parameter {
     name         = "log_min_duration_statement"
@@ -175,9 +175,9 @@ resource "aws_rds_cluster_parameter_group" "postgresql" {
     apply_method = "immediate"
   }
 
-  #lifecycle {
-  #  create_before_destroy = true
-  #}
+  lifecycle {
+    create_before_destroy = true
+  }
 }
 
 resource "random_password" "rds" {
