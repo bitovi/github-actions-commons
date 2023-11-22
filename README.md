@@ -297,8 +297,8 @@ The following inputs can be used as `step.with` keys
 | `aws_aurora_delete_auto_backups` | Boolean | Specifies whether to remove automated backups immediately after the DB cluster is deleted. Default is `true`. |
 | `aws_aurora_restore_snapshot_id` | String | Restore an initial snapshot of the DB if specified. |
 | `aws_aurora_restore_to_point_in_time` | map{String} | Restore database to a point in time. Will require a map of strings. Like `{"restore_to_time"="W","restore_type"="X","source_cluster_identifier"="Y", "use_latest_restorable_time"="Z"}`. Default `{}`. |
-| `aws_aurora_snapshot_name` | String | Takes a snapshot of the DB. |
-| `aws_aurora_snapshot_overwrite` | Boolean | Overwrites snapshot if same name is set. Defaults to `false`. |
+| `aws_aurora_snapshot_name` | String | Takes a snapshot of the DB. This is treated as one resource, meaning only one can be created, even if name changes.|
+| `aws_aurora_snapshot_overwrite` | Boolean | Takes a snapshot of the DB deleteing the previous snapshot. Defaults to `false`. |
 | **DB Instance** |||
 | `aws_aurora_db_instances_count` | String | Amount of instances to create. Defaults to `1`. |
 | `aws_aurora_db_instance_class` | String | Database instance size. Defaults to `db.r6g.large`. |

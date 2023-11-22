@@ -131,7 +131,6 @@ resource "aws_rds_cluster_instance" "cluster_instance" {
 }
 
 resource "time_sleep" "wait_before_deletion" {
-  depends_on = [aws_rds_cluster.aurora]
   create_duration = "5s" 
 }
 
