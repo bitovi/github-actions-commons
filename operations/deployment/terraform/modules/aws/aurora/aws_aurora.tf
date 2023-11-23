@@ -74,7 +74,7 @@ resource "aws_rds_cluster" "aurora" {
   master_password                     = sensitive(random_password.rds.result)
   iam_database_authentication_enabled = var.aws_aurora_iam_auth_enabled
   iam_roles                           = var.aws_aurora_iam_roles != "" ? [var.aws_aurora_iam_roles] : []
-  db_cluster_parameter_group_name     = strcontains(var.aws_aurora_engine, "mysql") ? aws_rds_cluster_parameter_group.mysql[0].name : strcontains(var.aws_aurora_engine, "postgres") ?  aws_rds_cluster_parameter_group[0].postgresql.name : "" 
+  db_cluster_parameter_group_name     = strcontains(var.aws_aurora_engine, "mysql") ? aws_rds_cluster_parameter_group.mysql[0].name : strcontains(var.aws_aurora_engine, "postgres") ?  aws_rds_cluster_parameter_group.postgresql[0].name : "" 
   #db_cluster_parameter_group_name     = var.aws_resource_identifier
   # Backup & Maint
   enabled_cloudwatch_logs_exports     = var.aws_aurora_cloudwatch_enable ? local.aws_aurora_cloudwatch_log_type : []
