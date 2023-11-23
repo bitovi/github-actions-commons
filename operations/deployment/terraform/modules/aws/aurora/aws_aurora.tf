@@ -75,7 +75,6 @@ resource "aws_rds_cluster" "aurora" {
   iam_database_authentication_enabled = var.aws_aurora_iam_auth_enabled
   iam_roles                           = var.aws_aurora_iam_roles != "" ? [var.aws_aurora_iam_roles] : []
   db_cluster_parameter_group_name     = strcontains(var.aws_aurora_engine, "mysql") ? aws_rds_cluster_parameter_group.mysql[0].name : strcontains(var.aws_aurora_engine, "postgres") ?  aws_rds_cluster_parameter_group.postgresql[0].name : "" 
-  #db_cluster_parameter_group_name     = var.aws_resource_identifier
   # Backup & Maint
   enabled_cloudwatch_logs_exports     = var.aws_aurora_cloudwatch_enable ? local.aws_aurora_cloudwatch_log_type : []
   backtrack_window                    = var.aws_aurora_backtrack_window 
@@ -133,10 +132,6 @@ resource "aws_rds_cluster_instance" "cluster_instance" {
   ca_cert_identifier           = var.aws_aurora_db_ca_cert_identifier
   preferred_maintenance_window = var.aws_aurora_db_maintenance_window
 }
-
-#resource "time_sleep" "wait_before_deletion" {
-#  create_duration = "5s" 
-#}
  
 resource "aws_rds_cluster_parameter_group" "mysql" {
   count       = strcontains(var.aws_aurora_engine, "mysql") ? 1 : 0
@@ -149,8 +144,6 @@ resource "aws_rds_cluster_parameter_group" "mysql" {
       value        = "ON"
       apply_method = "immediate"
   }
-
-  #depends_on = [ time_sleep.wait_before_deletion ]
   lifecycle {
     create_before_destroy = true
   }
@@ -174,7 +167,6 @@ resource "aws_rds_cluster_parameter_group" "postgresql" {
     apply_method = "immediate"
   }
 
-  #depends_on = [ time_sleep.wait_before_deletion ]
   lifecycle {
     create_before_destroy = true
   }
