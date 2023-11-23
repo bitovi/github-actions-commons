@@ -74,7 +74,7 @@ resource "aws_rds_cluster" "aurora" {
   master_password                     = sensitive(random_password.rds.result)
   iam_database_authentication_enabled = var.aws_aurora_iam_auth_enabled
   iam_roles                           = var.aws_aurora_iam_roles != "" ? [var.aws_aurora_iam_roles] : []
-  db_cluster_parameter_group_name     = var.aws_resource_identifier
+  db_cluster_parameter_group_name     = strcontains(var.aws_aurora_engine, "mysql") ? aws_rds_cluster_parameter_group.mysql[0].name : strcontains(var.aws_aurora_engine, "postgres") ?  aws_rds_cluster_parameter_group.postgresql[0].name : "" 
   # Backup & Maint
   enabled_cloudwatch_logs_exports     = var.aws_aurora_cloudwatch_enable ? local.aws_aurora_cloudwatch_log_type : []
   backtrack_window                    = var.aws_aurora_backtrack_window 
@@ -129,10 +129,10 @@ resource "aws_rds_cluster_instance" "cluster_instance" {
   ca_cert_identifier           = var.aws_aurora_db_ca_cert_identifier
   preferred_maintenance_window = var.aws_aurora_db_maintenance_window
 }
-
+ 
 resource "aws_rds_cluster_parameter_group" "mysql" {
   count       = strcontains(var.aws_aurora_engine, "mysql") ? 1 : 0
-  name        = var.aws_resource_identifier
+  name        = "${var.aws_resource_identifier}-mysql"
   description = "${var.aws_resource_identifier} cluster parameter group"
   family      = var.aws_aurora_database_group_family != "" ? var.aws_aurora_database_group_family : "${var.aws_aurora_engine}8.0"
 
@@ -141,7 +141,6 @@ resource "aws_rds_cluster_parameter_group" "mysql" {
       value        = "ON"
       apply_method = "immediate"
   }
-
   lifecycle {
     create_before_destroy = true
   }
@@ -149,7 +148,7 @@ resource "aws_rds_cluster_parameter_group" "mysql" {
 
 resource "aws_rds_cluster_parameter_group" "postgresql" {
   count       = strcontains(var.aws_aurora_engine, "postgres")? 1 : 0
-  name        = var.aws_resource_identifier
+  name        = "${var.aws_resource_identifier}-postgres"
   description = "${var.aws_resource_identifier} cluster parameter group"
   family      = var.aws_aurora_database_group_family != "" ? var.aws_aurora_database_group_family : "${var.aws_aurora_engine}15"
 
@@ -218,7 +217,7 @@ resource "aws_cloudwatch_log_group" "logs" {
 ### All of this added to handle snapshots
 resource "aws_db_cluster_snapshot" "db_snapshot" {
   count                          = var.aws_aurora_snapshot_name != "" ? ( var.aws_aurora_snapshot_overwrite ? 0 : 1 ) : 0 
-  db_cluster_identifier          = var.aws_aurora_cluster_name != "" ? var.aws_aurora_cluster_name : var.aws_resource_identifier
+  db_cluster_identifier          = aws_rds_cluster.aurora.cluster_identifier
   db_cluster_snapshot_identifier = var.aws_aurora_snapshot_name
   lifecycle {
     ignore_changes = all
@@ -227,7 +226,7 @@ resource "aws_db_cluster_snapshot" "db_snapshot" {
 
 resource "aws_db_cluster_snapshot" "overwrite_db_snapshot" {
   count                          = var.aws_aurora_snapshot_name != "" ? ( var.aws_aurora_snapshot_overwrite ? 1 : 0 ) : 0
-  db_cluster_identifier          = var.aws_aurora_cluster_name != "" ? var.aws_aurora_cluster_name : var.aws_resource_identifier
+  db_cluster_identifier          = aws_rds_cluster.aurora.cluster_identifier
   db_cluster_snapshot_identifier = var.aws_aurora_snapshot_name
   lifecycle {
     create_before_destroy = true
