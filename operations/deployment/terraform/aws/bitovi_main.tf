@@ -692,13 +692,13 @@ output "aurora_db_sg_id" {
 }
 
 # Aurora Proxy 
-output "db_proxy_aurora" {
+output "aurora_proxy_endpoint" {
   value = try(module.db_proxy_aurora[0].db_proxy_endpoint,null)
 }
-output "db_proxy_secret_name_aurora" {
+output "aurora_proxy_secret_name" {
   value = try(module.db_proxy_aurora[0].db_proxy_secret_name,null)
 }
-output "db_proxy_sg_id_aurora" {
+output "aurora_proxy_sg_id" {
   value = try(module.db_proxy_aurora[0].db_proxy_sg_id,null)
 }
 

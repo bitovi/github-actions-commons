@@ -980,13 +980,13 @@ outputs:
     value: ${{ steps.deploy.outputs.aurora_db_sg_id }}
   aurora_proxy_endpoint:
     description: "Database proxy endpoint"
-    value: ${{ steps.deploy.outputs.db_proxy_aurora }}
+    value: ${{ steps.deploy.outputs.aurora_proxy_endpoint }}
   aurora_proxy_secret_name:
     description: "AWS Secret name containing proxy credentials"
-    value: ${{ steps.deploy.outputs.db_proxy_secret_name_aurora }}
+    value: ${{ steps.deploy.outputs.aurora_proxy_secret_name }}
   aurora_proxy_sg_id:
     description: "SG ID for the RDS Proxy instance"
-    value: ${{ steps.deploy.outputs.db_proxy_sg_id_aurora }}
+    value: ${{ steps.deploy.outputs.aurora_proxy_sg_id }}
   # DB Proxy
   db_proxy_endpoint:
     description: "Database proxy endpoint"
@@ -1404,8 +1404,8 @@ runs:
         RDS_PROXY_SECRET: ${{ steps.deploy.outputs.db_proxy_secret_name_rds }}
         AURORA_ENDPOINT: ${{ steps.deploy.outputs.aurora_db_endpoint }}
         AURORA_SECRETS_NAME: ${{ steps.deploy.outputs.aurora_db_secret_details_name }}
-        AURORA_PROXY: ${{ steps.deploy.outputs.db_proxy_aurora }}
-        AURORA_PROXY_SECRET: ${{ steps.deploy.outputs.db_proxy_secret_name_aurora }}
+        AURORA_PROXY: ${{ steps.deploy.outputs.aurora_proxy_endpoint }}
+        AURORA_PROXY_SECRET: ${{ steps.deploy.outputs.aurora_proxy_secret_name }}
         DB_PROXY: ${{ steps.deploy.outputs.db_proxy_endpoint }}
         DB_PROXY_SECRET: ${{ steps.deploy.outputs.db_proxy_secret_name }}
         ECS_ALB_DNS: ${{ steps.deploy.outputs.ecs_load_balancer_dns }}
