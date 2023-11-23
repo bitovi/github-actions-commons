@@ -250,6 +250,10 @@ output "aurora_db_endpoint" {
   value = aws_rds_cluster.aurora.endpoint
 }
 
+output "db_port" {
+  value = aws_rds_cluster.aurora.port
+}
+
 output "random_string" {
   value = random_string.random_sm.result
 }

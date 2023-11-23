@@ -148,3 +148,7 @@ output "random_string" {
 output "rds_sg_id" {
     value = aws_security_group.rds_db_security_group.id
 }
+
+output "db_port" {
+  value = aws_db_instance.default.port
+}

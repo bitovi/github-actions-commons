@@ -269,6 +269,10 @@ output "db_proxy_endpoint" {
   value = aws_db_proxy.rds_proxy[0].endpoint
 }
 
+output "db_proxy_port" {
+  value = aws_db_proxy.rds_proxy[0].port
+}
+
 output "db_proxy_secret_name" {
   value = aws_secretsmanager_secret.proxy_credentials.name
 }

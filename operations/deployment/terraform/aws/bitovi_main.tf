@@ -37,8 +37,8 @@ module "ec2_sg_to_rds" {
   # Inputs 
   sg_type                  = "ingress"
   sg_rule_description      = "${var.aws_resource_identifier} - EC2 Incoming"
-  sg_rule_from_port        = var.aws_rds_db_port
-  sg_rule_to_port          = var.aws_rds_db_port
+  sg_rule_from_port        = try(module.db_proxy_rds[0].db_proxy_port,module.rds[0].db_port)
+  sg_rule_to_port          = try(module.db_proxy_rds[0].db_proxy_port,module.rds[0].db_port)
   sg_rule_protocol         = "tcp"
   source_security_group_id = module.ec2[0].aws_security_group_ec2_sg_id
   target_security_group_id = try(module.db_proxy_rds[0].db_proxy_sg_id,module.rds[0].rds_sg_id)
