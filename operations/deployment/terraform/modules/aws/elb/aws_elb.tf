@@ -111,14 +111,6 @@ resource "aws_elb" "vm_lb" {
     Name = "${var.aws_resource_identifier_supershort}"
   }
 }
-
-output "aws_elb_dns_name" {
-  value = aws_elb.vm_lb.dns_name
-}
-output "aws_elb_zone_id" {
-  value = aws_elb.vm_lb.zone_id
-}
-
   
 # TODO: Fix when a user only passes app_ports, the target length should be the same. 
 # The main idea of the next block is to get what should be opened, mapped, and with which protocol.
@@ -145,4 +137,11 @@ locals {
   # Same but for listen protocols, and if a cert is available, make them SSL
   elb_listen_protocol     = length(local.aws_elb_listen_protocol) < local.aws_ports_ammount ? ( local.elb_ssl_available ? 
     [ for _ in range(local.aws_ports_ammount) : "ssl" ] : [ for _ in range(local.aws_ports_ammount) : "tcp" ] ) : local.aws_elb_listen_protocol
+}
+
+output "aws_elb_dns_name" {
+  value = aws_elb.vm_lb.dns_name
+}
+output "aws_elb_zone_id" {
+  value = aws_elb.vm_lb.zone_id
 }

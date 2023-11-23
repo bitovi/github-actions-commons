@@ -42,13 +42,6 @@ locals {
   aws_ec2_port_list = var.aws_ec2_port_list != "" ? [for n in split(",", var.aws_ec2_port_list) : tonumber(n)] : []
 }
 
-output "aws_security_group_ec2_sg_name" {
-  value = data.aws_security_group.ec2_security_group.name
-}
-output "aws_security_group_ec2_sg_id" {
-  value = data.aws_security_group.ec2_security_group.id
-}
-
 resource "aws_iam_role" "ec2_role" {
   count = var.aws_ec2_iam_instance_profile != "" ? 0 : 1
   name = var.aws_resource_identifier

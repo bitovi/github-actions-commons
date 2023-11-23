@@ -137,10 +137,6 @@ locals {
   redis_protocol = var.aws_redis_in_transit_encryption ? "rediss" : "redis"
 }
 
-output "redis_url" {
-  value =  local.redis_url
-}
-
 // Creates a secret manager secret for the databse credentials
 resource "aws_secretsmanager_secret" "redis_credentials_url" {
   count = var.aws_redis_single_line_url_secret ? 1 : 0
@@ -185,14 +181,22 @@ resource "random_string" "random" {
   }
 }
 
+output "redis_url" {
+  value =  local.redis_url
+}
+
 output "redis_secret_name" {
-    value = aws_secretsmanager_secret.redis_credentials.name
+  value = aws_secretsmanager_secret.redis_credentials.name
 }
 
 output "redis_connection_string_secret" {
-    value = try(aws_secretsmanager_secret.redis_credentials_url[0].name,null)
+  value = try(aws_secretsmanager_secret.redis_credentials_url[0].name,null)
 }
 
 output "redis_endpoint" {
-    value =  "${local.redis_protocol}://${local.redis_url}:${aws_elasticache_replication_group.redis_cluster.port}"
+  value =  "${local.redis_protocol}://${local.redis_url}:${aws_elasticache_replication_group.redis_cluster.port}"
+}
+
+output "redis_sg_id" {
+  value = aws_security_group.redis_security_group.id
 }

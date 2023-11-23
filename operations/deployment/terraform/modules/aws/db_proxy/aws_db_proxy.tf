@@ -269,6 +269,10 @@ output "db_proxy_endpoint" {
   value = aws_db_proxy.rds_proxy[0].endpoint
 }
 
+output "db_proxy_port" {
+  value = local.db_port
+}
+
 output "db_proxy_secret_name" {
   value = aws_secretsmanager_secret.proxy_credentials.name
 }
@@ -282,4 +286,8 @@ resource "random_string" "random_sm" {
 
 locals {
   random_string = var.incoming_random_string != null ? var.incoming_random_string : random_string.random_sm.result
+}
+
+output "db_proxy_sg_id" {
+    value = aws_security_group.sg_rds_proxy.id
 }

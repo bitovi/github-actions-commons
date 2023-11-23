@@ -224,3 +224,11 @@ output "load_balancer_protocol" {
 output "load_balancer_zone_id" {
   value = aws_alb.ecs_lb.zone_id
 }
+
+output "ecs_sg_id" {
+  value = aws_security_group.ecs_sg.id
+}
+
+output "ecs_lb_sg_id" {
+  value = aws_security_group.ecs_lb_sg.id
+}
