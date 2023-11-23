@@ -154,3 +154,11 @@ output "aws_instance_server_id" {
 output "private_key_filename" {
   value = local_sensitive_file.private_key.filename
 }
+
+output "aws_security_group_ec2_sg_name" {
+  value = data.aws_security_group.ec2_security_group.name
+}
+
+output "aws_security_group_ec2_sg_id" {
+  value = data.aws_security_group.ec2_security_group.id
+}

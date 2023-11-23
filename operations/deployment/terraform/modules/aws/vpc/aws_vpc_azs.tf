@@ -98,15 +98,6 @@ data "aws_security_group" "default" {
   }
 }
 
-output "aws_security_group_default_id" {
-  description = "The AWS Default SG Id"
-  value       = data.aws_security_group.default.id
-}
-
-output "instance_type_available" {
-  value       = length(data.aws_ec2_instance_type_offerings.region_azs.locations) > 0 ? "EC2 Instance type valid for this region" : "EC2 Instance type invalid for this region."
-}
-
 ### 
 locals {
   aws_ec2_security_group_name = var.aws_ec2_security_group_name != "" ? var.aws_ec2_security_group_name : "SG for ${var.aws_resource_identifier} - EC2"
@@ -151,6 +142,15 @@ locals {
   # ha_zone_mapping: Creates a zone mapping object list for all available AZs in a region
   ha_zone_mapping = merge(local.auto_ha_availability_zonea, local.auto_ha_availability_zoneb, local.auto_ha_availability_zonec, local.auto_ha_availability_zoned, local.auto_ha_availability_zonee, local.auto_ha_availability_zonef)
   ec2_zone_mapping =  { "${local.preferred_az}" : { "subnet_id" : "${local.chosen_subnet_id}", "security_groups" : ["${local.aws_ec2_security_group_name}"] } }
+}
+
+output "aws_security_group_default_id" {
+  description = "The AWS Default SG Id"
+  value       = data.aws_security_group.default.id
+}
+
+output "instance_type_available" {
+  value       = length(data.aws_ec2_instance_type_offerings.region_azs.locations) > 0 ? "EC2 Instance type valid for this region" : "EC2 Instance type invalid for this region."
 }
 
 output "ha_zone_mapping" {

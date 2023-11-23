@@ -283,3 +283,7 @@ resource "random_string" "random_sm" {
 locals {
   random_string = var.incoming_random_string != null ? var.incoming_random_string : random_string.random_sm.result
 }
+
+output "db_proxy_sg_id" {
+    value = aws_security_group.sg_rds_proxy.id
+}

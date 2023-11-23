@@ -31,6 +31,21 @@ module "ec2" {
   }
 }
 
+module "ec2_sg_to_rds" {
+  source = "../modules/aws/sg/add_rule"
+  count  = var.aws_ec2_instance_create && var.aws_rds_db_enable ? 1 : 0
+  # Inputs 
+  sg_type                  = "ingress"
+  sg_rule_description      = "${var.aws_resource_identifier} - EC2 Incoming"
+  sg_rule_from_port        = var.aws_rds_db_port
+  sg_rule_to_port          = var.aws_rds_db_port
+  sg_rule_protocol         = "tcp"
+  source_security_group_id = module.ec2[0].aws_security_group_ec2_sg_id
+  target_security_group_id = try(module.db_proxy_rds[0].db_proxy_sg_id,module.rds[0].rds_sg_id)
+  
+  depends_on = [ module.ec2,module.rds ]
+}
+
 module "aws_certificates" {
   source = "../modules/aws/certificates"
   count  = ( var.aws_ec2_instance_create || var.aws_ecs_enable ) && var.aws_r53_enable && var.aws_r53_domain_name != "" ? 1 : 0
@@ -646,6 +661,11 @@ output "instance_endpoint" {
   value       = local.ec2_endpoint
 }
 
+output "ec2_sg_id" {
+  description = "SG ID for the EC2 instance"
+  value       = try(module.ec2[0].aws_security_group_ec2_sg_id,null)
+}
+
 output "aws_elb_dns_name" {
   description = "Public DNS address of the LB"
   value       = try(module.aws_elb[0].aws_elb_dns_name,null)
@@ -661,46 +681,58 @@ output "vm_url" {
 }
 
 # Aurora
-output "aurora_endpoint" {
+output "aurora_db_endpoint" {
   value = try(module.aurora_rds[0].aurora_db_endpoint,null)
 }
-
-output "aurora_secret_details_name" {
+output "aurora_db_secret_details_name" {
   value = try(module.aurora_rds[0].aurora_secret_name,null)
 }
+output "aurora_db_sg_id" {
+  value = try(module.aurora_rds[0].aurora_sg_id,null)
+}
 
+# Aurora Proxy 
 output "db_proxy_aurora" {
   value = try(module.db_proxy_aurora[0].db_proxy_endpoint,null)
 }
-
 output "db_proxy_secret_name_aurora" {
   value = try(module.db_proxy_aurora[0].db_proxy_secret_name,null)
+}
+output "db_proxy_sg_id_aurora" {
+  value = try(module.db_proxy_aurora[0].db_proxy_sg_id,null)
 }
 
 # RDS
 output "db_endpoint" {
   value = try(module.rds[0].db_endpoint,null)
 }
-
 output "db_secret_details_name" {
   value = try(module.rds[0].db_secret_name,null)
 }
-
-output "db_proxy_rds" {
-  value = try(module.db_proxy_rds[0].db_proxy_endpoint,null)
+output "db_sg_id" {
+  value = try(module.rds[0].db_sg_id,null)
 }
 
-# Proxy
+# RDS Proxy
+output "db_proxy_rds_endpoint" {
+  value = try(module.db_proxy_rds[0].db_proxy_endpoint,null)
+}
 output "db_proxy_secret_name_rds" {
   value = try(module.db_proxy_rds[0].db_proxy_secret_name,null)
 }
+output "db_proxy_sg_id_rds" {
+  value = try(module.db_proxy_rds[0].db_proxy_sg_id,null)
+}
 
+# Proxy
 output "db_proxy_endpoint" {
   value = try(module.db_proxy[0].db_proxy_endpoint,null)
 }
-
 output "db_proxy_secret_name" {
   value = try(module.db_proxy[0].db_proxy_secret_name,null)
+}
+output "db_proxy_sg_id" {
+  value = try(module.db_proxy[0].db_proxy_sg_id,null)
 }
 
 # ECS
@@ -710,6 +742,14 @@ output "ecs_dns_record" {
 
 output "ecs_load_balancer_dns" {
   value = try(module.aws_ecs[0].load_balancer_dns,null)
+}
+
+output "ecs_sg_id" {
+  value = try(module.aws_ecs[0].ecs_sg.id,null)
+}
+
+output "ecs_lb_sg_id" {
+  value = try(module.aws_ecs[0].ecs_lb_sg.id,null)
 }
 
 # Redis
@@ -723,4 +763,8 @@ output "redis_endpoint" {
 
 output "redis_connection_string_secret" {
   value = try(module.redis[0].redis_connection_string_secret,null)
+}
+
+output "redis_sg_id" {
+  value = try(module.redis[0].redis_sg_id,null)
 }

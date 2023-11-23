@@ -82,18 +82,6 @@ resource "aws_db_instance" "default" {
   }
 }
 
-output "db_endpoint" {
-  value = aws_db_instance.default.endpoint
-}
-
-output "db_secret_name" {
-  value = aws_secretsmanager_secret.rds_database_credentials.name
-}
-
-output "db_id" {
-  value = aws_db_instance.default.id
-}
-
 // Creates a secret manager secret for the databse credentials
 resource "aws_secretsmanager_secret" "rds_database_credentials" {
   name   = "${var.aws_resource_identifier_supershort}-rdsdb-pub-${random_string.random_sm.result}"
@@ -141,6 +129,22 @@ data "aws_vpc" "selected" {
   id    = var.aws_selected_vpc_id
 }
 
+output "db_endpoint" {
+  value = aws_db_instance.default.endpoint
+}
+
+output "db_secret_name" {
+  value = aws_secretsmanager_secret.rds_database_credentials.name
+}
+
+output "db_id" {
+  value = aws_db_instance.default.id
+}
+
 output "random_string" {
   value = random_string.random_sm.result
+}
+
+output "rds_sg_id" {
+    value = aws_security_group.rds_db_security_group.id
 }
