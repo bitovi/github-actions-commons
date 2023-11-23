@@ -270,7 +270,7 @@ output "db_proxy_endpoint" {
 }
 
 output "db_proxy_port" {
-  value = aws_db_proxy.rds_proxy[0].port
+  value = local.db_port
 }
 
 output "db_proxy_secret_name" {
