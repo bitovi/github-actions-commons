@@ -1,10 +1,22 @@
 data "aws_elb_service_account" "main" {}
 
 resource "aws_s3_bucket" "lb_access_logs" {
-  bucket = var.lb_access_bucket_name
+  bucket = var.aws_elb_access_log_bucket_name
   force_destroy = true
   tags = {
-    Name = var.lb_access_bucket_name
+    Name = var.aws_elb_access_log_bucket_name
+  }
+}
+
+resource "aws_s3_bucket_lifecycle_configuration" "lb_access_logs_lifecycle" {
+  count  = tonumber(var.aws_elb_access_log_expire) > 0 ? 1 : 0
+  bucket = aws_s3_bucket.lb_access_logs.id
+  rule {
+    id = "ExpirationRule"
+    status = "Enabled"
+    expiration {
+      days = tonumber(var.aws_elb_access_log_expire)
+    }
   }
 }
 
@@ -12,24 +24,23 @@ resource "aws_s3_bucket_policy" "allow_access_from_another_account" {
   bucket = aws_s3_bucket.lb_access_logs.id
   policy = <<POLICY
 {
-  "Id": "Policy",
   "Version": "2012-10-17",
+  "Id": "Policy",
   "Statement": [
     {
-      "Action": [
-        "s3:PutObject"
-      ],
       "Effect": "Allow",
-      "Resource": "arn:aws:s3:::${var.lb_access_bucket_name}/*",
       "Principal": {
-        "AWS": [
-          "${data.aws_elb_service_account.main.arn}"
-        ]
-      }
+        "AWS": ["${data.aws_elb_service_account.main.arn}"]
+      },
+      "Action": ["s3:PutObject"],
+      "Resource": "arn:aws:s3:::${var.aws_elb_access_log_bucket_name}/*"
     }
   ]
 }
 POLICY
+  lifecycle {
+    ignore_changes = [ policy ]
+  }
 }
 
 # Adding an allow all from ELB to target SG

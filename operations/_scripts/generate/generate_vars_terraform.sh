@@ -70,8 +70,6 @@ else
 fi
 
 #-- AWS Specific --#
-# aws_resource_identifier=$(generate_var aws_resource_identifier AWS_RESOURCE_IDENTIFIER - Fixed
-# aws_resource_identifier_supershort=$(generate_var aws_resource_identifier_supershort AWS_RESOURCE_IDENTIFIER_SUPERSHORT - Fixed
 aws_additional_tags=$(generate_var aws_additional_tags $AWS_ADDITIONAL_TAGS)
 
 #-- ENV Files --#
@@ -137,6 +135,8 @@ if [[ $(alpha_only "$AWS_ELB_CREATE") == true ]]; then
   aws_elb_listen_port=$(generate_var aws_elb_listen_port $AWS_ELB_LISTEN_PORT)
   aws_elb_listen_protocol=$(generate_var aws_elb_listen_protocol $AWS_ELB_LISTEN_PROTOCOL)
   aws_elb_healthcheck=$(generate_var aws_elb_healthcheck $AWS_ELB_HEALTHCHECK)
+  aws_elb_access_log_bucket_name=$(generate_var aws_elb_access_log_bucket_name $AWS_ELB_ACCESS_LOG_BUCKET_NAME)
+  aws_elb_access_log_expire=$(generate_var aws_elb_access_log_expire $AWS_ELB_ACCESS_LOG_EXPIRE)
   aws_elb_additional_tags=$(generate_var aws_elb_additional_tags $AWS_ELB_ADDITIONAL_TAGS)
 fi
 
@@ -404,11 +404,6 @@ fi
 # app_repo_name=$(generate_var app_repo_name APP_REPO_NAME - Fixed
 # app_branch_name=$(generate_var app_branch_name APP_BRANCH_NAME - Fixed
 # app_install_root=$(generate_var app_install_root APP_INSTALL_ROOT - Fixed
-#-- Load Balancer --#
-
-#-- Logging --#
-lb_access_bucket_name=$(generate_var lb_access_bucket_name $LB_LOGS_BUCKET)
-
 # -------------------------------------------------- #
 echo "
 #-- ANSIBLE --#
@@ -471,7 +466,8 @@ $aws_elb_app_protocol
 $aws_elb_listen_port
 $aws_elb_listen_protocol
 $aws_elb_healthcheck
-$lb_access_bucket_name
+$aws_elb_access_log_expire
+$aws_elb_access_log_bucket_name
 $aws_elb_additional_tags
 
 #-- EFS --#

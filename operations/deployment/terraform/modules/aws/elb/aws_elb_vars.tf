@@ -5,7 +5,8 @@ variable "aws_elb_app_protocol" {}
 variable "aws_elb_listen_port" {}
 variable "aws_elb_listen_protocol" {}
 variable "aws_elb_healthcheck" {}
-variable "lb_access_bucket_name" {}
+variable "aws_elb_access_log_bucket_name" {}
+variable "aws_elb_access_log_expire" {}
 
 variable "aws_instance_server_az" {}
 variable "aws_vpc_selected_id" {}

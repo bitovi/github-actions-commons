@@ -19,13 +19,13 @@ case $1 in
 
   ;;
   lb)
-      # Generate LB_LOGS_BUCKET ID
+      # Generate AWS_ELB_ACCESS_LOG_BUCKET_NAME ID
       #  Add trailing id depending on name length - See AWS S3 bucket naming rules
       if [[ ${#GITHUB_IDENTIFIER} < 59 ]]; then
-        LB_LOGS_BUCKET="${GITHUB_IDENTIFIER}-logs"
+        AWS_ELB_ACCESS_LOG_BUCKET_NAME="${GITHUB_IDENTIFIER}-logs"
       else
-        LB_LOGS_BUCKET="${GITHUB_IDENTIFIER}-lg"
+        AWS_ELB_ACCESS_LOG_BUCKET_NAME="${GITHUB_IDENTIFIER}-lg"
       fi
-      echo "$LB_LOGS_BUCKET"
+      echo "$AWS_ELB_ACCESS_LOG_BUCKET_NAME"
   ;;
 esac
