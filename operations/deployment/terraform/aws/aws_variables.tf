@@ -22,11 +22,13 @@ variable "ansible_start_docker_timeout" {
 variable "aws_resource_identifier" {
   type        = string
   description = "Identifier to use for AWS resources (defaults to GITHUB_ORG-GITHUB_REPO-GITHUB_BRANCH)"
+  default     = ""
 }
 
 variable "aws_resource_identifier_supershort" {
   type        = string
   description = "Identifier to use for AWS resources (defaults to GITHUB_ORG-GITHUB_REPO-GITHUB_BRANCH) shortened to 30 chars"
+  default     = ""
 }
 
 variable "aws_additional_tags" {
@@ -83,26 +85,26 @@ variable "aws_ec2_iam_instance_profile" {
 
 variable "aws_ec2_instance_type" {
   type        = string
-  default     = "t2.small"
   description = "Instance type for the EC2 instance"
+  default     = "t2.small"
 }
 
 variable "aws_ec2_instance_root_vol_size" {
   type        = string
-  default     = "8"
   description = "Instance type for the EC2 instance"
+  default     = "8"
 }
 
 variable "aws_ec2_instance_root_vol_preserve" {
   type        = bool
-  default     = false
   description = "Set this to true to avoid deletion of root volume on termination."
+  default     = false
 }
 
 variable "aws_ec2_security_group_name" {
   type        = string
-  default     = ""
   description = "Name of the security group to use"
+  default     = ""
 }
 
 variable "aws_ec2_create_keypair_sm" {
@@ -113,19 +115,20 @@ variable "aws_ec2_create_keypair_sm" {
 
 variable "aws_ec2_instance_public_ip" {
   type        = bool
-  default     = false
   description = "Attach public IP to the EC2 instance"
+  default     = false
 }
 
 variable "aws_ec2_port_list" {
-  type = string
-  default = ""
+  type        = string
+  description = "List of ports to be enabled as an ingress rule in the EC2 SG, in a [xx,yy] format - Not the ELB"
+  default     = ""
 }
 
 variable "aws_ec2_user_data_replace_on_change"  {
   type        = bool
-  default     = true
   description = "Forces destruction of EC2 instance"
+  default     = true
 }
 
 variable "aws_ec2_additional_tags" {
@@ -133,7 +136,6 @@ variable "aws_ec2_additional_tags" {
   description = "A list of strings that will be added to created resources"
   default     = "{}"
 }
-
 
 ## AWS VPC
 variable "aws_vpc_create" {
@@ -161,27 +163,27 @@ variable "aws_vpc_subnet_id" {
 }
 
 variable "aws_vpc_cidr_block" {
-  description = "CIDR of the VPC"
   type        = string
+  description = "CIDR of the VPC"
   default     = "10.10.0.0/16"
 }
 
 variable "aws_vpc_public_subnets" {
   type        = string
-  default     = "10.10.110.0/24"
   description = "A list of public subnets"
+  default     = "10.10.110.0/24"
 }
 
 variable "aws_vpc_private_subnets" {
   type        = string
-  default     = ""
   description = "A list of private subnets"
+  default     = ""
 }
 
 variable "aws_vpc_availability_zones" {
   type        = string
-  default     = ""
   description = "A list of availability zones."
+  default     = ""
 }
 
 variable "aws_vpc_additional_tags" {
@@ -255,49 +257,50 @@ variable "aws_elb_create" {
 
 variable "aws_elb_security_group_name" {
   type        = string
-  default     = ""
   description = "Name of the security group to use"
+  default     = ""
 }
 
 variable "aws_elb_app_port" {
   type        = string
-  default     = ""
   description = "app port"
+  default     = ""
 }
 
 variable "aws_elb_app_protocol" {
   type        = string
-  default     = "tcp"
   description = "Protocol to enable. Could be HTTP, HTTPS, TCP or SSL."
+  default     = "tcp"
 }
 
 variable "aws_elb_listen_port" {
   type        = string
-  default     = ""
   description = "Load balancer listening port. Defaults to 80 if NO FQDN provided, 443 if FQDN provided"
+  default     = ""
 }
 
 variable "aws_elb_listen_protocol" {
   type        = string
-  default     = ""
   description = "Protocol to enable. Could be HTTP, HTTPS, TCP or SSL. Defaults to TCP if NO FQDN provided, SSL if FQDN provided"
+  default     = ""
 }
 
 variable "aws_elb_healthcheck" {
   type        = string
-  default     = "TCP:22"
   description = "Load balancer health check string. Defaults to TCP:22"
+  default     = "TCP:22"
 }
 
 variable "aws_elb_access_log_bucket_name" {
   type        = string
   description = "S3 bucket name to store the ELB access logs."
+  default     = ""
 }
 
 variable "aws_elb_access_log_expire" {
   type        = string
-  default     = "90"
   description = "Delete the access logs after this amount of days. Defaults to 90."
+  default     = "90"
 }
 
 variable "aws_elb_additional_tags" {
@@ -347,8 +350,8 @@ variable "aws_efs_subnet_ids" {
 
 variable "aws_efs_security_group_name" {
   type        = string
-  default     = ""
   description = "Name of the security group to use"
+  default     = ""
 }
 
 variable "aws_efs_create_replica" {
@@ -359,20 +362,20 @@ variable "aws_efs_create_replica" {
 
 variable "aws_efs_replication_destination" {
   type        = string
-  default     = ""
   description = "AWS Region to target for replication"
+  default     = ""
 }
 
 variable "aws_efs_enable_backup_policy" {
   type        = bool
-  default     = false
   description = "Toggle to indiciate whether the EFS should have a backup policy, default is `false`"
+  default     = false
 }
 
 variable "aws_efs_transition_to_inactive" {
   type        = string
-  default     = "AFTER_30_DAYS"
   description = "https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/efs_file_system#transition_to_ia"
+  default     = "AFTER_30_DAYS"
 }
 
 variable "aws_efs_mount_target" {
@@ -1629,14 +1632,17 @@ variable "aws_eks_additional_tags" {
 variable "app_repo_name" {
   type        = string
   description = "GitHub Repo Name"
+  default     = ""
 }
 variable "app_org_name" {
   type        = string
   description = "GitHub Org Name"
+  default     = ""
 }
 variable "app_branch_name" {
   type        = string
   description = "GitHub Branch Name"
+  default     = ""
 }
 
 variable "app_install_root" {
@@ -1654,14 +1660,15 @@ variable "os_system_user" {
 variable "ops_repo_environment" {
   type        = string
   description = "Ops Repo Environment (i.e. directory name)"
+  default     = ""
 }
 
 # AWS Common
 
 variable "availability_zone" {
   type        = string
-  default     = null
   description = "The AZ zone to deploy resources to"
+  default     = null
 }
 
 # Need an empty line to append incoming variables. 
