@@ -289,6 +289,17 @@ variable "aws_elb_healthcheck" {
   description = "Load balancer health check string. Defaults to TCP:22"
 }
 
+variable "aws_elb_access_log_bucket_name" {
+  type        = string
+  description = "S3 bucket name to store the ELB access logs."
+}
+
+variable "aws_elb_access_log_expire" {
+  type        = string
+  default     = "90"
+  description = "Delete the access logs after this amount of days. Defaults to 90."
+}
+
 variable "aws_elb_additional_tags" {
   type        = string
   description = "A list of strings that will be added to created resources"
@@ -1651,12 +1662,6 @@ variable "availability_zone" {
   type        = string
   default     = null
   description = "The AZ zone to deploy resources to"
-}
-
-# ELB
-variable "lb_access_bucket_name" {
-  type        = string
-  description = "s3 bucket for the lb access logs"
 }
 
 # Need an empty line to append incoming variables. 

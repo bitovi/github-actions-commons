@@ -95,7 +95,8 @@ module "aws_elb" {
   aws_elb_listen_port                = var.aws_elb_listen_port
   aws_elb_listen_protocol            = var.aws_elb_listen_protocol
   aws_elb_healthcheck                = var.aws_elb_healthcheck
-  lb_access_bucket_name              = var.lb_access_bucket_name
+  aws_elb_access_log_bucket_name     = var.aws_elb_access_log_bucket_name
+  aws_elb_access_log_expire          = var.aws_elb_access_log_expire
   # EC2
   aws_instance_server_az             = [module.vpc.preferred_az]
   aws_vpc_selected_id                = module.vpc.aws_selected_vpc_id
