@@ -24,20 +24,16 @@ resource "aws_s3_bucket_policy" "allow_access_from_another_account" {
   bucket = aws_s3_bucket.lb_access_logs.id
   policy = <<POLICY
 {
-  "Id": "Policy",
   "Version": "2012-10-17",
+  "Id": "Policy",
   "Statement": [
     {
-      "Action": [
-        "s3:PutObject"
-      ],
       "Effect": "Allow",
-      "Resource": "arn:aws:s3:::${var.aws_elb_access_log_bucket_name}/*",
       "Principal": {
-        "AWS": [
-          "${data.aws_elb_service_account.main.arn}"
-        ]
+        "AWS": ["${data.aws_elb_service_account.main.arn}"]
       }
+      "Action": ["s3:PutObject"],
+      "Resource": "arn:aws:s3:::${var.aws_elb_access_log_bucket_name}/*",
     }
   ]
 }
