@@ -31,13 +31,16 @@ resource "aws_s3_bucket_policy" "allow_access_from_another_account" {
       "Effect": "Allow",
       "Principal": {
         "AWS": ["${data.aws_elb_service_account.main.arn}"]
-      }
+      },
       "Action": ["s3:PutObject"],
-      "Resource": "arn:aws:s3:::${var.aws_elb_access_log_bucket_name}/*",
+      "Resource": "arn:aws:s3:::${var.aws_elb_access_log_bucket_name}/*"
     }
   ]
 }
 POLICY
+  lifecycle {
+    ignore_changes = [ policy ]
+  }
 }
 
 # Adding an allow all from ELB to target SG
