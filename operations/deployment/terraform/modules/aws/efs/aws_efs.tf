@@ -27,7 +27,7 @@ data "aws_efs_file_system" "efs" {
 data "aws_efs_mount_target" "efs" {
   count          = var.aws_efs_fs_id != null ? 1 : 0
   file_system_id = var.aws_efs_fs_id
-  subnet_id      = var.aws_selected_subnet_id
+  subnet_id      = try(var.aws_selected_subnet_id,null)
 }
 
 resource "aws_efs_backup_policy" "efs_policy" {
