@@ -109,14 +109,8 @@ resource "aws_security_group_rule" "efs_nfs_incoming_ports_action" { # Selected 
   depends_on        = [ aws_security_group.efs_security_group_action ]
 }
 
-#data "aws_efs_mount_target" "existing_mount_targets" {
-#  count           = var.aws_efs_fs_id != null ? 0 : length(local.module_subnets)
-#  file_system_id  = var.aws_efs_fs_id
-#  subnet_id       = local.module_subnets[count.index]
-#}
-
 resource "aws_efs_mount_target" "efs_mount_target_action" {
-  count           = length(try(data.aws_efs_mount_target.existing_mount_targets),0) > 0 ? length(local.module_subnets) : 0
+  count           = length(local.module_subnets)
   file_system_id  = data.aws_efs_file_system.efs.id
   subnet_id       = local.module_subnets[count.index]
   security_groups = [aws_security_group.efs_security_group_action[0].id]
