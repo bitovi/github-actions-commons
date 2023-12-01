@@ -110,7 +110,7 @@ resource "aws_security_group_rule" "efs_nfs_incoming_ports_action" { # Selected 
 }
 
 data "aws_efs_mount_target" "existing_mount_targets" {
-  count           = local.create_efs ? 0 : length(local.module_subnets)
+  count           = var.aws_efs_fs_id != null ? 0 : length(local.module_subnets)
   file_system_id  = var.aws_efs_fs_id
   subnet_id       = local.module_subnets[count.index]
 }
