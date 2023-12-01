@@ -187,8 +187,19 @@ bitops:
     # Ansible - Fetch repo
     add_ansible_module clone_repo
     # Ansible - Install EFS
-    #if [[ $(alpha_only "$AWS_EFS_CREATE") == true ]] || [[ $(alpha_only "$AWS_EFS_CREATE_HA") == true ]] || [[ "$AWS_EFS_FS_ID" != "" ]]; then
-    if [[ $(alpha_only "AWS_EFS_ENABLE") == true ]]; then
+    if [[ $(alpha_only "$AWS_EFS_CREATE") == true ]] || [[ $(alpha_only "$AWS_EFS_CREATE_HA") == true ]] || [[ "$AWS_EFS_FS_ID" != "" ]]; then
+    #   [[ $(alpha_only "$AWS_EFS_ENABLE") == true ]] || 
+    #if [[ $(alpha_only "AWS_EFS_ENABLE") == true ]]; then
+      echo "AWS_EFS_ENABLE: $AWS_EFS_ENABLE"
+      if [[ $(alpha_only "$AWS_EFS_ENABLE") == true ]]; then
+        echo "Should add (true)"
+      fi
+      if [[ $(alpha_only "$AWS_EFS_ENABLE") != "" ]]; then
+        echo "Diff than empty"
+      fi
+      if [[ $(alpha_only "$AWS_EFS_ENABLE") == "" ]]; then
+        echo "Is empty"
+      fi
       add_ansible_module efs
     fi
     # Ansible - Install CloudWatch
