@@ -1,5 +1,5 @@
 # Bitovi Github Actions Commons
-
+![alt](https://bitovi-gha-pixel-tracker-deployment-main.bitovi-sandbox.com/pixel/xPr-DmChd-IUA5Pa0Aam7)
 This is a work in progress to embed a root tool to deploy wrapper actions in order to trim the excess of inputs yet be flexible. 
 
 ## Getting Started Intro Video
