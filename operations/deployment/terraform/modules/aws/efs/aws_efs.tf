@@ -24,12 +24,6 @@ data "aws_efs_file_system" "efs" {
   file_system_id = local.create_efs ? aws_efs_file_system.efs[0].id : var.aws_efs_fs_id
 }
 
-data "aws_efs_mount_target" "efs" {
-  count          = var.aws_efs_fs_id != null ? 1 : 0
-  file_system_id = var.aws_efs_fs_id
-  subnet_id      = try(var.aws_selected_subnet_id,null)
-}
-
 resource "aws_efs_backup_policy" "efs_policy" {
   count          = local.create_efs && var.aws_efs_enable_backup_policy ? 1 : 0
   file_system_id = data.aws_efs_file_system.efs.id
@@ -116,7 +110,7 @@ resource "aws_security_group_rule" "efs_nfs_incoming_ports_action" { # Selected 
 }
 
 resource "aws_efs_mount_target" "efs_mount_target_action" {
-  count           = length(local.module_subnets)
+  count           = var.aws_efs_fs_id != null ? 0 : length(local.module_subnets)
   file_system_id  = data.aws_efs_file_system.efs.id
   subnet_id       = local.module_subnets[count.index]
   security_groups = [aws_security_group.efs_security_group_action[0].id]
