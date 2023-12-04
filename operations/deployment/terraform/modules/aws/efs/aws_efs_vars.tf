@@ -1,8 +1,8 @@
 variable "aws_efs_create" {}
 variable "aws_efs_create_ha" {}
 variable "aws_efs_fs_id" {}
-variable "aws_efs_vpc_id" {}
-variable "aws_efs_subnet_ids" {}
+#variable "aws_efs_vpc_id" {}
+#variable "aws_efs_subnet_ids" {}
 variable "aws_efs_security_group_name" {}
 variable "aws_efs_create_replica" {}
 variable "aws_efs_replication_destination" {}

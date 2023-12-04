@@ -137,8 +137,8 @@ module "efs" {
   aws_efs_create                  = var.aws_efs_create
   aws_efs_create_ha               = var.aws_efs_create_ha
   aws_efs_fs_id                   = var.aws_efs_fs_id
-  aws_efs_vpc_id                  = var.aws_efs_vpc_id
-  aws_efs_subnet_ids              = var.aws_efs_subnet_ids
+  #aws_efs_vpc_id                  = var.aws_efs_vpc_id
+  #aws_efs_subnet_ids              = var.aws_efs_subnet_ids
   aws_efs_security_group_name     = var.aws_efs_security_group_name
   aws_efs_create_replica          = var.aws_efs_create_replica
   aws_efs_replication_destination = var.aws_efs_replication_destination
