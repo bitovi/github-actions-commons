@@ -214,7 +214,7 @@ locals {
 }
 
 output "aws_efs_sg_id" {
-  value = aws_security_group.efs_security_group_action.id
+  value = aws_security_group.efs_security_group_action[0].id
 }
 
 output "aws_efs_fs_id" {
