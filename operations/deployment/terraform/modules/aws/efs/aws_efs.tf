@@ -26,7 +26,7 @@ data "aws_efs_file_system" "efs" {
   file_system_id = local.create_efs ? aws_efs_file_system.efs[0].id : var.aws_efs_fs_id
 }
 
-data "aws_efs_file_system_mount" "efs" {
+data "aws_efs_mount_target" "efs" {
   count                  = var.aws_efs_fs_id != null ? 1 : 0
   mount_target_id        = var.aws_efs_fs_id
   availability_zone_name = var.aws_selected_az

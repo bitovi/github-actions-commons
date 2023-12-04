@@ -1426,7 +1426,7 @@ runs:
       run: $GITHUB_ACTION_PATH/operations/_scripts/deploy/summary.sh
 
     # upload generated artifacts to GitHub if enabled
-    - if: ${{ inputs.bitops_code_store == 'true' }}
+    - if: ${{ inputs.bitops_code_store == true }}
       name: Archive production artifacts
       uses: actions/upload-artifact@v3
       with:
