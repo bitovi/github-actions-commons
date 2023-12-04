@@ -187,7 +187,7 @@ data "aws_subnet" "incoming_subnet" {
 ####
 locals {
   ### Incoming definitions, need a VPC or a Subnet, if nothing, false
-  incoming_set = var.aws_efs_vpc_id != null || var.aws_efs_subnet_ids != null ? true : false
+  incoming_set = var.aws_efs_fs_id != null ? false : true #var.aws_efs_vpc_id != null || var.aws_efs_subnet_ids != null ? true : false
   #defined_set  = var.aws_selected_vpc_id != null || var.aws_selected_subnet_id != null ? true : false
   #defined_set = true # It will always be true. If not creating a VPC, will use am existing one or the default one.
   # Convert incoming subnets to list
