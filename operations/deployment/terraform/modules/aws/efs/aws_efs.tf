@@ -211,9 +211,11 @@ locals {
 }
 
 output "aws_efs_sg_id" {
-  value = aws_security_group.efs_security_group_action[0].id
+  value = aws_security_group.efs_security_group_defined[0].id
 }
 
 output "aws_efs_fs_id" {
   value = data.aws_efs_file_system.efs.id
 }
+
+data "aws_region" "current" {}
