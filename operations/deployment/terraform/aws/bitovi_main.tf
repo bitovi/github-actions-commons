@@ -48,7 +48,7 @@ module "ec2_sg_to_rds" {
 
 module "efs_to_ec2_sg" {
   source = "../modules/aws/sg/add_rule"
-  count  = var.aws_ec2_instance_create && (var.aws_efs_fs_id != null) ? 1 : 0
+  count  = var.aws_ec2_instance_create && var.aws_efs_enable && (var.aws_efs_fs_id == null) ? 1 : 0
   # Inputs 
   sg_type                  = "ingress"
   sg_rule_description      = "${var.aws_resource_identifier} - EC2 Incoming"
