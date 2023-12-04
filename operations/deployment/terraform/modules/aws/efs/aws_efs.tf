@@ -61,17 +61,17 @@ resource "aws_security_group" "efs_security_group_defined" { # Incoming from EFS
   }
 }
 
-resource "aws_security_group_rule" "efs_nfs_incoming_ports_defined" { # Incoming from EFS value
-  count             = local.incoming_set ? 1 : 0
-  type              = "ingress"
-  description       = "NFS from VPC"
-  from_port         = 2049
-  to_port           = 2049
-  protocol          = "tcp"
-  cidr_blocks       = [data.aws_vpc.incoming[0].cidr_block]
-  security_group_id = aws_security_group.efs_security_group_defined[0].id
-  depends_on        = [ aws_security_group.efs_security_group_defined ]
-}
+#resource "aws_security_group_rule" "efs_nfs_incoming_ports_defined" { # Incoming from EFS value
+#  count             = local.incoming_set ? 1 : 0
+#  type              = "ingress"
+#  description       = "NFS from VPC"
+#  from_port         = 2049
+#  to_port           = 2049
+#  protocol          = "tcp"
+#  cidr_blocks       = [data.aws_vpc.incoming[0].cidr_block]
+#  security_group_id = aws_security_group.efs_security_group_defined[0].id
+#  depends_on        = [ aws_security_group.efs_security_group_defined ]
+#}
 
 resource "aws_efs_mount_target" "efs_mount_target_incoming" {
   count           = length(local.incoming_subnets)
@@ -159,10 +159,10 @@ data "aws_vpc" "incoming" {
   id    = local.incoming_vpc
 }
 
-data "aws_subnet" "incoming" {
-  count = var.aws_efs_subnet_ids != null ? 1 : 0
-  id = local.aws_efs_subnet_ids[0]
-}
+#data "aws_subnet" "incoming" {
+#  count = var.aws_efs_subnet_ids != null ? 1 : 0
+#  id = local.aws_efs_subnet_ids[0]
+#}
 
 ##### 
 
@@ -185,14 +185,11 @@ data "aws_subnet" "incoming_subnet" {
 }
 
 ####
-
-data "aws_region" "current" {}
-
 locals {
   ### Incoming definitions, need a VPC or a Subnet, if nothing, false
   incoming_set = var.aws_efs_vpc_id != null || var.aws_efs_subnet_ids != null ? true : false
   #defined_set  = var.aws_selected_vpc_id != null || var.aws_selected_subnet_id != null ? true : false
-  defined_set = true # It will always be true. If not creating a VPC, will use am existing one or the default one.
+  #defined_set = true # It will always be true. If not creating a VPC, will use am existing one or the default one.
   # Convert incoming subnets to list
   aws_efs_subnet_ids = var.aws_efs_subnet_ids != null ? [for n in split(",", var.aws_efs_subnet_ids) : (n)] : []
   ### 
