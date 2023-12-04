@@ -56,8 +56,8 @@ module "ec2_sg_to_efs" {
   sg_rule_to_port          = 2049
   sg_rule_protocol         = "tcp"
   source_security_group_id = module.ec2[0].aws_security_group_ec2_sg_id
-  target_security_group_id = try(module.efs[0].aws_efs_sg_id)
-  depends_on = [ module.ec2,module.rds ]
+  target_security_group_id = try(module.efs[0].aws_efs_sg_id,null)
+  depends_on = [ module.ec2,module.efs ]
 }
 
 module "aws_certificates" {
