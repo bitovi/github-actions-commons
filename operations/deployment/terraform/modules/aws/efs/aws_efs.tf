@@ -82,41 +82,41 @@ resource "aws_efs_mount_target" "efs_mount_target_incoming" {
 ####
 
 #### Action SG. Rules and Mount
-resource "aws_security_group" "efs_security_group_action" {
-  count       = local.defined_set ? 1 : 0
-  name        = var.aws_efs_security_group_name != "" ? var.aws_efs_security_group_name : "SG for ${var.aws_resource_identifier} - EFS - Action defined"
-  description = "SG for ${var.aws_resource_identifier} - EFS - Action defined"
-  vpc_id      = var.aws_selected_vpc_id
-  egress {
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-  tags = {
-    Name = "${var.aws_resource_identifier}-efs-sg-act"
-  }
-}
-
-
-resource "aws_security_group_rule" "efs_nfs_incoming_ports_action" { # Selected from VPC Module
-  count             = local.defined_set ? 1 : 0
-  type              = "ingress"
-  description       = "NFS from VPC"
-  from_port         = 2049
-  to_port           = 2049
-  protocol          = "tcp"
-  cidr_blocks       = [data.aws_vpc.selected[0].cidr_block]
-  security_group_id = aws_security_group.efs_security_group_action[0].id
-  depends_on        = [ aws_security_group.efs_security_group_action ]
-}
-
-resource "aws_efs_mount_target" "efs_mount_target_action" {
-  count           = var.aws_efs_fs_id != null ? 0 : length(local.module_subnets)
-  file_system_id  = data.aws_efs_file_system.efs.id
-  subnet_id       = local.module_subnets[count.index]
-  security_groups = [aws_security_group.efs_security_group_action[0].id]
-}
+#resource "aws_security_group" "efs_security_group_action" {
+#  count       = local.defined_set ? 1 : 0
+#  name        = var.aws_efs_security_group_name != "" ? var.aws_efs_security_group_name : "SG for ${var.aws_resource_identifier} - EFS - Action defined"
+#  description = "SG for ${var.aws_resource_identifier} - EFS - Action defined"
+#  vpc_id      = var.aws_selected_vpc_id
+#  egress {
+#    from_port   = 0
+#    to_port     = 0
+#    protocol    = "-1"
+#    cidr_blocks = ["0.0.0.0/0"]
+#  }
+#  tags = {
+#    Name = "${var.aws_resource_identifier}-efs-sg-act"
+#  }
+#}
+#
+#
+#resource "aws_security_group_rule" "efs_nfs_incoming_ports_action" { # Selected from VPC Module
+#  count             = local.defined_set ? 1 : 0
+#  type              = "ingress"
+#  description       = "NFS from VPC"
+#  from_port         = 2049
+#  to_port           = 2049
+#  protocol          = "tcp"
+#  cidr_blocks       = [data.aws_vpc.selected[0].cidr_block]
+#  security_group_id = aws_security_group.efs_security_group_action[0].id
+#  depends_on        = [ aws_security_group.efs_security_group_action ]
+#}
+#
+#resource "aws_efs_mount_target" "efs_mount_target_action" {
+#  count           = var.aws_efs_fs_id != null ? 0 : length(local.module_subnets)
+#  file_system_id  = data.aws_efs_file_system.efs.id
+#  subnet_id       = local.module_subnets[count.index]
+#  security_groups = [aws_security_group.efs_security_group_action[0].id]
+#}
 
 ######
 # Data sources from selected (Coming from VPC module)
