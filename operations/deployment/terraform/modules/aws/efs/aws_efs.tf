@@ -211,7 +211,7 @@ locals {
 }
 
 output "aws_efs_sg_id" {
-  value = try(aws_security_group.efs_security_group_defined[0].id,null)
+  value = local.incoming_set ? aws_security_group.efs_security_group_defined[0].id : null
 }
 
 output "aws_efs_fs_id" {
