@@ -324,34 +324,70 @@ variable "aws_efs_create" {
   default     = false
 }
 
-variable "aws_efs_create_ha" {
-  type        = bool
-  description = "Toggle to indicate whether the EFS resource should be highly available (target mounts in all available zones within region)."
-  default     = false
-}
-
 variable "aws_efs_fs_id" {
   type        = string
   description = "ID of existing EFS"
   default     = null
 }
 
-variable "aws_efs_vpc_id" {
-  type        = string
-  description = "ID of the VPC for the EFS mount target. If aws_efs_create_ha is set to true, will create one mount target per subnet available in the VPC."
-  default     = null
+variable "aws_efs_create_mountpoints" {
+  type        = bool
+  description = "Toggle to indicate whether we should create a mountpoint for the EFS volume."
+  default     = false
 }
 
-variable "aws_efs_subnet_ids" {
+variable "aws_efs_create_ha" {
+  type        = bool
+  description = "Toggle to indicate whether the EFS resource should be highly available (mount points in all available zones within region)."
+  default     = false
+}
+
+variable "aws_efs_vol_encrypted" {
+  type        = bool
+  description = "Toggle encryption of the EFS volume."
+  default     = true
+}
+
+variable "aws_efs_kms_key_id" {
   type        = string
-  description = "ID of the VPC for the EFS mount target. If aws_efs_create_ha is set to true, will create one mount target per subnet available in the VPC."
-  default     = null
+  description = "The ARN for the KMS encryption key."
+  default     = ""
+}
+
+variable "aws_efs_performance_mode" {
+  type        = string
+  description = "Toggle perfomance mode. Options are: generalPurpose or maxIO."
+  default     = true
+}
+
+variable "aws_efs_throughput_mode" {
+  type        = string
+  description = "Throughput mode for the file system. Defaults to bursting. Valid values: bursting, provisioned, or elastic. When using provisioned, also set provisioned_throughput_in_mibps."
+  default     = true
+}
+
+variable "aws_efs_throughput_speed" {
+  type        = string
+  description = "The throughput, measured in MiB/s, that you want to provision for the file system. Only applicable with throughput_mode set to provisioned."
+  default     = true
 }
 
 variable "aws_efs_security_group_name" {
   type        = string
   description = "Name of the security group to use"
   default     = ""
+}
+
+variable "aws_efs_allowed_security_groups" {
+  type        = string
+  description = "Comma separated list of security groups to add to the EFS SG"
+  default     = null
+}
+
+variable "aws_efs_ingress_allow_all" {
+  type        = bool
+  description = "Allow incoming traffic from 0.0.0.0/0."
+  default     = true
 }
 
 variable "aws_efs_create_replica" {

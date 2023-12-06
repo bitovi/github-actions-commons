@@ -135,28 +135,61 @@ module "efs" {
   count  = var.aws_efs_enable ? 1 : 0
   # EFS
   aws_efs_create                  = var.aws_efs_create
-  aws_efs_create_ha               = var.aws_efs_create_ha
   aws_efs_fs_id                   = var.aws_efs_fs_id
-  #aws_efs_vpc_id                  = var.aws_efs_vpc_id
-  #aws_efs_subnet_ids              = var.aws_efs_subnet_ids
+  aws_efs_create_mountpoints      = var.aws_efs_create_mountpoints
+  aws_efs_create_ha               = var.aws_efs_create_ha
+
+  aws_efs_vol_encrypted           = var.aws_efs_vol_encrypted
+  aws_efs_kms_key_id              = var.aws_efs_kms_key_id
+  aws_efs_performance_mode        = var.aws_efs_performance_mode
+  aws_efs_throughput_mode         = var.aws_efs_throughput_mode
+  aws_efs_throughput_speed        = var.aws_efs_throughput_speed
   aws_efs_security_group_name     = var.aws_efs_security_group_name
+  aws_efs_allowed_security_groups = var.aws_efs_allowed_security_groups
+  aws_efs_ingress_allow_all       = var.aws_efs_ingress_allow_all
   aws_efs_create_replica          = var.aws_efs_create_replica
   aws_efs_replication_destination = var.aws_efs_replication_destination
   aws_efs_enable_backup_policy    = var.aws_efs_enable_backup_policy
   aws_efs_transition_to_inactive  = var.aws_efs_transition_to_inactive
-  # VPC inputs
-  aws_selected_vpc_id             = module.vpc.aws_selected_vpc_id
-  aws_selected_subnet_id          = module.vpc.aws_vpc_subnet_selected
-  aws_selected_az                 = module.vpc.preferred_az
-  aws_selected_az_list            = module.vpc.availability_zones
-  # Others
-  aws_resource_identifier         = var.aws_resource_identifier
+  
+  # VPC Inputs
+  aws_selected_vpc_id                    = module.vpc.aws_selected_vpc_id
+  aws_selected_subnet_id                 = module.vpc.aws_vpc_subnet_selected
+  aws_resource_identifier                = var.aws_resource_identifier
   depends_on = [module.vpc]
 
   providers = {
     aws = aws.efs
   }
 }
+
+#module "efs" {
+#  source = "../modules/aws/efs"
+#  count  = var.aws_efs_enable ? 1 : 0
+#  # EFS
+#  aws_efs_create                  = var.aws_efs_create
+#  aws_efs_create_ha               = var.aws_efs_create_ha
+#  aws_efs_fs_id                   = var.aws_efs_fs_id
+#  #aws_efs_vpc_id                  = var.aws_efs_vpc_id
+#  #aws_efs_subnet_ids              = var.aws_efs_subnet_ids
+#  aws_efs_security_group_name     = var.aws_efs_security_group_name
+#  aws_efs_create_replica          = var.aws_efs_create_replica
+#  aws_efs_replication_destination = var.aws_efs_replication_destination
+#  aws_efs_enable_backup_policy    = var.aws_efs_enable_backup_policy
+#  aws_efs_transition_to_inactive  = var.aws_efs_transition_to_inactive
+#  # VPC inputs
+#  aws_selected_vpc_id             = module.vpc.aws_selected_vpc_id
+#  aws_selected_subnet_id          = module.vpc.aws_vpc_subnet_selected
+#  aws_selected_az                 = module.vpc.preferred_az
+#  aws_selected_az_list            = module.vpc.availability_zones
+#  # Others
+#  aws_resource_identifier         = var.aws_resource_identifier
+#  depends_on = [module.vpc]
+#
+#  providers = {
+#    aws = aws.efs
+#  }
+#}
 
 module "rds" {
   source = "../modules/aws/rds"
