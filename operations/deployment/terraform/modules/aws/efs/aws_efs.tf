@@ -131,14 +131,14 @@ data "aws_vpc" "selected" {
   id    = var.aws_selected_vpc_id
 }
 
-output "fs_id" {
+output "aws_fs_id" {
   value = data.aws_efs_file_system.efs.id
 }
 
-output "replica_fs_id" {
+output "aws_replica_fs_id" {
   value = try(aws_efs_replication_configuration.efs_rep_config[0].destination[0].file_system_id,null)
 }
 
-output "efs_sg_id" {
+output "aws_efs_sg_id" {
   value = try(aws_security_group.efs_security_group[0].id,null)
 }
