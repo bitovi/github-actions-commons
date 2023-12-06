@@ -977,13 +977,13 @@ outputs:
   # EFS
   aws_efs_fs_id:
     description: "EFS FS ID"
-    value: ${{ steps.deploy.output.aws_efs_fs_id }}
+    value: ${{ steps.deploy.outputs.aws_efs_fs_id }}
   aws_efs_replica_fs_id:
     description: "EFS FS Replica ID"
-    value: ${{ steps.deploy.output.aws_efs_replica_fs_id }}
+    value: ${{ steps.deploy.outputs.aws_efs_replica_fs_id }}
   aws_efs_sg_id:
     description: "EFS FS SG ID"
-    value: ${{ steps.deploy.output.aws_efs_sg_id }}
+    value: ${{ steps.deploy.outputs.aws_efs_sg_id }}
   # RDS
   db_endpoint:
     description: "RDS Endpoint"
