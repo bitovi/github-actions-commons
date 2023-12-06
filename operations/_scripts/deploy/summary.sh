@@ -139,7 +139,7 @@ if [[ $SUCCESS == 'success' ]]; then
       result_string+="
     Redis connection URL secret name: ${REDIS_SECRET_URL}"
     fi
-  elif [[ -n $EFS_FS_ID ]] && [[ -n $REDIS_SECRET_NAME ]]; then
+  elif [[ -n $EFS_FS_ID ]]; then
     SUMMARY_CODE=16
     result_string="## Deploy Complete! :rocket:
     EFS FS ID: ${EFS_FS_ID}"
