@@ -89,7 +89,7 @@ resource "aws_security_group_rule" "ingress_efs" {
 
 locals {
   aws_efs_allowed_security_groups = var.aws_efs_allowed_security_groups != null ? [for n in split(",", var.aws_efs_allowed_security_groups) : n] : []
-  aws_efs_subnets = var.aws_efs_create_ha ? data.aws_subnets.selected_vpc_id[0].subnet_ids : [var.aws_selected_subnet_id]
+  aws_efs_subnets = var.aws_efs_create_ha ? data.aws_subnets.selected_vpc_id[0].ids : [var.aws_selected_subnet_id]
 }
 
 resource "aws_security_group_rule" "ingress_efs_extras" {
@@ -132,7 +132,7 @@ data "aws_vpc" "selected" {
 }
 
 output "fs_id" {
-  value = data.aws_efs_file_system.efs[0].id
+  value = data.aws_efs_file_system.efs.id
 }
 
 output "replica_fs_id" {
@@ -140,5 +140,5 @@ output "replica_fs_id" {
 }
 
 output "efs_sg_id" {
-  value = try(aws_security_group.efs_security_group.id,null)
+  value = try(aws_security_group.efs_security_group[0].id,null)
 }
