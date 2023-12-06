@@ -44,7 +44,7 @@ data "aws_efs_file_system" "efs" {
 }
 
 resource "aws_efs_mount_target" "efs_mount_target" {
-  count           = var.aws_efs_create_mount_target ? length(local.aws_efs_subnets) : 0
+  count           = 0#var.aws_efs_create_mount_target ? length(local.aws_efs_subnets) : 0
   file_system_id  = var.aws_efs_create ? aws_efs_file_system.efs[0].id : var.aws_efs_fs_id
   subnet_id       = local.aws_efs_subnets[count.index]
   security_groups = [aws_security_group.efs_security_group[0].id]
