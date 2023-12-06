@@ -1,9 +1,6 @@
 locals {
   # replica_destination: Checks whether a replica destination exists otherwise sets a default
   replica_destination  = var.aws_efs_replication_destination != "" ? var.aws_efs_replication_destination : data.aws_region.current.name
-  #create_mount_targets = var.aws_efs_create || var.aws_efs_create_ha || var.aws_efs_create_mount_target ? true : false
-  #create_sg            = var.aws_efs_create || local.create_mount_targets ? true : false
-  #create_mt            = var.aws_efs_create_mount_target != null ? var.aws_efs_create_mount_target : local.create_sg ? true : false
 }
 
 data "aws_region" "current" {}
@@ -17,9 +14,9 @@ resource "aws_efs_file_system" "efs" {
   encrypted      = var.aws_efs_vol_encrypted
   kms_key_id     = var.aws_efs_kms_key_id 
 
-  performance_mode                = var.aws_efs_performance_mode # generalPurpose / maxIO
-  throughput_mode                 = var.aws_efs_throughput_mode  #- (Optional) Throughput mode for the file system. Defaults to bursting. Valid values: bursting, provisioned, or elastic. When using provisioned, also set provisioned_throughput_in_mibps.
-  provisioned_throughput_in_mibps = var.aws_efs_throughput_speed # - (Optional) The throughput, measured in MiB/s, that you want to provision for the file system. Only applicable with throughput_mode set to provisioned.
+  performance_mode                = var.aws_efs_performance_mode
+  throughput_mode                 = var.aws_efs_throughput_mode
+  provisioned_throughput_in_mibps = var.aws_efs_throughput_speed
 
   lifecycle_policy {
     transition_to_ia = var.aws_efs_transition_to_inactive
@@ -44,7 +41,7 @@ data "aws_efs_file_system" "efs" {
 }
 
 resource "aws_efs_mount_target" "efs_mount_target" {
-  count           = 0#var.aws_efs_create_mount_target ? length(local.aws_efs_subnets) : 0
+  count           = var.aws_efs_create_mount_target ? length(local.aws_efs_subnets) : 0
   file_system_id  = var.aws_efs_create ? aws_efs_file_system.efs[0].id : var.aws_efs_fs_id
   subnet_id       = local.aws_efs_subnets[count.index]
   security_groups = [aws_security_group.efs_security_group[0].id]
@@ -104,14 +101,6 @@ resource "aws_security_group_rule" "ingress_efs_extras" {
   security_group_id        = aws_security_group.efs_security_group[0].id
 }
 
-#resource "aws_db_subnet_group" "selected" {
-#  name       = "${var.aws_resource_identifier}-efs"
-#  subnet_ids = local.aws_efs_subnets
-#  tags = {
-#    Name = "${var.aws_resource_identifier}-efs"
-#  }
-#}
-
 ######
 # Data sources from selected (Coming from VPC module)
 
@@ -121,10 +110,6 @@ data "aws_subnets" "selected_vpc_id"  {
     name   = "vpc-id"
     values = [var.aws_selected_vpc_id]
   }
-#  filter {
-#    name   = "availability-zone-id"
-#    values = [var.aws_selected_az_list[count.index]]
-#  }
 }
 
 data "aws_vpc" "selected" {
@@ -136,7 +121,7 @@ output "aws_efs_fs_id" {
   value = data.aws_efs_file_system.efs.id
 }
 
-output "aws_replica_fs_id" {
+output "aws_efs_replica_fs_id" {
   value = try(aws_efs_replication_configuration.efs_rep_config[0].destination[0].file_system_id,null)
 }
 

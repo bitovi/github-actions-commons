@@ -728,6 +728,17 @@ output "vm_url" {
   value = try(module.aws_route53[0].vm_url,local.elb_url)
 }
 
+# EFS
+output "aws_efs_fs_id" {
+  value = try(module.efs[0].aws_efs_fs_id,null)
+}
+output "aws_efs_replica_fs_id" {
+  value = try(module.efs[0].aws_efs_replica_fs_id,null)
+}
+output "aws_efs_sg_id" {
+  value = try(module.efs[0].aws_efs_sg_id,null)
+}
+
 # Aurora
 output "aurora_db_endpoint" {
   value = try(module.aurora_rds[0].aurora_db_endpoint,null)

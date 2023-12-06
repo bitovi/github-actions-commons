@@ -302,7 +302,7 @@ inputs:
     description: 'The name of the EFS security group. Defaults to SG for aws_resource_identifier - EFS.'
     required: false
   aws_efs_allowed_security_groups: 
-    description: 'Comma separated list of security groups to add to the EFS SG'
+    description: 'Comma separated list of security groups to be added to the EFS SG.'
     required: false
   aws_efs_ingress_allow_all: 
     description: 'Allow incoming traffic from 0.0.0.0/0.'
@@ -974,6 +974,16 @@ outputs:
   ec2_sg_id:
     description: "SG ID for the EC2 instance"
     value: ${{ steps.deploy.outputs.ec2_sg_id }}
+  # EFS
+  aws_efs_fs_id:
+    description: "EFS FS ID"
+    value: ${{ steps.deploy.output.aws_efs_fs_id }}
+  aws_efs_replica_fs_id:
+    description: "EFS FS Replica ID"
+    value: ${{ steps.deploy.output.aws_efs_replica_fs_id }}
+  aws_efs_sg_id:
+    description: "EFS FS SG ID"
+    value: ${{ steps.deploy.output.aws_efs_sg_id }}
   # RDS
   db_endpoint:
     description: "RDS Endpoint"
@@ -1448,6 +1458,9 @@ runs:
         REDIS_ENDPOINT: ${{ steps.deploy.outputs.redis_endpoint }}
         REDIS_SECRET_NAME: ${{ steps.deploy.outputs.redis_secret_name }}
         REDIS_SECRET_URL: ${{ steps.deploy.outputs.redis_connection_string_secret }}
+        EFS_FS_ID: ${{ steps.deploy.output.aws_efs_fs_id }}
+        EFS_REPLICA_FS_ID: ${{ steps.deploy.output.aws_efs_replica_fs_id }}
+        EFS_SG_ID: ${{ steps.deploy.output.aws_efs_sg_id }}
       run: $GITHUB_ACTION_PATH/operations/_scripts/deploy/summary.sh
 
     # upload generated artifacts to GitHub if enabled

@@ -45,6 +45,7 @@
 # 13 - success, DB Proxy created
 # 14 - success, ECS created
 # 15 - success, Redis created
+# 16 - success, EFS created
 # 500 - cancelled
 
 # Function to process and return the result as a string
@@ -137,6 +138,18 @@ if [[ $SUCCESS == 'success' ]]; then
     if [[ -n $REDIS_SECRET_URL ]]; then
       result_string+="
     Redis connection URL secret name: ${REDIS_SECRET_URL}"
+    fi
+  elif [[ -n $EFS_FS_ID ]] && [[ -n $REDIS_SECRET_NAME ]]; then
+    SUMMARY_CODE=16
+    result_string="## Deploy Complete! :rocket:
+    EFS FS ID: ${EFS_FS_ID}"
+    if [[ -n $EFS_REPLICA_FS_ID ]]; then
+      result_string+="
+    EFS Replica FS ID: ${EFS_REPLICA_FS_ID}"
+    fi
+    if [[ -n $EFS_SG_ID ]]; then
+      result_string+="
+    EFS Security group ID: ${EFS_SG_ID}"
     fi
   elif [[ $BITOPS_CODE_ONLY == 'true' ]]; then
     if [[ $BITOPS_CODE_STORE == 'true' ]]; then
