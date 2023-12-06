@@ -1458,9 +1458,9 @@ runs:
         REDIS_ENDPOINT: ${{ steps.deploy.outputs.redis_endpoint }}
         REDIS_SECRET_NAME: ${{ steps.deploy.outputs.redis_secret_name }}
         REDIS_SECRET_URL: ${{ steps.deploy.outputs.redis_connection_string_secret }}
-        EFS_FS_ID: ${{ steps.deploy.output.aws_efs_fs_id }}
-        EFS_REPLICA_FS_ID: ${{ steps.deploy.output.aws_efs_replica_fs_id }}
-        EFS_SG_ID: ${{ steps.deploy.output.aws_efs_sg_id }}
+        EFS_FS_ID: ${{ steps.deploy.outputs.aws_efs_fs_id }}
+        EFS_REPLICA_FS_ID: ${{ steps.deploy.outputs.aws_efs_replica_fs_id }}
+        EFS_SG_ID: ${{ steps.deploy.outputs.aws_efs_sg_id }}
       run: $GITHUB_ACTION_PATH/operations/_scripts/deploy/summary.sh
 
     # upload generated artifacts to GitHub if enabled
