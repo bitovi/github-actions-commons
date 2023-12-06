@@ -131,7 +131,7 @@ data "aws_vpc" "selected" {
   id    = var.aws_selected_vpc_id
 }
 
-output "aws_fs_id" {
+output "aws_efs_fs_id" {
   value = data.aws_efs_file_system.efs.id
 }
 

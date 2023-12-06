@@ -357,19 +357,19 @@ variable "aws_efs_kms_key_id" {
 variable "aws_efs_performance_mode" {
   type        = string
   description = "Toggle perfomance mode. Options are: generalPurpose or maxIO."
-  default     = true
+  default     = ""
 }
 
 variable "aws_efs_throughput_mode" {
   type        = string
   description = "Throughput mode for the file system. Defaults to bursting. Valid values: bursting, provisioned, or elastic. When using provisioned, also set provisioned_throughput_in_mibps."
-  default     = true
+  default     = ""
 }
 
 variable "aws_efs_throughput_speed" {
   type        = string
   description = "The throughput, measured in MiB/s, that you want to provision for the file system. Only applicable with throughput_mode set to provisioned."
-  default     = true
+  default     = ""
 }
 
 variable "aws_efs_security_group_name" {
