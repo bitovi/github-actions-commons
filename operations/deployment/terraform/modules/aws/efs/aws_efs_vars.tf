@@ -1,6 +1,6 @@
 variable "aws_efs_create" {}
 variable "aws_efs_fs_id" {}
-variable "aws_efs_create_mountpoints" {}
+variable "aws_efs_create_mount_target" {}
 variable "aws_efs_create_ha" {}
 
 variable "aws_efs_vol_encrypted" {}

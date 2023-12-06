@@ -330,10 +330,10 @@ variable "aws_efs_fs_id" {
   default     = null
 }
 
-variable "aws_efs_create_mountpoints" {
+variable "aws_efs_create_mount_target" {
   type        = bool
-  description = "Toggle to indicate whether we should create a mountpoint for the EFS volume."
-  default     = false
+  description = "Toggle to indicate whether we should create a mount target for the EFS volume."
+  default     = null
 }
 
 variable "aws_efs_create_ha" {

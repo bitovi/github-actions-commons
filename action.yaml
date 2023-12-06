@@ -277,8 +277,8 @@ inputs:
   aws_efs_fs_id: 
     description: 'ID of existing EFS'
     required: false
-  aws_efs_create_mountpoints: 
-    description: 'Toggle to indicate whether we should create a mountpoint for the EFS volume. Accepts incoming fs_id with no mountpoint too.'
+  aws_efs_create_mount_target: 
+    description: 'Toggle to indicate whether we should create a mount target for the EFS volume. Accepts incoming fs_id with no mount targets too.'
     required: false
   aws_efs_create_ha: 
     description: 'Toggle to indicate whether the EFS resource should be highly available (mount points in all available zones within region).'
@@ -1171,7 +1171,7 @@ runs:
         # AWS EFS
         AWS_EFS_CREATE: ${{ inputs.aws_efs_create }}
         AWS_EFS_FS_ID: ${{ inputs.aws_efs_fs_id }}
-        AWS_EFS_CREATE_MOUNTPOINTS: ${{ inputs.aws_efs_create_mountpoints }}
+        AWS_EFS_CREATE_MOUNT_TARGET: ${{ inputs.aws_efs_create_mount_target }}
         AWS_EFS_CREATE_HA: ${{ inputs.aws_efs_create_ha }}
         AWS_EFS_VOL_ENCRYPTED: ${{ inputs.aws_efs_vol_encrypted }}
         AWS_EFS_KMS_KEY_ID: ${{ inputs.aws_efs_kms_key_id }}

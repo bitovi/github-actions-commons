@@ -145,7 +145,7 @@ if [[ $(alpha_only "$AWS_EFS_ENABLE") == true ]]; then
   aws_efs_enable=$(generate_var aws_efs_enable $AWS_EFS_ENABLE)
   aws_efs_create=$(generate_var aws_efs_create $AWS_EFS_CREATE)
   aws_efs_fs_id=$(generate_var aws_efs_fs_id $AWS_EFS_FS_ID)
-  aws_efs_create_mountpoints=$(generate_var aws_efs_create_mountpoints $AWS_EFS_CREATE_MOUNTPOINTS)
+  aws_efs_create_mount_target=$(generate_var aws_efs_create_mount_target $AWS_EFS_CREATE_MOUNT_TARGET)
   aws_efs_create_ha=$(generate_var aws_efs_create_ha $AWS_EFS_CREATE_HA)
   aws_efs_vol_encrypted=$(generate_var aws_efs_vol_encrypted $AWS_EFS_VOL_ENCRYPTED)
   aws_efs_kms_key_id=$(generate_var aws_efs_kms_key_id $AWS_EFS_KMS_KEY_ID)
@@ -480,7 +480,7 @@ $aws_elb_additional_tags
 $aws_efs_enable
 $aws_efs_create
 $aws_efs_fs_id
-$aws_efs_create_mountpoints
+$aws_efs_create_mount_target
 $aws_efs_create_ha
 $aws_efs_vol_encrypted
 $aws_efs_kms_key_id

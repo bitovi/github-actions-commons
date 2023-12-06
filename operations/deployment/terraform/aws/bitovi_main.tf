@@ -136,7 +136,7 @@ module "efs" {
   # EFS
   aws_efs_create                  = var.aws_efs_create
   aws_efs_fs_id                   = var.aws_efs_fs_id
-  aws_efs_create_mountpoints      = var.aws_efs_create_mountpoints
+  aws_efs_create_mount_target     = var.aws_efs_create_mount_target
   aws_efs_create_ha               = var.aws_efs_create_ha
 
   aws_efs_vol_encrypted           = var.aws_efs_vol_encrypted
