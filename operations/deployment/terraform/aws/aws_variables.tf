@@ -333,7 +333,7 @@ variable "aws_efs_fs_id" {
 variable "aws_efs_create_mount_target" {
   type        = bool
   description = "Toggle to indicate whether we should create a mount target for the EFS volume."
-  default     = null
+  default     = true
 }
 
 variable "aws_efs_create_ha" {

@@ -1,7 +1,7 @@
 locals {
   # replica_destination: Checks whether a replica destination exists otherwise sets a default
   replica_destination  = var.aws_efs_replication_destination != "" ? var.aws_efs_replication_destination : data.aws_region.current.name
-  create_mount_targets = var.aws_efs_create || var.aws_efs_create_ha || var.aws_efs_create_mount_target ? true : false
+  #create_mount_targets = var.aws_efs_create || var.aws_efs_create_ha || var.aws_efs_create_mount_target ? true : false
   #create_sg            = var.aws_efs_create || local.create_mount_targets ? true : false
   #create_mt            = var.aws_efs_create_mount_target != null ? var.aws_efs_create_mount_target : local.create_sg ? true : false
 }
@@ -44,7 +44,7 @@ data "aws_efs_file_system" "efs" {
 }
 
 resource "aws_efs_mount_target" "efs_mount_target_incoming" {
-  count           = local.create_mount_targets ? length(local.aws_efs_subnets) : 0
+  count           = var.aws_efs_create_mount_target ? length(local.aws_efs_subnets) : 0
   file_system_id  = data.aws_efs_file_system.efs.id
   subnet_id       = local.aws_efs_subnets[count.index]
   security_groups = [aws_security_group.efs_security_group[0].id]
@@ -62,7 +62,7 @@ resource "aws_efs_replication_configuration" "efs_rep_config" {
 ### Security groups
 
 resource "aws_security_group" "efs_security_group" {
-  count       = local.create_mount_targets ? 1 : 0
+  count       = var.aws_efs_create_mount_target ? 1 : 0
   name        = var.aws_efs_security_group_name != null ? var.aws_efs_security_group_name : "SG for ${var.aws_resource_identifier} - EFS"
   description = "SG for ${var.aws_resource_identifier} - EFS"
   vpc_id      = var.aws_selected_vpc_id
@@ -78,7 +78,7 @@ resource "aws_security_group" "efs_security_group" {
 }
 
 resource "aws_security_group_rule" "ingress_efs" {
-  count             = local.create_mount_targets && var.aws_efs_ingress_allow_all ? 1 : 0
+  count             = var.aws_efs_create_mount_target && var.aws_efs_ingress_allow_all ? 1 : 0
   type              = "ingress"
   description       = "${var.aws_resource_identifier} - EFS Port"
   from_port         = 2049
@@ -94,7 +94,7 @@ locals {
 }
 
 resource "aws_security_group_rule" "ingress_efs_extras" {
-  count                    = local.create_mount_targets ? length(local.aws_efs_allowed_security_groups) : 0
+  count                    = var.aws_efs_create_mount_target ? length(local.aws_efs_allowed_security_groups) : 0
   type                     = "ingress"
   description              = "${var.aws_resource_identifier} - EFS ingress extra SG"
   from_port                = 2049
