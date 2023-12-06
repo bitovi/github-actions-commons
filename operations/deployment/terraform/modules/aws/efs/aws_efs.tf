@@ -26,7 +26,7 @@ resource "aws_efs_file_system" "efs" {
   }
 
   tags = {
-    Name = "${var.aws_resource_identifier}-volr"
+    Name = "${var.aws_resource_identifier}-vol"
   }
 }
 
