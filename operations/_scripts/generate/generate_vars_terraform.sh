@@ -144,11 +144,17 @@ fi
 if [[ $(alpha_only "$AWS_EFS_ENABLE") == true ]]; then
   aws_efs_enable=$(generate_var aws_efs_enable $AWS_EFS_ENABLE)
   aws_efs_create=$(generate_var aws_efs_create $AWS_EFS_CREATE)
-  aws_efs_create_ha=$(generate_var aws_efs_create_ha $AWS_EFS_CREATE_HA)
   aws_efs_fs_id=$(generate_var aws_efs_fs_id $AWS_EFS_FS_ID)
-  aws_efs_vpc_id=$(generate_var aws_efs_vpc_id $AWS_EFS_VPC_ID)
-  aws_efs_subnet_ids=$(generate_var aws_efs_subnet_ids $AWS_EFS_SUBNET_IDS)
+  aws_efs_create_mount_target=$(generate_var aws_efs_create_mount_target $AWS_EFS_CREATE_MOUNT_TARGET)
+  aws_efs_create_ha=$(generate_var aws_efs_create_ha $AWS_EFS_CREATE_HA)
+  aws_efs_vol_encrypted=$(generate_var aws_efs_vol_encrypted $AWS_EFS_VOL_ENCRYPTED)
+  aws_efs_kms_key_id=$(generate_var aws_efs_kms_key_id $AWS_EFS_KMS_KEY_ID)
+  aws_efs_performance_mode=$(generate_var aws_efs_performance_mode $AWS_EFS_PERFORMANCE_MODE)
+  aws_efs_throughput_mode=$(generate_var aws_efs_throughput_mode $AWS_EFS_THROUGHPUT_MODE)
+  aws_efs_throughput_speed=$(generate_var aws_efs_throughput_speed $AWS_EFS_THROUGHPUT_SPEED)
   aws_efs_security_group_name=$(generate_var aws_efs_security_group_name $AWS_EFS_SECURITY_GROUP_NAME)
+  aws_efs_allowed_security_groups=$(generate_var aws_efs_allowed_security_groups $AWS_EFS_ALLOWED_SECURITY_GROUPS)
+  aws_efs_ingress_allow_all=$(generate_var aws_efs_ingress_allow_all $AWS_EFS_INGRESS_ALLOW_ALL)
   aws_efs_create_replica=$(generate_var aws_efs_create_replica $AWS_EFS_CREATE_REPLICA)
   aws_efs_replication_destination=$(generate_var aws_efs_replication_destination $AWS_EFS_REPLICATION_DESTINATION)
   aws_efs_enable_backup_policy=$(generate_var aws_efs_enable_backup_policy $AWS_EFS_ENABLE_BACKUP_POLICY)
@@ -473,11 +479,17 @@ $aws_elb_additional_tags
 #-- EFS --#
 $aws_efs_enable
 $aws_efs_create
-$aws_efs_create_ha
 $aws_efs_fs_id
-$aws_efs_vpc_id
-$aws_efs_subnet_ids
+$aws_efs_create_mount_target
+$aws_efs_create_ha
+$aws_efs_vol_encrypted
+$aws_efs_kms_key_id
+$aws_efs_performance_mode
+$aws_efs_throughput_mode
+$aws_efs_throughput_speed
 $aws_efs_security_group_name
+$aws_efs_allowed_security_groups
+$aws_efs_ingress_allow_all
 $aws_efs_create_replica
 $aws_efs_replication_destination
 $aws_efs_enable_backup_policy

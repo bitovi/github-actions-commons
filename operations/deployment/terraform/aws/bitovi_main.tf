@@ -46,6 +46,20 @@ module "ec2_sg_to_rds" {
   depends_on = [ module.ec2,module.rds ]
 }
 
+module "efs_to_ec2_sg" {
+  source = "../modules/aws/sg/add_rule"
+  count  = var.aws_ec2_instance_create && var.aws_efs_enable && (var.aws_efs_fs_id == null) ? 1 : 0
+  # Inputs 
+  sg_type                  = "ingress"
+  sg_rule_description      = "${var.aws_resource_identifier} - EC2 Incoming"
+  sg_rule_from_port        = 2049
+  sg_rule_to_port          = 2049
+  sg_rule_protocol         = "tcp"
+  source_security_group_id = try(module.efs[0].aws_efs_sg_id)
+  target_security_group_id = module.ec2[0].aws_security_group_ec2_sg_id
+  depends_on = [ module.ec2,module.efs ]
+}
+
 module "aws_certificates" {
   source = "../modules/aws/certificates"
   count  = ( var.aws_ec2_instance_create || var.aws_ecs_enable ) && var.aws_r53_enable && var.aws_r53_domain_name != "" ? 1 : 0
@@ -121,28 +135,61 @@ module "efs" {
   count  = var.aws_efs_enable ? 1 : 0
   # EFS
   aws_efs_create                  = var.aws_efs_create
-  aws_efs_create_ha               = var.aws_efs_create_ha
   aws_efs_fs_id                   = var.aws_efs_fs_id
-  aws_efs_vpc_id                  = var.aws_efs_vpc_id
-  aws_efs_subnet_ids              = var.aws_efs_subnet_ids
+  aws_efs_create_mount_target     = var.aws_efs_create_mount_target
+  aws_efs_create_ha               = var.aws_efs_create_ha
+
+  aws_efs_vol_encrypted           = var.aws_efs_vol_encrypted
+  aws_efs_kms_key_id              = var.aws_efs_kms_key_id
+  aws_efs_performance_mode        = var.aws_efs_performance_mode
+  aws_efs_throughput_mode         = var.aws_efs_throughput_mode
+  aws_efs_throughput_speed        = var.aws_efs_throughput_speed
   aws_efs_security_group_name     = var.aws_efs_security_group_name
+  aws_efs_allowed_security_groups = var.aws_efs_allowed_security_groups
+  aws_efs_ingress_allow_all       = var.aws_efs_ingress_allow_all
   aws_efs_create_replica          = var.aws_efs_create_replica
   aws_efs_replication_destination = var.aws_efs_replication_destination
   aws_efs_enable_backup_policy    = var.aws_efs_enable_backup_policy
   aws_efs_transition_to_inactive  = var.aws_efs_transition_to_inactive
-  # VPC inputs
-  aws_selected_vpc_id             = module.vpc.aws_selected_vpc_id
-  aws_selected_subnet_id          = module.vpc.aws_vpc_subnet_selected
-  aws_selected_az                 = module.vpc.preferred_az
-  aws_selected_az_list            = module.vpc.availability_zones
-  # Others
-  aws_resource_identifier         = var.aws_resource_identifier
+  
+  # VPC Inputs
+  aws_selected_vpc_id                    = module.vpc.aws_selected_vpc_id
+  aws_selected_subnet_id                 = module.vpc.aws_vpc_subnet_selected
+  aws_resource_identifier                = var.aws_resource_identifier
   depends_on = [module.vpc]
 
   providers = {
     aws = aws.efs
   }
 }
+
+#module "efs" {
+#  source = "../modules/aws/efs"
+#  count  = var.aws_efs_enable ? 1 : 0
+#  # EFS
+#  aws_efs_create                  = var.aws_efs_create
+#  aws_efs_create_ha               = var.aws_efs_create_ha
+#  aws_efs_fs_id                   = var.aws_efs_fs_id
+#  #aws_efs_vpc_id                  = var.aws_efs_vpc_id
+#  #aws_efs_subnet_ids              = var.aws_efs_subnet_ids
+#  aws_efs_security_group_name     = var.aws_efs_security_group_name
+#  aws_efs_create_replica          = var.aws_efs_create_replica
+#  aws_efs_replication_destination = var.aws_efs_replication_destination
+#  aws_efs_enable_backup_policy    = var.aws_efs_enable_backup_policy
+#  aws_efs_transition_to_inactive  = var.aws_efs_transition_to_inactive
+#  # VPC inputs
+#  aws_selected_vpc_id             = module.vpc.aws_selected_vpc_id
+#  aws_selected_subnet_id          = module.vpc.aws_vpc_subnet_selected
+#  aws_selected_az                 = module.vpc.preferred_az
+#  aws_selected_az_list            = module.vpc.availability_zones
+#  # Others
+#  aws_resource_identifier         = var.aws_resource_identifier
+#  depends_on = [module.vpc]
+#
+#  providers = {
+#    aws = aws.efs
+#  }
+#}
 
 module "rds" {
   source = "../modules/aws/rds"
@@ -636,6 +683,11 @@ locals {
   elb_url              = try(module.aws_elb[0].aws_elb_dns_name,null ) != null ? "http://${module.aws_elb[0].aws_elb_dns_name}" : null
 }
 
+# VPC
+output "aws_vpc_id" {
+  value = module.vpc.aws_selected_vpc_id
+}
+
 # EC2
 output "instance_public_dns" {
   description = "Public DNS address of the EC2 instance"
@@ -679,6 +731,17 @@ output "application_public_dns" {
 
 output "vm_url" {
   value = try(module.aws_route53[0].vm_url,local.elb_url)
+}
+
+# EFS
+output "aws_efs_fs_id" {
+  value = try(module.efs[0].aws_efs_fs_id,null)
+}
+output "aws_efs_replica_fs_id" {
+  value = try(module.efs[0].aws_efs_replica_fs_id,null)
+}
+output "aws_efs_sg_id" {
+  value = try(module.efs[0].aws_efs_sg_id,null)
 }
 
 # Aurora
