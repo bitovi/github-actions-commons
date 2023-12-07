@@ -25,6 +25,11 @@
 # REDIS_ENDPOINT
 # REDIS_SECRET_NAME
 # REDIS_SECRET_URL
+# VPC_CREATE
+# VPC_ID
+# EFS_FS_ID
+# EFS_REPLICA_FS_ID
+# EFS_SG_ID
 
 # Create an error code mechanism so we don't have to check the actual static text,
 # just which case we fell into
@@ -200,4 +205,7 @@ if [[ $SUCCESS == 'success' ]]; then
       echo -e "$line" >> $GITHUB_STEP_SUMMARY
     done <<< "$final_output"
   fi
+fi
+if [[ $VPC_CREATE == 'true' ]]; then
+  echo "VPC ID: $VPC_ID" >> $GITHUB_STEP_SUMMARY
 fi

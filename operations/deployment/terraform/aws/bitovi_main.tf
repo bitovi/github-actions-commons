@@ -683,6 +683,11 @@ locals {
   elb_url              = try(module.aws_elb[0].aws_elb_dns_name,null ) != null ? "http://${module.aws_elb[0].aws_elb_dns_name}" : null
 }
 
+# VPC
+output "aws_vpc_id" {
+  value = module.vpc.aws_selected_vpc_id
+}
+
 # EC2
 output "instance_public_dns" {
   description = "Public DNS address of the EC2 instance"

@@ -964,6 +964,10 @@ inputs:
     required: false
 
 outputs:
+  # VPC
+  aws_vpc_id:
+    description: "The selected VPC ID used."
+    value: ${{ steps.deploy.ouutputs.aws_vpc_id }}
   # EC2
   vm_url:
     description: "The URL of the generated app"
@@ -1433,6 +1437,8 @@ runs:
       shell: bash
       env: 
         SUCCESS: ${{ job.status }} # success, failure, cancelled
+        VPC_CREATE: ${{ inputs.aws_vpc_create }}
+        VPC_ID: ${{ steps.deploy.outputs.aws_vpc_id }}
         URL_OUTPUT: ${{ steps.deploy.outputs.vm_url }}
         EC2_URL_OUTPUT: ${{ steps.deploy.outputs.instance_endpoint }}
         BITOPS_CODE_ONLY: ${{ inputs.bitops_code_only }}
