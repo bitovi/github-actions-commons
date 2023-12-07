@@ -197,6 +197,10 @@ else
   If you consider this is a bug in the Github Action, please submit an issue to our repo."
 fi
 
+if [[ $VPC_CREATE == 'true' ]]; then
+  result_string+="
+    VPC ID: $VPC_ID"
+fi
 echo -e "$result_string" >> $GITHUB_STEP_SUMMARY
 if [[ $SUCCESS == 'success' ]]; then
   if [[ -n $final_output ]]; then
@@ -205,7 +209,4 @@ if [[ $SUCCESS == 'success' ]]; then
       echo -e "$line" >> $GITHUB_STEP_SUMMARY
     done <<< "$final_output"
   fi
-fi
-if [[ $VPC_CREATE == 'true' ]]; then
-  echo "VPC ID: $VPC_ID" >> $GITHUB_STEP_SUMMARY
 fi
