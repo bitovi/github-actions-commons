@@ -358,12 +358,9 @@ if [[ $(alpha_only "$AWS_EKS_CREATE") == true ]]; then
   aws_eks_security_group_name_master=$(generate_var aws_eks_security_group_name_master $AWS_EKS_SECURITY_GROUP_NAME_MASTER)
   aws_eks_security_group_name_worker=$(generate_var aws_eks_security_group_name_worker $AWS_EKS_SECURITY_GROUP_NAME_WORKER)
   aws_eks_environment=$(generate_var aws_eks_environment $AWS_EKS_ENVIRONMENT)
-  aws_eks_stackname=$(generate_var aws_eks_stackname $AWS_EKS_STACKNAME)
-  aws_eks_cidr_block=$(generate_var aws_eks_cidr_block $AWS_EKS_CIDR_BLOCK)
-  aws_eks_workstation_cidr=$(generate_var aws_eks_workstation_cidr $AWS_EKS_WORKSTATION_CIDR)
-  aws_eks_availability_zones=$(generate_var aws_eks_availability_zones $AWS_EKS_AVAILABILITY_ZONES)
-  aws_eks_private_subnets=$(generate_var aws_eks_private_subnets $AWS_EKS_PRIVATE_SUBNETS)
-  aws_eks_public_subnets=$(generate_var aws_eks_public_subnets $AWS_EKS_PUBLIC_SUBNETS)
+  aws_eks_management_cidr=$(generate_var aws_eks_management_cidr $AWS_EKS_MANAGEMENT_CIDR)
+  aws_eks_allowed_ports=$(generate_var aws_eks_allowed_ports $AWS_EKS_ALLOWED_PORTS)
+  aws_eks_allowed_ports_cidr=$(generate_var aws_eks_allowed_ports_cidr $AWS_EKS_ALLOWED_PORTS_CIDR)
   #aws_eks_cluster_name=$(generate_var aws_eks_cluster_name $AWS_EKS_CLUSTER_NAME)
   aws_eks_cluster_log_types=$(generate_var aws_eks_cluster_log_types $AWS_EKS_CLUSTER_LOG_TYPES)
   aws_eks_cluster_version=$(generate_var aws_eks_cluster_version $AWS_EKS_CLUSTER_VERSION)
@@ -684,12 +681,9 @@ $aws_eks_region
 $aws_eks_security_group_name_master
 $aws_eks_security_group_name_worker
 $aws_eks_environment
-$aws_eks_stackname
-$aws_eks_cidr_block
-$aws_eks_workstation_cidr
-$aws_eks_availability_zones
-$aws_eks_private_subnets
-$aws_eks_public_subnets
+$aws_eks_management_cidr
+$aws_eks_allowed_ports
+$aws_eks_allowed_ports_cidr
 $aws_eks_cluster_name
 $aws_eks_cluster_log_types
 $aws_eks_cluster_version
@@ -757,48 +751,6 @@ $app_repo_name
 $app_branch_name
 
 " > "${GITHUB_ACTION_PATH}/operations/deployment/terraform/ecr/terraform.tfvars"
-
-
-# -------------------------------------------------- #
-echo "
-#-- AWS --#
-$aws_resource_identifier
-$aws_resource_identifier_supershort
-$aws_additional_tags
-
-#-- EKS --#
-$aws_eks_create
-$aws_eks_region
-$aws_eks_security_group_name_master
-$aws_eks_security_group_name_worker
-$aws_eks_environment
-$aws_eks_stackname
-$aws_eks_cidr_block
-$aws_eks_workstation_cidr
-$aws_eks_availability_zones
-$aws_eks_private_subnets
-$aws_eks_public_subnets
-$aws_eks_cluster_name
-$aws_eks_cluster_log_types
-$aws_eks_cluster_version
-$aws_eks_instance_type
-$aws_eks_instance_ami_id
-$aws_eks_instance_user_data_file
-$aws_eks_ec2_key_pair
-$aws_eks_store_keypair_sm
-$aws_eks_desired_capacity
-$aws_eks_max_size
-$aws_eks_min_size
-$aws_eks_additional_tags
-
-#-- Application --#
-$ops_repo_environment
-$app_org_name
-$app_repo_name
-$app_branch_name
-
-" > "${GITHUB_ACTION_PATH}/operations/deployment/terraform/eks/terraform.tfvars"
-
 # We might want to pass only the variables needed and not all of them. 
 
 echo "Done with generate_vars_terraform.sh"

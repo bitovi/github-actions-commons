@@ -598,8 +598,9 @@ module "eks" {
   aws_eks_security_group_name_master = var.aws_eks_security_group_name_master
   aws_eks_security_group_name_worker = var.aws_eks_security_group_name_worker
   aws_eks_environment                = var.aws_eks_environment
-  aws_eks_stackname                  = var.aws_eks_stackname
-  aws_eks_workstation_cidr           = var.aws_eks_workstation_cidr
+  aws_eks_management_cidr            = var.aws_eks_management_cidr
+  aws_eks_allowed_ports              = var.aws_eks_allowed_ports
+  aws_eks_allowed_ports_cidr         = var.aws_eks_allowed_ports_cidr
   aws_eks_cluster_name               = var.aws_eks_cluster_name
   aws_eks_cluster_log_types          = var.aws_eks_cluster_log_types
   aws_eks_cluster_version            = var.aws_eks_cluster_version
@@ -618,6 +619,7 @@ module "eks" {
     aws = aws.eks
     kubernetes = kubernetes.eks
   }
+  depends_on = [ module.vpc ]
 }
 
 module "ansible" {

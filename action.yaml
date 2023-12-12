@@ -917,24 +917,15 @@ inputs:
   aws_eks_environment:
     description: 'Specify the eks environment name. Defaults to env'
     required: false
-  aws_eks_stackname:
-    description: 'Specify the eks stack name for your environment. Defaults to eks-stack'
-    required: false  
-  aws_eks_cidr_block:
-    description: 'Define Base CIDR block which is divided into subnet CIDR blocks (e.g. `10.0.0.0/16`)'
-    required: false  
-  aws_eks_workstation_cidr:
-    description: 'Enter your local workstation public IP to add it to Worker nodes security groups' 
+  aws_eks_management_cidr:
+    description: 'Enter your public IP or CIDR to add it to the allowed master security groups port 443.' 
     required: false 
-  aws_eks_availability_zones:
-    description: "List of Availability Zones, Ex: `['us-east-1a', 'us-east-1b', 'us-east-1c']`"
-    required: false 
-  aws_eks_private_subnets:
-    description:  "List of private subnets (e.g. `['10.0.1.0/24', '10.0.2.0/24']`)"
-    required: false 
-  aws_eks_public_subnets:
-    description:  "List of public subnets (e.g. `['10.0.101.0/24', '10.0.102.0/24']`)"
-    required: false 
+  aws_eks_allowed_ports:
+    description: 'Allow incoming traffic from this port. Accepts comma separated values, matching 1 to 1 with aws_eks_allowed_ports_cidr.'
+    required: false
+  aws_eks_allowed_ports_cidr:
+    description: 'Allow incoming traffic from this CIDR block. Accepts comma separated values, matching 1 to 1 with aws_eks_allowed_ports. If none defined, will allow all incoming traffic.'
+    required: false
   aws_eks_cluster_name:
     description: "EKS Cluster name. Defaults to eks-cluster"
     required: false
@@ -1425,12 +1416,9 @@ runs:
         AWS_EKS_SECURITY_GROUP_NAME_MASTER: ${{ inputs.aws_eks_security_group_name_master }}
         AWS_EKS_SECURITY_GROUP_NAME_WORKER: ${{ inputs.aws_eks_security_group_name_worker }}
         AWS_EKS_ENVIRONMENT: ${{ inputs.aws_eks_environment }}
-        AWS_EKS_STACKNAME: ${{ inputs.aws_eks_stackname }}
-        AWS_EKS_CIDR_BLOCK: ${{ inputs.aws_eks_cidr_block }}
-        AWS_EKS_WORKSTATION_CIDR: ${{ inputs.aws_eks_workstation_cidr }}
-        AWS_EKS_AVAILABILITY_ZONES: ${{ inputs.aws_eks_availability_zones }}
-        AWS_EKS_PRIVATE_SUBNETS: ${{ inputs.aws_eks_private_subnets }}
-        AWS_EKS_PUBLIC_SUBNETS: ${{ inputs.aws_eks_public_subnets }}
+        AWS_EKS_MANAGEMENT_CIDR: ${{ inputs.aws_eks_management_cidr }}
+        AWS_EKS_ALLOWED_PORTS: ${{ inputs.aws_eks_allowed_ports }}
+        AWS_EKS_ALLOWED_PORTS_CIDR: ${{ inputs.aws_eks_allowed_ports_cidr }}
         AWS_EKS_CLUSTER_NAME: ${{ inputs.aws_eks_cluster_name }}
         AWS_EKS_CLUSTER_LOG_TYPES: ${{ inputs.aws_eks_cluster_log_types }}
         AWS_EKS_CLUSTER_VERSION: ${{ inputs.aws_eks_cluster_version }}

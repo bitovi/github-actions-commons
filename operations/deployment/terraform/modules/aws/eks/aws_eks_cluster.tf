@@ -1,10 +1,9 @@
 locals {
-  aws_eks_cluster_name = var.aws_eks_cluster_name != "" ? var.aws_eks_cluster_name : "${var.aws_resource_identifier}-cluster"
   aws_eks_cluster_log_types = var.aws_eks_cluster_log_types != "" ? [for n in split(",", var.aws_eks_cluster_log_types) : (n)] : []
 }
 
 resource "aws_eks_cluster" "main" {
-  name     = local.aws_eks_cluster_name
+  name     = var.aws_eks_cluster_name # Cluster name is defined during the code-generation phase
   version  = var.aws_eks_cluster_version
   role_arn = aws_iam_role.iam_role_master.arn
   vpc_config {
@@ -23,13 +22,13 @@ resource "aws_eks_cluster" "main" {
   enabled_cluster_log_types = local.aws_eks_cluster_log_types
 
   tags = {
-    "kubernetes.io/cluster/${local.aws_eks_cluster_name}" = "owned"
+    "kubernetes.io/cluster/${var.aws_eks_cluster_name}" = "owned"
   }
 }
 
 data "aws_subnets" "private" {
   filter {
-    name   = "vpc-id"
+    name    = "vpc-id"
     values = [var.aws_selected_vpc_id]
   }
   tags = {

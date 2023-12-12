@@ -96,7 +96,7 @@ if ([[ $(alpha_only "$AWS_EC2_INSTANCE_CREATE") == true ]] ||
     [[ $(alpha_only "$AWS_RDS_DB_ENABLE") == true ]] ||
     [[ $(alpha_only "$AWS_ECS_ENABLE") == true ]] ||
     [[ $(alpha_only "$AWS_DB_PROXY_ENABLE") == true ]] ||
-    [[ $(alpha_only "$AWS_EKS_CREATE") == true ]] || ## ADDED
+    [[ $(alpha_only "$AWS_EKS_CREATE") == true ]] ||
     [[ $(alpha_only "$AWS_REDIS_ENABLE") == true ]]) && 
     [[ "$(alpha_only $TF_STACK_DESTROY)" != "true" ]]; then
   # random_integer.az_select needs to be created before the "full stack" to avoid a potential state dependency locks
@@ -162,18 +162,6 @@ bitops:
       create_bitops_terraform_config ecr true
     fi
   fi
-  #if [[ $(alpha_only "$AWS_EKS_CREATE") != true ]]; then
-  #  if check_statefile aws eks; then
-  #    add_terraform_module eks
-  #    create_bitops_terraform_config eks false
-  #  fi
-  #else
-  #  if [[ $(alpha_only "$AWS_EKS_CREATE") == true ]]; then
-  #    add_terraform_module eks
-  #    create_bitops_terraform_config eks true
-  #  fi
-  #fi
-  
   # Ansible Code part
 
   if [[ "$(alpha_only $ANSIBLE_SKIP)" != "true" ]] && [[ "$(alpha_only $AWS_EC2_INSTANCE_CREATE)" == "true" ]]; then
