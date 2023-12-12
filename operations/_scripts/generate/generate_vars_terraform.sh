@@ -354,7 +354,6 @@ fi
 #-- EKS Cluster --#
 if [[ $(alpha_only "$AWS_EKS_CREATE") == true ]]; then
   aws_eks_create=$(generate_var aws_eks_create $AWS_EKS_CREATE)
-  aws_eks_region=$(generate_var aws_eks_region $AWS_EKS_REGION)
   aws_eks_security_group_name_master=$(generate_var aws_eks_security_group_name_master $AWS_EKS_SECURITY_GROUP_NAME_MASTER)
   aws_eks_security_group_name_worker=$(generate_var aws_eks_security_group_name_worker $AWS_EKS_SECURITY_GROUP_NAME_WORKER)
   aws_eks_environment=$(generate_var aws_eks_environment $AWS_EKS_ENVIRONMENT)
@@ -677,7 +676,6 @@ $aws_ecr_additional_tags
 
 #-- EKS --#
 $aws_eks_create
-$aws_eks_region
 $aws_eks_security_group_name_master
 $aws_eks_security_group_name_worker
 $aws_eks_environment
