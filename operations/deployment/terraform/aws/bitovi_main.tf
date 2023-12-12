@@ -616,7 +616,7 @@ module "eks" {
   aws_resource_identifier            = var.aws_resource_identifier
   providers = {
     aws = aws.eks
-    kubernetes = kubernetes
+    kubernetes = kubernetes.eks
   }
 }
 

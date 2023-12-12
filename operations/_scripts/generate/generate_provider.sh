@@ -64,6 +64,14 @@ provider \"aws\" {
   }
 }" >> "${GITHUB_ACTION_PATH}/operations/deployment/terraform/$1/bitovi_provider.tf"
 done
+
+echo "
+provider \"kubernetes\" {
+  alias                  = \"eks\"
+  host                   = data.aws_eks_cluster.eks_cluster.endpoint
+  cluster_ca_certificate = base64decode(data.aws_eks_cluster.eks_cluster.certificate_authority.0.data)
+  token                  = data.aws_eks_cluster_auth.cluster_auth.token
+}" >> "${GITHUB_ACTION_PATH}/operations/deployment/terraform/$1/bitovi_provider.tf"
 }
 
 generate_provider_aws aws ec2,r53,elb,efs,vpc,rds,aurora,ecs,db_proxy,redis,eks # Added eks here
