@@ -51,17 +51,6 @@ else
   aws_r53_sub_domain_name="aws_r53_sub_domain_name = \"${GITHUB_IDENTIFIER}\""
 fi
 
-# If the name is true, set it up to be the GH ID - If not, if it's not false, it's the snap name.
-if [ -n "$AWS_AURORA_DATABASE_FINAL_SNAPSHOT" ];then
-  if [[ $(alpha_only "$AWS_AURORA_DATABASE_FINAL_SNAPSHOT") == "true" ]]; then
-    aws_aurora_database_final_snapshot="aws_aurora_database_final_snapshot = \"${GITHUB_IDENTIFIER}\""
-  else
-    if [[ $(alpha_only "$AWS_AURORA_DATABASE_FINAL_SNAPSHOT") != "false" ]]; then
-      aws_aurora_database_final_snapshot="aws_aurora_database_final_snapshot = \"${AWS_AURORA_DATABASE_FINAL_SNAPSHOT}\""
-    fi
-  fi
-fi
-
 aws_eks_cluster_name=
 if [ -n "${AWS_EKS_CLUSTER_NAME}" ]; then
   aws_eks_cluster_name="aws_eks_cluster_name = \"${AWS_EKS_CLUSTER_NAME}\""
@@ -105,6 +94,9 @@ if [[ $(alpha_only "$AWS_VPC_CREATE") == true ]]; then
   aws_vpc_private_subnets=$(generate_var aws_vpc_private_subnets $AWS_VPC_PRIVATE_SUBNETS)
   aws_vpc_availability_zones=$(generate_var aws_vpc_availability_zones $AWS_VPC_AVAILABILITY_ZONES)
   aws_vpc_additional_tags=$(generate_var aws_vpc_additional_tags $AWS_VPC_ADDITIONAL_TAGS)
+  aws_vpc_enable_nat_gateway=$(generate_var aws_vpc_enable_nat_gateway $AWS_VPC_ENABLE_NAT_GATEWAY)
+  aws_vpc_single_nat_gateway=$(generate_var aws_vpc_single_nat_gateway $AWS_VPC_SINGLE_NAT_GATEWAY)
+  aws_vpc_external_nat_ip_ids=$(generate_var aws_vpc_external_nat_ip_ids $AWS_VPC_EXTERNAL_NAT_IP_IDS)
 fi
 aws_vpc_id=$(generate_var aws_vpc_id $AWS_VPC_ID)
 aws_vpc_subnet_id=$(generate_var aws_vpc_subnet_id $AWS_VPC_SUBNET_ID)
@@ -451,6 +443,9 @@ $aws_vpc_private_subnets
 $aws_vpc_availability_zones
 $aws_vpc_id
 $aws_vpc_subnet_id
+$aws_vpc_enable_nat_gateway
+$aws_vpc_single_nat_gateway
+$aws_vpc_external_nat_ip_ids
 $aws_vpc_additional_tags
 
 #-- R53 --#

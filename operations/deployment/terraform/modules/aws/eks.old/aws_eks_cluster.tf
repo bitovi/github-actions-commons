@@ -1,10 +1,5 @@
-locals {
-  aws_eks_cluster_name = var.aws_eks_cluster_name != "" ? var.aws_eks_cluster_name : "${var.aws_resource_identifier}-cluster"
-  aws_eks_cluster_log_types = var.aws_eks_cluster_log_types != "" ? [for n in split(",", var.aws_eks_cluster_log_types) : (n)] : []
-}
-
 resource "aws_eks_cluster" "main" {
-  name     = local.aws_eks_cluster_name
+  name     = var.aws_eks_cluster_name
   version  = var.aws_eks_cluster_version
   role_arn = aws_iam_role.iam_role_master.arn
   vpc_config {
@@ -25,8 +20,12 @@ resource "aws_eks_cluster" "main" {
   enabled_cluster_log_types = local.aws_eks_cluster_log_types
 
   tags = {
-    "kubernetes.io/cluster/${local.aws_eks_cluster_name}" = "owned"
+    "kubernetes.io/cluster/${var.aws_eks_cluster_name}" = "owned"
   }
+}
+
+locals {
+  aws_eks_cluster_log_types = var.aws_eks_cluster_log_types != "" ? [for n in split(",", var.aws_eks_cluster_log_types) : (n)] : []
 }
 
 data "aws_eks_cluster" "eks_cluster" {
@@ -35,6 +34,12 @@ data "aws_eks_cluster" "eks_cluster" {
 
 data "aws_eks_cluster_auth" "cluster_auth" {
   name = aws_eks_cluster.main.id
+}
+
+provider "kubernetes" {
+  host                   = data.aws_eks_cluster.eks_cluster.endpoint
+  cluster_ca_certificate = base64decode(data.aws_eks_cluster.eks_cluster.certificate_authority.0.data)
+  token                  = data.aws_eks_cluster_auth.cluster_auth.token
 }
 
 resource "aws_launch_template" "main" {

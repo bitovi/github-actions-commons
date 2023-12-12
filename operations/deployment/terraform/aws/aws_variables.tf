@@ -192,6 +192,24 @@ variable "aws_vpc_additional_tags" {
   default     = "{}"
 }
 
+variable "aws_vpc_enable_nat_gateway" {
+  type        = bool
+  description = "Enables NAT gateway"
+  default     = false
+}
+
+variable "aws_vpc_single_nat_gateway" {
+  type        = bool
+  description = "Creates only one NAT gateway"
+  default     = false
+}
+
+variable "aws_vpc_external_nat_ip_ids" {
+  type        = string
+  description = "Comma separated list of IP IDS to reuse in the NAT gateways"
+  default     = ""
+}
+
 # AWS Route53 Domains abd Certificates
 variable "aws_r53_enable" {
   type        = bool

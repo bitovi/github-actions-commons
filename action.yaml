@@ -206,6 +206,15 @@ inputs:
   aws_vpc_subnet_id:
     description: 'Specify a Subnet to be used with the instance. If none provided, will pick one.'
     required: false
+  aws_vpc_enable_nat_gateway:
+    description: ''Enables NAT gateway'
+    required: false
+  aws_vpc_single_nat_gateway:
+    description: ''Creates only one NAT gateway'
+    required: false
+  aws_vpc_external_nat_ip_ids:
+    description: ''Comma separated list of IP IDS to reuse in the NAT gateways'
+    required: false
   aws_vpc_additional_tags:
     description: 'A JSON object of additional tags that will be included on created resources. Example: `{"key1": "value1", "key2": "value2"}`'
     required: false
@@ -1157,6 +1166,9 @@ runs:
         AWS_VPC_AVAILABILITY_ZONES: ${{ inputs.aws_vpc_availability_zones }}
         AWS_VPC_ID: ${{ inputs.aws_vpc_id }}
         AWS_VPC_SUBNET_ID: ${{ inputs.aws_vpc_subnet_id }}
+        AWS_VPC_ENABLE_NAT_GATEWAY: ${{ inputs.aws_vpc_enable_nat_gateway }}
+        AWS_VPC_SINGLE_NAT_GATEWAY: ${{ inputs.aws_vpc_single_nat_gateway }}
+        AWS_VPC_EXTERNAL_NAT_IP_IDS: ${{ inputs.aws_vpc_external_nat_ip_ids }}
         AWS_VPC_ADDITIONAL_TAGS: ${{ inputs.aws_vpc_additional_tags }}
 
         # AWS Route53 Domains abd Certificates
