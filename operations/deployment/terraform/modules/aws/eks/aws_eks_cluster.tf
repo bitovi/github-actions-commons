@@ -1,17 +1,19 @@
+locals {
+  aws_eks_cluster_log_types = var.aws_eks_cluster_log_types != "" ? [for n in split(",", var.aws_eks_cluster_log_types) : (n)] : []
+}
+
 resource "aws_eks_cluster" "main" {
-  name     = var.aws_eks_cluster_name
+  name     = var.aws_eks_cluster_name # Cluster name is defined during the code-generation phase
   version  = var.aws_eks_cluster_version
   role_arn = aws_iam_role.iam_role_master.arn
   vpc_config {
     security_group_ids      = [aws_security_group.eks_security_group_master.id]
-    subnet_ids              = module.eks_vpc.public_subnets
+    subnet_ids              = data.aws_subnets.public.ids
     endpoint_private_access = false
     endpoint_public_access  = true
   }
 
   depends_on = [
-    module.eks_vpc,
-    module.eks_vpc.public_subnets,
     aws_iam_role.iam_role_master,
     aws_security_group.eks_security_group_master,
     aws_iam_role_policy_attachment.managed_policies_master,
@@ -24,8 +26,24 @@ resource "aws_eks_cluster" "main" {
   }
 }
 
-locals {
-  aws_eks_cluster_log_types = var.aws_eks_cluster_log_types != "" ? [for n in split(",", var.aws_eks_cluster_log_types) : (n)] : []
+data "aws_subnets" "private" {
+  filter {
+    name    = "vpc-id"
+    values = [var.aws_selected_vpc_id]
+  }
+  tags = {
+    Tier = "Private"
+  }
+}
+
+data "aws_subnets" "public" {
+  filter {
+    name   = "vpc-id"
+    values = [var.aws_selected_vpc_id]
+  }
+  tags = {
+    Tier = "Public"
+  }
 }
 
 data "aws_eks_cluster" "eks_cluster" {
@@ -34,12 +52,6 @@ data "aws_eks_cluster" "eks_cluster" {
 
 data "aws_eks_cluster_auth" "cluster_auth" {
   name = aws_eks_cluster.main.id
-}
-
-provider "kubernetes" {
-  host                   = data.aws_eks_cluster.eks_cluster.endpoint
-  cluster_ca_certificate = base64decode(data.aws_eks_cluster.eks_cluster.certificate_authority.0.data)
-  token                  = data.aws_eks_cluster_auth.cluster_auth.token
 }
 
 resource "aws_launch_template" "main" {
@@ -111,22 +123,28 @@ resource "aws_autoscaling_group" "main" {
   }
   max_size             = var.aws_eks_max_size
   min_size             = var.aws_eks_min_size
-  name                 = "${var.aws_eks_environment}-eksworker-asg"
-  vpc_zone_identifier  = module.eks_vpc.private_subnets
+  name                 = "${var.aws_resource_identifier}-${var.aws_eks_environment}-eksworker-asg"
+  vpc_zone_identifier  = data.aws_subnets.private.ids
   health_check_type    = "EC2"
 
 tag {
   key                 = "Name"
-  value               = "${var.aws_eks_environment}-eksworker-node"
+  value               = "${var.aws_resource_identifier}-${var.aws_eks_environment}-eksworker-asg"
   propagate_at_launch = true
 }
 
   depends_on = [
-    module.eks_vpc,
-    module.eks_vpc.private_subnets,
     aws_iam_role.iam_role_master,
     aws_iam_role.iam_role_worker,
     aws_security_group.eks_security_group_master,
     aws_security_group.eks_security_group_worker
   ]
+}
+
+output "aws_eks_cluster_name" {
+  value = aws_eks_cluster.main.name
+}
+
+output "aws_eks_cluster_role_arn" {
+  value = aws_eks_cluster.main.role_arn
 }

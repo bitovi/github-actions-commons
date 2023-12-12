@@ -30,6 +30,8 @@
 # EFS_FS_ID
 # EFS_REPLICA_FS_ID
 # EFS_SG_ID
+# EKS_CLUSTER_NAME
+# EKS_CLUSTER_ROLE_ARN
 
 # Create an error code mechanism so we don't have to check the actual static text,
 # just which case we fell into
@@ -51,6 +53,7 @@
 # 14 - success, ECS created
 # 15 - success, Redis created
 # 16 - success, EFS created
+# 17 - success, EKS created
 # 500 - cancelled
 
 # Function to process and return the result as a string
@@ -156,6 +159,11 @@ if [[ $SUCCESS == 'success' ]]; then
       result_string+="
     EFS Security group ID: ${EFS_SG_ID}"
     fi
+  elif [[ -n $EKS_CLUSTER_NAME ]]; then
+    SUMMARY_CODE=16
+    result_string="## Deploy Complete! :rocket:
+    EKS Cluster name: ${EKS_CLUSTER_NAME}
+    EKS Role ARN: ${EKS_CLUSTER_ROLE_ARN}"
   elif [[ $BITOPS_CODE_ONLY == 'true' ]]; then
     if [[ $BITOPS_CODE_STORE == 'true' ]]; then
       SUMMARY_CODE=6
@@ -168,18 +176,16 @@ if [[ $SUCCESS == 'success' ]]; then
       SUMMARY_CODE=5
       result_string="## BitOps Code generated. :tada:"
     fi
-
   elif [[ $TF_STACK_DESTROY == 'true' ]]; then
     if [[ $TF_STATE_BUCKET_DESTROY != 'true' ]]; then
       SUMMARY_CODE=9
       result_string="## Destroyed! :boom:
-      Infrastructure should be gone now!"
+    Infrastructure should be gone now!"
     else
       SUMMARY_CODE=8
       result_string="## Destroyed! :boom:
-      Buckets and infrastructure should be gone now!"
+    Buckets and infrastructure should be gone now!"
     fi
-
   elif [[ $TF_STACK_DESTROY != 'true' && $BITOPS_CODE_ONLY != 'true' ]]; then
     SUMMARY_CODE=4
     result_string="## Deploy finished! But no URL found. :thinking:
@@ -189,7 +195,6 @@ if [[ $SUCCESS == 'success' ]]; then
 elif [[ $SUCCESS == 'cancelled' ]]; then
   SUMMARY_CODE=500
   result_string="## Workflow cancelled :warning:"
-
 else
   SUMMARY_CODE=1
   result_string="## Workflow failed to run :fire:
@@ -197,7 +202,7 @@ else
   If you consider this is a bug in the Github Action, please submit an issue to our repo."
 fi
 
-if [[ $VPC_CREATE == 'true' ]]; then
+if [[ $VPC_CREATE == 'true' ]] && [[ -n $VPC_ID ]]; then
   result_string+="
     VPC ID: $VPC_ID"
 fi

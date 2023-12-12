@@ -192,6 +192,24 @@ variable "aws_vpc_additional_tags" {
   default     = "{}"
 }
 
+variable "aws_vpc_enable_nat_gateway" {
+  type        = bool
+  description = "Enables NAT gateway"
+  default     = false
+}
+
+variable "aws_vpc_single_nat_gateway" {
+  type        = bool
+  description = "Creates only one NAT gateway"
+  default     = false
+}
+
+variable "aws_vpc_external_nat_ip_ids" {
+  type        = string
+  description = "Comma separated list of IP IDS to reuse in the NAT gateways"
+  default     = ""
+}
+
 # AWS Route53 Domains abd Certificates
 variable "aws_r53_enable" {
   type        = bool
@@ -1542,52 +1560,27 @@ variable "aws_eks_security_group_name_worker" {
   default     = ""
 }
 
-variable "aws_eks_vpc_name" {
-  description = "aws aws_eks_security_group_name_worker name"
-  type        = string
-  default     = ""
-}
-
 variable "aws_eks_environment" {
   description = "eks environment name"
   type        = string
   default     = "env"
 }
 
-variable "aws_eks_stackname" {
-  description = "enter the eks stack name"
-  type        = string
-  default     = "eks-stack"
-}
-
-variable "aws_eks_cidr_block" {
-  type        = string
-  description = "Base CIDR block which is divided into subnet CIDR blocks (e.g. `10.0.0.0/16`)"
-  default     = "10.0.0.0/16"
-}
-
-variable "aws_eks_workstation_cidr" {
+variable "aws_eks_management_cidr" {
   type        = string
   description = "your local workstation public IP"
   default     = ""
 }
 
-variable "aws_eks_availability_zones" {
+variable "aws_eks_allowed_ports" {
   type        = string
-  description = "List of Availability Zones (e.g. `['us-east-1a', 'us-east-1b', 'us-east-1c']`)"
-  default     = "us-east-1a,us-east-1b"
+  description = "Allow incoming traffic from this port. Accepts comma separated values, matching 1 to 1 with aws_eks_allowed_ports_cidr."
+  default     = ""
 }
-
-variable "aws_eks_private_subnets" {
+variable "aws_eks_allowed_ports_cidr" {
   type        = string
-  description = "List of private subnets (e.g. `['10.0.1.0/24', '10.0.2.0/24']`)"
-  default     = "10.0.1.0/24,10.0.2.0/24"
-}
-
-variable "aws_eks_public_subnets" {
-  type        = string
-  description = "List of public subnets (e.g. `['10.0.101.0/24', '10.0.102.0/24']`)"
-  default     = "10.0.101.0/24,10.0.102.0/24"
+  description = "Allow incoming traffic from this CIDR block. Accepts comma separated values, matching 1 to 1 with aws_eks_allowed_ports. If none defined, will allow all incoming traffic"
+  default     = ""
 }
 
 variable "aws_eks_cluster_name" {

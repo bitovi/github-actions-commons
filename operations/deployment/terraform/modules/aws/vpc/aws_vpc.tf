@@ -31,14 +31,15 @@ resource "aws_vpc" "main" {
    cidr_block        = element(local.aws_vpc_private_subnets, count.index)
    availability_zone = element(local.aws_vpc_availability_zones, count.index)
 
-   tags = {
+   tags = merge({
      Name = "${var.aws_resource_identifier}-private${count.index + 1}"
      Tier = "Private"
-   }
+   },
+   var.aws_eks_create ? local.private_subnet_tags : {})
 }
 
 resource "aws_route_table" "private" {
-  count  = var.aws_vpc_create ? 1 : 0
+  count  = var.aws_vpc_create ? length(local.aws_vpc_private_subnets) : 0
   vpc_id = aws_vpc.main[0].id
   tags = {
     Name        = "${var.aws_resource_identifier}-private"
@@ -49,7 +50,7 @@ resource "aws_route_table" "private" {
 resource "aws_route_table_association" "private" {
   count          = var.aws_vpc_create ? length(local.aws_vpc_private_subnets) : 0
   subnet_id      = element(aws_subnet.private.*.id, count.index)
-  route_table_id = aws_route_table.private[0].id
+  route_table_id = element(aws_route_table.private.*.id, count.index)
 }
 
 ### Public
@@ -61,15 +62,16 @@ resource "aws_subnet" "public" {
   availability_zone       = element(local.aws_vpc_availability_zones, count.index)
   map_public_ip_on_launch = true
 
-  tags = {
+  tags = merge({
     Name = "${var.aws_resource_identifier}-public${count.index + 1}"
     Tier = "Public"
-  }
+  },
+  var.aws_eks_create ? local.public_subnet_tags : {})
   depends_on = [ aws_vpc.main ]
 }
 
 resource "aws_route_table" "public" {
-  count  = var.aws_vpc_create ? 1 : 0
+  count  = var.aws_vpc_create ? length(local.aws_vpc_public_subnets) : 0
   vpc_id = aws_vpc.main[0].id
 
   tags = {
@@ -81,7 +83,7 @@ resource "aws_route_table" "public" {
 resource "aws_route_table_association" "public" {
   count          = var.aws_vpc_create ? length(local.aws_vpc_public_subnets) : 0
   subnet_id      = element(aws_subnet.public.*.id, count.index)
-  route_table_id = aws_route_table.public[0].id
+  route_table_id = element(aws_route_table.public.*.id, count.index)
 }
 
 resource "aws_internet_gateway" "gw" {
@@ -89,12 +91,81 @@ resource "aws_internet_gateway" "gw" {
   vpc_id = aws_vpc.main[0].id
   depends_on = [ aws_vpc.main ]
 }
+
 resource "aws_route" "public" {
-  count                  = var.aws_vpc_create ? 1 : 0
-  route_table_id         = aws_route_table.public[0].id
+  count                  = var.aws_vpc_create ? length(aws_route_table.public) : 0
+  route_table_id         = element(aws_route_table.public.*.id, count.index)
   destination_cidr_block = "0.0.0.0/0"
   gateway_id             = aws_internet_gateway.gw[0].id
 }
+
+# NAT Gateway
+locals {
+  nat_gateway_count           = var.aws_vpc_single_nat_gateway ? 1 : length(local.aws_vpc_availability_zones)
+  nat_gateway_ips             = local.aws_vpc_reuse_nat_ips ? local.aws_vpc_external_nat_ip_ids : try(aws_eip.nat[*].id, [])
+  aws_vpc_reuse_nat_ips       = var.aws_vpc_external_nat_ip_ids != "" ? true : false
+  aws_vpc_external_nat_ip_ids = var.aws_vpc_external_nat_ip_ids != "" ? [for n in split(",", var.aws_vpc_external_nat_ip_ids) : (n)] : []
+  private_subnet_tags = {
+    "kubernetes.io/role/internal-elb" = 1
+  }
+  public_subnet_tags = {
+    "kubernetes.io/role/elb" = 1 
+  }
+}
+
+# NAT Gateway in the public subnet
+resource "aws_nat_gateway" "nat_gw" {
+  count = var.aws_vpc_enable_nat_gateway && var.aws_vpc_create ? local.nat_gateway_count : 0
+
+  allocation_id = element(
+    local.nat_gateway_ips,
+    var.aws_vpc_single_nat_gateway ? 0 : count.index,
+  )
+  subnet_id = element(
+    aws_subnet.public[*].id,
+    var.aws_vpc_single_nat_gateway ? 0 : count.index,
+  )
+
+  tags = merge(
+    {
+      "Name" = format(
+        "${var.aws_resource_identifier}-%s",
+        element(local.aws_vpc_availability_zones, var.aws_vpc_single_nat_gateway ? 0 : count.index),
+      )
+    }
+  )
+
+  depends_on = [aws_internet_gateway.gw]
+}
+
+resource "aws_route" "private_nat_gateway" {
+  count = var.aws_vpc_enable_nat_gateway && var.aws_vpc_create ? local.nat_gateway_count : 0
+
+  route_table_id         = element(aws_route_table.private[*].id, count.index)
+  destination_cidr_block = "0.0.0.0/0"
+  nat_gateway_id         = element(aws_nat_gateway.nat_gw[*].id, count.index)
+
+  timeouts {
+    create = "5m"
+  }
+}
+
+resource "aws_eip" "nat" {
+  count = var.aws_vpc_enable_nat_gateway && !local.aws_vpc_reuse_nat_ips && var.aws_vpc_create ? local.nat_gateway_count : 0
+
+  domain = "vpc"
+
+  tags = merge(
+    {
+      "Name" = format(
+        "${var.aws_resource_identifier}-%s",
+        element(local.aws_vpc_availability_zones, var.aws_vpc_single_nat_gateway ? 0 : count.index),
+      )
+    }
+  )
+  depends_on = [aws_internet_gateway.gw]
+}
+
 
 ### Data source
 

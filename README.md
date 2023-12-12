@@ -463,16 +463,13 @@ The following inputs can be used as `step.with` keys
 |------------------|---------|------------------------------------|
 | `aws_eks_create` | Boolean | Define if an EKS cluster should be created |
 | `aws_eks_region` | String | Define the region where EKS cluster should be created. Defaults to `us-east-1`. |
-| `aws_eks_security_group_name_master` | String | Define the security group name master. Defaults to `SG for ${GITHUB_ORG_NAME}-${GITHUB_REPO_NAME}-${GITHUB_BRANCH_NAME} - ${aws_eks_environment} - EKS Master`. |
-| `aws_eks_security_group_name_worker` | String | Define the security group name worker. Defaults to `SG for ${GITHUB_ORG_NAME}-${GITHUB_REPO_NAME}-${GITHUB_BRANCH_NAME} - ${aws_eks_environment} - EKS Worker`. |
+| `aws_eks_security_group_name_master` | String | Define the security group name master. Defaults to `SG for ${var.aws_resource_identifier} - EKS Master`. |
+| `aws_eks_security_group_name_worker` | String | Define the security group name worker. Defaults to `SG for ${var.aws_resource_identifier} - EKS Worker`. |
 | `aws_eks_environment` | String | Specify the eks environment name. Defaults to `env` |
-| `aws_eks_stackname` | String | Specify the eks stack name for your environment. Defaults to `eks-stack`.  |
-| `aws_eks_cidr_block` | String | Define Base CIDR block which is divided into subnet CIDR blocks. Defaults to `10.0.0.0/16`. |
-| `aws_eks_workstation_cidr` | String | Comma separated list of remote public CIDRs blocks to add it to Worker nodes security groups. |
-| `aws_eks_availability_zones` | String | Comma separated list of availability zones. Defaults to `us-east-1a,us-east-1b`.  |
-| `aws_eks_private_subnets` | String | Comma separated list of private subnets. Defaults to `10.0.1.0/24,10.0.2.0/24`. |
-| `aws_eks_public_subnets` | String | Comma separated list of public subnets. Defaults to `10.0.101.0/24,10.0.102.0/24`|
-| `aws_eks_cluster_name` | String | Specify the k8s cluster name. Defaults to `${GITHUB_ORG_NAME}-${GITHUB_REPO_NAME}-${GITHUB_BRANCH_NAME}-cluster` |
+| `aws_eks_management_cidr` | String | Comma separated list of remote public CIDRs blocks to add it to Worker nodes security groups. |
+| `aws_eks_allowed_ports` | String | Allow incoming traffic from this port. Accepts comma separated values, matching 1 to 1 with `aws_eks_allowed_ports_cidr`. |
+| `aws_eks_allowed_ports_cidr` | String | Allow incoming traffic from this CIDR block. Accepts comma separated values, matching 1 to 1 with `aws_eks_allowed_ports`. If none defined, will allow all incoming traffic. |
+| `aws_eks_cluster_name` | String | Specify the k8s cluster name. Defaults to `${var.aws_resource_identifier}-cluster` |
 | `aws_eks_cluster_log_types` | String | Comma separated list of cluster log type. See [this AWS doc](https://docs.aws.amazon.com/eks/latest/userguide/control-plane-logs.html). Defaults to `none`. |
 | `aws_eks_cluster_version` | String | Specify the k8s cluster version. Defaults to `1.27` |
 | `aws_eks_instance_type` | String | Define the EC2 instance type. See [this list](https://aws.amazon.com/ec2/instance-types/) for reference. Defaults to `t3a.medium`. |
