@@ -172,7 +172,7 @@ bitops:
   #    add_terraform_module eks
   #    create_bitops_terraform_config eks true
   #  fi
-  fi
+  #fi
   
   # Ansible Code part
 
