@@ -1,5 +1,5 @@
-name: 'Deploy Docker to AWS (EC2)'
-description: 'Deploy a Docker app to an AWS Virtual Machine (EC2) with Docker Compose'
+name: 'Bitovi Github Actions Commons repo'
+description: 'Deploy anything you want with this action. Contains multiple Terraform modules to give you what you are looking for.'
 branding:
   icon: upload-cloud
   color: red
