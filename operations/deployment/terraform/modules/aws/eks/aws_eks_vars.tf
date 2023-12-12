@@ -1,4 +1,3 @@
-variable "aws_eks_region" {}
 variable "aws_eks_security_group_name_master" {}
 variable "aws_eks_security_group_name_worker" {}
 variable "aws_eks_environment" {}

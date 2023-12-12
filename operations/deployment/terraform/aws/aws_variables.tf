@@ -1542,12 +1542,6 @@ variable "aws_eks_create" {
   default     = false
 }
 
-variable "aws_eks_region" {
-  description = "aws region name"
-  type        = string
-  default     = "us-east-1"
-}
-
 variable "aws_eks_security_group_name_master" {
   description = "aws aws_eks_security_group_name_master name"
   type        = string

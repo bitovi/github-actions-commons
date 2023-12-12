@@ -594,7 +594,6 @@ module "eks" {
   count  = var.aws_eks_create ? 1 : 0
   # EKS
   #aws_eks_create                     = var.aws_eks_create
-  aws_eks_region                     = var.aws_eks_region
   aws_eks_security_group_name_master = var.aws_eks_security_group_name_master
   aws_eks_security_group_name_worker = var.aws_eks_security_group_name_worker
   aws_eks_environment                = var.aws_eks_environment
