@@ -7,7 +7,7 @@ resource "tls_private_key" "key" {
 // Creates an ec2 key pair using the tls_private_key.key public key
 resource "aws_key_pair" "aws_key" {
   count      = var.aws_eks_ec2_key_pair == "" ? 1 : 0
-  key_name   = "${var.aws_resource_identifier}-ec2kp-eks"
+  key_name   = "${var.aws_resource_identifier}-ec2kp-eks-${random_string.random.result}"
   public_key = tls_private_key.key[0].public_key_openssh
 }
 
