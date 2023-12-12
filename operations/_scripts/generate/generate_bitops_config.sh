@@ -146,7 +146,7 @@ bitops:
       create_bitops_terraform_config aws false targets
     fi
   else
-    if [[ $(alpha_only "$AWS_EC2_INSTANCE_CREATE") != "" ]] || [[ $(alpha_only "$AWS_EFS_ENABLE") != "" ]] || [[ "$AWS_AURORA_ENABLE" != "" ]] || [[ "$AWS_RDS_DB_ENABLE" != "" ]] || [[ "$AWS_ECS_ENABLE" != "" ]] || [[ "$AWS_RDS_PROXY_ENABLE" != "" ]] || [[ "$AWS_REDIS_ENABLE" != "" ]]; then
+    if [[ $(alpha_only "$AWS_EC2_INSTANCE_CREATE") != "" ]] || [[ $(alpha_only "$AWS_EFS_ENABLE") != "" ]] || [[ "$AWS_AURORA_ENABLE" != "" ]] || [[ "$AWS_RDS_DB_ENABLE" != "" ]] || [[ "$AWS_ECS_ENABLE" != "" ]] || [[ "$AWS_RDS_PROXY_ENABLE" != "" ]] || [[ "$AWS_REDIS_ENABLE" != "" ]] || [[ "$AWS_EKS_CREATE" != "" ]]; then
       add_terraform_module aws
       create_bitops_terraform_config aws true targets
     fi
