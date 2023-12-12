@@ -14,7 +14,7 @@ resource "aws_key_pair" "aws_key" {
 // Creates a secret manager secret for the public key
 resource "aws_secretsmanager_secret" "keys_sm_secret" {
   count  = var.aws_eks_ec2_key_pair == "" ? ( var.aws_eks_store_keypair_sm ? 1 : 0 ) : 0
-  name   = "${var.aws_resource_identifier}-ec2kp-eks"
+  name   = "${var.aws_resource_identifier}-ec2kp-eks-${random_string.random.result}"
 }
  
 resource "aws_secretsmanager_secret_version" "keys_sm_secret_version" {
@@ -30,4 +30,14 @@ resource "aws_secretsmanager_secret_version" "keys_sm_secret_version" {
     "value": "${sensitive(tls_private_key.key[0].private_key_openssh)}"
    }
 EOF
+}
+
+resource "random_string" "random" {
+  length    = 5
+  lower     = true
+  special   = false
+  numeric   = false
+  lifecycle {
+    ignore_changes = all
+  }
 }
