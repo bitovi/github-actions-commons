@@ -9,14 +9,12 @@ resource "aws_eks_cluster" "main" {
   role_arn = aws_iam_role.iam_role_master.arn
   vpc_config {
     security_group_ids      = [aws_security_group.eks_security_group_master.id]
-    subnet_ids              = module.eks_vpc.public_subnets
+    subnet_ids              = data.aws_subnets.public.ids
     endpoint_private_access = false
     endpoint_public_access  = true
   }
 
   depends_on = [
-    module.eks_vpc,
-    module.eks_vpc.public_subnets,
     aws_iam_role.iam_role_master,
     aws_security_group.eks_security_group_master,
     aws_iam_role_policy_attachment.managed_policies_master,
@@ -26,6 +24,26 @@ resource "aws_eks_cluster" "main" {
 
   tags = {
     "kubernetes.io/cluster/${local.aws_eks_cluster_name}" = "owned"
+  }
+}
+
+data "aws_subnets" "private" {
+  filter {
+    name   = "vpc-id"
+    values = [var.var.aws_selected_vpc_id]
+  }
+  tags = {
+    Tier = "Private"
+  }
+}
+
+data "aws_subnets" "public" {
+  filter {
+    name   = "vpc-id"
+    values = [var.var.aws_selected_vpc_id]
+  }
+  tags = {
+    Tier = "Public"
   }
 }
 
@@ -107,7 +125,7 @@ resource "aws_autoscaling_group" "main" {
   max_size             = var.aws_eks_max_size
   min_size             = var.aws_eks_min_size
   name                 = "${var.aws_eks_environment}-eksworker-asg"
-  vpc_zone_identifier  = module.eks_vpc.private_subnets
+  vpc_zone_identifier  = data.aws_subnets.private.ids
   health_check_type    = "EC2"
 
 tag {
@@ -117,8 +135,6 @@ tag {
 }
 
   depends_on = [
-    module.eks_vpc,
-    module.eks_vpc.private_subnets,
     aws_iam_role.iam_role_master,
     aws_iam_role.iam_role_worker,
     aws_security_group.eks_security_group_master,
