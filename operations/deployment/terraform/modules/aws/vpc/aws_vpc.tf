@@ -102,7 +102,7 @@ resource "aws_route" "public" {
 # NAT Gateway
 locals {
   nat_gateway_count           = var.aws_vpc_single_nat_gateway ? 1 : length(local.aws_vpc_availability_zones)
-  nat_gateway_ips             = local.aws_vpc_reuse_nat_ips ? var.aws_vpc_external_nat_ip_ids : try(aws_eip.nat[*].id, [])
+  nat_gateway_ips             = local.aws_vpc_reuse_nat_ips ? local.aws_vpc_external_nat_ip_ids : try(aws_eip.nat[*].id, [])
   aws_vpc_reuse_nat_ips       = var.aws_vpc_external_nat_ip_ids != "" ? true : false
   aws_vpc_external_nat_ip_ids = var.aws_vpc_external_nat_ip_ids != "" ? [for n in split(",", var.aws_vpc_external_nat_ip_ids) : (n)] : []
   private_subnet_tags = {
