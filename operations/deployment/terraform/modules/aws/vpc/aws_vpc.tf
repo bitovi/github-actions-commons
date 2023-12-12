@@ -143,7 +143,7 @@ resource "aws_route" "private_nat_gateway" {
 
   route_table_id         = element(aws_route_table.private[*].id, count.index)
   destination_cidr_block = "0.0.0.0/0"
-  nat_gateway_id         = element(aws_nat_gateway.this[*].id, count.index)
+  nat_gateway_id         = element(aws_nat_gateway.nat_gw[*].id, count.index)
 
   timeouts {
     create = "5m"
@@ -163,7 +163,7 @@ resource "aws_eip" "nat" {
       )
     }
   )
-  depends_on = [aws_internet_gateway.this]
+  depends_on = [aws_internet_gateway.nat_gw]
 }
 
 

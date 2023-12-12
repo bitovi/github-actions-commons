@@ -3,7 +3,7 @@
 resource "aws_security_group" "eks_security_group_master" {
   name        = var.aws_eks_security_group_name_master != "" ? var.aws_eks_security_group_name_master : "SG for ${var.aws_resource_identifier} - ${var.aws_eks_environment} - EKS Master"
   description = "SG for ${var.aws_resource_identifier} - EKS Master"
-  vpc_id      = module.eks_vpc.vpc_id
+  vpc_id      = var.aws_selected_vpc_id
   egress {
     from_port   = 0
     to_port     = 0
@@ -19,7 +19,7 @@ resource "aws_security_group" "eks_security_group_master" {
 resource "aws_security_group" "eks_security_group_worker" {
   name        = var.aws_eks_security_group_name_worker != "" ? var.aws_eks_security_group_name_worker : "SG for ${var.aws_resource_identifier} - ${var.aws_eks_environment} - EKS Worker"
   description = "SG for ${var.aws_resource_identifier} - EKS Worker"
-  vpc_id      = module.eks_vpc.vpc_id
+  vpc_id      = var.aws_selected_vpc_id
   egress {
     from_port   = 0
     to_port     = 0
