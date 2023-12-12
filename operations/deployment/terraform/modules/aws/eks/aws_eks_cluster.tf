@@ -141,3 +141,11 @@ tag {
     aws_security_group.eks_security_group_worker
   ]
 }
+
+output "aws_eks_cluster_name" {
+  value = aws_eks_cluster.main.name
+}
+
+output "aws_eks_cluster_role_arn" {
+  value = aws_eks_cluster.main.role_arn
+}

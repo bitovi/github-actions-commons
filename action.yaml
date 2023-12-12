@@ -1078,6 +1078,14 @@ outputs:
   redis_sg_id:
     description: "Redis SG ID"
     value: ${{ steps.deploy.outputs.redis_sg_id }}
+  # EKS
+  eks_cluster_name:
+    description: "aws_eks_cluster_name"  
+    value: ${{ steps.deploy.outputs.eks_cluster_name }}
+  eks_cluster_role_arn:
+    description: "aws_eks_cluster_role_arn"
+    value: ${{ steps.deploy.outputs.eks_cluster_role_arn }}
+
 runs:
   using: 'composite'
   steps:
@@ -1479,6 +1487,9 @@ runs:
         EFS_FS_ID: ${{ steps.deploy.outputs.aws_efs_fs_id }}
         EFS_REPLICA_FS_ID: ${{ steps.deploy.outputs.aws_efs_replica_fs_id }}
         EFS_SG_ID: ${{ steps.deploy.outputs.aws_efs_sg_id }}
+        EKS_CLUSTER_NAME: ${{ steps.deploy.outputs.aws_eks_cluster_name }}
+        EKS_CLUSTER_ROLE_ARN: ${{ steps.deploy.outputs.aws_eks_cluster_role_arn }}
+    
       run: $GITHUB_ACTION_PATH/operations/_scripts/deploy/summary.sh
 
     # upload generated artifacts to GitHub if enabled

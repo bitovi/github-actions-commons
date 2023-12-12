@@ -843,3 +843,12 @@ output "redis_connection_string_secret" {
 output "redis_sg_id" {
   value = try(module.redis[0].redis_sg_id,null)
 }
+
+# EKS
+output "eks_cluster_name" {
+  value = try(module.eks[0].aws_eks_cluster_name,null)
+}
+
+output "eks_cluster_role_arn" {
+  value = try(module.eks[0].aws_eks_cluster_role_arn,null)
+}

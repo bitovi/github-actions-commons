@@ -30,6 +30,8 @@
 # EFS_FS_ID
 # EFS_REPLICA_FS_ID
 # EFS_SG_ID
+# EKS_CLUSTER_NAME
+# EKS_CLUSTER_ROLE_ARN
 
 # Create an error code mechanism so we don't have to check the actual static text,
 # just which case we fell into
@@ -51,6 +53,7 @@
 # 14 - success, ECS created
 # 15 - success, Redis created
 # 16 - success, EFS created
+# 17 - success, EKS created
 # 500 - cancelled
 
 # Function to process and return the result as a string
@@ -156,6 +159,11 @@ if [[ $SUCCESS == 'success' ]]; then
       result_string+="
     EFS Security group ID: ${EFS_SG_ID}"
     fi
+  elif [[ -n $EKS_CLUSTER_NAME ]]; then
+    SUMMARY_CODE=16
+    result_string="## Deploy Complete! :rocket:
+    EKS Cluster name: ${EKS_CLUSTER_NAME}
+    EKS Role ARN: ${EKS_CLUSTER_ROLE_ARN}"
   elif [[ $BITOPS_CODE_ONLY == 'true' ]]; then
     if [[ $BITOPS_CODE_STORE == 'true' ]]; then
       SUMMARY_CODE=6
