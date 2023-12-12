@@ -176,7 +176,6 @@ if [[ $SUCCESS == 'success' ]]; then
       SUMMARY_CODE=5
       result_string="## BitOps Code generated. :tada:"
     fi
-
   elif [[ $TF_STACK_DESTROY == 'true' ]]; then
     if [[ $TF_STATE_BUCKET_DESTROY != 'true' ]]; then
       SUMMARY_CODE=9
@@ -187,7 +186,6 @@ if [[ $SUCCESS == 'success' ]]; then
       result_string="## Destroyed! :boom:
       Buckets and infrastructure should be gone now!"
     fi
-
   elif [[ $TF_STACK_DESTROY != 'true' && $BITOPS_CODE_ONLY != 'true' ]]; then
     SUMMARY_CODE=4
     result_string="## Deploy finished! But no URL found. :thinking:
@@ -197,7 +195,6 @@ if [[ $SUCCESS == 'success' ]]; then
 elif [[ $SUCCESS == 'cancelled' ]]; then
   SUMMARY_CODE=500
   result_string="## Workflow cancelled :warning:"
-
 else
   SUMMARY_CODE=1
   result_string="## Workflow failed to run :fire:
@@ -205,7 +202,7 @@ else
   If you consider this is a bug in the Github Action, please submit an issue to our repo."
 fi
 
-if [[ $VPC_CREATE == 'true' ]]; then
+if [[ $VPC_CREATE == 'true' ]] && [[ -n $VPC_ID ]]; then
   result_string+="
     VPC ID: $VPC_ID"
 fi
