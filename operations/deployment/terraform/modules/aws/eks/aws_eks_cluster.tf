@@ -30,7 +30,7 @@ resource "aws_eks_cluster" "main" {
 data "aws_subnets" "private" {
   filter {
     name   = "vpc-id"
-    values = [var.var.aws_selected_vpc_id]
+    values = [var.aws_selected_vpc_id]
   }
   tags = {
     Tier = "Private"
@@ -40,7 +40,7 @@ data "aws_subnets" "private" {
 data "aws_subnets" "public" {
   filter {
     name   = "vpc-id"
-    values = [var.var.aws_selected_vpc_id]
+    values = [var.aws_selected_vpc_id]
   }
   tags = {
     Tier = "Public"
