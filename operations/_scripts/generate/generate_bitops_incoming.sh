@@ -167,7 +167,7 @@ function process_helm_bo_config() {
   yq_check_add_missing ".helm.options.release-name" "$chart_name" $config_file
   yq_check_add_missing ".helm.options.skip-deploy" "false" $config_file
   yq_check_add_missing ".helm.options.k8s.fetch.kubeconfig" "true" $config_file
-  yq_check_add_missing ".helm.options.k8s.fetch.cluster_name" "$cluster_name" $config_file
+  yq_check_add_missing ".helm.options.k8s.fetch.cluster-name" "$cluster_name" $config_file
 }
 
 function helm_move_content_prepend() {
