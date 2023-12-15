@@ -59,9 +59,9 @@ resource "aws_launch_template" "main" {
     associate_public_ip_address = true
     security_groups             = [aws_security_group.eks_security_group_worker.id]
   }
-  iam_instance_profile {
-    name = aws_iam_instance_profile.eks_inst_profile.name
-  }
+  #iam_instance_profile {
+  #  name = aws_iam_instance_profile.eks_inst_profile.name
+  #}
   image_id                    = var.aws_eks_instance_ami_id != "" ? var.aws_eks_instance_ami_id : data.aws_ami.image_selected.id
   instance_type               = var.aws_eks_instance_type
   name_prefix                 = "${var.aws_eks_environment}-eksworker"
@@ -143,14 +143,18 @@ locals {
 
 resource "aws_eks_node_group" "worker_nodes" {
   cluster_name    = aws_eks_cluster.main.name
-  node_group_name = "worker-node-group"
-  subnet_ids      = data.aws_subnets.private.ids
+  node_group_name = "${var.aws_resource_identifier}-${var.aws_eks_environment}-eksworker-node-group"
   node_role_arn   = aws_iam_role.iam_role_worker.arn
+  subnet_ids      = data.aws_subnets.private.ids
 
   scaling_config {
     desired_size = var.aws_eks_desired_capacity
     max_size     = var.aws_eks_max_size
     min_size     = var.aws_eks_min_size
+  }
+
+  update_config {
+    max_unavailable = 1
   }
 
   launch_template {
