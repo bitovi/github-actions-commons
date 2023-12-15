@@ -143,7 +143,7 @@ locals {
 
 resource "aws_eks_node_group" "worker_nodes" {
   cluster_name    = aws_eks_cluster.main.name
-  node_group_name = "${var.aws_resource_identifier}-${var.aws_eks_environment}-eksworker-node-group"
+  node_group_name = "${var.aws_resource_identifier}-ng"
   node_role_arn   = aws_iam_role.iam_role_worker.arn
   subnet_ids      = data.aws_subnets.private.ids
 
