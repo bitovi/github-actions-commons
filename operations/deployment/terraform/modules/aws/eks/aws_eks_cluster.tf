@@ -99,7 +99,7 @@ locals {
   sudo yum install -y https://s3.amazonaws.com/ec2-downloads-windows/SSMAgent/latest/linux_amd64/amazon-ssm-agent.rpm
   systemctl enable amazon-ssm-agent
   systemctl restart amazon-ssm-agent
-  /etc/eks/bootstrap.sh --apiserver-endpoint '${resource.aws_eks_cluster.main.endpoint}' --b64-cluster-ca '${resource.aws_eks_cluster.main.certificate_authority.0.data}' '${resource.aws_eks_cluster.main.name}'
+  /etc/eks/bootstrap.sh --apiserver-endpoint '${aws_eks_cluster.main.endpoint}' --b64-cluster-ca '${aws_eks_cluster.main.certificate_authority.0.data}' '${aws_eks_cluster.main.name}'
   # Retrieve the necessary packages for `mount` to work properly with NFSv4.1
   sudo yum update -y
   sudo yum install -y amazon-efs-utils nfs-utils nfs-utils-lib
