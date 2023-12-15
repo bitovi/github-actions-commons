@@ -116,23 +116,6 @@ locals {
 }
 
 resource "aws_autoscaling_group" "main" {
-#  desired_capacity     = var.aws_eks_desired_capacity
-#  launch_template {
-#    id      = aws_launch_template.main.id
-#    version = "${aws_launch_template.main.latest_version}"
-#  }
-#  max_size             = var.aws_eks_max_size
-#  min_size             = var.aws_eks_min_size
-#  name                 = "${var.aws_resource_identifier}-${var.aws_eks_environment}-eksworker-asg"
-#  vpc_zone_identifier  = data.aws_subnets.private.ids
-#  health_check_type    = "EC2"
-#
-#tag {
-#  key                 = "Name"
-#  value               = "${var.aws_resource_identifier}-${var.aws_eks_environment}-eksworker-node"
-#  propagate_at_launch = true
-#}
-
   desired_capacity     = var.aws_eks_desired_capacity
   launch_template {
     id      = aws_launch_template.main.id
@@ -140,13 +123,13 @@ resource "aws_autoscaling_group" "main" {
   }
   max_size             = var.aws_eks_max_size
   min_size             = var.aws_eks_min_size
-  name                 = "${var.aws_eks_environment}-eksworker-asg"
+  name                 = "${var.aws_resource_identifier}-${var.aws_eks_environment}-eksworker-asg"
   vpc_zone_identifier  = data.aws_subnets.private.ids
   health_check_type    = "EC2"
 
 tag {
   key                 = "Name"
-  value               = "${var.aws_eks_environment}-eksworker-node"
+  value               = "${var.aws_resource_identifier}-${var.aws_eks_environment}-eksworker-node"
   propagate_at_launch = true
 }
 
