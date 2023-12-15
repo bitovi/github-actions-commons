@@ -1592,7 +1592,7 @@ variable "aws_eks_cluster_log_types" {
 variable "aws_eks_cluster_version" {
   description = "enter the kubernetes version"
   type        = number
-  default     = "1.27"
+  default     = ""
 }
 
 variable "aws_eks_instance_type" {
