@@ -867,6 +867,4 @@ output "debug_eks_cluster_ca_certificate" {
   value = try(module.eks[0].eks_cluster_ca_certificate,null)
 }
 
-output "debug_eks_token" {
-  value = try(module.eks[0].eks_token,null)
-}
+
