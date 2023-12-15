@@ -853,3 +853,20 @@ output "eks_cluster_name" {
 output "eks_cluster_role_arn" {
   value = try(module.eks[0].aws_eks_cluster_role_arn,null)
 }
+
+
+output "debug_private_subnets" {
+  value = try(module.eks[0].private_subnets,null)
+}
+
+output "debug_eks_host" {
+  value = try(module.eks[0].eks_host,null)
+}
+
+output "debug_eks_cluster_ca_certificate" {
+  value = try(module.eks[0].eks_cluster_ca_certificate,null)
+}
+
+output "debug_eks_token" {
+  value = try(module.eks[0].eks_token,null)
+}
