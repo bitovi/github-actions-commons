@@ -82,9 +82,8 @@ resource "aws_launch_template" "main" {
   }
   tag_specifications {
     resource_type = "instance"
-
     tags = {
-      "kubernetes.io/cluster/${var.aws_eks_cluster_name}" = "owned"
+      "kubernetes.io/cluster/${var.aws_eks_cluster_name}" = "owned",
       "Name" = "${var.aws_resource_identifier}-${var.aws_eks_environment}-eksworker-node"
     }
   }
