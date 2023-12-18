@@ -57,8 +57,9 @@ data "aws_eks_cluster_auth" "cluster_auth" {
 resource "aws_launch_template" "main" {
   network_interfaces {
     associate_public_ip_address = true
-    security_groups             = [aws_security_group.eks_security_group_worker.id]
+    #security_groups             = [aws_security_group.eks_security_group_worker.id]
   }
+  vpc_security_group_ids = [aws_security_group.eks_security_group_worker.id]
   iam_instance_profile {
   #  name = aws_iam_instance_profile.eks_inst_profile.name
   }
@@ -80,16 +81,16 @@ resource "aws_launch_template" "main" {
     http_put_response_hop_limit = 1
     instance_metadata_tags      = "enabled"
   }
-  tag_specifications {
-    resource_type = "instance"
-    tags = {
-    #  "kubernetes.io/cluster/${var.aws_eks_cluster_name}" = "owned",
-      "Name" = "${var.aws_resource_identifier}-${var.aws_eks_environment}-eksworker-node"
-    }
-  }
-  tags = {
-    "kubernetes.io/cluster/${var.aws_eks_cluster_name}" = "owned"
-  } 
+  #tag_specifications {
+  #  resource_type = "instance"
+  #  tags = {
+  #  #  "kubernetes.io/cluster/${var.aws_eks_cluster_name}" = "owned",
+  #    "Name" = "${var.aws_resource_identifier}-${var.aws_eks_environment}-eksworker-node"
+  #  }
+  #}
+  #tags = {
+  #  "kubernetes.io/cluster/${var.aws_eks_cluster_name}" = "owned"
+  #} 
   depends_on  = [aws_iam_role.iam_role_worker]
 }
 
