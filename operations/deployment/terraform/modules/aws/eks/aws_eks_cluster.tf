@@ -67,7 +67,10 @@ resource "aws_launch_template" "main" {
   name_prefix                 = "${var.aws_eks_environment}-eksworker"
   user_data                   = base64encode(try(file("./aws_ec2_incoming_user_data_script.sh"), (var.aws_eks_instance_ami_id != "" ? local.node-userdata : "" )))
   key_name                    = var.aws_eks_ec2_key_pair != "" ? var.aws_eks_ec2_key_pair : aws_key_pair.aws_key[0].id
-  update_default_version = true
+  update_default_version      = true
+  monitoring {
+    enabled = true
+  }
   lifecycle {
     create_before_destroy = true
   }
@@ -163,9 +166,12 @@ resource "aws_eks_node_group" "worker_nodes" {
   }
 
   depends_on = [
-    aws_eks_cluster.main,
     aws_iam_role.iam_role_worker,
+    aws_iam_role.iam_role_master,
+    aws_eks_cluster.main,
     aws_launch_template.main,
+    aws_security_group.eks_security_group_master,
+    aws_security_group.eks_security_group_worker
   ]
 }
 
