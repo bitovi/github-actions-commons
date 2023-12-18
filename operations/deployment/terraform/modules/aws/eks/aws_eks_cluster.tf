@@ -87,6 +87,9 @@ resource "aws_launch_template" "main" {
       "Name" = "${var.aws_resource_identifier}-${var.aws_eks_environment}-eksworker-node"
     }
   }
+  tags = {
+    "kubernetes.io/cluster/${var.aws_eks_cluster_name}" = "owned"
+  } 
   depends_on  = [aws_iam_role.iam_role_worker]
 }
 
