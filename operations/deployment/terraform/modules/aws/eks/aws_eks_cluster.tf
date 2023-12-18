@@ -59,9 +59,9 @@ resource "aws_launch_template" "main" {
     associate_public_ip_address = true
     security_groups             = [aws_security_group.eks_security_group_worker.id]
   }
-  #iam_instance_profile {
+  iam_instance_profile {
   #  name = aws_iam_instance_profile.eks_inst_profile.name
-  #}
+  }
   image_id                    = var.aws_eks_instance_ami_id != "" ? var.aws_eks_instance_ami_id : data.aws_ami.image_selected.id
   instance_type               = var.aws_eks_instance_type
   name_prefix                 = "${var.aws_eks_environment}-eksworker"
@@ -85,9 +85,10 @@ resource "aws_launch_template" "main" {
 
     tags = {
       "kubernetes.io/cluster/${var.aws_eks_cluster_name}" = "owned"
-      # Add any other tags as needed
+      "Name" = "${var.aws_resource_identifier}-${var.aws_eks_environment}-eksworker-node"
     }
   }
+  depends_on  = [aws_iam_role.iam_role_worker]
 }
 
 data "aws_ami" "image_selected" {
