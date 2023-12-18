@@ -80,6 +80,14 @@ resource "aws_launch_template" "main" {
     http_put_response_hop_limit = 1
     instance_metadata_tags      = "enabled"
   }
+  tag_specifications {
+    resource_type = "instance"
+
+    tags = {
+      "kubernetes.io/cluster/${var.aws_eks_cluster_name}" = "owned"
+      # Add any other tags as needed
+    }
+  }
 }
 
 data "aws_ami" "image_selected" {
