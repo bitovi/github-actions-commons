@@ -55,10 +55,10 @@ data "aws_eks_cluster_auth" "cluster_auth" {
 }
 
 resource "aws_launch_template" "main" {
-  network_interfaces {
-    associate_public_ip_address = true
+  #network_interfaces {
+   # associate_public_ip_address = true
     #security_groups             = [aws_security_group.eks_security_group_worker.id]
-  }
+  #}
   vpc_security_group_ids = [aws_security_group.eks_security_group_worker.id]
   iam_instance_profile {
   #  name = aws_iam_instance_profile.eks_inst_profile.name
