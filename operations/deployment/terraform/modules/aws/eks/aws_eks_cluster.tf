@@ -2,6 +2,12 @@ locals {
   aws_eks_cluster_log_types = var.aws_eks_cluster_log_types != "" ? [for n in split(",", var.aws_eks_cluster_log_types) : (n)] : []
 }
 
+#resource "aws_cloudwatch_log_group" "eks" {
+#  count             =  var.aws_eks_cluster_log_types != "" ? 1 : 0
+#  name              = "/aws/eks/${var.aws_eks_cluster_name}/cluster"
+#  retention_in_days = 7#tonumber(var.aws_eks_cluster_log_retention_days)
+#}
+
 resource "aws_eks_cluster" "main" {
   name     = var.aws_eks_cluster_name # Cluster name is defined during the code-generation phase
   version  = var.aws_eks_cluster_version
