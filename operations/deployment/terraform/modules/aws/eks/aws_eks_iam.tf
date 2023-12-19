@@ -1,9 +1,9 @@
-#resource "aws_iam_instance_profile" "eks_inst_profile" {
-#  name = "${var.aws_resource_identifier}-eks-inst-profile"
-#  path = "/"
-#  role = aws_iam_role.iam_role_worker.id
-#  depends_on  = [aws_iam_role.iam_role_worker]
-#  }
+resource "aws_iam_instance_profile" "eks_inst_profile" {
+  name = "${var.aws_resource_identifier}-eks-inst-profile"
+  path = "/"
+  role = aws_iam_role.iam_role_worker.id
+  depends_on  = [aws_iam_role.iam_role_worker]
+}
 
 resource "aws_iam_role" "iam_role_master" {
   name               = "${var.aws_resource_identifier}-eks-master"
