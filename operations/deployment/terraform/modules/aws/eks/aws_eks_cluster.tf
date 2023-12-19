@@ -130,62 +130,62 @@ locals {
   USERDATA
 }
 
-resource "aws_autoscaling_group" "main" {
-  desired_capacity     = var.aws_eks_desired_capacity
-  launch_template {
-    id      = aws_launch_template.main.id
-    version = "${aws_launch_template.main.latest_version}"
-  }
-  max_size             = var.aws_eks_max_size
-  min_size             = var.aws_eks_min_size
-  name                 = "${var.aws_resource_identifier}-${var.aws_eks_environment}-eksworker-asg"
-  vpc_zone_identifier  = data.aws_subnets.private.ids
-  health_check_type    = "EC2"
-
-tag {
-  key                 = "Name"
-  value               = "${var.aws_resource_identifier}-${var.aws_eks_environment}-eksworker-node"
-  propagate_at_launch = true
-}
-
-  depends_on = [
-    aws_iam_role.iam_role_master,
-    aws_iam_role.iam_role_worker,
-    aws_security_group.eks_security_group_master,
-    aws_security_group.eks_security_group_worker
-  ]
-}
-
-#resource "aws_eks_node_group" "worker_nodes" {
-#  cluster_name    = aws_eks_cluster.main.name
-#  node_group_name = "${var.aws_resource_identifier}-ng"
-#  node_role_arn   = aws_iam_role.iam_role_worker.arn
-#  subnet_ids      = data.aws_subnets.private.ids
-#
-#  scaling_config {
-#    desired_size = var.aws_eks_desired_capacity
-#    max_size     = var.aws_eks_max_size
-#    min_size     = var.aws_eks_min_size
-#  }
-#
-#  update_config {
-#    max_unavailable = 1
-#  }
-#
+#resource "aws_autoscaling_group" "main" {
+#  desired_capacity     = var.aws_eks_desired_capacity
 #  launch_template {
 #    id      = aws_launch_template.main.id
 #    version = "${aws_launch_template.main.latest_version}"
 #  }
+#  max_size             = var.aws_eks_max_size
+#  min_size             = var.aws_eks_min_size
+#  name                 = "${var.aws_resource_identifier}-${var.aws_eks_environment}-eksworker-asg"
+#  vpc_zone_identifier  = data.aws_subnets.private.ids
+#  health_check_type    = "EC2"
+#
+#tag {
+#  key                 = "Name"
+#  value               = "${var.aws_resource_identifier}-${var.aws_eks_environment}-eksworker-node"
+#  propagate_at_launch = true
+#}
 #
 #  depends_on = [
-#    aws_iam_role.iam_role_worker,
 #    aws_iam_role.iam_role_master,
-#    aws_eks_cluster.main,
-#    aws_launch_template.main,
+#    aws_iam_role.iam_role_worker,
 #    aws_security_group.eks_security_group_master,
 #    aws_security_group.eks_security_group_worker
 #  ]
 #}
+
+resource "aws_eks_node_group" "worker_nodes" {
+  cluster_name    = aws_eks_cluster.main.name
+  node_group_name = "${var.aws_resource_identifier}-ng"
+  node_role_arn   = aws_iam_role.iam_role_worker.arn
+  subnet_ids      = data.aws_subnets.private.ids
+
+  scaling_config {
+    desired_size = var.aws_eks_desired_capacity
+    max_size     = var.aws_eks_max_size
+    min_size     = var.aws_eks_min_size
+  }
+
+  update_config {
+    max_unavailable = 1
+  }
+
+  #launch_template {
+  #  id      = aws_launch_template.main.id
+  #  version = "${aws_launch_template.main.latest_version}"
+  #}
+
+  depends_on = [
+    aws_iam_role.iam_role_worker,
+    aws_iam_role.iam_role_master,
+    aws_eks_cluster.main,
+    aws_launch_template.main,
+    aws_security_group.eks_security_group_master,
+    aws_security_group.eks_security_group_worker
+  ]
+}
 
 output "aws_eks_cluster_name" {
   value = aws_eks_cluster.main.name
