@@ -60,9 +60,9 @@ resource "aws_launch_template" "main" {
     security_groups             = [aws_security_group.eks_security_group_worker.id]
   }
   #vpc_security_group_ids = [aws_security_group.eks_security_group_worker.id]
-  iam_instance_profile {
-    name = aws_iam_instance_profile.eks_inst_profile.name
-  }
+  #iam_instance_profile {
+  #  name = aws_iam_instance_profile.eks_inst_profile.name
+  #}
   image_id                    = var.aws_eks_instance_ami_id != "" ? var.aws_eks_instance_ami_id : data.aws_ami.image_selected.id
   instance_type               = var.aws_eks_instance_type
   name_prefix                 = "${var.aws_eks_environment}-eksworker"
@@ -172,10 +172,10 @@ resource "aws_eks_node_group" "worker_nodes" {
     max_unavailable = 1
   }
 
-  #launch_template {
-  #  id      = aws_launch_template.main.id
-  #  version = "${aws_launch_template.main.latest_version}"
-  #}
+  launch_template {
+    id      = aws_launch_template.main.id
+    version = "${aws_launch_template.main.latest_version}"
+  }
 
   depends_on = [
     aws_iam_role.iam_role_worker,
