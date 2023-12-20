@@ -40,11 +40,12 @@ resource "aws_iam_role" "iam_role_worker" {
 
 locals {
     master_policies = ["arn:aws:iam::aws:policy/AmazonEKSClusterPolicy",
-  #"arn:aws:iam::aws:policy/AmazonEKSVPCResourceController",
+  "arn:aws:iam::aws:policy/AmazonEKSVPCResourceController",
   "arn:aws:iam::aws:policy/AmazonEKSServicePolicy"]
     worker_policies = ["arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy",
     "arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy",
     "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly",
+    "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore",
   "arn:aws:iam::aws:policy/AmazonEC2FullAccess"]
 }
 
