@@ -60,8 +60,7 @@ resource "aws_subnet" "public" {
   vpc_id                  = aws_vpc.main[0].id
   cidr_block              = element(local.aws_vpc_public_subnets, count.index)
   availability_zone       = element(local.aws_vpc_availability_zones, count.index)
-#  map_public_ip_on_launch = true
-  map_public_ip_on_launch = false # EKS-DEBUG
+  map_public_ip_on_launch = true
 
   tags = merge({
     Name = "${var.aws_resource_identifier}-public${count.index + 1}"

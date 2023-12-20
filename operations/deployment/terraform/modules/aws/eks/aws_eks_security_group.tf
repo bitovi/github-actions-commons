@@ -79,8 +79,8 @@ resource "aws_security_group_rule" "rule5" {
   from_port                = 53
   to_port                  = 53
   protocol                 = "tcp"
-  source_security_group_id = aws_security_group.eks_security_group_worker.id
-  security_group_id        = aws_security_group.eks_security_group_master.id
+  source_security_group_id = aws_security_group.eks_security_group_master.id
+  security_group_id        = aws_security_group.eks_security_group_worker.id
 }
 
 resource "aws_security_group_rule" "rule6" {
@@ -89,8 +89,8 @@ resource "aws_security_group_rule" "rule6" {
   from_port                = 53
   to_port                  = 53
   protocol                 = "udp"
-  source_security_group_id = aws_security_group.eks_security_group_worker.id
-  security_group_id        = aws_security_group.eks_security_group_master.id
+  source_security_group_id = aws_security_group.eks_security_group_master.id
+  security_group_id        = aws_security_group.eks_security_group_worker.id
 }
 
 resource "aws_security_group_rule" "rule7" {
