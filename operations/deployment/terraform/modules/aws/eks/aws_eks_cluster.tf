@@ -219,11 +219,3 @@ output "private_subnets" {
 output "eks_host" {
   value = data.aws_eks_cluster.eks_cluster.endpoint
 }
-
-output "eks_cluster_ca_certificate" {
-  value = base64decode(data.aws_eks_cluster.eks_cluster.certificate_authority.0.data)
-}
-
-output "eks_token" {
-  value = data.aws_eks_cluster_auth.cluster_auth.token
-}
