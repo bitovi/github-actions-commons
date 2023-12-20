@@ -594,8 +594,8 @@ module "eks" {
   count  = var.aws_eks_create ? 1 : 0
   # EKS
   #aws_eks_create                     = var.aws_eks_create
-  aws_eks_security_group_name_master = var.aws_eks_security_group_name_master
-  aws_eks_security_group_name_worker = var.aws_eks_security_group_name_worker
+  aws_eks_security_group_name_cluster = var.aws_eks_security_group_name_cluster
+  aws_eks_security_group_name_node = var.aws_eks_security_group_name_node
   aws_eks_environment                = var.aws_eks_environment
   aws_eks_management_cidr            = var.aws_eks_management_cidr
   aws_eks_allowed_ports              = var.aws_eks_allowed_ports

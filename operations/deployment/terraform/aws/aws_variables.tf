@@ -1542,14 +1542,14 @@ variable "aws_eks_create" {
   default     = false
 }
 
-variable "aws_eks_security_group_name_master" {
-  description = "aws aws_eks_security_group_name_master name"
+variable "aws_eks_security_group_name_cluster" {
+  description = "aws aws_eks_security_group_name_cluster name"
   type        = string
   default     = ""
 }
 
-variable "aws_eks_security_group_name_worker" {
-  description = "aws aws_eks_security_group_name_worker name"
+variable "aws_eks_security_group_name_node" {
+  description = "aws aws_eks_security_group_name_node name"
   type        = string
   default     = ""
 }

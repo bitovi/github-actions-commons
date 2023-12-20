@@ -1,5 +1,5 @@
-variable "aws_eks_security_group_name_master" {}
-variable "aws_eks_security_group_name_worker" {}
+variable "aws_eks_security_group_name_cluster" {}
+variable "aws_eks_security_group_name_node" {}
 variable "aws_eks_environment" {}
 variable "aws_eks_management_cidr" {}
 variable "aws_eks_allowed_ports" {}

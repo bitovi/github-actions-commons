@@ -465,8 +465,8 @@ The following inputs can be used as `step.with` keys
 | Name             | Type    | Description                        |
 |------------------|---------|------------------------------------|
 | `aws_eks_create` | Boolean | Define if an EKS cluster should be created |
-| `aws_eks_security_group_name_master` | String | Define the security group name master. Defaults to `SG for ${var.aws_resource_identifier} - EKS Master`. |
-| `aws_eks_security_group_name_worker` | String | Define the security group name worker. Defaults to `SG for ${var.aws_resource_identifier} - EKS Worker`. |
+| `aws_eks_security_group_name_cluster` | String | Define the security group name master. Defaults to `SG for ${var.aws_resource_identifier} - EKS Master`. |
+| `aws_eks_security_group_name_node` | String | Define the security group name worker. Defaults to `SG for ${var.aws_resource_identifier} - EKS Worker`. |
 | `aws_eks_environment` | String | Specify the eks environment name. Defaults to `env` |
 | `aws_eks_management_cidr` | String | Comma separated list of remote public CIDRs blocks to add it to Worker nodes security groups. |
 | `aws_eks_allowed_ports` | String | Allow incoming traffic from this port. Accepts comma separated values, matching 1 to 1 with `aws_eks_allowed_ports_cidr`. |

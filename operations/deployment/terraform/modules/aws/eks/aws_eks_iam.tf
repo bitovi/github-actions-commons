@@ -1,12 +1,12 @@
 #resource "aws_iam_instance_profile" "eks_inst_profile" {
 #  name = "${var.aws_resource_identifier}-eks-inst-profile"
 #  path = "/"
-#  role = aws_iam_role.iam_role_worker.id
-#  depends_on  = [aws_iam_role.iam_role_worker]
+#  role = aws_iam_role.iam_role_node.id
+#  depends_on  = [aws_iam_role.iam_role_node]
 #}
 
-resource "aws_iam_role" "iam_role_master" {
-  name               = "${var.aws_resource_identifier}-eks-master"
+resource "aws_iam_role" "iam_role_cluster" {
+  name               = "${var.aws_resource_identifier}-eks-cluster"
   assume_role_policy = jsonencode({
     Version: "2012-10-17"
     Statement: [
@@ -22,8 +22,8 @@ resource "aws_iam_role" "iam_role_master" {
   })
 }
 
-resource "aws_iam_role" "iam_role_worker" {
-  name               = "${var.aws_resource_identifier}-eks-worker"
+resource "aws_iam_role" "iam_role_node" {
+  name               = "${var.aws_resource_identifier}-eks-node"
   assume_role_policy = jsonencode({
     Version: "2012-10-17"
     Statement: [
@@ -39,10 +39,10 @@ resource "aws_iam_role" "iam_role_worker" {
 }
 
 locals {
-    master_policies = ["arn:aws:iam::aws:policy/AmazonEKSClusterPolicy",
+    cluster_policies = ["arn:aws:iam::aws:policy/AmazonEKSClusterPolicy",
   "arn:aws:iam::aws:policy/AmazonEKSVPCResourceController",
   "arn:aws:iam::aws:policy/AmazonEKSServicePolicy"]
-    worker_policies = ["arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy",
+    node_policies = ["arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy",
     "arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy",
     "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly",
     "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore",
@@ -50,23 +50,23 @@ locals {
 }
 
 
-resource "aws_iam_role_policy_attachment" "managed_policies_master" {
-  count      = length(local.master_policies)
-  policy_arn = element(local.master_policies, count.index)
-  role       = aws_iam_role.iam_role_master.id
+resource "aws_iam_role_policy_attachment" "managed_policies_cluster" {
+  count      = length(local.cluster_policies)
+  policy_arn = element(local.cluster_policies, count.index)
+  role       = aws_iam_role.iam_role_cluster.id
 }
 
-resource "aws_iam_role_policy_attachment" "managed_policies_worker" {
-  count      = length(local.worker_policies)
-  policy_arn = element(local.worker_policies, count.index)
-  role       = aws_iam_role.iam_role_worker.id
+resource "aws_iam_role_policy_attachment" "managed_policies_node" {
+  count      = length(local.node_policies)
+  policy_arn = element(local.node_policies, count.index)
+  role       = aws_iam_role.iam_role_node.id
 }
 
 
 
-resource "aws_iam_role_policy" "iam_role_policy_master" {
-  name   = "${var.aws_resource_identifier}-eks-master"
-  role   = aws_iam_role.iam_role_master.id
+resource "aws_iam_role_policy" "iam_role_policy_cluster" {
+  name   = "${var.aws_resource_identifier}-eks-cluster"
+  role   = aws_iam_role.iam_role_cluster.id
   policy = <<EOF
 {
     "Version": "2012-10-17",
@@ -94,9 +94,9 @@ resource "aws_iam_role_policy" "iam_role_policy_master" {
 EOF
 }
 
-resource "aws_iam_role_policy" "iam_role_policy_worker" {
-  name   = "${var.aws_resource_identifier}-eks-worker"
-  role   = aws_iam_role.iam_role_worker.id
+resource "aws_iam_role_policy" "iam_role_policy_node" {
+  name   = "${var.aws_resource_identifier}-eks-node"
+  role   = aws_iam_role.iam_role_node.id
   policy = <<EOF
 {
     "Version": "2012-10-17",

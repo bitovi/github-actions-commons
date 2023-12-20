@@ -354,8 +354,8 @@ fi
 #-- EKS Cluster --#
 if [[ $(alpha_only "$AWS_EKS_CREATE") == true ]]; then
   aws_eks_create=$(generate_var aws_eks_create $AWS_EKS_CREATE)
-  aws_eks_security_group_name_master=$(generate_var aws_eks_security_group_name_master $AWS_EKS_SECURITY_GROUP_NAME_MASTER)
-  aws_eks_security_group_name_worker=$(generate_var aws_eks_security_group_name_worker $AWS_EKS_SECURITY_GROUP_NAME_WORKER)
+  aws_eks_security_group_name_cluster=$(generate_var aws_eks_security_group_name_cluster $AWS_EKS_SECURITY_GROUP_NAME_CLUSTER)
+  aws_eks_security_group_name_node=$(generate_var aws_eks_security_group_name_node $AWS_EKS_SECURITY_GROUP_NAME_NODE)
   aws_eks_environment=$(generate_var aws_eks_environment $AWS_EKS_ENVIRONMENT)
   aws_eks_management_cidr=$(generate_var aws_eks_management_cidr $AWS_EKS_MANAGEMENT_CIDR)
   aws_eks_allowed_ports=$(generate_var aws_eks_allowed_ports $AWS_EKS_ALLOWED_PORTS)
@@ -676,8 +676,8 @@ $aws_ecr_additional_tags
 
 #-- EKS --#
 $aws_eks_create
-$aws_eks_security_group_name_master
-$aws_eks_security_group_name_worker
+$aws_eks_security_group_name_cluster
+$aws_eks_security_group_name_node
 $aws_eks_environment
 $aws_eks_management_cidr
 $aws_eks_allowed_ports
