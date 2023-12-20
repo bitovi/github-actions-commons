@@ -187,7 +187,7 @@ resource "aws_eks_node_group" "node_nodes" {
   
   
   remote_access {
-    ec2_ssh_key = aws_key_pair.aws_key.name
+    ec2_ssh_key = var.aws_eks_ec2_key_pair != "" ? var.aws_eks_ec2_key_pair : aws_key_pair.aws_key[0].id
   }
   #launch_template {
   #  id      = aws_launch_template.main.id
