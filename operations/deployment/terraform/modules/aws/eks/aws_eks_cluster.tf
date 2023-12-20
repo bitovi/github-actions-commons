@@ -186,9 +186,9 @@ resource "aws_eks_node_group" "node_nodes" {
   #instance_types = [var.aws_eks_instance_type]
   
   
-  remote_access {
-    ec2_ssh_key = var.aws_eks_ec2_key_pair != "" ? var.aws_eks_ec2_key_pair : aws_key_pair.aws_key[0].id
-  }
+  #remote_access {
+  #  ec2_ssh_key = var.aws_eks_ec2_key_pair != "" ? var.aws_eks_ec2_key_pair : aws_key_pair.aws_key[0].id
+  #}
   launch_template {
     id      = aws_launch_template.main.id
     version = "${aws_launch_template.main.latest_version}"
