@@ -83,7 +83,7 @@ resource "aws_security_group_rule" "rule5" {
   security_group_id        = aws_security_group.eks_security_group_master.id
 }
 
-resource "aws_security_group_rule" "rule5" {
+resource "aws_security_group_rule" "rule6" {
   description              = "Node to node CoreDNS"
   type                     = "ingress"
   from_port                = 53
@@ -93,7 +93,7 @@ resource "aws_security_group_rule" "rule5" {
   security_group_id        = aws_security_group.eks_security_group_master.id
 }
 
-resource "aws_security_group_rule" "rule6" {
+resource "aws_security_group_rule" "rule7" {
     count             = length(local.aws_eks_management_cidr)
     description       = "Allow workstation or EC2 to communicate with the cluster API Server"
     type              = "ingress"
