@@ -43,17 +43,17 @@ resource "aws_security_group_rule" "cluster" {
 }
 
 # module.eks.aws_security_group_rule.node["egress_all"]:
-resource "aws_security_group_rule" "node1" {
-    cidr_blocks            = [
-        "0.0.0.0/0",
-    ]
-    description            = "Allow all egress"
-    from_port              = 0
-    protocol               = "-1"
-    security_group_id      = aws_security_group.eks_security_group_node.id
-    to_port                = 0
-    type                   = "egress"
-}
+#resource "aws_security_group_rule" "node1" {
+#    cidr_blocks            = [
+#        "0.0.0.0/0",
+#    ]
+#    description            = "Allow all egress"
+#    from_port              = 0
+#    protocol               = "-1"
+#    security_group_id      = aws_security_group.eks_security_group_node.id
+#    to_port                = 0
+#    type                   = "egress"
+#}
 
 # module.eks.aws_security_group_rule.node["ingress_cluster_443"]:
 resource "aws_security_group_rule" "node2" {
