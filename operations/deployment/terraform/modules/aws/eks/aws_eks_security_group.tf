@@ -33,7 +33,6 @@ resource "aws_security_group" "eks_security_group_worker" {
 }
 
 # Rules 
-
 resource "aws_security_group_rule" "rule1" {
   description              = "Allow pods to communicate with the cluster API Server"
   type                     = "ingress"
@@ -75,6 +74,26 @@ resource "aws_security_group_rule" "rule4" {
 }
 
 resource "aws_security_group_rule" "rule5" {
+  description              = "Node to node CoreDNS"
+  type                     = "ingress"
+  from_port                = 53
+  to_port                  = 53
+  protocol                 = "tcp"
+  source_security_group_id = aws_security_group.eks_security_group_worker.id
+  security_group_id        = aws_security_group.eks_security_group_master.id
+}
+
+resource "aws_security_group_rule" "rule5" {
+  description              = "Node to node CoreDNS"
+  type                     = "ingress"
+  from_port                = 53
+  to_port                  = 53
+  protocol                 = "udp"
+  source_security_group_id = aws_security_group.eks_security_group_worker.id
+  security_group_id        = aws_security_group.eks_security_group_master.id
+}
+
+resource "aws_security_group_rule" "rule6" {
     count             = length(local.aws_eks_management_cidr)
     description       = "Allow workstation or EC2 to communicate with the cluster API Server"
     type              = "ingress"

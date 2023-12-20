@@ -16,6 +16,7 @@ resource "aws_iam_role" "iam_role_master" {
         Principal = {
           Service = "eks.amazonaws.com"
         }
+        #Sid    =  "EKSClusterAssumeRole"
       },
     ]
   })
@@ -39,6 +40,7 @@ resource "aws_iam_role" "iam_role_worker" {
 
 locals {
     master_policies = ["arn:aws:iam::aws:policy/AmazonEKSClusterPolicy",
+  #"arn:aws:iam::aws:policy/AmazonEKSVPCResourceController",
   "arn:aws:iam::aws:policy/AmazonEKSServicePolicy"]
     worker_policies = ["arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy",
     "arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy",
@@ -205,3 +207,51 @@ resource "aws_iam_role_policy" "iam_role_policy_worker" {
 EOF
 }
 
+#resource "aws_iam_policy" "cluster_encryption" {
+#    arn         = "arn:aws:iam::755521597925:policy/education-eks-bQPVPbjE-cluster-ClusterEncryption2023121918102043890000000b"
+#    description = "Cluster encryption policy to allow cluster role to utilize CMK provided"
+#    id          = "arn:aws:iam::755521597925:policy/education-eks-bQPVPbjE-cluster-ClusterEncryption2023121918102043890000000b"
+#    name        = "education-eks-bQPVPbjE-cluster-ClusterEncryption2023121918102043890000000b"
+#    name_prefix = "education-eks-bQPVPbjE-cluster-ClusterEncryption"
+#    path        = "/"
+#    policy      = jsonencode(
+#        {
+#            Statement = [
+#                {
+#                    Action   = [
+#                        "kms:Encrypt",
+#                        "kms:Decrypt",
+#                        "kms:ListGrants",
+#                        "kms:DescribeKey",
+#                    ]
+#                    Effect   = "Allow"
+#                    Resource = "arn:aws:kms:us-east-1:755521597925:key/5385f123-4a12-4f60-8f05-c5dccc0ad34b"
+#                },
+#            ]
+#            Version   = "2012-10-17"
+#        }
+#    )
+#    policy_id   = "ANPA272EYWHSY7G6RJZIY"
+#    tags_all    = {}
+#}
+#
+#resource "aws_iam_openid_connect_provider" "oidc_provider" {
+#    arn             = "arn:aws:iam::755521597925:oidc-provider/oidc.eks.us-east-1.amazonaws.com/id/5F84BFB3276B7DDD04433B7B33EAD95E"
+#    client_id_list  = [
+#        "sts.amazonaws.com",
+#    ]
+#    id              = "arn:aws:iam::755521597925:oidc-provider/oidc.eks.us-east-1.amazonaws.com/id/5F84BFB3276B7DDD04433B7B33EAD95E"
+#    tags            = {
+#        "Name" = "education-eks-bQPVPbjE-eks-irsa"
+#    }
+#    tags_all        = {
+#        "Name" = "education-eks-bQPVPbjE-eks-irsa"
+#    }
+#    thumbprint_list = [
+#        "9e99a48a9960b14926bb7f3b02e22da2b0ab7280",
+#        "06b25927c42a721631c1efd9431e648fa62e1e39",
+#        "414a2060b738c635cc7fc243e052615592830c53",
+#        "aaa68bb211d468db8a8a19561ccba2e4043dcc80",
+#    ]
+#    url             = "oidc.eks.us-east-1.amazonaws.com/id/5F84BFB3276B7DDD04433B7B33EAD95E"
+#}
