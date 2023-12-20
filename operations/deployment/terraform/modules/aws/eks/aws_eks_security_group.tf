@@ -133,7 +133,7 @@ resource "aws_security_group_rule" "node8" {
 }
 
 # module.eks.aws_security_group_rule.node["ingress_self_coredns_tcp"]:
-resource "aws_security_group_rule" "node8" {
+resource "aws_security_group_rule" "node9" {
     description            = "Node to node CoreDNS"
     from_port              = 53
     protocol               = "tcp"
