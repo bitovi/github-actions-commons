@@ -43,7 +43,7 @@ resource "aws_security_group_rule" "cluster" {
 }
 
 # module.eks.aws_security_group_rule.node["egress_all"]:
-resource "aws_security_group_rule" "node" {
+resource "aws_security_group_rule" "node1" {
     cidr_blocks            = [
         "0.0.0.0/0",
     ]
@@ -56,7 +56,7 @@ resource "aws_security_group_rule" "node" {
 }
 
 # module.eks.aws_security_group_rule.node["ingress_cluster_443"]:
-resource "aws_security_group_rule" "node" {
+resource "aws_security_group_rule" "node2" {
     description              = "Cluster API to node groups"
     from_port                = 443
     protocol                 = "tcp"
@@ -67,7 +67,7 @@ resource "aws_security_group_rule" "node" {
 }
 
 # module.eks.aws_security_group_rule.node["ingress_cluster_4443_webhook"]:
-resource "aws_security_group_rule" "node" {
+resource "aws_security_group_rule" "node3" {
     description              = "Cluster API to node 4443/tcp webhook"
     from_port                = 4443
     protocol                 = "tcp"
@@ -78,7 +78,7 @@ resource "aws_security_group_rule" "node" {
 }
 
 # module.eks.aws_security_group_rule.node["ingress_cluster_6443_webhook"]:
-resource "aws_security_group_rule" "node" {
+resource "aws_security_group_rule" "node4" {
     description              = "Cluster API to node 6443/tcp webhook"
     from_port                = 6443
     protocol                 = "tcp"
@@ -89,7 +89,7 @@ resource "aws_security_group_rule" "node" {
 }
 
 # module.eks.aws_security_group_rule.node["ingress_cluster_8443_webhook"]:
-resource "aws_security_group_rule" "node" {
+resource "aws_security_group_rule" "node5" {
     description              = "Cluster API to node 8443/tcp webhook"
     from_port                = 8443
     protocol                 = "tcp"
@@ -100,7 +100,7 @@ resource "aws_security_group_rule" "node" {
 }
 
 # module.eks.aws_security_group_rule.node["ingress_cluster_9443_webhook"]:
-resource "aws_security_group_rule" "node" {
+resource "aws_security_group_rule" "node6" {
     description              = "Cluster API to node 9443/tcp webhook"
     from_port                = 9443
     protocol                 = "tcp"
@@ -111,7 +111,7 @@ resource "aws_security_group_rule" "node" {
 }
 
 # module.eks.aws_security_group_rule.node["ingress_cluster_kubelet"]:
-resource "aws_security_group_rule" "node" {
+resource "aws_security_group_rule" "node7" {
     description              = "Cluster API to node kubelets"
     from_port                = 10250
     protocol                 = "tcp"
@@ -122,7 +122,7 @@ resource "aws_security_group_rule" "node" {
 }
 
 # module.eks.aws_security_group_rule.node["ingress_nodes_ephemeral"]:
-resource "aws_security_group_rule" "node" {
+resource "aws_security_group_rule" "node8" {
     description            = "Node to node ingress on ephemeral ports"
     from_port              = 1025
     protocol               = "tcp"
@@ -133,7 +133,7 @@ resource "aws_security_group_rule" "node" {
 }
 
 # module.eks.aws_security_group_rule.node["ingress_self_coredns_tcp"]:
-resource "aws_security_group_rule" "node" {
+resource "aws_security_group_rule" "node8" {
     description            = "Node to node CoreDNS"
     from_port              = 53
     protocol               = "tcp"
@@ -144,7 +144,7 @@ resource "aws_security_group_rule" "node" {
 }
 
 # module.eks.aws_security_group_rule.node["ingress_self_coredns_udp"]:
-resource "aws_security_group_rule" "node" {
+resource "aws_security_group_rule" "node10" {
     description            = "Node to node CoreDNS UDP"
     from_port              = 53
     protocol               = "udp"
