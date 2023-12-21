@@ -198,7 +198,7 @@ resource "aws_eks_node_group" "node_nodes" {
     aws_iam_role.iam_role_node,
     aws_iam_role.iam_role_cluster,
     aws_eks_cluster.main,
-    aws_launch_template.main,
+    #aws_launch_template.main,
     aws_security_group.eks_security_group_cluster,
     aws_security_group.eks_security_group_node
   ]
