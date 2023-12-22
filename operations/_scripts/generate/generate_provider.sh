@@ -75,7 +75,7 @@ provider \"kubernetes\" {
 }
 
 generate_provider_aws aws ec2,r53,elb,efs,vpc,rds,aurora,ecs,db_proxy,redis,eks # Added eks here
-generate_provider_aws ecr ecr
-generate_provider_aws eks
+#generate_provider_aws ecr ecr
+#generate_provider_aws eks
 
 echo "Done with generate_provider.sh"
