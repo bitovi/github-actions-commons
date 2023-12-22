@@ -203,10 +203,10 @@ resource "aws_eks_node_group" "node_nodes" {
     aws_security_group.eks_security_group_node
   ]
   tags                   = {
-    "Name" = "${var.aws_eks_cluster.main.name}-node"
+    "Name" = "${aws_eks_cluster.main.name}-node"
   }
   tags_all               = {
-    "Name" = "${var.aws_eks_cluster.main.name}-node"
+    "Name" = "${aws_eks_cluster.main.name}-node"
   }
 }
 
