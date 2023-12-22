@@ -19,12 +19,12 @@ resource "aws_eks_cluster" "main" {
     endpoint_public_access  = true
   }
 
-  depends_on = [
-    aws_iam_role.iam_role_cluster,
-    aws_security_group.eks_security_group_cluster,
-    aws_iam_role_policy_attachment.managed_policies_cluster,
-    aws_iam_role_policy_attachment.managed_policies_node
-  ]
+  #depends_on = [
+  #  aws_iam_role.iam_role_cluster,
+  #  aws_security_group.eks_security_group_cluster,
+  #  aws_iam_role_policy_attachment.managed_policies_cluster,
+  #  aws_iam_role_policy_attachment.managed_policies_node
+  #]
   enabled_cluster_log_types = local.aws_eks_cluster_log_types
 
   tags = {
@@ -179,11 +179,11 @@ resource "aws_eks_node_group" "node_nodes" {
   }
 
   ami_type = "AL2_x86_64"
+  instance_types = [var.aws_eks_instance_type]
 
   #capacity_type = "ON_DEMAND"
   #disk_size = 20
   #instance_types = ["t3.medium"]
-  instance_types = [var.aws_eks_instance_type]
   
   
   remote_access {
@@ -202,6 +202,12 @@ resource "aws_eks_node_group" "node_nodes" {
     aws_security_group.eks_security_group_cluster,
     aws_security_group.eks_security_group_node
   ]
+  tags                   = {
+    "Name" = "${var.aws_eks_cluster.main.name}-node"
+  }
+  tags_all               = {
+    "Name" = "${var.aws_eks_cluster.main.name}-node"
+  }
 }
 
 output "aws_eks_cluster_name" {
