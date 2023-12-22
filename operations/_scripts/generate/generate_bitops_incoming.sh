@@ -157,16 +157,16 @@ function process_helm_bo_config() {
   cluster_name="$3"
   # Checks for file content and add any setting if missing. 
   # CLI
-  yq_check_add_missing ".helm.cli.namespace" "kube-system" $config_file
-  yq_check_add_missing ".helm.cli.timeout" "200s" $config_file
-  yq_check_add_missing ".helm.cli.debug" "true" $config_file
-  yq_check_add_missing ".helm.cli.atomic" "false" $config_file
-  yq_check_add_missing ".helm.cli.force" "false" $config_file
-  yq_check_add_missing ".helm.cli.dry-run" "false" $config_file
+  yq_check_add_missing ".helm.cli.namespace" kube-system $config_file
+  yq_check_add_missing ".helm.cli.timeout" 200s $config_file
+  yq_check_add_missing ".helm.cli.debug" true $config_file
+  yq_check_add_missing ".helm.cli.atomic" false $config_file
+  yq_check_add_missing ".helm.cli.force" false $config_file
+  yq_check_add_missing ".helm.cli.dry-run" false $config_file
   # Options
   yq_check_add_missing ".helm.options.release-name" "$chart_name" $config_file
-  yq_check_add_missing ".helm.options.skip-deploy" "false" $config_file
-  yq_check_add_missing ".helm.options.k8s.fetch.kubeconfig" "true" $config_file
+  yq_check_add_missing ".helm.options.skip-deploy" false $config_file
+  yq_check_add_missing ".helm.options.k8s.fetch.kubeconfig" true $config_file
   yq_check_add_missing ".helm.options.k8s.fetch.cluster-name" "$cluster_name" $config_file
 }
 
