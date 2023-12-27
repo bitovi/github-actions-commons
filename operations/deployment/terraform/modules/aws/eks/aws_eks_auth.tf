@@ -34,25 +34,25 @@
 #}
 
 
-#resource "kubernetes_config_map" "iam_nodes_config_map" {
-#  metadata {
-#    name      = "aws-auth"
-#    namespace = "kube-system"
-#  }
-#
-#  data = {
-#    mapRoles = <<ROLES
-#- rolearn: ${aws_iam_role.iam_role_node.arn}
-#  username: system:node:{{EC2PrivateDNSName}}
-#  groups:
-#    - system:bootstrappers
-#    - system:nodes
-#- rolearn: arn:aws:iam::755521597925:role/AWSReservedSSO_AdministratorAccess_402f22a297379e03
-#  username: cluster-admin
-#  groups:
-#    - system:masters
-#ROLES
-#    mapAccounts = 755521597925
-#  }
-#  depends_on = [ aws_eks_cluster.main ]
-#}
+resource "kubernetes_config_map" "iam_nodes_config_map" {
+  metadata {
+    name      = "aws-auth"
+    namespace = "kube-system"
+  }
+
+  data = {
+    mapRoles = <<ROLES
+- rolearn: ${aws_iam_role.iam_role_node.arn}
+  username: system:node:{{EC2PrivateDNSName}}
+  groups:
+    - system:bootstrappers
+    - system:nodes
+- rolearn: arn:aws:iam::755521597925:role/AWSReservedSSO_AdministratorAccess_402f22a297379e03
+  username: cluster-admin
+  groups:
+    - system:masters
+ROLES
+    mapAccounts = 755521597925
+  }
+  depends_on = [ aws_eks_cluster.main ]
+}
