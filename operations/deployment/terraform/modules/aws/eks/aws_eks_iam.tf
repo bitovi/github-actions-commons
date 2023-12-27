@@ -155,7 +155,7 @@ resource "aws_iam_role_policy" "iam_role_policy_node" {
             "Effect": "Allow",
             "Action": [
                 "ec2:AuthorizeSecurityGroupIngress",
-                "c2:Describe*",
+                "ec2:Describe*",
                 "elasticloadbalancing:DeregisterInstancesFromLoadBalancer",
                 "elasticloadbalancing:Describe*",
                 "elasticloadbalancing:RegisterInstancesWithLoadBalancer",
