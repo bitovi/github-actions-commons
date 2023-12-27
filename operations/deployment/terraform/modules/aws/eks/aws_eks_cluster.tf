@@ -115,6 +115,9 @@ ROLES
     mapAccounts = "${data.aws_caller_identity.current.account_id}"
   }
   depends_on = [ aws_eks_cluster.main ]
+  lifecycle {
+    ignore_changes = [ data ]
+  }
 }
 
 output "eks_kubernetes_provider_config" {
