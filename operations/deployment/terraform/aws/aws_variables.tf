@@ -1598,7 +1598,7 @@ variable "aws_eks_cluster_log_types" {
 variable "aws_eks_cluster_log_retention_days" {
   description = "enter the kubernetes version"
   type        = string
-  default     = ""
+  default     = "7"
 }
 
 variable "aws_eks_cluster_version" {
