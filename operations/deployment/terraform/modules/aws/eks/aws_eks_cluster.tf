@@ -94,31 +94,28 @@ resource "aws_eks_node_group" "node_nodes" {
 
 data "aws_caller_identity" "current" {}
 
-resource "kubernetes_config_map" "iam_nodes_config_map" {
-  metadata {
-    name      = "aws-auth"
-    namespace = "kube-system"
-  }
-
-  data = {
-    mapRoles = <<ROLES
-- rolearn: ${aws_iam_role.iam_role_node.arn}
-  username: system:node:{{EC2PrivateDNSName}}
-  groups:
-    - system:bootstrappers
-    - system:nodes
-- rolearn: ${var.aws_eks_cluster_admin_role_arn}
-  username: cluster-admin
-  groups:
-    - system:masters
-ROLES
-    mapAccounts = "${data.aws_caller_identity.current.account_id}"
-  }
-  depends_on = [ aws_eks_cluster.main ]
-  lifecycle {
-    ignore_changes = [ data ]
-  }
-}
+#resource "kubernetes_config_map" "iam_nodes_config_map" {
+#  metadata {
+#    name      = "aws-auth"
+#    namespace = "kube-system"
+#  }
+#
+#  data = {
+#    mapRoles = <<ROLES
+#- rolearn: ${aws_iam_role.iam_role_node.arn}
+#  username: system:node:{{EC2PrivateDNSName}}
+#  groups:
+#    - system:bootstrappers
+#    - system:nodes
+#- rolearn: ${var.aws_eks_cluster_admin_role_arn}
+#  username: cluster-admin
+#  groups:
+#    - system:masters
+#ROLES
+#    mapAccounts = "${data.aws_caller_identity.current.account_id}"
+#  }
+#  depends_on = [ aws_eks_cluster.main ]
+#}
 
 output "eks_kubernetes_provider_config" {
   value = {
