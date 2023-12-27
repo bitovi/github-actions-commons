@@ -1,10 +1,3 @@
-#resource "aws_iam_instance_profile" "eks_inst_profile" {
-#  name = "${var.aws_resource_identifier}-eks-inst-profile"
-#  path = "/"
-#  role = aws_iam_role.iam_role_node.id
-#  depends_on  = [aws_iam_role.iam_role_node]
-#}
-
 resource "aws_iam_role" "iam_role_cluster" {
   name               = "${var.aws_resource_identifier}-eks-cluster"
   assume_role_policy = jsonencode({
@@ -162,7 +155,7 @@ resource "aws_iam_role_policy" "iam_role_policy_node" {
             "Effect": "Allow",
             "Action": [
                 "ec2:AuthorizeSecurityGroupIngress",
-                "ec2:Describe*",
+                "c2:Describe*",
                 "elasticloadbalancing:DeregisterInstancesFromLoadBalancer",
                 "elasticloadbalancing:Describe*",
                 "elasticloadbalancing:RegisterInstancesWithLoadBalancer",

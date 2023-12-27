@@ -1583,7 +1583,19 @@ variable "aws_eks_cluster_name" {
   default     = ""
 }
 
+variable "aws_eks_cluster_admin_role_arn" {
+  description = "Role ARN to grant cluster-admin permissions"
+  type        = string
+  default     = ""
+}
+
 variable "aws_eks_cluster_log_types" {
+  description = "Comma separated list of log-types"
+  type        = string
+  default     = "api,audit,authenticator"
+}
+
+variable "aws_eks_cluster_log_retention_days" {
   description = "enter the kubernetes version"
   type        = string
   default     = ""

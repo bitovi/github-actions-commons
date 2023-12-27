@@ -5,8 +5,9 @@ variable "aws_eks_management_cidr" {}
 variable "aws_eks_allowed_ports" {}
 variable "aws_eks_allowed_ports_cidr" {}
 variable "aws_eks_cluster_name" {}
+variable "aws_eks_cluster_admin_role_arn" {}
 variable "aws_eks_cluster_log_types" {}
-#variable "aws_eks_cluster_log_retention_days" {}
+variable "aws_eks_cluster_log_retention_days" {}
 variable "aws_eks_cluster_version" {}
 variable "aws_eks_instance_type" {}
 variable "aws_eks_instance_ami_id" {}

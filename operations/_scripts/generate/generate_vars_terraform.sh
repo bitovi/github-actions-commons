@@ -361,7 +361,9 @@ if [[ $(alpha_only "$AWS_EKS_CREATE") == true ]]; then
   aws_eks_allowed_ports=$(generate_var aws_eks_allowed_ports $AWS_EKS_ALLOWED_PORTS)
   aws_eks_allowed_ports_cidr=$(generate_var aws_eks_allowed_ports_cidr $AWS_EKS_ALLOWED_PORTS_CIDR)
   #aws_eks_cluster_name=$(generate_var aws_eks_cluster_name $AWS_EKS_CLUSTER_NAME)
+  aws_eks_cluster_admin_role_arn=$(generate_var aws_eks_cluster_admin_role_arn $AWS_EKS_CLUSTER_ADMIN_ROLE_ARN)
   aws_eks_cluster_log_types=$(generate_var aws_eks_cluster_log_types $AWS_EKS_CLUSTER_LOG_TYPES)
+  aws_eks_cluster_log_retention_days=$(generate_var aws_eks_cluster_log_retention_days $AWS_EKS_CLUSTER_LOG_RETENTION_DAYS)
   aws_eks_cluster_version=$(generate_var aws_eks_cluster_version $AWS_EKS_CLUSTER_VERSION)
   aws_eks_instance_type=$(generate_var aws_eks_instance_type $AWS_EKS_INSTANCE_TYPE)
   aws_eks_instance_ami_id=$(generate_var aws_eks_instance_ami_id $AWS_EKS_INSTANCE_AMI_ID)
@@ -683,7 +685,9 @@ $aws_eks_management_cidr
 $aws_eks_allowed_ports
 $aws_eks_allowed_ports_cidr
 $aws_eks_cluster_name
+$aws_eks_cluster_admin_role_arn
 $aws_eks_cluster_log_types
+$aws_eks_cluster_log_retention_days
 $aws_eks_cluster_version
 $aws_eks_instance_type
 $aws_eks_instance_ami_id

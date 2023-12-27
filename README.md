@@ -465,15 +465,17 @@ The following inputs can be used as `step.with` keys
 | Name             | Type    | Description                        |
 |------------------|---------|------------------------------------|
 | `aws_eks_create` | Boolean | Define if an EKS cluster should be created |
-| `aws_eks_security_group_name_cluster` | String | Define the security group name master. Defaults to `SG for ${var.aws_resource_identifier} - EKS Master`. |
-| `aws_eks_security_group_name_node` | String | Define the security group name worker. Defaults to `SG for ${var.aws_resource_identifier} - EKS Worker`. |
+| `aws_eks_security_group_name_cluster` | String | Define the security group name master. Defaults to `SG for ${var.aws_resource_identifier} - EKS Cluster`. |
+| `aws_eks_security_group_name_node` | String | Define the security group name worker. Defaults to `SG for ${var.aws_resource_identifier} - EKS Node`. |
 | `aws_eks_environment` | String | Specify the eks environment name. Defaults to `env` |
 | `aws_eks_management_cidr` | String | Comma separated list of remote public CIDRs blocks to add it to Worker nodes security groups. |
 | `aws_eks_allowed_ports` | String | Allow incoming traffic from this port. Accepts comma separated values, matching 1 to 1 with `aws_eks_allowed_ports_cidr`. |
 | `aws_eks_allowed_ports_cidr` | String | Allow incoming traffic from this CIDR block. Accepts comma separated values, matching 1 to 1 with `aws_eks_allowed_ports`. If none defined, will allow all incoming traffic. |
 | `aws_eks_cluster_name` | String | Specify the k8s cluster name. Defaults to `${var.aws_resource_identifier}-cluster` |
-| `aws_eks_cluster_log_types` | String | Comma separated list of cluster log type. See [this AWS doc](https://docs.aws.amazon.com/eks/latest/userguide/control-plane-logs.html). Defaults to `none`. |
-| `aws_eks_cluster_version` | String | Specify the k8s cluster version. Defaults to `1.27` |
+| `aws_eks_cluster_admin_role_arn` | String | Role ARN to gran cluster-admin permissions. | 
+| `aws_eks_cluster_log_types` | String | Comma separated list of cluster log type. See [this AWS doc](https://docs.aws.amazon.com/eks/latest/userguide/control-plane-logs.html). Defaults to `api,audit,authenticator`. |
+| `aws_eks_cluster_log_retention_days` | String | Days to store logs. Defaults to `7`. | 
+| `aws_eks_cluster_version` | String | Specify the k8s cluster version. Defaults to `1.28` |
 | `aws_eks_instance_type` | String | Define the EC2 instance type. See [this list](https://aws.amazon.com/ec2/instance-types/) for reference. Defaults to `t3a.medium`. |
 | `aws_eks_instance_ami_id` | String | AWS AMI ID. Will default to the latest Amazon EKS Node image for the cluster version. |
 | `aws_eks_instance_user_data_file` | String | Relative path in the repo for a user provided script to be executed with the EC2 Instance creation. See note. |

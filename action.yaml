@@ -926,8 +926,14 @@ inputs:
   aws_eks_cluster_name:
     description: "EKS Cluster name. Defaults to eks-cluster"
     required: false
+  aws_eks_cluster_admin_role_arn:
+    description: "Role ARN to grant cluster-admin permissions"
+    required: false
   aws_eks_cluster_log_types:
-    description: "EKS Log types, csv list"
+    description: "EKS Log types, comma separated list. Defaults to api,audit,authenticator"
+    required: false
+  aws_eks_cluster_log_retention_days:
+    description: "Days to store logs. Defaults to 7."
     required: false
   aws_eks_cluster_version:
     description: 'Specify the k8s cluster version'
@@ -1416,7 +1422,9 @@ runs:
         AWS_EKS_ALLOWED_PORTS: ${{ inputs.aws_eks_allowed_ports }}
         AWS_EKS_ALLOWED_PORTS_CIDR: ${{ inputs.aws_eks_allowed_ports_cidr }}
         AWS_EKS_CLUSTER_NAME: ${{ inputs.aws_eks_cluster_name }}
+        AWS_EKS_CLUSTER_ADMIN_ROLE_ARN: ${{ inputs.aws_eks_cluster_admin_role_arn }}
         AWS_EKS_CLUSTER_LOG_TYPES: ${{ inputs.aws_eks_cluster_log_types }}
+        AWS_EKS_CLUSTER_LOG_RETENTION_DAYS: ${{ inputs.aws_eks_cluster_log_retention_days }}
         AWS_EKS_CLUSTER_VERSION: ${{ inputs.aws_eks_cluster_version }}
         AWS_EKS_INSTANCE_TYPE: ${{ inputs.aws_eks_instance_type }}
         AWS_EKS_INSTANCE_AMI_ID: ${{ inputs.aws_eks_instance_ami_id }}

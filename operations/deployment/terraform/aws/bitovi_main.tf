@@ -601,7 +601,9 @@ module "eks" {
   aws_eks_allowed_ports              = var.aws_eks_allowed_ports
   aws_eks_allowed_ports_cidr         = var.aws_eks_allowed_ports_cidr
   aws_eks_cluster_name               = var.aws_eks_cluster_name
+  aws_eks_cluster_admin_role_arn     = var.aws_eks_cluster_admin_role_arn
   aws_eks_cluster_log_types          = var.aws_eks_cluster_log_types
+  aws_eks_cluster_log_retention_days = var.aws_eks_cluster_log_retention_days
   aws_eks_cluster_version            = var.aws_eks_cluster_version
   aws_eks_instance_type              = var.aws_eks_instance_type
   aws_eks_instance_ami_id            = var.aws_eks_instance_ami_id
