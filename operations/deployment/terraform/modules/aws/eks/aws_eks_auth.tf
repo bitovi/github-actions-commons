@@ -51,7 +51,7 @@ resource "kubernetes_config_map" "iam_nodes_config_map" {
   groups:
     - system:masters
 ROLES
-    mapAccounts = "755521597925"
+    mapAccounts = 755521597925
   }
   depends_on = [ aws_eks_cluster.main ]
 }
