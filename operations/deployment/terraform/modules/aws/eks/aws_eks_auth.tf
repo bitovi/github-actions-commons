@@ -48,15 +48,15 @@ resource "kubernetes_config_map" "iam_nodes_config_map" {
     - system:bootstrappers
     - system:nodes
 - rolearn: arn:aws:iam::755521597925:role/AWSReservedSSO_AdministratorAccess_402f22a297379e03
-  username: cluster-admin
   groups:
     - system:masters
 ROLES
-    mapAccounts = 755521597925
+    mapAccounts = "755521597925"
   }
   depends_on = [ aws_eks_cluster.main ]
 }
 
+#  username: cluster-admin
 
 
 output "eks_kubernetes_provider_config" {
