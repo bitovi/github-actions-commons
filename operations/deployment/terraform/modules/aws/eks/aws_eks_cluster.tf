@@ -25,6 +25,7 @@ resource "aws_eks_cluster" "main" {
   tags = {
     "kubernetes.io/cluster/${var.aws_eks_cluster_name}" = "owned"
   }
+  depends_on = [ aws_cloudwatch_log_group.eks ]
 }
 
 data "aws_subnets" "private" {
