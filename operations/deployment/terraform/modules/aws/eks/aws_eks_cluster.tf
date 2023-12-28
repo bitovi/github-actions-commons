@@ -6,6 +6,7 @@ resource "aws_cloudwatch_log_group" "eks" {
   count             =  var.aws_eks_cluster_log_types != "" ? 1 : 0
   name              = "/aws/eks/${var.aws_eks_cluster_name}/cluster"
   retention_in_days = tonumber(var.aws_eks_cluster_log_retention_days)
+  skip_destroy      = false #var.aws_eks_cluster_logs_skip_destroy
 }
 
 resource "aws_eks_cluster" "main" {
