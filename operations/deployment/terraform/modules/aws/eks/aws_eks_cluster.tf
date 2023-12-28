@@ -96,19 +96,21 @@ data "aws_caller_identity" "current" {}
 
 locals {
   aws_eks_cluster_admin_role_arn = var.aws_eks_cluster_admin_role_arn != "" ? [for n in split(",", var.aws_eks_cluster_admin_role_arn) : (n)] : []
-  map_worker_roles = {
-      rolearn  = "${aws_iam_role.iam_role_node.arn}"
+  map_worker_roles = [
+    {
+      rolearn  = aws_iam_role.iam_role_node.arn
       username = "system:node:{{EC2PrivateDNSName}}"
-      groups = [
+      groups   = [
         "system:bootstrappers",
         "system:nodes"
       ]
-  }
+    }
+  ]
   cluster_admin_roles = [
     for role_arn in local.aws_eks_cluster_admin_role_arn : {
       rolearn  = role_arn
       username = "cluster-admin"
-      groups = [
+      groups   = [
         "system:masters"
       ]
     }
