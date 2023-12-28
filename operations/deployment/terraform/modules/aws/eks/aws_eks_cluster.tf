@@ -144,7 +144,7 @@ resource "kubernetes_config_map" "aws_auth" {
   }
 
   data = {
-    mapRoles    = replace(yamlencode(distinct(concat(local.map_worker_roles, local.cluster_admin_roles))), "\"")
+    mapRoles    = yamlencode(distinct(concat(local.map_worker_roles, local.cluster_admin_roles)))
     #mapUsers    = replace(yamlencode(var.map_additional_iam_users), "\"", local.yaml_quote)
     mapAccounts = "${data.aws_caller_identity.current.account_id}"
   }
