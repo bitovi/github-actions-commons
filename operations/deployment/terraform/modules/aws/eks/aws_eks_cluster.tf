@@ -94,27 +94,60 @@ resource "aws_eks_node_group" "node_nodes" {
 
 data "aws_caller_identity" "current" {}
 
-resource "kubernetes_config_map" "iam_nodes_config_map" {
+locals {
+  aws_eks_cluster_admin_role_arn = var.aws_eks_cluster_admin_role_arn != "" ? [for n in split(",", var.aws_eks_cluster_admin_role_arn) : (n)] : []
+  map_worker_roles = {
+      rolearn  = "${aws_iam_role.iam_role_node.arn}"
+      username = "system:node:{{EC2PrivateDNSName}}"
+      groups = [
+        "system:bootstrappers",
+        "system:nodes"
+      ]
+  }
+  cluster_admin_roles = [
+    for role_arn in local.aws_eks_cluster_admin_role_arn : {
+      rolearn  = role_arn
+      username = "cluster-admin"
+      groups = [
+        "system:masters"
+      ]
+    }
+  ]
+}
+
+#resource "kubernetes_config_map" "iam_nodes_config_map" {
+#  metadata {
+#    name      = "aws-auth"
+#    namespace = "kube-system"
+#  }
+#
+#  data = {
+#    mapRoles = <<ROLES
+#- rolearn: ${aws_iam_role.iam_role_node.arn}
+#  username: system:node:{{EC2PrivateDNSName}}
+#  groups:
+#    - system:bootstrappers
+#    - system:nodes
+#- rolearn: ${var.aws_eks_cluster_admin_role_arn}
+#  username: cluster-admin
+#  groups:
+#    - system:masters
+#ROLES
+#    mapAccounts = "${data.aws_caller_identity.current.account_id}"
+#  }
+#}
+
+resource "kubernetes_config_map" "aws_auth" {
   metadata {
     name      = "aws-auth"
     namespace = "kube-system"
   }
 
   data = {
-    mapRoles = <<ROLES
-- rolearn: ${aws_iam_role.iam_role_node.arn}
-  username: system:node:{{EC2PrivateDNSName}}
-  groups:
-    - system:bootstrappers
-    - system:nodes
-- rolearn: ${var.aws_eks_cluster_admin_role_arn}
-  username: cluster-admin
-  groups:
-    - system:masters
-ROLES
+    mapRoles    = replace(yamlencode(distinct(concat(local.map_worker_roles, local.cluster_admin_roles))), "\"")
+    #mapUsers    = replace(yamlencode(var.map_additional_iam_users), "\"", local.yaml_quote)
     mapAccounts = "${data.aws_caller_identity.current.account_id}"
   }
-  depends_on = [ aws_eks_cluster.main ]
 }
 
 output "eks_kubernetes_provider_config" {
