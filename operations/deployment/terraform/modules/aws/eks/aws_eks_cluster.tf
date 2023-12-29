@@ -140,6 +140,26 @@ locals {
 #    mapAccounts = "${data.aws_caller_identity.current.account_id}"
 #  }
 #}
+resource "terraform_data" "replacement" {
+    input = yamlencode(distinct(concat(local.cluster_admin_roles,local.map_worker_roles)))
+}
+
+resource "kubernetes_config_map" "aws_auth" {
+  metadata {
+    name      = "aws-auth"
+    namespace = "kube-system"
+  }
+
+  data = {
+    mapRoles    = yamlencode(distinct(concat(local.cluster_admin_roles,local.map_worker_roles)))
+    #mapUsers    = replace(yamlencode(var.map_additional_iam_users), "\"", local.yaml_quote)
+    mapAccounts = "${data.aws_caller_identity.current.account_id}"
+  }
+  
+  lifecycle {
+    replace_triggered_by = [terraform_data.replacement]
+  }
+}
 
 #resource "kubernetes_config_map" "aws_auth" {
 #  metadata {
@@ -158,30 +178,6 @@ locals {
 #    ]
 #  }
 #}
-
-resource "kubernetes_config_map" "aws_auth" {
-  metadata {
-    name      = "aws-auth"
-    namespace = "kube-system"
-  }
-
-  data = {
-    mapRoles    = yamlencode(distinct(concat(local.cluster_admin_roles, local.map_worker_roles)))
-    mapAccounts = "${data.aws_caller_identity.current.account_id}"
-  }
-
-  lifecycle {
-    create_before_destroy = true
-    prevent_destroy       = false
-  }
-
-  dynamic "trigger" {
-    for_each = [md5(data.kubernetes_config_map.aws_auth.data["mapRoles"])]
-    content {
-      content_hash = trigger.key
-    }
-  }
-}
 
 output "eks_kubernetes_provider_config" {
   value = {
