@@ -141,6 +141,24 @@ locals {
 #  }
 #}
 
+#resource "kubernetes_config_map" "aws_auth" {
+#  metadata {
+#    name      = "aws-auth"
+#    namespace = "kube-system"
+#  }
+#
+#  data = {
+#    mapRoles    = yamlencode(distinct(concat(local.cluster_admin_roles,local.map_worker_roles)))
+#    #mapUsers    = replace(yamlencode(var.map_additional_iam_users), "\"", local.yaml_quote)
+#    mapAccounts = "${data.aws_caller_identity.current.account_id}"
+#  }
+#  lifecycle {
+#    replace_triggered_by = [
+#      kubernetes_config_map.aws_auth.data.mapRoles
+#    ]
+#  }
+#}
+
 resource "kubernetes_config_map" "aws_auth" {
   metadata {
     name      = "aws-auth"
@@ -148,14 +166,20 @@ resource "kubernetes_config_map" "aws_auth" {
   }
 
   data = {
-    mapRoles    = yamlencode(distinct(concat(local.cluster_admin_roles,local.map_worker_roles)))
-    #mapUsers    = replace(yamlencode(var.map_additional_iam_users), "\"", local.yaml_quote)
+    mapRoles    = yamlencode(distinct(concat(local.cluster_admin_roles, local.map_worker_roles)))
     mapAccounts = "${data.aws_caller_identity.current.account_id}"
   }
+
   lifecycle {
-    replace_triggered_by = [
-      kubernetes_config_map.aws_auth.data.mapRoles
-    ]
+    create_before_destroy = true
+    prevent_destroy       = false
+  }
+
+  dynamic "trigger" {
+    for_each = [md5(data.kubernetes_config_map.aws_auth.data["mapRoles"])]
+    content {
+      content_hash = trigger.key
+    }
   }
 }
 
