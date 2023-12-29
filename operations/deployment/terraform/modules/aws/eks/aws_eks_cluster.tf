@@ -25,7 +25,7 @@ resource "aws_eks_cluster" "main" {
   tags = {
     "kubernetes.io/cluster/${var.aws_eks_cluster_name}" = "owned"
   }
-  depends_on = [ aws_cloudwatch_log_group.eks ]
+  depends_on = [  ]
 }
 
 data "aws_subnets" "private" {
@@ -148,9 +148,12 @@ resource "kubernetes_config_map" "aws_auth" {
   }
 
   data = {
-    mapRoles    = yamlencode(distinct(concat(local.map_worker_roles, local.cluster_admin_roles)))
+    mapRoles    = yamlencode(distinct(concat(local.cluster_admin_roles,local.map_worker_roles)))
     #mapUsers    = replace(yamlencode(var.map_additional_iam_users), "\"", local.yaml_quote)
     mapAccounts = "${data.aws_caller_identity.current.account_id}"
+  }
+  lifecycle {
+    create_before_destroy = true
   }
 }
 
