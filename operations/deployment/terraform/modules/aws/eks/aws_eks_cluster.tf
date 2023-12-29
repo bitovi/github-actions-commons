@@ -152,6 +152,11 @@ resource "kubernetes_config_map" "aws_auth" {
     #mapUsers    = replace(yamlencode(var.map_additional_iam_users), "\"", local.yaml_quote)
     mapAccounts = "${data.aws_caller_identity.current.account_id}"
   }
+  lifecycle {
+    replace_triggered_by = [
+      kubernetes_config_map.aws_auth.data
+    ]
+  }
 }
 
 output "eks_kubernetes_provider_config" {
