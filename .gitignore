@@ -8,7 +8,7 @@ local.sh
 bitops.config.yaml
 
 # BitOps GHAs
-provider.tf
+#provider.tf
 terraform.tfvars
 
 terraform-*

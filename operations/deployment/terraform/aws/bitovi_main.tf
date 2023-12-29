@@ -594,14 +594,17 @@ module "eks" {
   count  = var.aws_eks_create ? 1 : 0
   # EKS
   #aws_eks_create                     = var.aws_eks_create
-  aws_eks_security_group_name_master = var.aws_eks_security_group_name_master
-  aws_eks_security_group_name_worker = var.aws_eks_security_group_name_worker
+  aws_eks_security_group_name_cluster = var.aws_eks_security_group_name_cluster
+  aws_eks_security_group_name_node = var.aws_eks_security_group_name_node
   aws_eks_environment                = var.aws_eks_environment
   aws_eks_management_cidr            = var.aws_eks_management_cidr
   aws_eks_allowed_ports              = var.aws_eks_allowed_ports
   aws_eks_allowed_ports_cidr         = var.aws_eks_allowed_ports_cidr
   aws_eks_cluster_name               = var.aws_eks_cluster_name
+  aws_eks_cluster_admin_role_arn     = var.aws_eks_cluster_admin_role_arn
   aws_eks_cluster_log_types          = var.aws_eks_cluster_log_types
+  aws_eks_cluster_log_retention_days = var.aws_eks_cluster_log_retention_days
+  aws_eks_cluster_log_skip_destroy   = var.aws_eks_cluster_log_skip_destroy
   aws_eks_cluster_version            = var.aws_eks_cluster_version
   aws_eks_instance_type              = var.aws_eks_instance_type
   aws_eks_instance_ami_id            = var.aws_eks_instance_ami_id
@@ -664,7 +667,7 @@ locals {
   r53_tags      = merge(local.default_tags,jsondecode(var.aws_r53_additional_tags))
   elb_tags      = merge(local.default_tags,jsondecode(var.aws_elb_additional_tags))
   efs_tags      = merge(local.default_tags,jsondecode(var.aws_efs_additional_tags))
-  vpc_tags      = var.aws_eks_create ? merge(local.default_tags,jsondecode(var.aws_vpc_additional_tags)) : local.vpc_eks_tags
+  vpc_tags      = var.aws_eks_create ? local.vpc_eks_tags : merge(local.default_tags,jsondecode(var.aws_vpc_additional_tags))
   vpc_eks_tags  = merge(local.default_tags,jsondecode(var.aws_vpc_additional_tags),local.eks_vpc_tags)
   eks_tags      = merge(local.default_tags,jsondecode(var.aws_eks_additional_tags))
   rds_tags      = merge(local.default_tags,jsondecode(var.aws_rds_db_additional_tags))

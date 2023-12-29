@@ -1,8 +1,8 @@
 # Security groups
 
-resource "aws_security_group" "eks_security_group_master" {
-  name        = var.aws_eks_security_group_name_master != "" ? var.aws_eks_security_group_name_master : "SG for ${var.aws_resource_identifier} - ${var.aws_eks_environment} - EKS Master"
-  description = "SG for ${var.aws_resource_identifier} - EKS Master"
+resource "aws_security_group" "eks_security_group_cluster" {
+  name        = var.aws_eks_security_group_name_cluster != "" ? var.aws_eks_security_group_name_cluster : "SG for ${var.aws_resource_identifier} - ${var.aws_eks_environment} - EKS Cluster"
+  description = "SG for ${var.aws_resource_identifier} - EKS Cluster"
   vpc_id      = var.aws_selected_vpc_id
   egress {
     from_port   = 0
@@ -11,14 +11,14 @@ resource "aws_security_group" "eks_security_group_master" {
     cidr_blocks = ["0.0.0.0/0"]
   }
   tags = {
-    Name = "${var.aws_resource_identifier}-eks-sg-mstr"
+    Name = "${var.aws_resource_identifier}-eks-sg-cluster"
     "kubernetes.io/cluster/${var.aws_eks_cluster_name}" = "owned"
   }
 }
 
-resource "aws_security_group" "eks_security_group_worker" {
-  name        = var.aws_eks_security_group_name_worker != "" ? var.aws_eks_security_group_name_worker : "SG for ${var.aws_resource_identifier} - ${var.aws_eks_environment} - EKS Worker"
-  description = "SG for ${var.aws_resource_identifier} - EKS Worker"
+resource "aws_security_group" "eks_security_group_node" {
+  name        = var.aws_eks_security_group_name_node != "" ? var.aws_eks_security_group_name_node : "SG for ${var.aws_resource_identifier} - ${var.aws_eks_environment} - EKS Node"
+  description = "SG for ${var.aws_resource_identifier} - EKS Node"
   vpc_id      = var.aws_selected_vpc_id
   egress {
     from_port   = 0
@@ -27,54 +27,157 @@ resource "aws_security_group" "eks_security_group_worker" {
     cidr_blocks = ["0.0.0.0/0"]
   }
   tags = {
-    Name = "${var.aws_resource_identifier}-eks-sg-wrkr"
+    Name = "${var.aws_resource_identifier}-eks-sg-node"
     "kubernetes.io/cluster/${var.aws_eks_cluster_name}" = "owned"
   }
 }
 
-# Rules 
-
-resource "aws_security_group_rule" "rule1" {
-  description              = "Allow pods to communicate with the cluster API Server"
-  type                     = "ingress"
-  from_port                = "443"
-  to_port                  = "443"
-  protocol                 = "tcp"
-  source_security_group_id = aws_security_group.eks_security_group_worker.id
-  security_group_id        = aws_security_group.eks_security_group_master.id
+# Cluster rules
+resource "aws_security_group_rule" "ingress_nodes_443" {
+    description              = "Node groups to cluster API"
+    from_port                = 443
+    protocol                 = "tcp"
+    security_group_id        = aws_security_group.eks_security_group_cluster.id
+    source_security_group_id = aws_security_group.eks_security_group_node.id
+    to_port                  = 443
+    type                     = "ingress"
 }
 
-resource "aws_security_group_rule" "rule2" {
-  description              = "Allow self communication with in master"
-  type                     = "ingress"
-  from_port                = "0"
-  to_port                  = "0"
-  protocol                 = "-1"
-  source_security_group_id = aws_security_group.eks_security_group_master.id
-  security_group_id        = aws_security_group.eks_security_group_master.id
+# Node rules
+resource "aws_security_group_rule" "ingress_cluster_443" {
+    description              = "Cluster API to node groups"
+    from_port                = 443
+    protocol                 = "tcp"
+    security_group_id        = aws_security_group.eks_security_group_node.id
+    source_security_group_id = aws_security_group.eks_security_group_cluster.id
+    to_port                  = 443
+    type                     = "ingress"
 }
 
-resource "aws_security_group_rule" "rule3" {
-  description              = "Allow node to communication with each other and self"
-  type                     = "ingress"
-  from_port                = "0"
-  to_port                  = "65535"
-  protocol                 = "-1"
-  source_security_group_id = aws_security_group.eks_security_group_worker.id
-  security_group_id        = aws_security_group.eks_security_group_worker.id
+resource "aws_security_group_rule" "ingress_cluster_4443_webhook" {
+    description              = "Cluster API to node 4443/tcp webhook"
+    from_port                = 4443
+    protocol                 = "tcp"
+    security_group_id        = aws_security_group.eks_security_group_node.id
+    source_security_group_id = aws_security_group.eks_security_group_cluster.id
+    to_port                  = 4443
+    type                     = "ingress"
 }
 
-resource "aws_security_group_rule" "rule4" {
-  description              = "Allow worker Kubelets and pods to receive communication from the cluster control plane"
-  type                     = "ingress"
-  from_port                = "1025"
-  to_port                  = "65535"
-  protocol                 = "tcp"
-  source_security_group_id = aws_security_group.eks_security_group_master.id
-  security_group_id        = aws_security_group.eks_security_group_worker.id
+resource "aws_security_group_rule" "ingress_cluster_6443_webhook" {
+    description              = "Cluster API to node 6443/tcp webhook"
+    from_port                = 6443
+    protocol                 = "tcp"
+    security_group_id        = aws_security_group.eks_security_group_node.id
+    source_security_group_id = aws_security_group.eks_security_group_cluster.id
+    to_port                  = 6443
+    type                     = "ingress"
 }
 
-resource "aws_security_group_rule" "rule5" {
+resource "aws_security_group_rule" "noingress_cluster_8443_webhookde4" {
+    description              = "Cluster API to node 8443/tcp webhook"
+    from_port                = 8443
+    protocol                 = "tcp"
+    security_group_id        = aws_security_group.eks_security_group_node.id
+    source_security_group_id = aws_security_group.eks_security_group_cluster.id
+    to_port                  = 8443
+    type                     = "ingress"
+}
+
+resource "aws_security_group_rule" "ingress_cluster_9443_webhook" {
+    description              = "Cluster API to node 9443/tcp webhook"
+    from_port                = 9443
+    protocol                 = "tcp"
+    security_group_id        = aws_security_group.eks_security_group_node.id
+    source_security_group_id = aws_security_group.eks_security_group_cluster.id
+    to_port                  = 9443
+    type                     = "ingress"
+}
+
+resource "aws_security_group_rule" "ingress_cluster_kubelet" {
+    description              = "Cluster API to node kubelets"
+    from_port                = 10250
+    protocol                 = "tcp"
+    security_group_id        = aws_security_group.eks_security_group_node.id
+    source_security_group_id = aws_security_group.eks_security_group_cluster.id
+    to_port                  = 10250
+    type                     = "ingress"
+}
+
+resource "aws_security_group_rule" "ingress_nodes_ephemeral" {
+    description            = "Node to node ingress on ephemeral ports"
+    from_port              = 1025
+    protocol               = "tcp"
+    security_group_id      = aws_security_group.eks_security_group_node.id
+    self                   = true
+    to_port                = 65535
+    type                   = "ingress"
+}
+
+resource "aws_security_group_rule" "ingress_self_coredns_tcp" {
+    description            = "Node to node CoreDNS"
+    from_port              = 53
+    protocol               = "tcp"
+    security_group_id      = aws_security_group.eks_security_group_node.id
+    self                   = true
+    to_port                = 53
+    type                   = "ingress"
+}
+
+resource "aws_security_group_rule" "ingress_self_coredns_udp" {
+    description            = "Node to node CoreDNS UDP"
+    from_port              = 53
+    protocol               = "udp"
+    security_group_id      = aws_security_group.eks_security_group_node.id
+    self                   = true
+    to_port                = 53
+    type                   = "ingress"
+}
+
+
+## Rules 
+#resource "aws_security_group_rule" "cluster" {
+#    description              = "Node groups to cluster API"
+#    type                     = "ingress"
+#    from_port                = 443
+#    to_port                  = 443
+#    protocol                 = "tcp"
+#    source_security_group_id = aws_security_group.eks_security_group_node.id
+#    security_group_id        = aws_security_group.eks_security_group_cluster.id
+#}
+#
+#resource "aws_security_group_rule" "rule2" {
+#  description              = "Allow self communication with in cluster"
+#  type                     = "ingress"
+#  from_port                = "0"
+#  to_port                  = "0"
+#  protocol                 = "-1"
+#  source_security_group_id = aws_security_group.eks_security_group_cluster.id
+#  security_group_id        = aws_security_group.eks_security_group_cluster.id
+#}
+#
+#resource "aws_security_group_rule" "rule3" {
+#  description              = "Allow node to communication with each other and self"
+#  type                     = "ingress"
+#  from_port                = "0"
+#  to_port                  = "65535"
+#  protocol                 = "-1"
+#  source_security_group_id = aws_security_group.eks_security_group_node.id
+#  security_group_id        = aws_security_group.eks_security_group_node.id
+#}
+#
+#resource "aws_security_group_rule" "rule4" {
+#  description              = "Allow node Kubelets and pods to receive communication from the cluster control plane"
+#  type                     = "ingress"
+#  from_port                = "1025"
+#  to_port                  = "65535"
+#  protocol                 = "tcp"
+#  source_security_group_id = aws_security_group.eks_security_group_cluster.id
+#  security_group_id        = aws_security_group.eks_security_group_node.id
+#}
+#
+
+resource "aws_security_group_rule" "rule7" {
     count             = length(local.aws_eks_management_cidr)
     description       = "Allow workstation or EC2 to communicate with the cluster API Server"
     type              = "ingress"
@@ -82,7 +185,7 @@ resource "aws_security_group_rule" "rule5" {
     to_port           = "443"
     protocol          = "tcp"
     cidr_blocks       = element(local.aws_eks_management_cidr, count.index)
-    security_group_id = aws_security_group.eks_security_group_master.id
+    security_group_id = aws_security_group.eks_security_group_cluster.id
 }
 
 resource "aws_security_group_rule" "ingress_rule" {
@@ -93,11 +196,11 @@ resource "aws_security_group_rule" "ingress_rule" {
   to_port           = element(local.aws_eks_allowed_ports, count.index)
   protocol          = "tcp"
   cidr_blocks       = [try(element(local.aws_eks_allowed_ports_cidr, count.index),"0.0.0.0/0")]  # Allow traffic from any source IP
-  security_group_id = aws_security_group.eks_security_group_worker.id  # Use the appropriate security group ID
+  security_group_id = aws_security_group.eks_security_group_node.id  # Use the appropriate security group ID
 }
 
 locals {
-  aws_eks_management_cidr   = var.aws_eks_management_cidr   != "" ? [for n in split(",", var.aws_eks_management_cidr)   : (n)] : []
+  aws_eks_management_cidr   = var.aws_eks_management_cidr     != "" ? [for n in split(",", var.aws_eks_management_cidr)    : (n)] : []
   aws_eks_allowed_ports      = var.aws_eks_allowed_ports      != "" ? [for n in split(",", var.aws_eks_allowed_ports)      : (n)] : []
   aws_eks_allowed_ports_cidr = var.aws_eks_allowed_ports_cidr != "" ? [for n in split(",", var.aws_eks_allowed_ports_cidr) : (n)] : []
 }

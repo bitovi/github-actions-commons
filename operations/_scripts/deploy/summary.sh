@@ -168,10 +168,7 @@ if [[ $SUCCESS == 'success' ]]; then
     if [[ $BITOPS_CODE_STORE == 'true' ]]; then
       SUMMARY_CODE=6
       result_string="## BitOps Code generated. :tada: 
-      Download the code artifact. Will be there for 5 days.
-      Keep in mind that for creation, EFS should be created before EC2.
-      While destroying, EC2 should be destroyed before EFS. (Due to resources being in use).
-      You can change that in the bitops.config.yaml file, or regenerate the code with destroy set."
+      Download the code artifact. Will be there for 5 days."
     else
       SUMMARY_CODE=5
       result_string="## BitOps Code generated. :tada:"

@@ -142,6 +142,34 @@ else
   aws_eks_cluster_name="$GITHUB_IDENTIFIER-cluster"
 fi
 
+function yq_check_add_missing() {
+  item=$1
+  content=$2
+  file=$3
+  if [ $(yq eval "$item" "$file") == null ]; then
+    /tmp/yq "$item = \"$content\"" -i "$file"
+  fi
+}
+
+function process_helm_bo_config() {
+  config_file="$1"
+  chart_name="$2"
+  cluster_name="$3"
+  # Checks for file content and add any setting if missing. 
+  # CLI
+  yq_check_add_missing ".helm.cli.namespace" kube-system $config_file
+  yq_check_add_missing ".helm.cli.timeout" 200s $config_file
+  yq_check_add_missing ".helm.cli.debug" true $config_file
+  yq_check_add_missing ".helm.cli.atomic" false $config_file
+  yq_check_add_missing ".helm.cli.force" false $config_file
+  yq_check_add_missing ".helm.cli.dry-run" false $config_file
+  # Options
+  yq_check_add_missing ".helm.options.release-name" "$chart_name" $config_file
+  yq_check_add_missing ".helm.options.skip-deploy" false $config_file
+  yq_check_add_missing ".helm.options.k8s.fetch.kubeconfig" true $config_file
+  yq_check_add_missing ".helm.options.k8s.fetch.cluster-name" "$cluster_name" $config_file
+}
+
 function helm_move_content_prepend() {
   source_folder="$1"
   destination_folder="$2"
@@ -159,12 +187,17 @@ function helm_move_content_prepend() {
       else
         echo "mv $file $destination_folder/$chart_name/$file_name"
         mv "$file" "$destination_folder/$chart_name/$file_name"
-      fi
-      touch "$destination_folder/$chart_name/bitops.config.yaml"
-      if [ $(yq eval ".helm.options.release-name" "$destination_folder/$chart_name/bitops.config.yaml") == null ]; then
-          /tmp/yq ".helm.options.release-name = \"$chart_name\"" -i "$destination_folder/$chart_name/bitops.config.yaml"
-      fi
-      /tmp/yq ".helm.options.k8s.fetch.cluster-name = \"$aws_eks_cluster_name\"" -i "$destination_folder/$chart_name/bitops.config.yaml"
+      fi 
+      touch "$destination_folder/$chart_name/bitops.config.yaml" # If not there, create one
+      # Go check for the yaml file and add if something is missing
+      process_helm_bo_config "$destination_folder/$chart_name/bitops.config.yaml" "$chart_name" "$aws_eks_cluster_name"
+      #if [ $(yq eval ".helm.options.release-name" "$destination_folder/$chart_name/bitops.config.yaml") == null ]; then
+      #    /tmp/yq ".helm.options.release-name = \"$chart_name\"" -i "$destination_folder/$chart_name/bitops.config.yaml"
+      #fi
+      #if [ $(yq eval ".helm.options.namespace" "$destination_folder/$chart_name/bitops.config.yaml") == null ]; then
+      #    /tmp/yq ".helm.options.namespace = \"kube-system\"" -i "$destination_folder/$chart_name/bitops.config.yaml"
+      #fi
+      #/tmp/yq ".helm.options.k8s.fetch.cluster-name = \"$aws_eks_cluster_name\"" -i "$destination_folder/$chart_name/bitops.config.yaml"
     done
     # Move remaining folders (if they exist) and exclude the . folder
     find "$chart_folder" -maxdepth 1 -type d -not -name "." -path "$chart_folder/*" | while read folder; do

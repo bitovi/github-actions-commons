@@ -1542,14 +1542,14 @@ variable "aws_eks_create" {
   default     = false
 }
 
-variable "aws_eks_security_group_name_master" {
-  description = "aws aws_eks_security_group_name_master name"
+variable "aws_eks_security_group_name_cluster" {
+  description = "aws aws_eks_security_group_name_cluster name"
   type        = string
   default     = ""
 }
 
-variable "aws_eks_security_group_name_worker" {
-  description = "aws aws_eks_security_group_name_worker name"
+variable "aws_eks_security_group_name_node" {
+  description = "aws aws_eks_security_group_name_node name"
   type        = string
   default     = ""
 }
@@ -1583,16 +1583,34 @@ variable "aws_eks_cluster_name" {
   default     = ""
 }
 
-variable "aws_eks_cluster_log_types" {
-  description = "enter the kubernetes version"
+variable "aws_eks_cluster_admin_role_arn" {
+  description = "Role ARN to grant cluster-admin permissions"
   type        = string
   default     = ""
+}
+
+variable "aws_eks_cluster_log_types" {
+  description = "Comma separated list of log-types"
+  type        = string
+  default     = "api,audit,authenticator"
+}
+
+variable "aws_eks_cluster_log_retention_days" {
+  description = "enter the kubernetes version"
+  type        = string
+  default     = "7"
+}
+
+variable "aws_eks_cluster_log_skip_destroy" {
+  type        = string
+  description = "Toggle deletion or not when destroying the stack."
+  default     = false
 }
 
 variable "aws_eks_cluster_version" {
   description = "enter the kubernetes version"
   type        = number
-  default     = "1.27"
+  default     = "1.28"
 }
 
 variable "aws_eks_instance_type" {
