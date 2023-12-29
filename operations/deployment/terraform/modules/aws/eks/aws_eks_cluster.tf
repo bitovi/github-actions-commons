@@ -154,7 +154,7 @@ resource "kubernetes_config_map" "aws_auth" {
   }
   lifecycle {
     replace_triggered_by = [
-      kubernetes_config_map.aws_auth.data
+      kubernetes_config_map.aws_auth.data.mapRoles
     ]
   }
 }
