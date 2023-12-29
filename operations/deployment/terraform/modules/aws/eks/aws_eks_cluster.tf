@@ -119,27 +119,7 @@ locals {
   ]
 }
 
-#resource "kubernetes_config_map" "iam_nodes_config_map" {
-#  metadata {
-#    name      = "aws-auth"
-#    namespace = "kube-system"
-#  }
-#
-#  data = {
-#    mapRoles = <<ROLES
-#- rolearn: ${aws_iam_role.iam_role_node.arn}
-#  username: system:node:{{EC2PrivateDNSName}}
-#  groups:
-#    - system:bootstrappers
-#    - system:nodes
-#- rolearn: ${var.aws_eks_cluster_admin_role_arn}
-#  username: cluster-admin
-#  groups:
-#    - system:masters
-#ROLES
-#    mapAccounts = "${data.aws_caller_identity.current.account_id}"
-#  }
-#}
+
 resource "terraform_data" "replacement" {
     input = yamlencode(distinct(concat(local.cluster_admin_roles,local.map_worker_roles)))
 }
