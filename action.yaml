@@ -935,6 +935,9 @@ inputs:
   aws_eks_cluster_log_retention_days:
     description: "Days to store logs. Defaults to 7."
     required: false
+  aws_eks_cluster_log_skip_destroy:
+    description: "Skip deletion of cluster logs if set to true"
+    required: false
   aws_eks_cluster_version:
     description: 'Specify the k8s cluster version'
     required: false 
@@ -1425,6 +1428,7 @@ runs:
         AWS_EKS_CLUSTER_ADMIN_ROLE_ARN: ${{ inputs.aws_eks_cluster_admin_role_arn }}
         AWS_EKS_CLUSTER_LOG_TYPES: ${{ inputs.aws_eks_cluster_log_types }}
         AWS_EKS_CLUSTER_LOG_RETENTION_DAYS: ${{ inputs.aws_eks_cluster_log_retention_days }}
+        AWS_EKS_CLUSTER_LOG_SKIP_DESTROY: ${{ inputs.aws_eks_cluster_log_skip_destroy }}
         AWS_EKS_CLUSTER_VERSION: ${{ inputs.aws_eks_cluster_version }}
         AWS_EKS_INSTANCE_TYPE: ${{ inputs.aws_eks_instance_type }}
         AWS_EKS_INSTANCE_AMI_ID: ${{ inputs.aws_eks_instance_ami_id }}

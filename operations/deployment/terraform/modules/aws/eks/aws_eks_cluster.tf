@@ -6,7 +6,7 @@ resource "aws_cloudwatch_log_group" "eks" {
   count             =  var.aws_eks_cluster_log_types != "" ? 1 : 0
   name              = "/aws/eks/${var.aws_eks_cluster_name}/cluster"
   retention_in_days = tonumber(var.aws_eks_cluster_log_retention_days)
-  skip_destroy      = false #var.aws_eks_cluster_logs_skip_destroy
+  skip_destroy      = var.aws_eks_cluster_log_skip_destroy
 }
 
 resource "aws_eks_cluster" "main" {
@@ -155,29 +155,11 @@ resource "kubernetes_config_map" "aws_auth" {
     #mapUsers    = replace(yamlencode(var.map_additional_iam_users), "\"", local.yaml_quote)
     mapAccounts = "${data.aws_caller_identity.current.account_id}"
   }
-  
+
   lifecycle {
     replace_triggered_by = [terraform_data.replacement]
   }
 }
-
-#resource "kubernetes_config_map" "aws_auth" {
-#  metadata {
-#    name      = "aws-auth"
-#    namespace = "kube-system"
-#  }
-#
-#  data = {
-#    mapRoles    = yamlencode(distinct(concat(local.cluster_admin_roles,local.map_worker_roles)))
-#    #mapUsers    = replace(yamlencode(var.map_additional_iam_users), "\"", local.yaml_quote)
-#    mapAccounts = "${data.aws_caller_identity.current.account_id}"
-#  }
-#  lifecycle {
-#    replace_triggered_by = [
-#      kubernetes_config_map.aws_auth.data.mapRoles
-#    ]
-#  }
-#}
 
 output "eks_kubernetes_provider_config" {
   value = {

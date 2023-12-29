@@ -1601,6 +1601,12 @@ variable "aws_eks_cluster_log_retention_days" {
   default     = "7"
 }
 
+variable "aws_eks_cluster_log_skip_destroy" {
+  type        = string
+  description = "Toggle deletion or not when destroying the stack."
+  default     = false
+}
+
 variable "aws_eks_cluster_version" {
   description = "enter the kubernetes version"
   type        = number
