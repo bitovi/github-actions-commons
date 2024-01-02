@@ -863,6 +863,6 @@ output "eks_cluster_role_arn" {
 
 
 # Debug
-output "aws_ec2_prefered_az" {
+output "aws_ec2_preferred_az" {
   value = try(module.ec2[0].preferred_az,null)
 }
