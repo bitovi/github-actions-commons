@@ -703,6 +703,10 @@ output "aws_vpc_id" {
   value = module.vpc.aws_selected_vpc_id
 }
 
+output "aws_vpc_prefered_az" {
+  value = module.vpc.preferred_az
+}
+
 # EC2
 output "instance_public_dns" {
   description = "Public DNS address of the EC2 instance"
