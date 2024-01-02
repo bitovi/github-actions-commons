@@ -866,3 +866,7 @@ output "eks_cluster_role_arn" {
 output "aws_ec2_preferred_az" {
   value = try(module.ec2[0].preferred_az,null)
 }
+
+output "aws_vpc_availability_zones" {
+  value = var.aws_vpc_availability_zones
+}
