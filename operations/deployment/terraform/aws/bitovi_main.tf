@@ -860,3 +860,9 @@ output "eks_cluster_name" {
 output "eks_cluster_role_arn" {
   value = try(module.eks[0].aws_eks_cluster_role_arn,null)
 }
+
+
+# Debug
+output "aws_ec2_prefered_az" {
+  value = try(module.ec2[0].preferred_az,null)
+}

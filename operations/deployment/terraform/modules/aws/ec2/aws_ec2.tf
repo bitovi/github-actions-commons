@@ -162,3 +162,7 @@ output "aws_security_group_ec2_sg_name" {
 output "aws_security_group_ec2_sg_id" {
   value = data.aws_security_group.ec2_security_group.id
 }
+
+output "aws_ec2_prefered_az" {
+  value = var.preferred_az
+}
