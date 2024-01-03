@@ -86,7 +86,11 @@ data "aws_subnet" "selected" {
   count = local.use_default ? 0 : 1
   id    = var.aws_vpc_subnet_id != "" ? var.aws_vpc_subnet_id : var.aws_vpc_create ? aws_subnet.public[0].id : data.aws_subnets.vpc_subnets.ids[0]
 }
-   
+
+output "aws_vpc_subnet_selected" {
+  value = local.use_default ? data.aws_subnet.default_selected[0].id : data.aws_subnet.selected[0].id
+}
+
 data "aws_security_group" "default" {
   filter {
     name   = "group-name"
@@ -171,26 +175,4 @@ output "aws_subnets" {
 
 output "availability_zones" {
   value = data.aws_availability_zones.all.zone_ids
-}
-
-# Debug
-
-output debug_var_aws_vpc_availability_zones {
-  value = var.aws_vpc_availability_zones
-}
-
-output debug_local_aws_vpc_availability_zones {
-  value = local.aws_vpc_availability_zones[0]
-}
-
-output debug_var_aws_vpc_id {
-  value = var.aws_vpc_id
-}
-
-output debug_data_aws_subnet_selected_0_availability_zone {
-  value = try(data.aws_subnet.selected[0].availability_zone,null)
-}
-
-output debug_local_aws_ec2_zone_selected {
-  value = local.aws_ec2_zone_selected
 }
