@@ -200,7 +200,7 @@ resource "aws_security_group_rule" "ingress_rule" {
 }
 
 locals {
-  aws_eks_management_cidr   = var.aws_eks_management_cidr     != "" ? [for n in split(",", var.aws_eks_management_cidr)    : (n)] : []
+  aws_eks_management_cidr    = var.aws_eks_management_cidr    != "" ? [for n in split(",", var.aws_eks_management_cidr)    : (n)] : []
   aws_eks_allowed_ports      = var.aws_eks_allowed_ports      != "" ? [for n in split(",", var.aws_eks_allowed_ports)      : (n)] : []
   aws_eks_allowed_ports_cidr = var.aws_eks_allowed_ports_cidr != "" ? [for n in split(",", var.aws_eks_allowed_ports_cidr) : (n)] : []
 }

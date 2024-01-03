@@ -758,3 +758,5 @@ $app_branch_name
 # We might want to pass only the variables needed and not all of them. 
 
 echo "Done with generate_vars_terraform.sh"
+echo "debug_aws_vpc_availability_zones $AWS_VPC_AVAILABILITY_ZONES"
+echo "$aws_vpc_availability_zones"
