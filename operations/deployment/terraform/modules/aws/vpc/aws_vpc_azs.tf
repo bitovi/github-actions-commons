@@ -188,7 +188,7 @@ output debug_var_aws_vpc_id {
 }
 
 output debug_data_aws_subnet_selected_0_availability_zone {
-  value = data.aws_subnet.selected[0].availability_zone
+  value = try(data.aws_subnet.selected[0].availability_zone,null)
 }
 
 output debug_local_aws_ec2_zone_selected {
