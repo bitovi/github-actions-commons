@@ -172,3 +172,25 @@ output "aws_subnets" {
 output "availability_zones" {
   value = data.aws_availability_zones.all.zone_ids
 }
+
+# Debug
+
+output debug_var_aws_vpc_availability_zones {
+  value = var.aws_vpc_availability_zones
+}
+
+output debug_local_aws_vpc_availability_zones {
+  value = local.aws_vpc_availability_zones[0]
+}
+
+output debug_var_aws_vpc_id {
+  value = var.aws_vpc_id
+}
+
+output debug_data_aws_subnet_selected_0_availability_zone {
+  value = data.aws_subnet.selected[0].availability_zone
+}
+
+output debug_local_aws_ec2_zone_selected {
+  value = local.aws_ec2_zone_selected
+}

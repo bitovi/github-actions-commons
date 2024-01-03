@@ -228,3 +228,7 @@ output "aws_vpc_dns_enabled" {
   description = "Boolean of DNS enabled in VPC"
   value = data.aws_vpc.selected.enable_dns_hostnames
 }
+
+output "debug_aws_vpc_local_aws_vpc_availability_zones_0" {
+  value = local.aws_vpc_availability_zones[0]
+}

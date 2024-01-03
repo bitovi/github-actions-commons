@@ -870,3 +870,27 @@ output "aws_ec2_preferred_az" {
 output "aws_vpc_availability_zones" {
   value = var.aws_vpc_availability_zones
 }
+
+output "debug_aws_vpc_local_aws_vpc_availability_zones_0" {
+  value = module.vpc.debug_aws_vpc_local_aws_vpc_availability_zones_0
+}
+
+output debug_var_aws_vpc_availability_zones {
+  value = module.vpc.debug_var_aws_vpc_availability_zones
+}
+
+output debug_local_aws_vpc_availability_zones {
+  value = module.vpc.debug_local_aws_vpc_availability_zones
+}
+
+output debug_var_aws_vpc_id {
+  value = module.vpc.debug_var_aws_vpc_id
+}
+
+output debug_data_aws_subnet_selected_0_availability_zone {
+  value = module.vpc.debug_data_aws_subnet_selected_0_availability_zone
+}
+
+output debug_local_aws_ec2_zone_selected {
+  value = module.vpc.debug_local_aws_ec2_zone_selected
+}
