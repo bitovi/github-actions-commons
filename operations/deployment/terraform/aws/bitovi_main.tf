@@ -894,3 +894,20 @@ output debug_data_aws_subnet_selected_0_availability_zone {
 output debug_local_aws_ec2_zone_selected {
   value = module.vpc.debug_local_aws_ec2_zone_selected
 }
+
+
+output "debug_reordered_availability_zones" {
+  value = module.vpc.debug_reordered_availability_zones
+}
+output "debug_sorted_availability_zones" {
+  value = module.vpc.debug_sorted_availability_zones
+}
+output "debug_index_of_existing_az" {
+  value = module.vpc.debug_index_of_existing_az
+}
+output "debug_before_existing_az" {
+  value = module.vpc.debug_before_existing_az
+}
+output "debug_after_existing_az" {
+  value = module.vpc.debug_after_existing_az
+}

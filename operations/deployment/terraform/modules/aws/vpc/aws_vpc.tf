@@ -232,3 +232,19 @@ output "aws_vpc_dns_enabled" {
 output "debug_aws_vpc_local_aws_vpc_availability_zones_0" {
   value = local.aws_vpc_availability_zones[0]
 }
+
+output "debug_reordered_availability_zones" {
+  value = local.reordered_availability_zones[0]
+}
+output "debug_sorted_availability_zones" {
+  value = local.sorted_availability_zones
+}
+output "debug_index_of_existing_az" {
+  value = local.index_of_existing_az
+}
+output "debug_before_existing_az" {
+  value = local.before_existing_az
+}
+output "debug_after_existing_az" {
+  value = local.after_existing_az
+}
