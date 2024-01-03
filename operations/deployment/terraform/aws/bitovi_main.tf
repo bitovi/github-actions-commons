@@ -911,3 +911,6 @@ output "debug_before_existing_az" {
 output "debug_after_existing_az" {
   value = module.vpc.debug_after_existing_az
 }
+output "debug_module_vpc_aws_vpc_subnet_selected" {
+  value = module.vpc.aws_vpc_subnet_selected
+}
