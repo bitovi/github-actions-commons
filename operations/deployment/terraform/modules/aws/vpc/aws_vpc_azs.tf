@@ -87,10 +87,6 @@ data "aws_subnet" "selected" {
   id    = var.aws_vpc_subnet_id != "" ? var.aws_vpc_subnet_id : var.aws_vpc_create ? aws_subnet.public[0].id : data.aws_subnets.vpc_subnets.ids[0]
 }
 
-output "aws_vpc_subnet_selected" {
-  value = local.use_default ? data.aws_subnet.default_selected[0].id : data.aws_subnet.selected[0].id
-}
-
 data "aws_security_group" "default" {
   filter {
     name   = "group-name"
