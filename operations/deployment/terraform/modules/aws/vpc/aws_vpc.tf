@@ -94,7 +94,7 @@ resource "aws_internet_gateway" "gw" {
 }
 
 resource "aws_route" "public" {
-  count                  = 0#var.aws_vpc_create ? length(aws_route_table.public) : 0
+  count                  = var.aws_vpc_create ? length(aws_route_table.public) : 0
   route_table_id         = aws_route_table.public[0].id
   destination_cidr_block = "0.0.0.0/0"
   gateway_id             = aws_internet_gateway.gw[0].id

@@ -88,7 +88,6 @@ if [[ -n $URL_OUTPUT ]]; then
   final_output+="${output_elb}\n"
 fi
 # Process and store EC2_URL_OUTPUT:AWS_EC2_PORT_LIST in a variable
-#if [[ -n $AWS_EC2_PORT_LIST ]] && [[ -n $EC2_URL_OUTPUT ]]; then
 if [[ -n $EC2_URL_OUTPUT ]]; then
   output_ec2=$(process_and_return "$EC2_URL_OUTPUT" "$AWS_EC2_PORT_LIST")
   if [[ -z "$output_ec2" ]]; then
