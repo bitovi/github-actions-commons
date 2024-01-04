@@ -1,6 +1,8 @@
 #!/bin/bash
 # shellcheck disable=SC2086
 
+set -x
+
 ### coming into this we have env vars:
 # SUCCESS=${{ job.status }} # success, cancelled, failure
 # URL_OUTPUT=${{ steps.deploy.outputs.vm_url }}
