@@ -88,13 +88,13 @@ resource "aws_route_table_association" "public" {
 }
 
 resource "aws_internet_gateway" "gw" {
-  count  = var.aws_vpc_create ? 0 : 0 # testing igw
+  count  = var.aws_vpc_create ? 1 : 0
   vpc_id = aws_vpc.main[0].id
   depends_on = [ aws_vpc.main ]
 }
 
 resource "aws_route" "public" {
-  count                  = 0 #var.aws_vpc_create ? length(aws_route_table.public) : 0
+  count                  = 0#var.aws_vpc_create ? length(aws_route_table.public) : 0
   route_table_id         = aws_route_table.public[0].id
   destination_cidr_block = "0.0.0.0/0"
   gateway_id             = aws_internet_gateway.gw[0].id
@@ -136,7 +136,7 @@ resource "aws_nat_gateway" "nat_gw" {
     }
   )
 
- # depends_on = [aws_internet_gateway.gw]
+  depends_on = [aws_internet_gateway.gw]
 }
 
 resource "aws_route" "private_nat_gateway" {
@@ -164,7 +164,7 @@ resource "aws_eip" "nat" {
       )
     }
   )
- # depends_on = [aws_internet_gateway.gw]
+  depends_on = [aws_internet_gateway.gw]
 }
 
 
