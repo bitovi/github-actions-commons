@@ -163,34 +163,6 @@ module "efs" {
   }
 }
 
-#module "efs" {
-#  source = "../modules/aws/efs"
-#  count  = var.aws_efs_enable ? 1 : 0
-#  # EFS
-#  aws_efs_create                  = var.aws_efs_create
-#  aws_efs_create_ha               = var.aws_efs_create_ha
-#  aws_efs_fs_id                   = var.aws_efs_fs_id
-#  #aws_efs_vpc_id                  = var.aws_efs_vpc_id
-#  #aws_efs_subnet_ids              = var.aws_efs_subnet_ids
-#  aws_efs_security_group_name     = var.aws_efs_security_group_name
-#  aws_efs_create_replica          = var.aws_efs_create_replica
-#  aws_efs_replication_destination = var.aws_efs_replication_destination
-#  aws_efs_enable_backup_policy    = var.aws_efs_enable_backup_policy
-#  aws_efs_transition_to_inactive  = var.aws_efs_transition_to_inactive
-#  # VPC inputs
-#  aws_selected_vpc_id             = module.vpc.aws_selected_vpc_id
-#  aws_selected_subnet_id          = module.vpc.aws_vpc_subnet_selected
-#  aws_selected_az                 = module.vpc.preferred_az
-#  aws_selected_az_list            = module.vpc.availability_zones
-#  # Others
-#  aws_resource_identifier         = var.aws_resource_identifier
-#  depends_on = [module.vpc]
-#
-#  providers = {
-#    aws = aws.efs
-#  }
-#}
-
 module "rds" {
   source = "../modules/aws/rds"
   count  = var.aws_rds_db_enable ? 1 : 0
@@ -701,6 +673,10 @@ locals {
 # VPC
 output "aws_vpc_id" {
   value = module.vpc.aws_selected_vpc_id
+}
+
+output "aws_vpc_prefered_az" {
+  value = module.vpc.preferred_az
 }
 
 # EC2

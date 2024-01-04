@@ -92,12 +92,12 @@ if [[ $(alpha_only "$AWS_VPC_CREATE") == true ]]; then
   aws_vpc_cidr_block=$(generate_var aws_vpc_cidr_block $AWS_VPC_CIDR_BLOCK)
   aws_vpc_public_subnets=$(generate_var aws_vpc_public_subnets $AWS_VPC_PUBLIC_SUBNETS)
   aws_vpc_private_subnets=$(generate_var aws_vpc_private_subnets $AWS_VPC_PRIVATE_SUBNETS)
-  aws_vpc_availability_zones=$(generate_var aws_vpc_availability_zones $AWS_VPC_AVAILABILITY_ZONES)
   aws_vpc_additional_tags=$(generate_var aws_vpc_additional_tags $AWS_VPC_ADDITIONAL_TAGS)
   aws_vpc_enable_nat_gateway=$(generate_var aws_vpc_enable_nat_gateway $AWS_VPC_ENABLE_NAT_GATEWAY)
   aws_vpc_single_nat_gateway=$(generate_var aws_vpc_single_nat_gateway $AWS_VPC_SINGLE_NAT_GATEWAY)
   aws_vpc_external_nat_ip_ids=$(generate_var aws_vpc_external_nat_ip_ids $AWS_VPC_EXTERNAL_NAT_IP_IDS)
 fi
+aws_vpc_availability_zones=$(generate_var aws_vpc_availability_zones $AWS_VPC_AVAILABILITY_ZONES)
 aws_vpc_id=$(generate_var aws_vpc_id $AWS_VPC_ID)
 aws_vpc_subnet_id=$(generate_var aws_vpc_subnet_id $AWS_VPC_SUBNET_ID)
 

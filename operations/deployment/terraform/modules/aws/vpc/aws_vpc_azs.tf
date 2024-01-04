@@ -86,7 +86,7 @@ data "aws_subnet" "selected" {
   count = local.use_default ? 0 : 1
   id    = var.aws_vpc_subnet_id != "" ? var.aws_vpc_subnet_id : var.aws_vpc_create ? aws_subnet.public[0].id : data.aws_subnets.vpc_subnets.ids[0]
 }
-   
+
 data "aws_security_group" "default" {
   filter {
     name   = "group-name"
