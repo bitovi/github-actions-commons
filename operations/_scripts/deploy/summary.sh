@@ -212,7 +212,6 @@ if [[ $SUCCESS == 'success' ]]; then
     done <<< "$final_output"
   fi
 fi
-
 echo "" >> $GITHUB_STEP_SUMMARY
 echo "---" >> $GITHUB_STEP_SUMMARY
 echo "# Made by  [![Bitovi](https://www.bitovi.com/hubfs/limbo-generated/imgs/logos/bitovi-logo-23.svg)](https://bitovi.com)" >> $GITHUB_STEP_SUMMARY
