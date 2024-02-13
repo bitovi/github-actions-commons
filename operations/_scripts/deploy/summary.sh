@@ -211,4 +211,12 @@ if [[ $SUCCESS == 'success' ]]; then
       echo -e "$line" >> $GITHUB_STEP_SUMMARY
     done <<< "$final_output"
   fi
+
+  echo "" >> $GITHUB_STEP_SUMMARY
+  echo "---" >> $GITHUB_STEP_SUMMARY
+  echo "# Made by  [![Bitovi](https://www.bitovi.com/hubfs/limbo-generated/imgs/logos/bitovi-logo-23.svg)](https://bitovi.com)" >> $GITHUB_STEP_SUMMARY
+  echo ""  >> $GITHUB_STEP_SUMMARY
+  echo "Check the rest of our actions in the [GitHub Marketplace](https://github.com/marketplace?category=&type=actions&verification=&query=bitovi)!"  >> $GITHUB_STEP_SUMMARY
+  echo ""  >> $GITHUB_STEP_SUMMARY
+  echo "You can get help or ask questions on our [Discord Channel](https://discord.gg/J7ejFsZnJ4Z), or set up a free consultation on our [platform engineering website](https://www.bitovi.com/services/devops-consulting/platform-engineering)." >> $GITHUB_STEP_SUMMARY
 fi
