@@ -8,7 +8,7 @@ No video for now. Sorry. :disappointed:
 ## Need help or have questions?
 This project is supported by [Bitovi, a DevOps Consultancy](https://www.bitovi.com/devops-consulting) and a proud supporter of Open Source software.
 
-You can **get help or ask questions** on [Discord channel](https://discord.gg/J7ejFsZnJ4)! Come hangout with us!
+You can **get help or ask questions** on [Discord channel](https://discord.gg/zAHn4JBVcX)! Come hangout with us!
 
 Or, you can hire us for training, consulting, or development. [Set up a free consultation](https://www.bitovi.com/devops-consulting).
 
@@ -65,6 +65,9 @@ jobs:
 1. [ECS](#ecs-inputs)
 1. [ECR](#ecr-inputs)
 1. [EKS](#eks-inputs)
+
+### Outputs
+1. [Action Outputs](#action-outputs)
 
 The following inputs can be used as `step.with` keys
 <br/>
@@ -169,8 +172,8 @@ The following inputs can be used as `step.with` keys
 | `aws_vpc_availability_zones` | String | Comma separated list of availability zones. Defaults to `aws_default_region+<random>` value. If a list is defined, the first zone will be the one used for the EC2 instance. |
 | `aws_vpc_id` | String | **Existing** AWS VPC ID to use. Accepts `vpc-###` values. |
 | `aws_vpc_subnet_id` | String | **Existing** AWS VPC Subnet ID. If none provided, will pick one. (Ideal when there's only one). |
-| `aws_vpc_enable_nat_gateway` | String | Adds a NAT gateway for each public subnet. Defaults to `false`.|
-| `aws_vpc_single_nat_gateway` | String | Toggles only one NAT gateway for all of the public subnets. Defaults to `false`.|
+| `aws_vpc_enable_nat_gateway` | Boolean | Adds a NAT gateway for each public subnet. Defaults to `false`. |
+| `aws_vpc_single_nat_gateway` | Boolean | Toggles only one NAT gateway for all of the public subnets. Defaults to `false`. |
 | `aws_vpc_external_nat_ip_ids` | String | **Existing** comma separated list of IP IDs if reusing. (ElasticIPs). |
 | `aws_vpc_additional_tags` | JSON | Add additional tags to the terraform [default tags](https://www.hashicorp.com/blog/default-tags-in-the-terraform-aws-provider), any tags put here will be added to vpc provisioned resources.|
 <hr/>
@@ -491,6 +494,58 @@ The following inputs can be used as `step.with` keys
 <br/>
 <br/>
 
+#### **Action Outputs**
+| Name             | Description                        |
+|------------------|------------------------------------|
+| VPC |
+| `aws_vpc_id` | The selected VPC ID used. |
+| EC2 |
+| `vm_url` | The URL of the generated app. |
+| `instance_endpoint` | The URL of the generated ec2 instance. |
+| `ec2_sg_id` | SG ID for the EC2 instance. |
+| EFS |
+| `aws_efs_fs_id` | AWS EFS FS ID of the volume. |
+| `aws_efs_replica_fs_id` | AWS EFS FS ID of the replica volume. |
+| `aws_efs_sg_id` | SG ID for the EFS Volume. |
+| RDS |
+| `db_endpoint` | RDS Endpoint. |
+| `db_secret_details_name` | AWS Secret name containing db credentials. |
+| `db_sg_id` | SG ID for the RDS instance. |
+| `db_proxy_rds_endpoint` | Database proxy endpoint. |
+| `db_proxy_secret_name_rds` | AWS Secret name containing proxy credentials. |
+| `db_proxy_sg_id_rds` | SG ID for the RDS Proxy instance. |
+| Aurora |
+| `aurora_db_endpoint` | Aurora Endpoint. |
+| `aurora_db_secret_details_name` | AWS Secret name containing db credentials. |
+| `aurora_db_sg_id` | SG ID for the Aurora instance. |
+| `aurora_proxy_endpoint` | Database proxy endpoint. |
+| `aurora_proxy_secret_name` | AWS Secret name containing proxy credentials. |
+| `aurora_proxy_sg_id` | SG ID for the RDS Proxy instance. |
+| DB Proxy |
+| `db_proxy_endpoint` | Database proxy endpoint. |
+| `db_proxy_secret_name` | Database proxy secret_name. |
+| `db_proxy_sg_id` | SG ID for the RDS Proxy instance. |
+| ECS |
+| `ecs_load_balancer_dns` | ECS ALB DNS Record. |
+| `ecs_dns_record` | ECS DNS URL. |
+| `ecs_sg_id` | ECS SG ID. |
+| `ecs_lb_sg_id` | ECS LB SG ID. |
+| ECR |
+| `ecr_repository_arn` | ECR Repo ARN. |
+| `ecr_repository_url` | ECR Repo URL. |
+| REDIS |
+| `redis_endpoint` | Redis Endpoint. |
+| `redis_secret_name` | Redis Secret name. |
+| `redis_connection_string_secret` | Redis secret containing complete URL to connect directly. (e.g. rediss://user:pass@host:port). |
+| `redis_sg_id` | Redis SG ID. |
+| EKS |
+| `eks_cluster_name` | EKS Cluster name. |
+| `eks_cluster_role_arn` | EKS Role ARN. |
+<hr/>
+<br/>
+<br/>
+
+
 ## Note about resource identifiers
 
 Most resources will contain the tag `${GITHUB_ORG_NAME}-${GITHUB_REPO_NAME}-${GITHUB_BRANCH_NAME}`, some of them, even the resource name after. 
@@ -621,6 +676,7 @@ In order to be flexible, the following variables will be used to store DB relate
 
 ### AWS Root Certs
 The AWS root certificate is downloaded and accessible via the `rds-combined-ca-bundle.pem` file in root of your app repo/directory.
+The new global [db certificate bundle](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/UsingWithRDS.SSL.html) is downloaded and accessible via the `aws-global-bundle.pem` file in root of your app repo/directory.
 
 ### App example
 Example JavaScript to make a request to the Postgres cluster:
