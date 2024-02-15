@@ -676,6 +676,7 @@ In order to be flexible, the following variables will be used to store DB relate
 
 ### AWS Root Certs
 The AWS root certificate is downloaded and accessible via the `rds-combined-ca-bundle.pem` file in root of your app repo/directory.
+The new global [db certificate bundle](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/UsingWithRDS.SSL.html) is downloaded and accessible via the `aws-global-bundle.pem` file in root of your app repo/directory.
 
 ### App example
 Example JavaScript to make a request to the Postgres cluster:

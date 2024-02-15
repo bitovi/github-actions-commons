@@ -24,3 +24,8 @@
   get_url:
     url: "https://s3.amazonaws.com/rds-downloads/rds-combined-ca-bundle.pem"
     dest: "{{ app_install_root }}/{{ app_repo_name }}/rds-combined-ca-bundle.pem"
+
+- name: Install the new aws ca bundle
+  get_url:
+    url: "https://truststore.pki.rds.amazonaws.com/global/global-bundle.pem"
+    dest: "{{ app_install_root }}/{{ app_repo_name }}/aws-global-bundle.pem"
