@@ -15,6 +15,15 @@ data "aws_subnets" "vpc_subnets" {
     name   = "vpc-id"
     values = [local.selected_vpc_id]
   }
+  
+  # Add availability-zone filter conditionally
+  dynamic "filter" {
+    for_each = local.aws_vpc_availability_zones != [] ? [1] : []
+    content {
+      name   = "availability-zone"
+      values = local.aws_vpc_availability_zones
+    }
+  }
 }
 
 data "aws_subnet" "defaulta" {
