@@ -125,7 +125,7 @@ The following inputs can be used as `step.with` keys
 | `aws_session_token` | String | AWS session token |
 | `aws_default_region` | String | AWS default region. Defaults to `us-east-1` |
 | `aws_resource_identifier` | String | Set to override the AWS resource identifier for the deployment. Defaults to `${GITHUB_ORG_NAME}-${GITHUB_REPO_NAME}-${GITHUB_BRANCH_NAME}`. |
-| `aws_additional_tags` | JSON | Add additional tags to the terraform [default tags](https://www.hashicorp.com/blog/default-tags-in-the-terraform-aws-provider), any tags put here will be added to all provisioned resources.|
+| `aws_additional_tags` | JSON | Add additional tags to the terraform [default tags](https://www.hashicorp.com/blog/default-tags-in-the-terraform-aws-provider), any tags put here will be added to all provisioned resources. |
 <hr/>
 <br/>
 
@@ -559,6 +559,9 @@ For some specific resources, we have a 32 characters limit. If the identifier le
 
 There's the option to add any kind of defined tag's to each grouping module. Will be added to the commons tagging.
 An example of how to set them: `{"key1": "value1", "key2": "value2"}`'
+
+## Note about IAM Instnce profile
+[The AWS IAM instance profile](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_use_switch-role-ec2_instance-profiles.html) to use for the EC2 instance. Use if you want to pass an AWS role with specific permissions granted to the instance 
 
 ## Note about AWS EC2 AMI image selection
 

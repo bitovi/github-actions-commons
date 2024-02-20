@@ -228,6 +228,7 @@ inputs:
     required: false
   aws_r53_sub_domain_name:
     description: 'Define the sub-domain part of the URL. Defaults to `${org}-${repo}-{branch}`'
+    required: false
   aws_r53_root_domain_deploy:
     description: 'Deploy to root domain. Will generate two DNS recrods, one for root, another for www'
     required: false
