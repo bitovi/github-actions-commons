@@ -111,7 +111,7 @@ data "aws_security_group" "default" {
 locals {
   aws_ec2_security_group_name = var.aws_ec2_security_group_name != "" ? var.aws_ec2_security_group_name : "SG for ${var.aws_resource_identifier} - EC2"
   # auto_ha_availability_zone*: Creates zone map objects for each available AZ in a region
-  auto_ha_availability_zonea = length(data.aws_subnet.defaultb) > 0 ? ({
+  auto_ha_availability_zonea = length(data.aws_subnet.defaulta) > 0 ? ({
     "${data.aws_region.current.name}a" : {
       "subnet_id" : data.aws_subnet.defaulta[0].id,
       "security_groups" : [data.aws_security_group.default.id]
