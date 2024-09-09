@@ -4,12 +4,21 @@ data "aws_route53_zone" "selected" {
   private_zone = false
 }
 
+#data "aws_acm_certificate" "issued" {
+#  #count  = local.is_enabled_and_valid ? (!var.aws_r53_create_root_cert ? (!var.aws_r53_create_sub_cert ? (var.fqdn_provided ? 1 : 0) : 0) : 0) :0
+#  for_each = (local.is_enabled_and_valid ? (!var.aws_r53_create_root_cert ? (!var.aws_r53_create_sub_cert ? (var.fqdn_provided ? 1 : 0) : 0) : 0) :0) {
+#    "domain" : var.aws_r53_domain_name,
+#    "wildcard" : "*.${var.aws_r53_domain_name}"
+#    "sub": "${var.aws_r53_sub_domain_name}.${var.aws_r53_domain_name}"
+#  } : {}
+#  domain = var.aws_r53_domain_name
+#}
+
 data "aws_acm_certificate" "issued" {
-  #count  = local.is_enabled_and_valid ? (!var.aws_r53_create_root_cert ? (!var.aws_r53_create_sub_cert ? (var.fqdn_provided ? 1 : 0) : 0) : 0) :0
-  for_each = local.is_enabled_and_valid ? {
-    "domain" : var.aws_r53_domain_name,
-    "wildcard" : "*.${var.aws_r53_domain_name}"
-    "sub": "${var.aws_r53_sub_domain_name}.${var.aws_r53_domain_name}"
+  for_each = local.is_enabled_and_valid && !var.aws_r53_create_root_cert && !var.aws_r53_create_sub_cert && var.fqdn_provided ? {
+    "domain"   = var.aws_r53_domain_name
+    "wildcard" = "*.${var.aws_r53_domain_name}"
+    "sub"      = "${var.aws_r53_sub_domain_name}.${var.aws_r53_domain_name}"
   } : {}
   domain = var.aws_r53_domain_name
 }
