@@ -24,7 +24,7 @@ module "ec2" {
   aws_resource_identifier             = var.aws_resource_identifier
   aws_resource_identifier_supershort  = var.aws_resource_identifier_supershort
   ec2_tags                            = local.ec2_tags
-  depends_on = [module.vpc,module.route53]
+  depends_on = [module.vpc,module.aws_route53]
 
   providers = {
     aws = aws.ec2
@@ -97,7 +97,7 @@ module "aws_route53" {
   providers = {
     aws = aws.r53
   }
-  depends_on = [ module.certificates ]
+  depends_on = [ module.aws_certificates ]
 }
 
 module "aws_elb" {
