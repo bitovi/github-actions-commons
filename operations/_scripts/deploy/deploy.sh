@@ -91,8 +91,24 @@ fi
 mkdir -p "${GITHUB_ACTION_PATH}/operations/deployment/env-files"
 echo "$ENV_GHV" > "${GITHUB_ACTION_PATH}/operations/deployment/env-files/ghv.env"
 echo "$ENV_GHS" > "${GITHUB_ACTION_PATH}/operations/deployment/env-files/ghs.env"
+
+# ENV_REPO
+echo "========================================"
+echo "Debugging - commons"
+echo "========================================"
+echo "GITHUB_WORKSPACE: ${GITHUB_WORKSPACE}"
+echo "ENV_REPO: ${ENV_REPO}"
+echo "GITHUB_WORKSPACE/ENV_REPO": ${GITHUB_WORKSPACE}/${ENV_REPO}"
+echo "ls -al github_workspace"
+ls -al "$GITHUB_WORKSPACE"
+echo "========================================"
+
+echo "checking existence of ENV_REPO in GITHUB_WORKSPACE"
 if [ -s "$GITHUB_WORKSPACE/$ENV_REPO" ] && [ -n "$ENV_REPO" ]; then
+  echo "  has file"
   cp "$GITHUB_WORKSPACE/$ENV_REPO" "${GITHUB_ACTION_PATH}/operations/deployment/env-files/repo.env"
+else
+  echo "  ! has file"
 fi
 
 # Bypass all the 'BITOPS_' ENV vars to docker
