@@ -97,7 +97,8 @@ if ([[ $(alpha_only "$AWS_EC2_INSTANCE_CREATE") == true ]] ||
     [[ $(alpha_only "$AWS_ECS_ENABLE") == true ]] ||
     [[ $(alpha_only "$AWS_DB_PROXY_ENABLE") == true ]] ||
     [[ $(alpha_only "$AWS_EKS_CREATE") == true ]] ||
-    [[ $(alpha_only "$AWS_REDIS_ENABLE") == true ]]) && 
+    [[ $(alpha_only "$AWS_REDIS_ENABLE") == true ]] ||
+    [[ $(alpha_only "$AWS_ECR_ENABLE") == true ]]) && 
     [[ "$(alpha_only $TF_STACK_DESTROY)" != "true" ]]; then
   # random_integer.az_select needs to be created before the "full stack" to avoid a potential state dependency locks
   targets="$targets
