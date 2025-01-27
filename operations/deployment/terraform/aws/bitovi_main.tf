@@ -372,6 +372,7 @@ module "db_proxy" {
 
 module "proxy_dot_env" {
   source   = "../modules/commons/dot_env"
+  count    = var.aws_aurora_proxy ? 1 : var.aws_db_proxy_enable ? 1 : var.aws_rds_db_proxy ? 1 : 0
   filename = "proxy.env"
   content  = join("\n",[try(module.db_proxy_aurora[0].proxy_dot_env,""),try(module.db_proxy_rds[0].proxy_dot_env,""),try(module.db_proxy[0].proxy_dot_env,"")])
   depends_on = [ module.db_proxy_aurora,module.db_proxy_rds,module.db_proxy_rds ]
@@ -529,37 +530,37 @@ module "aws_route53_ecs" {
   }
 }
 
-#module "aws_ecr" {
-#  source = "../modules/aws/ecr"
-#  count  = var.aws_ecr_repo_create ? 1 : 0
-#  # ECR
-#  aws_ecr_repo_type                         = var.aws_ecr_repo_type
-#  aws_ecr_repo_name                         = var.aws_ecr_repo_name
-#  aws_ecr_repo_mutable                      = var.aws_ecr_repo_mutable
-#  aws_ecr_repo_encryption_type              = var.aws_ecr_repo_encryption_type
-#  aws_ecr_repo_encryption_key_arn           = var.aws_ecr_repo_encryption_key_arn
-#  aws_ecr_repo_force_destroy                = var.aws_ecr_repo_force_destroy
-#  aws_ecr_repo_image_scan                   = var.aws_ecr_repo_image_scan
-#  aws_ecr_registry_scan_rule                = var.aws_ecr_registry_scan_rule
-#  aws_ecr_registry_pull_through_cache_rules = var.aws_ecr_registry_pull_through_cache_rules
-#  aws_ecr_registry_scan_config              = var.aws_ecr_registry_scan_config
-#  aws_ecr_registry_replication_rules_input  = var.aws_ecr_registry_replication_rules_input
-#  aws_ecr_repo_policy_attach                = var.aws_ecr_repo_policy_attach
-#  aws_ecr_repo_policy_create                = var.aws_ecr_repo_policy_create
-#  aws_ecr_repo_policy_input                 = var.aws_ecr_repo_policy_input
-#  aws_ecr_repo_read_arn                     = var.aws_ecr_repo_read_arn
-#  aws_ecr_repo_write_arn                    = var.aws_ecr_repo_write_arn
-#  aws_ecr_repo_read_arn_lambda              = var.aws_ecr_repo_read_arn_lambda
-#  aws_ecr_lifecycle_policy_input            = var.aws_ecr_lifecycle_policy_input
-#  aws_ecr_public_repo_catalog               = var.aws_ecr_public_repo_catalog
-#  aws_ecr_registry_policy_input             = var.aws_ecr_registry_policy_input
-#  # Others
-#  aws_resource_identifier                   = var.aws_resource_identifier
-#
-#  providers = {
-#    aws = aws.ecr
-#  }
-#}
+module "aws_ecr" {
+  source = "../modules/aws/ecr"
+  count  = var.aws_ecr_repo_create ? 1 : 0
+  # ECR
+  aws_ecr_repo_type                         = var.aws_ecr_repo_type
+  aws_ecr_repo_name                         = var.aws_ecr_repo_name
+  aws_ecr_repo_mutable                      = var.aws_ecr_repo_mutable
+  aws_ecr_repo_encryption_type              = var.aws_ecr_repo_encryption_type
+  aws_ecr_repo_encryption_key_arn           = var.aws_ecr_repo_encryption_key_arn
+  aws_ecr_repo_force_destroy                = var.aws_ecr_repo_force_destroy
+  aws_ecr_repo_image_scan                   = var.aws_ecr_repo_image_scan
+  aws_ecr_registry_scan_rule                = var.aws_ecr_registry_scan_rule
+  aws_ecr_registry_pull_through_cache_rules = var.aws_ecr_registry_pull_through_cache_rules
+  aws_ecr_registry_scan_config              = var.aws_ecr_registry_scan_config
+  aws_ecr_registry_replication_rules_input  = var.aws_ecr_registry_replication_rules_input
+  aws_ecr_repo_policy_attach                = var.aws_ecr_repo_policy_attach
+  aws_ecr_repo_policy_create                = var.aws_ecr_repo_policy_create
+  aws_ecr_repo_policy_input                 = var.aws_ecr_repo_policy_input
+  aws_ecr_repo_read_arn                     = var.aws_ecr_repo_read_arn
+  aws_ecr_repo_write_arn                    = var.aws_ecr_repo_write_arn
+  aws_ecr_repo_read_arn_lambda              = var.aws_ecr_repo_read_arn_lambda
+  aws_ecr_lifecycle_policy_input            = var.aws_ecr_lifecycle_policy_input
+  aws_ecr_public_repo_catalog               = var.aws_ecr_public_repo_catalog
+  aws_ecr_registry_policy_input             = var.aws_ecr_registry_policy_input
+  # Others
+  aws_resource_identifier                   = var.aws_resource_identifier
+
+  providers = {
+    aws = aws.ecr
+  }
+}
 
 module "eks" {
   source = "../modules/aws/eks"
@@ -822,6 +823,16 @@ output "redis_connection_string_secret" {
 
 output "redis_sg_id" {
   value = try(module.redis[0].redis_sg_id,null)
+}
+
+# ECR
+
+output "ecr_repository_arn" {
+  value       = try(module.aws_ecr[0].repository_arn,null)
+}
+
+output "ecr_repository_url" {
+  value       = try(module.aws_ecr[0].repository_url,null)
 }
 
 # EKS
