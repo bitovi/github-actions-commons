@@ -152,17 +152,7 @@ bitops:
       create_bitops_terraform_config aws true targets
     fi
   fi
-  #if [[ $(alpha_only "$AWS_ECR_REPO_CREATE") != true ]]; then
-  #  if check_statefile aws ecr; then
-  #    add_terraform_module ecr
-  #    create_bitops_terraform_config ecr false
-  #  fi
-  #else
-  #  if [[ $(alpha_only "$AWS_ECR_REPO_CREATE") == true ]]; then
-  #    add_terraform_module ecr
-  #    create_bitops_terraform_config ecr true
-  #  fi
-  #fi
+
   # Ansible Code part
 
   if [[ "$(alpha_only $ANSIBLE_SKIP)" != "true" ]] && [[ "$(alpha_only $AWS_EC2_INSTANCE_CREATE)" == "true" ]]; then

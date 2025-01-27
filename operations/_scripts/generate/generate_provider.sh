@@ -74,8 +74,6 @@ provider \"kubernetes\" {
 }" >> "${GITHUB_ACTION_PATH}/operations/deployment/terraform/$1/bitovi_provider.tf"
 }
 
-generate_provider_aws aws ec2,r53,elb,efs,vpc,rds,aurora,ecs,db_proxy,redis,eks,ecr # Added eks here
-#generate_provider_aws ecr ecr
-#generate_provider_aws eks
+generate_provider_aws aws ec2,r53,elb,efs,vpc,rds,aurora,ecs,db_proxy,redis,eks,ecr 
 
 echo "Done with generate_provider.sh"
