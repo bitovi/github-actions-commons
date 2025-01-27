@@ -146,22 +146,22 @@ bitops:
       create_bitops_terraform_config aws false targets
     fi
   else
-    if [[ $(alpha_only "$AWS_EC2_INSTANCE_CREATE") != "" ]] || [[ $(alpha_only "$AWS_EFS_ENABLE") != "" ]] || [[ "$AWS_AURORA_ENABLE" != "" ]] || [[ "$AWS_RDS_DB_ENABLE" != "" ]] || [[ "$AWS_ECS_ENABLE" != "" ]] || [[ "$AWS_RDS_PROXY_ENABLE" != "" ]] || [[ "$AWS_REDIS_ENABLE" != "" ]] || [[ "$AWS_EKS_CREATE" != "" ]]; then
+    if [[ $(alpha_only "$AWS_EC2_INSTANCE_CREATE") != "" ]] || [[ $(alpha_only "$AWS_EFS_ENABLE") != "" ]] || [[ "$AWS_AURORA_ENABLE" != "" ]] || [[ "$AWS_RDS_DB_ENABLE" != "" ]] || [[ "$AWS_ECS_ENABLE" != "" ]] || [[ "$AWS_RDS_PROXY_ENABLE" != "" ]] || [[ "$AWS_REDIS_ENABLE" != "" ]] || [[ "$AWS_EKS_CREATE" != "" ]] || [[ "$AWS_ECR_REPO_CREATE" != "" ]]; then
       add_terraform_module aws
       create_bitops_terraform_config aws true targets
     fi
   fi
-  if [[ $(alpha_only "$AWS_ECR_REPO_CREATE") != true ]]; then
-    if check_statefile aws ecr; then
-      add_terraform_module ecr
-      create_bitops_terraform_config ecr false
-    fi
-  else
-    if [[ $(alpha_only "$AWS_ECR_REPO_CREATE") == true ]]; then
-      add_terraform_module ecr
-      create_bitops_terraform_config ecr true
-    fi
-  fi
+  #if [[ $(alpha_only "$AWS_ECR_REPO_CREATE") != true ]]; then
+  #  if check_statefile aws ecr; then
+  #    add_terraform_module ecr
+  #    create_bitops_terraform_config ecr false
+  #  fi
+  #else
+  #  if [[ $(alpha_only "$AWS_ECR_REPO_CREATE") == true ]]; then
+  #    add_terraform_module ecr
+  #    create_bitops_terraform_config ecr true
+  #  fi
+  #fi
   # Ansible Code part
 
   if [[ "$(alpha_only $ANSIBLE_SKIP)" != "true" ]] && [[ "$(alpha_only $AWS_EC2_INSTANCE_CREATE)" == "true" ]]; then
