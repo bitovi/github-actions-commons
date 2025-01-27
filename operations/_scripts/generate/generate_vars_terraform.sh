@@ -717,44 +717,4 @@ $app_install_root
 
 " > "${GITHUB_ACTION_PATH}/operations/deployment/terraform/aws/terraform.tfvars"
 
-# -------------------------------------------------- #
-echo "
-#-- AWS --#
-$aws_resource_identifier
-$aws_resource_identifier_supershort
-$aws_additional_tags
-
-#-- ECR --#
-$aws_ecr_repo_create
-$aws_ecr_repo_type
-$aws_ecr_repo_name
-$aws_ecr_repo_mutable
-$aws_ecr_repo_encryption_type
-$aws_ecr_repo_encryption_key_arn
-$aws_ecr_repo_force_destroy
-$aws_ecr_repo_image_scan
-$aws_ecr_registry_scan_rule
-$aws_ecr_registry_pull_through_cache_rules
-$aws_ecr_registry_scan_config
-$aws_ecr_registry_replication_rules_input
-$aws_ecr_repo_policy_attach
-$aws_ecr_repo_policy_create
-$aws_ecr_repo_policy_input
-$aws_ecr_repo_read_arn
-$aws_ecr_repo_write_arn
-$aws_ecr_repo_read_arn_lambda
-$aws_ecr_lifecycle_policy_input
-$aws_ecr_public_repo_catalog
-$aws_ecr_registry_policy_input
-$aws_ecr_additional_tags
-
-#-- Application --#
-$ops_repo_environment
-$app_org_name
-$app_repo_name
-$app_branch_name
-
-" > "${GITHUB_ACTION_PATH}/operations/deployment/terraform/ecr/terraform.tfvars"
-# We might want to pass only the variables needed and not all of them. 
-
 echo "Done with generate_vars_terraform.sh"
