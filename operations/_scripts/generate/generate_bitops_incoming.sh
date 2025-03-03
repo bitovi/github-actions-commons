@@ -174,6 +174,10 @@ function helm_move_content_prepend() {
   source_folder="$1"
   destination_folder="$2"
   number="$3"
+
+  echo "tree source_folder ($source_folder)"
+  tree "$source_folder"
+  
   find "$source_folder" -maxdepth 1 -type d -not -name "." -path "$source_folder/*" | while read chart_folder; do
   # Move files from source folder to destination folder
     chart_name=$(basename "$chart_folder")
