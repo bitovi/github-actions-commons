@@ -696,7 +696,7 @@ inputs:
     required: false
   aws_redis_cloudwatch_retention_days:
     description: "Number of days to retain logs. 0 to never expire. Default '14'"
-    reuired: false
+    required: false
   aws_redis_single_line_url_secret:
     description: 'Creates an AWS secret containing the connection string containing protocol://user@pass:endpoint:port'
     required: false
@@ -820,16 +820,16 @@ inputs:
     required: false
   aws_ecs_cloudwatch_enable:
     description: "Toggle cloudwatch for ECS. Default 'false'"
-    reuired: false
+    required: false
   aws_ecs_cloudwatch_lg_name:
     description: "Log group name. Will default to aws_identifier if none."
-    reuired: false
+    required: false
   aws_ecs_cloudwatch_skip_destroy:
     description: "Toggle deletion or not when destroying the stack."
-    reuired: false
+    required: false
   aws_ecs_cloudwatch_retention_days:
     description: "Number of days to retain logs. 0 to never expire. Default '14'"
-    reuired: false
+    required: false
   aws_ecs_additional_tags:
     description: 'A list of strings that will be added to created resources'
     required: false
