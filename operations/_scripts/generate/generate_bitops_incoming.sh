@@ -174,6 +174,10 @@ function helm_move_content_prepend() {
   source_folder="$1"
   destination_folder="$2"
   number="$3"
+
+  echo "tree source_folder ($source_folder)"
+  tree "$source_folder"
+  
   find "$source_folder" -maxdepth 1 -type d -not -name "." -path "$source_folder/*" | while read chart_folder; do
   # Move files from source folder to destination folder
     chart_name=$(basename "$chart_folder")
@@ -201,8 +205,8 @@ function helm_move_content_prepend() {
     done
     # Move remaining folders (if they exist) and exclude the . folder
     find "$chart_folder" -maxdepth 1 -type d -not -name "." -path "$chart_folder/*" | while read folder; do
-      echo "mv $folder $destination_folder/$chart_name/."
-      mv "$folder" "$destination_folder/$chart_name/."
+      echo "rsync -av $folder $destination_folder/$chart_name/"
+      rsync -av "$folder" "$destination_folder/$chart_name/"
     done
     echo "Printing chart result"
     tree "$destination_folder/$chart_name"
