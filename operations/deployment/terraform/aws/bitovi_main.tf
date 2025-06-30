@@ -62,7 +62,7 @@ module "efs_to_ec2_sg" {
 
 module "aws_certificates" {
   source = "../modules/aws/certificates"
-  count  = ( var.aws_ec2_instance_create || var.aws_ecs_enable ) && var.aws_r53_enable && var.aws_r53_domain_name != "" ? 1 : 0
+  count  = ( var.aws_ec2_instance_create || var.aws_ecs_enable ) && var.aws_r53_enable && ( var.aws_r53_domain_name != "" || var.aws_r53_cert_arn != "" ) ? 1 : 0
   # Cert
   aws_r53_cert_arn         = var.aws_r53_cert_arn
   aws_r53_create_root_cert = var.aws_r53_create_root_cert
@@ -90,7 +90,7 @@ module "aws_route53" {
   aws_elb_dns_name              = try(module.aws_elb[0].aws_elb_dns_name,"")
   aws_elb_zone_id               = try(module.aws_elb[0].aws_elb_zone_id,"")
   # Certs
-  aws_certificates_selected_arn = var.aws_r53_enable_cert && var.aws_r53_domain_name != "" ? module.aws_certificates[0].selected_arn : ""
+  aws_certificates_selected_arn = var.aws_r53_enable_cert && length(module.aws_certificates) > 0 ? module.aws_certificates[0].selected_arn : ""
   # Others
   fqdn_provided                 = local.fqdn_provided
 
@@ -118,7 +118,7 @@ module "aws_elb" {
   aws_instance_server_id             = module.ec2[0].aws_instance_server_id
   aws_elb_target_sg_id               = module.ec2[0].aws_security_group_ec2_sg_id 
   # Certs
-  aws_certificates_selected_arn      = var.aws_r53_enable_cert && var.aws_r53_domain_name != "" ? module.aws_certificates[0].selected_arn : ""
+  aws_certificates_selected_arn      = var.aws_r53_enable_cert && length(module.aws_certificates) > 0 ? module.aws_certificates[0].selected_arn : ""
   # Others
   aws_resource_identifier            = var.aws_resource_identifier
   aws_resource_identifier_supershort = var.aws_resource_identifier_supershort
@@ -498,7 +498,7 @@ module "aws_ecs" {
   aws_selected_subnets               = module.vpc.aws_selected_vpc_subnets
   # Others
   aws_certificate_enabled            = var.aws_r53_enable_cert && length(module.aws_certificates) > 0 ? true : false
-  aws_certificates_selected_arn      = var.aws_r53_enable_cert && var.aws_r53_domain_name != "" ? module.aws_certificates[0].selected_arn : ""
+  aws_certificates_selected_arn      = var.aws_r53_enable_cert && length(module.aws_certificates) > 0 ? module.aws_certificates[0].selected_arn : ""
   aws_resource_identifier            = var.aws_resource_identifier
   aws_resource_identifier_supershort = var.aws_resource_identifier_supershort
   app_repo_name                      = var.app_repo_name
@@ -521,7 +521,7 @@ module "aws_route53_ecs" {
   aws_elb_dns_name              = try(module.aws_ecs[0].load_balancer_dns,"")
   aws_elb_zone_id               = try(module.aws_ecs[0].load_balancer_zone_id,"")
   # Certs
-  aws_certificates_selected_arn = var.aws_r53_enable_cert && var.aws_r53_domain_name != "" ? module.aws_certificates[0].selected_arn : ""
+  aws_certificates_selected_arn = var.aws_r53_enable_cert && length(module.aws_certificates) > 0 ? module.aws_certificates[0].selected_arn : ""
   # Others
   fqdn_provided                 = local.fqdn_provided
   depends_on = [ module.aws_certificates,module.aws_ecs ]

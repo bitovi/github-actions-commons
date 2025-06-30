@@ -583,6 +583,8 @@ Setting `aws_r53_create_root_cert` to `true` will create this certificate with b
 
 Setting `aws_r53_create_sub_cert` to `true` will create a certificate **just for the subdomain**, and validate it.
 
+> :sparkles: Defining `aws_r53_cert_arn` with `aws_r53_enable_cert` set to `true` will use the provided cert as is. Ignoring creation, validation or maintenance of any other certificate. 
+
 > :warning: Be very careful here! **Created certificates are fully managed by Terraform**. Therefor **they will be destroyed upon stack destruction**.
 
 To change a certificate (root_cert, sub_cert, ARN or pre-existing root cert), you must first set the `aws_r53_enable_cert` flag to false, run the action, then set the `aws_r53_enable_cert` flag to true, add the desired settings and excecute the action again. (**This will destroy the first certificate.**)
