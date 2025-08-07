@@ -130,6 +130,10 @@ if [[ $(alpha_only "$AWS_ELB_CREATE") == true ]]; then
   aws_elb_access_log_bucket_name=$(generate_var aws_elb_access_log_bucket_name $AWS_ELB_ACCESS_LOG_BUCKET_NAME)
   aws_elb_access_log_expire=$(generate_var aws_elb_access_log_expire $AWS_ELB_ACCESS_LOG_EXPIRE)
   aws_elb_additional_tags=$(generate_var aws_elb_additional_tags $AWS_ELB_ADDITIONAL_TAGS)
+  # ALB/LB wrapper variables
+  aws_lb_type=$(generate_var aws_lb_type $AWS_LB_TYPE)
+  aws_alb_enable_waf=$(generate_var aws_alb_enable_waf $AWS_ALB_ENABLE_WAF)
+  aws_alb_subnets=$(generate_var aws_alb_subnets $AWS_ALB_SUBNETS)
 fi
 
 #-- AWS EFS --#

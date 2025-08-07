@@ -45,6 +45,59 @@ jobs:
           additional_tags: '{\"key\":\"value\",\"key2\":\"value2\"}'
 ```
 
+### ALB with WAF example
+```yaml
+name: Deploy with Application Load Balancer and WAF
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  EC2-Deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - id: deploy
+        uses: bitovi/github-actions-deploy-commons@main
+        with:
+          aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws_default_region: us-east-1
+          env_ghs: ${{ secrets.DOT_ENV }}
+          # Load Balancer Configuration
+          aws_elb_create: true
+          aws_lb_type: alb  # Use Application Load Balancer instead of Classic ELB
+          aws_alb_enable_waf: true  # Enable AWS WAF v2 protection
+          aws_alb_subnets: subnet-12345,subnet-67890  # Specify subnets for ALB
+          # VPC Configuration (required for ALB)
+          aws_vpc_create: true
+          aws_vpc_public_subnets: 10.0.1.0/24,10.0.2.0/24
+          aws_vpc_availability_zones: us-east-1a,us-east-1b
+```
+
+### ALB with default VPC example
+```yaml
+name: Deploy with ALB using default VPC (single-AZ)
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  EC2-Deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - id: deploy
+        uses: bitovi/github-actions-deploy-commons@main
+        with:
+          aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws_default_region: us-east-1
+          env_ghs: ${{ secrets.DOT_ENV }}
+          # Simple ALB setup using default VPC
+          aws_elb_create: true
+          aws_lb_type: alb  # Use ALB instead of Classic ELB
+          # Note: aws_alb_subnets not specified = single-AZ deployment
+```
+
 ## Customizing
 
 ### Inputs
@@ -198,6 +251,7 @@ The following inputs can be used as `step.with` keys
 | Name             | Type    | Description                        |
 |------------------|---------|------------------------------------|
 | `aws_elb_create` | Boolean | Toggles the creation of a load balancer and map ports to the EC2 instance. Defaults to `false`.|
+| `aws_lb_type` | String | Type of load balancer to create. Options: `elb` (Classic Load Balancer) or `alb` (Application Load Balancer). Defaults to `elb`. ALB supports WAF integration and Layer 7 routing. |
 | `aws_elb_security_group_name` | String | The name of the ELB security group. Defaults to `SG for ${aws_resource_identifier} - ELB`. |
 | `aws_elb_app_port` | String | Port in the EC2 instance to be redirected to. Default is `3000`. Accepts comma separated values like `3000,3001`. | 
 | `aws_elb_app_protocol` | String | Protocol to enable. Could be HTTP, HTTPS, TCP or SSL. Defaults to `TCP`. If length doesn't match, will use `TCP` for all.|
@@ -207,6 +261,11 @@ The following inputs can be used as `step.with` keys
 | `aws_elb_access_log_bucket_name` | String | S3 bucket name to store the ELB access logs. Defaults to `${aws_resource_identifier}-logs` (or `-lg `depending of length). **Bucket will be deleted if stack is destroyed.** | 
 | `aws_elb_access_log_expire` | String | Delete the access logs after this amount of days. Defaults to `90`. Set to `0` in order to disable this policy. | 
 | `aws_elb_additional_tags` | JSON | Add additional tags to the terraform [default tags](https://www.hashicorp.com/blog/default-tags-in-the-terraform-aws-provider), any tags put here will be added to elb provisioned resources.|
+| **ALB-specific inputs (when aws_lb_type = "alb")** | | |
+| `aws_alb_enable_waf` | Boolean | Enable AWS WAF v2 integration for the ALB. Only works with ALB (`aws_lb_type = "alb"`). Defaults to `false`. |
+| `aws_alb_subnets` | String | Comma-separated list of subnet IDs for ALB placement. If not provided, will use the same subnet as the EC2 instance (single-AZ deployment). For production, specify multiple subnets across different AZs for high availability. |
+
+**Note**: When using ALB with default VPC (no explicit VPC creation), the ALB will be placed in the same subnet as the EC2 instance. While this works functionally, it results in a single Availability Zone deployment which may not be suitable for production workloads requiring high availability.
 <hr/>
 <br/>
 
