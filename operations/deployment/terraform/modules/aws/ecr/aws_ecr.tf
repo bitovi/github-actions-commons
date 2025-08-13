@@ -83,7 +83,7 @@ resource "aws_ecrpublic_repository_policy" "example" {
 resource "aws_ecr_registry_policy" "this" {
   count = var.aws_ecr_registry_policy_input != "" ? 1 : 0
 
-  policy = var.aws_ecr_registry_policy_input
+  policy = jsonenconde(var.aws_ecr_registry_policy_input)
 }
 
 ################################################################################
