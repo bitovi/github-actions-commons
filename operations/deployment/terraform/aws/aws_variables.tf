@@ -1514,7 +1514,7 @@ variable "aws_ecr_repo_read_arn_lambda" {
 variable "aws_ecr_lifecycle_policy_input" {
   description = "The policy document. This is a JSON formatted string. See more details about [Policy Parameters](http://docs.aws.amazon.com/AmazonECR/latest/userguide/LifecyclePolicies.html#lifecycle_policy_parameters) in the official AWS docs"
   type        = string
-  default     = ""
+  default     = "{}"
 }
 
 variable "aws_ecr_public_repo_catalog" {

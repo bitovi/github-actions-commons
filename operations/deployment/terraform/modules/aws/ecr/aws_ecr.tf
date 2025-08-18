@@ -36,10 +36,10 @@ resource "aws_ecr_repository_policy" "this" {
 ################################################################################
 
 resource "aws_ecr_lifecycle_policy" "this" {
-  count = var.aws_ecr_repo_type == "private" && var.aws_ecr_lifecycle_policy_input != "" ? 1 : 0
+  count = var.aws_ecr_repo_type == "private" && var.aws_ecr_lifecycle_policy_input != "{}" ? 1 : 0
 
   repository = aws_ecr_repository.this[0].name
-  policy     = var.aws_ecr_lifecycle_policy_input
+  policy     = jsondecode(var.aws_ecr_lifecycle_policy_input)
 }
 
 ################################################################################
