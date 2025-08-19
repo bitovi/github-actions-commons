@@ -58,10 +58,18 @@ resource "aws_alb_target_group" "lb_targets" {
   }
 }
 
-# Redirect all traffic from the ALB to the target group
+# Always exists, acts as a safe dependency wrapper
+resource "null_resource" "http_redirect_dep" {
+  triggers = {
+    id = (
+      length(aws_alb_listener.http_redirect) > 0
+    ) ? aws_alb_listener.http_redirect[0].id : "none"
+  }
+}
+
 resource "aws_alb_listener" "lb_listener_ssl" {
   count             = var.aws_certificate_enabled ? length(local.aws_ecs_lb_port) : 0
-  load_balancer_arn = "${aws_alb.ecs_lb.id}"
+  load_balancer_arn = aws_alb.ecs_lb.id
   port              = local.aws_ecs_lb_port[count.index]
   # https://docs.aws.amazon.com/elasticloadbalancing/latest/application/create-https-listener.html
   ssl_policy        = var.aws_ecs_lb_ssl_policy
@@ -72,13 +80,13 @@ resource "aws_alb_listener" "lb_listener_ssl" {
     type             = "forward"
   }
   lifecycle {
-    replace_triggered_by = [ aws_alb_listener.http_redirect ]
+    replace_triggered_by = [null_resource.http_redirect_dep.id]
   }
 }
 
 resource "aws_alb_listener" "lb_listener" {
   count             = var.aws_certificate_enabled ? 0 : length(local.aws_ecs_lb_port)
-  load_balancer_arn = "${aws_alb.ecs_lb.id}"
+  load_balancer_arn = aws_alb.ecs_lb.id
   port              = local.aws_ecs_lb_port[count.index]
   protocol          = "HTTP"
   default_action {
@@ -86,11 +94,9 @@ resource "aws_alb_listener" "lb_listener" {
     type             = "forward"
   }
   lifecycle {
-    replace_triggered_by = [ aws_alb_listener.http_redirect ]
+    replace_triggered_by = [null_resource.http_redirect_dep.id]
   }
 }
-
-
 
 resource "aws_alb_listener_rule" "redirect_based_on_path" {
   for_each = { for idx, path in local.aws_ecs_lb_container_path : idx => path if length(path) > 0 }
