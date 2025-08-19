@@ -58,7 +58,15 @@ resource "aws_alb_target_group" "lb_targets" {
   }
 }
 
-# Redirect all traffic from the ALB to the target group
+# Always exists, acts as a safe dependency wrapper
+resource "null_resource" "http_redirect_dep" {
+  triggers = {
+    id = (
+      length(aws_alb_listener.http_redirect) > 0
+    ) ? aws_alb_listener.http_redirect[0].id : "none"
+  }
+}
+
 resource "aws_alb_listener" "lb_listener_ssl" {
   count             = var.aws_certificate_enabled ? length(local.aws_ecs_lb_port) : 0
   load_balancer_arn = aws_alb.ecs_lb.id
@@ -72,7 +80,7 @@ resource "aws_alb_listener" "lb_listener_ssl" {
     type             = "forward"
   }
   lifecycle {
-    replace_triggered_by = compact([try(aws_alb_listener.http_redirect[0].id, null)])
+    replace_triggered_by = [null_resource.http_redirect_dep.id]
   }
 }
 
@@ -86,11 +94,9 @@ resource "aws_alb_listener" "lb_listener" {
     type             = "forward"
   }
   lifecycle {
-    replace_triggered_by = compact([try(aws_alb_listener.http_redirect[0].id, null)])
+    replace_triggered_by = [null_resource.http_redirect_dep.id]
   }
 }
-
-
 
 resource "aws_alb_listener_rule" "redirect_based_on_path" {
   for_each = { for idx, path in local.aws_ecs_lb_container_path : idx => path if length(path) > 0 }
