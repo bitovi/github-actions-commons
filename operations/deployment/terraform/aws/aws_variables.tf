@@ -1610,7 +1610,6 @@ variable "aws_eks_cluster_log_skip_destroy" {
 variable "aws_eks_cluster_version" {
   description = "enter the kubernetes version"
   type        = number
-  default     = "1.33"
 }
 
 variable "aws_eks_instance_type" {
