@@ -280,6 +280,26 @@ inputs:
     description: 'A JSON object of additional tags that will be included on created resources. Example: `{"key1": "value1", "key2": "value2"}`'
     required: false
   
+  # AWS WAF
+  aws_waf_enable:
+    description: 'Enable WAF for load balancer'
+    required: false
+  aws_waf_rate_limit:
+    description: 'Rate limit for WAF (requests per 5 minutes)'
+    required: false
+  aws_waf_managed_rules:
+    description: 'Enable AWS managed rule sets'
+    required: false
+  aws_waf_ip_reputation:
+    description: 'Enable IP reputation rule set'
+    required: false
+  aws_waf_logging_enable:
+    description: 'Enable WAF logging to CloudWatch'
+    required: false
+  aws_waf_log_retention_days:
+    description: 'CloudWatch log retention period for WAF logs'
+    required: false
+
   # AWS EFS
   aws_efs_create: 
     description: 'Toggle to indicate whether to create and EFS and mount it to the ec2 as a part of the provisioning. Note: The EFS will be managed by the stack and will be destroyed along with the stack.'
@@ -1200,6 +1220,14 @@ runs:
         AWS_ELB_ACCESS_LOG_EXPIRE: ${{ inputs.aws_elb_access_log_expire }}
         AWS_ELB_ADDITIONAL_TAGS: ${{ inputs.aws_elb_additional_tags }}
 
+        # AWS WAF
+        AWS_WAF_ENABLE: ${{ inputs.aws_waf_enable }}
+        AWS_WAF_RATE_LIMIT: ${{ inputs.aws_waf_rate_limit }}
+        AWS_WAF_MANAGED_RULES: ${{ inputs.aws_waf_managed_rules }}
+        AWS_WAF_IP_REPUTATION: ${{ inputs.aws_waf_ip_reputation }}
+        AWS_WAF_LOGGING_ENABLE: ${{ inputs.aws_waf_logging_enable }}
+        AWS_WAF_LOG_RETENTION_DAYS: ${{ inputs.aws_waf_log_retention_days }}
+        
         # AWS EFS
         AWS_EFS_CREATE: ${{ inputs.aws_efs_create }}
         AWS_EFS_FS_ID: ${{ inputs.aws_efs_fs_id }}

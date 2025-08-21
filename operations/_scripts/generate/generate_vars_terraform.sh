@@ -132,6 +132,16 @@ if [[ $(alpha_only "$AWS_ELB_CREATE") == true ]]; then
   aws_elb_additional_tags=$(generate_var aws_elb_additional_tags $AWS_ELB_ADDITIONAL_TAGS)
 fi
 
+#-- AWS WAF --#
+if [[ $(alpha_only "$AWS_WAF_ENABLE") == true ]]; then
+  aws_waf_enable=$(generate_var aws_waf_enable $AWS_WAF_ENABLE)
+  aws_waf_rate_limit=$(generate_var aws_waf_rate_limit $AWS_WAF_RATE_LIMIT)
+  aws_waf_managed_rules=$(generate_var aws_waf_managed_rules $AWS_WAF_MANAGED_RULES)
+  aws_waf_ip_reputation=$(generate_var aws_waf_ip_reputation $AWS_WAF_IP_REPUTATION)
+  aws_waf_logging_enable=$(generate_var aws_waf_logging_enable $AWS_WAF_LOGGING_ENABLE)
+  aws_waf_log_retention_days=$(generate_var aws_waf_log_retention_days $AWS_WAF_LOG_RETENTION_DAYS)
+fi
+
 #-- AWS EFS --#
 if [[ $(alpha_only "$AWS_EFS_ENABLE") == true ]]; then
   aws_efs_enable=$(generate_var aws_efs_enable $AWS_EFS_ENABLE)
@@ -469,6 +479,14 @@ $aws_elb_healthcheck
 $aws_elb_access_log_expire
 $aws_elb_access_log_bucket_name
 $aws_elb_additional_tags
+
+#-- WAF --#
+$aws_waf_enable
+$aws_waf_rate_limit
+$aws_waf_managed_rules
+$aws_waf_ip_reputation
+$aws_waf_logging_enable
+$aws_waf_log_retention_days
 
 #-- EFS --#
 $aws_efs_enable

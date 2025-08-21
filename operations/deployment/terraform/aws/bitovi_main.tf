@@ -101,7 +101,7 @@ module "aws_route53" {
 
 module "aws_elb" {
   source = "../modules/aws/elb"
-  count  = var.aws_ec2_instance_create && var.aws_elb_create ? 1 : 0 
+  count  = var.aws_ec2_instance_create && var.aws_elb_create ? 1 : 0
   # ELB Values
   aws_elb_security_group_name        = var.aws_elb_security_group_name
   aws_elb_app_port                   = var.aws_elb_app_port
@@ -130,6 +130,44 @@ module "aws_elb" {
   }
 }
 
+#module "aws_lb" {
+#  source = "../modules/aws/lb"
+#  count  = var.aws_ec2_instance_create && var.aws_lb_create && ! var.aws_elb_create ? 1 : 0
+#  # LB Values
+#  aws_lb_security_group_name    = var.aws_lb_security_group_name
+#  aws_lb_app_port               = var.aws_lb_app_port
+#  aws_lb_app_protocol           = var.aws_lb_app_protocol
+#  aws_lb_listen_port            = var.aws_lb_listen_port
+#  aws_lb_listen_protocol        = var.aws_lb_listen_protocol
+#  aws_lb_healthcheck            = var.aws_lb_healthcheck
+#  aws_lb_type                   = var.aws_lb_type
+#  aws_lb_enable_waf             = var.aws_lb_enable_waf
+#  aws_lb_subnets                = var.aws_lb_subnets
+#  aws_lb_internal_only          = var.aws_lb_internal_only
+#  aws_lb_target_sg_id           = module.ec2[0].aws_security_group_ec2_sg_id
+#  # Logging
+#  aws_lb_access_log_enabled     = var.aws_lb_access_log_enabled
+#  aws_lb_access_log_bucket_name = var.aws_lb_access_log_bucket_name
+#  aws_lb_access_log_prefix      = var.aws_lb_access_log_prefix
+#  aws_lb_access_log_expire      = var.aws_lb_access_log_expire
+#  # Others
+#  aws_instance_server_az        = [module.vpc.preferred_az]
+#  aws_vpc_selected_id           = module.vpc.aws_selected_vpc_id
+#  aws_vpc_subnet_selected       = module.vpc.aws_vpc_subnet_selected
+#  aws_instance_server_id        = module.ec2[0].aws_instance_server_id
+#  # Certs
+#  aws_certificates_selected_arn      = var.aws_r53_enable_cert && var.aws_r53_domain_name != "" ? module.aws_certificates[0].selected_arn : ""
+#  # Others
+#  aws_resource_identifier            = var.aws_resource_identifier
+#  aws_resource_identifier_supershort = var.aws_resource_identifier_supershort
+#  # Module dependencies
+#  depends_on = [module.vpc,module.ec2]
+#  
+#  providers = {
+#    aws = aws.lb
+#  }
+#}
+#
 module "efs" {
   source = "../modules/aws/efs"
   count  = var.aws_efs_enable ? 1 : 0
@@ -529,6 +567,26 @@ module "aws_route53_ecs" {
     aws = aws.r53
   }
 }
+
+module "aws_waf_ecs" {
+  source = "../modules/aws/waf"
+  count  = var.aws_waf_enable && var.aws_ecs_enable ? 1 : 0
+  aws_waf_enable             = var.aws_waf_enable
+  aws_waf_rate_limit         = var.aws_waf_rate_limit
+  aws_waf_managed_rules      = var.aws_waf_managed_rules
+  aws_waf_ip_reputation      = var.aws_waf_ip_reputation
+  aws_lb_resource_arn        = module.ecs[0].aws_lb_resource_arn
+  aws_waf_logging_enable     = var.aws_waf_logging_enable
+  aws_waf_log_retention_days = var.aws_waf_log_retention_days
+  aws_resource_identifier    = var.aws_resource_identifier
+  # Others
+  #fqdn_provided              = local.fqdn_provided
+  depends_on = [ module.aws_certificates,module.aws_ecs ]
+  providers = {
+    aws = aws.waf
+  }
+}
+
 
 module "aws_ecr" {
   source = "../modules/aws/ecr"

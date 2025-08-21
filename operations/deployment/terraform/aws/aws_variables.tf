@@ -327,6 +327,45 @@ variable "aws_elb_additional_tags" {
   default     = "{}"
 }
 
+# AWS LB
+
+# AWS WAF
+variable "aws_waf_enable" {
+  type        = bool
+  description = "Enable WAF for load balancer"
+  default     = false
+}
+
+variable "aws_waf_rate_limit" {
+  type        = number
+  description = "Rate limit for WAF (requests per 5 minutes)"
+  default     = 2000
+}
+
+variable "aws_waf_managed_rules" {
+  type        = bool
+  description = "Enable AWS managed rule sets"
+  default     = true
+}
+
+variable "aws_waf_ip_reputation" {
+  type        = bool
+  description = "Enable IP reputation rule set"
+  default     = true
+}
+
+variable "aws_waf_logging_enable" {
+  type        = bool
+  description = "Enable WAF logging to CloudWatch"
+  default     = false
+}
+
+variable "aws_waf_log_retention_days" {
+  type        = number
+  description = "CloudWatch log retention period for WAF logs"
+  default     = 30
+}
+
 # AWS EFS
 
 ### This variable is hidden for the end user. Is built in deploy.sh based on the next 3 variables. 

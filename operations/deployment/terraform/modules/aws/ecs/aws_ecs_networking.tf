@@ -231,6 +231,10 @@ output "load_balancer_zone_id" {
   value = aws_alb.ecs_lb.zone_id
 }
 
+output "load_balancer_arn" {
+  value = aws_alb.ecs_lb.arn
+}
+
 output "ecs_sg_id" {
   value = aws_security_group.ecs_sg.id
 }

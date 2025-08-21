@@ -57,6 +57,7 @@ jobs:
 1. [VPC](#vpc-inputs)
 1. [AWS Route53 Domains and Certificates](#aws-route53-domains-and-certificate-inputs)
 1. [Load Balancer](#load-balancer-inputs)
+1. [WAF](#waf)
 1. [EFS](#efs-inputs)
 1. [RDS](#rds-inputs)
 1. [Amazon Aurora Inputs](#aurora-inputs)
@@ -207,6 +208,18 @@ The following inputs can be used as `step.with` keys
 | `aws_elb_access_log_bucket_name` | String | S3 bucket name to store the ELB access logs. Defaults to `${aws_resource_identifier}-logs` (or `-lg `depending of length). **Bucket will be deleted if stack is destroyed.** | 
 | `aws_elb_access_log_expire` | String | Delete the access logs after this amount of days. Defaults to `90`. Set to `0` in order to disable this policy. | 
 | `aws_elb_additional_tags` | JSON | Add additional tags to the terraform [default tags](https://www.hashicorp.com/blog/default-tags-in-the-terraform-aws-provider), any tags put here will be added to elb provisioned resources.|
+<hr/>
+<br/>
+
+#### **WAF**
+| Name             | Type    | Description                        |
+|------------------|---------|------------------------------------|
+| `aws_waf_enable` | Boolean | Enable WAF for load balancer (LB only - NOT ELB). Default is `false` |
+| `aws_waf_rate_limit` | Number | Blocks IPs that exceed the specified request rate (requests per 5 minutes). Default is `2000` |
+| `aws_waf_managed_rules` | Boolean | Protection against OWASP Top 10 vulnerabilities and requests with known malicious patterns. Default is `true` |
+| `aws_waf_ip_reputation` | Boolean | Blocks requests from known malicious IP addresses. Default is `true` |
+| `aws_waf_logging_enable` | Boolean | Sends WAF logs to CloudWatch for monitoring. Default is `false` |
+| `aws_waf_log_retention_days` | Number | CloudWatch log retention period for WAF logs. Default is `30` |
 <hr/>
 <br/>
 
@@ -457,7 +470,7 @@ The following inputs can be used as `step.with` keys
 | `aws_ecr_repo_read_arn` | String | The ARNs of the IAM users/roles that have read access to the repository. (Comma separated list)' |
 | `aws_ecr_repo_write_arn` | String | The ARNs of the IAM users/roles that have read/write access to the repository. (Comma separated list)' |
 | `aws_ecr_repo_read_arn_lambda` | String | The ARNs of the Lambda service roles that have read access to the repository. (Comma separated list)' |
-| `aws_ecr_lifecycle_policy_input` | String | The policy document. This is a JSON formatted string. See more details about [Policy Parameters](http://docs.aws.amazon.com/AmazonECR/latest/userguide/LifecyclePolicies.html#lifecycle_policy_parameters) in the official AWS docs' |
+| `aws_ecr_lifecycle_policy_input` | JSON | The policy document. This is a JSON formatted string. See more details about [Policy Parameters](http://docs.aws.amazon.com/AmazonECR/latest/userguide/LifecyclePolicies.html#lifecycle_policy_parameters) in the official AWS docs' |
 | `aws_ecr_public_repo_catalog` | String | Catalog data configuration for the repository. Defaults to `{}`.' |
 | `aws_ecr_registry_policy_input` | String | The policy document. This is a JSON formatted string' |
 | `aws_ecr_additional_tags ` | JSON | Add additional tags to the terraform [default tags](https://www.hashicorp.com/blog/default-tags-in-the-terraform-aws-provider), any tags put here will be added to ECR provisioned resources.|
