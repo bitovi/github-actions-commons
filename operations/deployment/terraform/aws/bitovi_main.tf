@@ -575,7 +575,7 @@ module "aws_waf_ecs" {
   aws_waf_rate_limit         = var.aws_waf_rate_limit
   aws_waf_managed_rules      = var.aws_waf_managed_rules
   aws_waf_ip_reputation      = var.aws_waf_ip_reputation
-  aws_lb_resource_arn        = module.aws_ecs[0].aws_lb_resource_arn
+  aws_lb_resource_arn        = module.aws_ecs[0].load_balancer_arn
   aws_waf_logging_enable     = var.aws_waf_logging_enable
   aws_waf_log_retention_days = var.aws_waf_log_retention_days
   aws_resource_identifier    = var.aws_resource_identifier
