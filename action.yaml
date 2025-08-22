@@ -299,7 +299,10 @@ inputs:
   aws_waf_log_retention_days:
     description: 'CloudWatch log retention period for WAF logs'
     required: false
-
+  aws_waf_additional_tags:
+    description: 'A JSON object of additional tags that will be included on created resources. Example: `{"key1": "value1", "key2": "value2"}`'
+    required: false
+  
   # AWS EFS
   aws_efs_create: 
     description: 'Toggle to indicate whether to create and EFS and mount it to the ec2 as a part of the provisioning. Note: The EFS will be managed by the stack and will be destroyed along with the stack.'
@@ -1227,7 +1230,8 @@ runs:
         AWS_WAF_IP_REPUTATION: ${{ inputs.aws_waf_ip_reputation }}
         AWS_WAF_LOGGING_ENABLE: ${{ inputs.aws_waf_logging_enable }}
         AWS_WAF_LOG_RETENTION_DAYS: ${{ inputs.aws_waf_log_retention_days }}
-        
+        AWS_WAF_ADDITIONAL_TAGS: ${{ inputs.aws_waf_additional_tags }}
+
         # AWS EFS
         AWS_EFS_CREATE: ${{ inputs.aws_efs_create }}
         AWS_EFS_FS_ID: ${{ inputs.aws_efs_fs_id }}

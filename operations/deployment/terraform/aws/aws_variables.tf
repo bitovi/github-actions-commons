@@ -366,6 +366,12 @@ variable "aws_waf_log_retention_days" {
   default     = 30
 }
 
+variable "aws_waf_additional_tags" {
+  type        = string
+  description = "A list of strings that will be added to created resources"
+  default     = "{}"
+}
+
 # AWS EFS
 
 ### This variable is hidden for the end user. Is built in deploy.sh based on the next 3 variables. 

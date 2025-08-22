@@ -140,6 +140,7 @@ if [[ $(alpha_only "$AWS_WAF_ENABLE") == true ]]; then
   aws_waf_ip_reputation=$(generate_var aws_waf_ip_reputation $AWS_WAF_IP_REPUTATION)
   aws_waf_logging_enable=$(generate_var aws_waf_logging_enable $AWS_WAF_LOGGING_ENABLE)
   aws_waf_log_retention_days=$(generate_var aws_waf_log_retention_days $AWS_WAF_LOG_RETENTION_DAYS)
+  aws_waf_additional_tags=$(generate_var aws_waf_additional_tags $AWS_WAF_ADDITIONAL_TAGS)
 fi
 
 #-- AWS EFS --#
@@ -487,6 +488,7 @@ $aws_waf_managed_rules
 $aws_waf_ip_reputation
 $aws_waf_logging_enable
 $aws_waf_log_retention_days
+$aws_waf_additional_tags
 
 #-- EFS --#
 $aws_efs_enable
