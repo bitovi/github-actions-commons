@@ -279,6 +279,17 @@ inputs:
   aws_elb_additional_tags:
     description: 'A JSON object of additional tags that will be included on created resources. Example: `{"key1": "value1", "key2": "value2"}`'
     required: false
+
+  # AWS Load Balancer Type
+  aws_lb_type:
+    description: 'Load balancer type: "elb" or "alb". Defaults to "elb"'
+    required: false
+  aws_alb_enable_waf:
+    description: 'Enable AWS WAF v2 for ALB (only applicable when aws_lb_type is "alb")'
+    required: false
+  aws_alb_subnets:
+    description: 'Comma-separated list of subnet IDs for ALB. If empty, will use single subnet from VPC configuration (only applicable when aws_lb_type is "alb")'
+    required: false
   
   # AWS EFS
   aws_efs_create: 
@@ -1199,6 +1210,11 @@ runs:
         AWS_ELB_ACCESS_LOG_BUCKET_NAME: ${{ inputs.aws_elb_access_log_bucket_name }}
         AWS_ELB_ACCESS_LOG_EXPIRE: ${{ inputs.aws_elb_access_log_expire }}
         AWS_ELB_ADDITIONAL_TAGS: ${{ inputs.aws_elb_additional_tags }}
+
+        # AWS Load Balancer Type
+        AWS_LB_TYPE: ${{ inputs.aws_lb_type }}
+        AWS_ALB_ENABLE_WAF: ${{ inputs.aws_alb_enable_waf }}
+        AWS_ALB_SUBNETS: ${{ inputs.aws_alb_subnets }}
 
         # AWS EFS
         AWS_EFS_CREATE: ${{ inputs.aws_efs_create }}

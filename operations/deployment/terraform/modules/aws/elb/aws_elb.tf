@@ -14,6 +14,9 @@ resource "aws_s3_bucket_lifecycle_configuration" "lb_access_logs_lifecycle" {
   rule {
     id = "ExpirationRule"
     status = "Enabled"
+    filter {
+      prefix = ""
+    }
     expiration {
       days = tonumber(var.aws_elb_access_log_expire)
     }

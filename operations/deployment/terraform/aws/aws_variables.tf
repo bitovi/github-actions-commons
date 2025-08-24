@@ -327,6 +327,30 @@ variable "aws_elb_additional_tags" {
   default     = "{}"
 }
 
+variable "aws_lb_type" {
+  type        = string
+  description = "Load balancer type: 'elb' or 'alb'"
+  default     = "elb"
+}
+
+variable "aws_alb_enable_waf" {
+  type        = bool
+  description = "Enable AWS WAF v2 for ALB"
+  default     = false
+}
+
+variable "aws_waf_rules" {
+  type        = list(string)
+  description = "WAF rule types to enable"
+  default     = ["AWSManagedRulesCommonRuleSet"]
+}
+
+variable "aws_alb_subnets" {
+  type        = string
+  description = "Comma-separated list of subnet IDs for ALB. If empty, will use single subnet from VPC configuration."
+  default     = ""
+}
+
 # AWS EFS
 
 ### This variable is hidden for the end user. Is built in deploy.sh based on the next 3 variables. 

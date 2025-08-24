@@ -100,8 +100,10 @@ module "aws_route53" {
 }
 
 module "aws_elb" {
-  source = "../modules/aws/elb"
+  source = "../modules/aws/aws_lb"
   count  = var.aws_ec2_instance_create && var.aws_elb_create ? 1 : 0 
+  # Load Balancer Type
+  aws_lb_type                        = var.aws_lb_type
   # ELB Values
   aws_elb_security_group_name        = var.aws_elb_security_group_name
   aws_elb_app_port                   = var.aws_elb_app_port
@@ -119,6 +121,9 @@ module "aws_elb" {
   aws_elb_target_sg_id               = module.ec2[0].aws_security_group_ec2_sg_id 
   # Certs
   aws_certificates_selected_arn      = var.aws_r53_enable_cert && var.aws_r53_domain_name != "" ? module.aws_certificates[0].selected_arn : ""
+  # ALB specific variables
+  aws_alb_enable_waf                 = var.aws_alb_enable_waf
+  aws_alb_subnets                    = var.aws_alb_subnets != "" ? [for n in split(",", var.aws_alb_subnets) : n] : []
   # Others
   aws_resource_identifier            = var.aws_resource_identifier
   aws_resource_identifier_supershort = var.aws_resource_identifier_supershort
