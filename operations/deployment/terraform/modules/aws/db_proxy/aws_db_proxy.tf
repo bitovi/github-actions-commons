@@ -20,7 +20,7 @@ locals {
   auth_selected = one(compact([for key, value in local.auth_mapping : strcontains(lower(local.db_engine), key) ? value : ""]))
   ###
   db_engine         = var.aws_db_proxy_cluster ? data.aws_rds_cluster.db[0].engine : data.aws_db_instance.db[0].engine
-  db_port           = var.aws_db_proxy_cluster ? tonumber(data.aws_rds_cluster.db[0].port) : tonumber(data.aws_db_instance.db[0].db_instance_port)
+  db_port           = var.aws_db_proxy_cluster ? tonumber(data.aws_rds_cluster.db[0].port) : tonumber(data.aws_db_instance.db[0].port)
   db_security_group = var.aws_db_proxy_cluster ? data.aws_rds_cluster.db[0].vpc_security_group_ids : data.aws_db_instance.db[0].vpc_security_groups
 }
 
