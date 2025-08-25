@@ -215,16 +215,27 @@ The following inputs can be used as `step.with` keys
 | Name             | Type    | Description                        |
 |------------------|---------|------------------------------------|
 | `aws_waf_enable` | Boolean | Enable WAF for load balancer (LB only - NOT ELB). Default is `false` |
-| `aws_waf_rate_limit` | Number | Blocks IPs that exceed the specified request rate (requests per 5 minutes). Default is `2000` |
-| `aws_waf_managed_rules` | Boolean | Protection against OWASP Top 10 vulnerabilities and requests with known malicious patterns. Default is `true` |
-| `aws_waf_ip_reputation` | Boolean | Blocks requests from known malicious IP addresses. Default is `true` |
-| `aws_waf_logging_enable` | Boolean | Sends WAF logs to CloudWatch for monitoring. Default is `false` |
-| `aws_waf_log_retention_days` | Number | CloudWatch log retention period for WAF logs. Default is `30` |
+| `aws_waf_logging_enable`| Boolean | Enable WAF logging to CloudWatch. Default `false` |
+| `aws_waf_log_retention_days`| Number | CloudWatch log retention period for WAF logs. Default `30` |
+| `aws_waf_rule_rate_limit`| String | Rate limit for WAF rules. Default is `2000` |
+| `aws_waf_rule_managed_rules`| Boolean | Enable common managed rule groups to use. Default `false` |
+| `aws_waf_rule_managed_bad_inputs`| Boolean | Enable managed rule for bad inputs. Default `false` |
+| `aws_waf_rule_ip_reputation`| Boolean | Enable managed rule for IP reputation. Default `false` |
+| `aws_waf_rule_anonymous_ip`| Boolean | Enable managed rule for anonymous IP. Default `false` |
+| `aws_waf_rule_bot_control`| Boolean | Enable managed rule for bot control (costs extra). Default `false` |
+| `aws_waf_rule_geo_block_countries`| String | Comma separated list of countries to block. |
+| `aws_waf_rule_geo_allow_only_countries`| String | Comma separated list of countries to allow. |
+| `aws_waf_rule_sqli`| Boolean | Enable managed rule for SQL injection. Default `false` |
+| `aws_waf_rule_linux`| Boolean | Enable managed rule for Linux. Default `false` |
+| `aws_waf_rule_unix`| Boolean | Enable managed rule for Unix. Default `false` |
+| `aws_waf_rule_admin_protection`| Boolean | Enable managed rule for admin protection. Default `false` |
+| `aws_waf_rule_user_arn`| String | String of the user created ARN set of rules. |
+| `aws_waf_additional_tags`| String | A list of strings that will be added to created resources. Default `"{}"` |
 <hr/>
 <br/>
 
 #### **EFS Inputs**
-| Name             | Type    | Description                        |
+| Name             | Type    | Descrifption                        |
 |------------------|---------|------------------------------------|
 | `aws_efs_create` | Boolean | Toggle to indicate whether to create an EFS volume and mount it to the EC2 instance as a part of the provisioning. Note: The stack will manage the EFS and will be destroyed along with the stack. |
 | `aws_efs_fs_id` | String | ID of existing EFS volume if you wish to use an existing one. |
