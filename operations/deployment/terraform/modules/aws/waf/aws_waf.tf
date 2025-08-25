@@ -421,5 +421,3 @@ data "aws_wafv2_rule_group" "example" {
   name  = "var.aws_waf_rule_user_arn"
   scope = "REGIONAL"
 }
-
-arn:aws:wafv2:us-east-1:755521597925:regional/rulegroup/some/351a2738-39ae-4d00-a864-599d6b3dc225
