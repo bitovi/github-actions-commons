@@ -280,6 +280,59 @@ inputs:
     description: 'A JSON object of additional tags that will be included on created resources. Example: `{"key1": "value1", "key2": "value2"}`'
     required: false
   
+  # AWS WAF
+  aws_waf_enable:
+    description: 'Enable WAF for load balancer.'
+    required: false
+  aws_waf_logging_enable:
+    description: 'Enable WAF logging to CloudWatch.'
+    required: false
+  aws_waf_log_retention_days:
+    description: 'CloudWatch log retention period for WAF logs.'
+    required: false
+  aws_waf_rule_rate_limit:
+    description: 'Rate limit for WAF rules.'
+    required: false
+  aws_waf_rule_managed_rules:
+    description: 'Enable common managed rule groups to use.'
+    required: false
+  aws_waf_rule_managed_bad_inputs:
+    description: 'Enable managed rule for bad inputs.'
+    required: false
+  aws_waf_rule_ip_reputation:
+    description: 'Enable managed rule for IP reputation.'
+    required: false
+  aws_waf_rule_anonymous_ip:
+    description: 'Enable managed rule for anonymous IP.'
+    required: false
+  aws_waf_rule_bot_control:
+    description: 'Enable managed rule for bot control (costs extra).'
+    required: false
+  aws_waf_rule_geo_block_countries:
+    description: 'Comma separated list of countries to block.'
+    required: false
+  aws_waf_rule_geo_allow_only_countries:
+    description: 'Comma separated list of countries to allow.'
+    required: false
+  aws_waf_rule_sqli:
+    description: 'Enable managed rule for SQL injection.'
+    required: false
+  aws_waf_rule_linux:
+    description: 'Enable managed rule for Linux.'
+    required: false
+  aws_waf_rule_unix:
+    description: 'Enable managed rule for Unix.'
+    required: false
+  aws_waf_rule_admin_protection:
+    description: 'Enable managed rule for admin protection.'
+    required: false
+  aws_waf_rule_user_arn:
+    description: 'ARN of the user rule.'
+    required: false
+  aws_waf_additional_tags:
+    description: 'A JSON object of additional tags that will be included on created resources. Example: `{"key1": "value1", "key2": "value2"}`'
+    required: false
+
   # AWS EFS
   aws_efs_create: 
     description: 'Toggle to indicate whether to create and EFS and mount it to the ec2 as a part of the provisioning. Note: The EFS will be managed by the stack and will be destroyed along with the stack.'
@@ -1199,6 +1252,25 @@ runs:
         AWS_ELB_ACCESS_LOG_BUCKET_NAME: ${{ inputs.aws_elb_access_log_bucket_name }}
         AWS_ELB_ACCESS_LOG_EXPIRE: ${{ inputs.aws_elb_access_log_expire }}
         AWS_ELB_ADDITIONAL_TAGS: ${{ inputs.aws_elb_additional_tags }}
+
+        # AWS WAF
+        AWS_WAF_ENABLE: ${{ inputs.aws_waf_enable }}
+        AWS_WAF_LOGGING_ENABLE: ${{ inputs.aws_waf_logging_enable }}
+        AWS_WAF_LOG_RETENTION_DAYS: ${{ inputs.aws_waf_log_retention_days }}
+        AWS_WAF_ADDITIONAL_TAGS: ${{ inputs.aws_waf_additional_tags }}
+        AWS_WAF_RULE_RATE_LIMIT: ${{ inputs.aws_waf_rule_rate_limit }}
+        AWS_WAF_RULE_MANAGED_RULES: ${{ inputs.aws_waf_rule_managed_rules }}
+        AWS_WAF_RULE_MANAGED_BAD_INPUTS: ${{ inputs.aws_waf_rule_managed_bad_inputs }}
+        AWS_WAF_RULE_IP_REPUTATION: ${{ inputs.aws_waf_rule_ip_reputation }}
+        AWS_WAF_RULE_ANONYMOUS_IP: ${{ inputs.aws_waf_rule_anonymous_ip }}
+        AWS_WAF_RULE_BOT_CONTROL: ${{ inputs.aws_waf_rule_bot_control }}
+        AWS_WAF_RULE_GEO_BLOCK_COUNTRIES: ${{ inputs.aws_waf_rule_geo_block_countries }}
+        AWS_WAF_RULE_GEO_ALLOW_ONLY_COUNTRIES: ${{ inputs.aws_waf_rule_geo_allow_only_countries }}
+        AWS_WAF_RULE_USER_ARN: ${{ inputs.aws_waf_rule_user_arn }}
+        AWS_WAF_RULE_SQLI: ${{ inputs.aws_waf_rule_sqli }}
+        AWS_WAF_RULE_LINUX: ${{ inputs.aws_waf_rule_linux }}
+        AWS_WAF_RULE_UNIX: ${{ inputs.aws_waf_rule_unix }}
+        AWS_WAF_RULE_ADMIN_PROTECTION: ${{ inputs.aws_waf_rule_admin_protection }}
 
         # AWS EFS
         AWS_EFS_CREATE: ${{ inputs.aws_efs_create }}

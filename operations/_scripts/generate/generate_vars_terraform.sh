@@ -132,6 +132,27 @@ if [[ $(alpha_only "$AWS_ELB_CREATE") == true ]]; then
   aws_elb_additional_tags=$(generate_var aws_elb_additional_tags $AWS_ELB_ADDITIONAL_TAGS)
 fi
 
+#-- AWS WAF --#
+if [[ $(alpha_only "$AWS_WAF_ENABLE") == true ]]; then
+  aws_waf_enable=$(generate_var aws_waf_enable $AWS_WAF_ENABLE)
+  aws_waf_logging_enable=$(generate_var aws_waf_logging_enable $AWS_WAF_LOGGING_ENABLE)
+  aws_waf_log_retention_days=$(generate_var aws_waf_log_retention_days $AWS_WAF_LOG_RETENTION_DAYS)
+  aws_waf_additional_tags=$(generate_var aws_waf_additional_tags $AWS_WAF_ADDITIONAL_TAGS)
+  aws_waf_rule_rate_limit=$(generate_var aws_waf_rule_rate_limit $AWS_WAF_RULE_RATE_LIMIT)
+  aws_waf_rule_managed_rules=$(generate_var aws_waf_rule_managed_rules $AWS_WAF_RULE_MANAGED_RULES)
+  aws_waf_rule_managed_bad_inputs=$(generate_var aws_waf_rule_managed_bad_inputs $AWS_WAF_RULE_MANAGED_BAD_INPUTS)
+  aws_waf_rule_ip_reputation=$(generate_var aws_waf_rule_ip_reputation $AWS_WAF_RULE_IP_REPUTATION)
+  aws_waf_rule_anonymous_ip=$(generate_var aws_waf_rule_anonymous_ip $AWS_WAF_RULE_ANONYMOUS_IP)
+  aws_waf_rule_bot_control=$(generate_var aws_waf_rule_bot_control $AWS_WAF_RULE_BOT_CONTROL)
+  aws_waf_rule_geo_block_countries=$(generate_var aws_waf_rule_geo_block_countries $AWS_WAF_RULE_GEO_BLOCK_COUNTRIES)
+  aws_waf_rule_geo_allow_only_countries=$(generate_var aws_waf_rule_geo_allow_only_countries $AWS_WAF_RULE_GEO_ALLOW_ONLY_COUNTRIES)
+  aws_waf_rule_user_arn=$(generate_var aws_waf_rule_user_arn $AWS_WAF_RULE_USER_ARN)
+  aws_waf_rule_sqli=$(generate_var aws_waf_rule_sqli $AWS_WAF_RULE_SQLI)
+  aws_waf_rule_linux=$(generate_var aws_waf_rule_linux $AWS_WAF_RULE_LINUX)
+  aws_waf_rule_unix=$(generate_var aws_waf_rule_unix $AWS_WAF_RULE_UNIX)
+  aws_waf_rule_admin_protection=$(generate_var aws_waf_rule_admin_protection $AWS_WAF_RULE_ADMIN_PROTECTION)
+fi
+
 #-- AWS EFS --#
 if [[ $(alpha_only "$AWS_EFS_ENABLE") == true ]]; then
   aws_efs_enable=$(generate_var aws_efs_enable $AWS_EFS_ENABLE)
@@ -469,6 +490,25 @@ $aws_elb_healthcheck
 $aws_elb_access_log_expire
 $aws_elb_access_log_bucket_name
 $aws_elb_additional_tags
+
+#-- WAF --#
+$aws_waf_enable
+$aws_waf_logging_enable
+$aws_waf_log_retention_days
+$aws_waf_additional_tags
+$aws_waf_rule_rate_limit
+$aws_waf_rule_managed_rules
+$aws_waf_rule_managed_bad_inputs
+$aws_waf_rule_ip_reputation
+$aws_waf_rule_anonymous_ip
+$aws_waf_rule_bot_control
+$aws_waf_rule_geo_block_countries
+$aws_waf_rule_geo_allow_only_countries
+$aws_waf_rule_user_arn
+$aws_waf_rule_sqli
+$aws_waf_rule_linux
+$aws_waf_rule_unix
+$aws_waf_rule_admin_protection
 
 #-- EFS --#
 $aws_efs_enable
