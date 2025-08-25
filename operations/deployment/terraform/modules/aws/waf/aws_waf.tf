@@ -414,10 +414,3 @@ output "waf_web_acl_arn" {
 output "waf_web_acl_id" {
   value = var.aws_waf_enable ? aws_wafv2_web_acl.waf[0].id : null
 }
-
-# Read rule group by name
-data "aws_wafv2_rule_group" "example" {
-  count = var.aws_waf_rule_user_arn != "" ? [1] : []
-  name  = "var.aws_waf_rule_user_arn"
-  scope = "REGIONAL"
-}
