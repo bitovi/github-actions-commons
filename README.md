@@ -57,6 +57,7 @@ jobs:
 1. [VPC](#vpc-inputs)
 1. [AWS Route53 Domains and Certificates](#aws-route53-domains-and-certificate-inputs)
 1. [Load Balancer](#load-balancer-inputs)
+1. [WAF](#waf)
 1. [EFS](#efs-inputs)
 1. [RDS](#rds-inputs)
 1. [Amazon Aurora Inputs](#aurora-inputs)
@@ -210,8 +211,31 @@ The following inputs can be used as `step.with` keys
 <hr/>
 <br/>
 
-#### **EFS Inputs**
+#### **WAF**
 | Name             | Type    | Description                        |
+|------------------|---------|------------------------------------|
+| `aws_waf_enable` | Boolean | Enable WAF for load balancer (LB only - NOT ELB). Default is `false` |
+| `aws_waf_logging_enable`| Boolean | Enable WAF logging to CloudWatch. Default `false` |
+| `aws_waf_log_retention_days`| Number | CloudWatch log retention period for WAF logs. Default `30` |
+| `aws_waf_rule_rate_limit`| String | Rate limit for WAF rules. Default is `2000` |
+| `aws_waf_rule_managed_rules`| Boolean | Enable common managed rule groups to use. Default `false` |
+| `aws_waf_rule_managed_bad_inputs`| Boolean | Enable managed rule for bad inputs. Default `false` |
+| `aws_waf_rule_ip_reputation`| Boolean | Enable managed rule for IP reputation. Default `false` |
+| `aws_waf_rule_anonymous_ip`| Boolean | Enable managed rule for anonymous IP. Default `false` |
+| `aws_waf_rule_bot_control`| Boolean | Enable managed rule for bot control (costs extra). Default `false` |
+| `aws_waf_rule_geo_block_countries`| String | Comma separated list of countries to block. |
+| `aws_waf_rule_geo_allow_only_countries`| String | Comma separated list of countries to allow. |
+| `aws_waf_rule_sqli`| Boolean | Enable managed rule for SQL injection. Default `false` |
+| `aws_waf_rule_linux`| Boolean | Enable managed rule for Linux. Default `false` |
+| `aws_waf_rule_unix`| Boolean | Enable managed rule for Unix. Default `false` |
+| `aws_waf_rule_admin_protection`| Boolean | Enable managed rule for admin protection. Default `false` |
+| `aws_waf_rule_user_arn`| String | String of the user created ARN set of rules. |
+| `aws_waf_additional_tags`| String | A list of strings that will be added to created resources. Default `"{}"` |
+<hr/>
+<br/>
+
+#### **EFS Inputs**
+| Name             | Type    | Descrifption                        |
 |------------------|---------|------------------------------------|
 | `aws_efs_create` | Boolean | Toggle to indicate whether to create an EFS volume and mount it to the EC2 instance as a part of the provisioning. Note: The stack will manage the EFS and will be destroyed along with the stack. |
 | `aws_efs_fs_id` | String | ID of existing EFS volume if you wish to use an existing one. |
@@ -457,7 +481,7 @@ The following inputs can be used as `step.with` keys
 | `aws_ecr_repo_read_arn` | String | The ARNs of the IAM users/roles that have read access to the repository. (Comma separated list)' |
 | `aws_ecr_repo_write_arn` | String | The ARNs of the IAM users/roles that have read/write access to the repository. (Comma separated list)' |
 | `aws_ecr_repo_read_arn_lambda` | String | The ARNs of the Lambda service roles that have read access to the repository. (Comma separated list)' |
-| `aws_ecr_lifecycle_policy_input` | String | The policy document. This is a JSON formatted string. See more details about [Policy Parameters](http://docs.aws.amazon.com/AmazonECR/latest/userguide/LifecyclePolicies.html#lifecycle_policy_parameters) in the official AWS docs' |
+| `aws_ecr_lifecycle_policy_input` | JSON | The policy document. This is a JSON formatted string. See more details about [Policy Parameters](http://docs.aws.amazon.com/AmazonECR/latest/userguide/LifecyclePolicies.html#lifecycle_policy_parameters) in the official AWS docs' |
 | `aws_ecr_public_repo_catalog` | String | Catalog data configuration for the repository. Defaults to `{}`.' |
 | `aws_ecr_registry_policy_input` | String | The policy document. This is a JSON formatted string' |
 | `aws_ecr_additional_tags ` | JSON | Add additional tags to the terraform [default tags](https://www.hashicorp.com/blog/default-tags-in-the-terraform-aws-provider), any tags put here will be added to ECR provisioned resources.|

@@ -327,6 +327,111 @@ variable "aws_elb_additional_tags" {
   default     = "{}"
 }
 
+# AWS LB
+
+# AWS WAF
+variable "aws_waf_enable" {
+  type        = bool
+  description = "Enable WAF for load balancer"
+  default     = false
+}
+
+variable "aws_waf_logging_enable" {
+  type        = bool
+  description = "Enable WAF logging to CloudWatch"
+  default     = false
+}
+
+variable "aws_waf_log_retention_days" {
+  type        = number
+  description = "CloudWatch log retention period for WAF logs"
+  default     = 30
+}
+
+variable "aws_waf_additional_tags" {
+  type        = string
+  description = "A list of strings that will be added to created resources"
+  default     = "{}"
+}
+
+variable "aws_waf_rule_rate_limit" {
+  type        = string
+  description = "Rate limit for WAF rules"
+  default     = "2000"
+}
+
+variable "aws_waf_rule_managed_rules" {
+  type        = bool
+  description = "Enable common managed rule groups to use"
+  default     = false
+}
+
+variable "aws_waf_rule_managed_bad_inputs" {
+  type        = bool
+  description = "Enable managed rule for bad inputs"
+  default     = false
+}
+
+variable "aws_waf_rule_ip_reputation" {
+  type        = bool
+  description = "Enable managed rule for IP reputation"
+  default     = false
+}
+
+variable "aws_waf_rule_anonymous_ip" {
+  type        = bool
+  description = "Enable managed rule for anonymous IP"
+  default     = false
+}
+
+variable "aws_waf_rule_bot_control" {
+  type        = bool
+  description = "Enable managed rule for bot control (costs extra)"
+  default     = false
+}
+
+variable "aws_waf_rule_geo_block_countries" {
+  type        = string
+  description = "Comma separated list of countries to block"
+  default     = ""
+}
+
+variable "aws_waf_rule_geo_allow_only_countries" {
+  type        = string
+  description = "Comma separated list of countries to allow"
+  default     = ""
+}
+
+variable "aws_waf_rule_sqli" {
+  type        = bool
+  description = "Enable managed rule for SQL injection"
+  default     = false
+}
+
+variable "aws_waf_rule_linux" {
+  type        = bool
+  description = "Enable managed rule for Linux"
+  default     = false
+}
+
+variable "aws_waf_rule_unix" {
+  type        = bool
+  description = "Enable managed rule for Unix"
+  default     = false
+}
+
+variable "aws_waf_rule_admin_protection" {
+  type        = bool
+  description = "Enable managed rule for admin protection"
+  default     = false
+}
+
+variable "aws_waf_rule_user_arn" {
+  type        = string
+  description = "ARN of the user rule"
+  default     = ""
+}
+
 # AWS EFS
 
 ### This variable is hidden for the end user. Is built in deploy.sh based on the next 3 variables. 
