@@ -242,7 +242,7 @@ resource "aws_wafv2_web_acl" "waf" {
 
       statement {
         rule_group_reference_statement {
-          arn = data.aws_wafv2_rule_group.user_provided[0].arn
+          arn = var.aws_waf_rule_user_arn
         }
       }
 
