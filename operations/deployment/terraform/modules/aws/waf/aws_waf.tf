@@ -1,10 +1,10 @@
 locals {
   aws_waf_rule_geo_block_countries = var.aws_waf_rule_geo_block_countries != "" ? [
-    for n in split(",", var.aws_waf_rule_geo_block_countries) : trim(n)
+    for n in split(",", var.aws_waf_rule_geo_block_countries) : (n)
   ] : []
 
   aws_waf_rule_geo_allow_only_countries = var.aws_waf_rule_geo_allow_only_countries != "" ? [
-    for n in split(",", var.aws_waf_rule_geo_allow_only_countries) : trim(n)
+    for n in split(",", var.aws_waf_rule_geo_allow_only_countries) : (n)
   ] : []
 }
 
@@ -242,7 +242,7 @@ resource "aws_wafv2_web_acl" "waf" {
 
       statement {
         rule_group_reference_statement {
-          arn = var.aws_waf_rule_user_arn
+          arn = data.aws_wafv2_rule_group.user_provided[0].arn
         }
       }
 
@@ -414,3 +414,12 @@ output "waf_web_acl_arn" {
 output "waf_web_acl_id" {
   value = var.aws_waf_enable ? aws_wafv2_web_acl.waf[0].id : null
 }
+
+# Read rule group by name
+data "aws_wafv2_rule_group" "example" {
+  count = var.aws_waf_rule_user_arn != "" ? [1] : []
+  name  = "var.aws_waf_rule_user_arn"
+  scope = "REGIONAL"
+}
+
+arn:aws:wafv2:us-east-1:755521597925:regional/rulegroup/some/351a2738-39ae-4d00-a864-599d6b3dc225
