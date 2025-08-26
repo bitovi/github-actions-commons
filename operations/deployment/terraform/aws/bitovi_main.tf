@@ -329,7 +329,7 @@ module "db_proxy_aurora" {
   aws_resource_identifier_supershort          = var.aws_resource_identifier_supershort
   incoming_random_string                      = module.aurora_rds[0].random_string
   # Dependencies
-  depends_on = [module.vpc,module.aurora_rds,module.ec2]
+  depends_on = [module.vpc,module.aurora_rds]
 
   providers = {
     aws = aws.db_proxy
