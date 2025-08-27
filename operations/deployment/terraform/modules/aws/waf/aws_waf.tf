@@ -375,6 +375,10 @@ resource "aws_wafv2_web_acl_association" "waf_association" {
   resource_arn = var.aws_lb_resource_arn
   web_acl_arn  = aws_wafv2_web_acl.waf[0].arn
 }
+resource "aws_wafv2_web_acl_logging_configuration" "example" {
+  log_destination_configs = [aws_cloudwatch_log_group.example.arn]
+  resource_arn            = aws_wafv2_web_acl.example.arn
+}
 
 # WAF Logging Configuration (optional)
 resource "aws_wafv2_web_acl_logging_configuration" "waf_logging" {
@@ -393,16 +397,17 @@ resource "aws_wafv2_web_acl_logging_configuration" "waf_logging" {
       name = "cookie"
     }
   }
+  depends_on = [ aws_cloudwatch_log_group.waf_log_group, aws_wafv2_web_acl.waf ]
 }
 
 # CloudWatch Log Group for WAF (optional)
 resource "aws_cloudwatch_log_group" "waf_log_group" {
   count             = var.aws_waf_enable && var.aws_waf_logging_enable ? 1 : 0
-  name              = "/aws/wafv2/${var.aws_resource_identifier}"
+  name              = "aws-waf-logs-${var.aws_resource_identifier}"
   retention_in_days = var.aws_waf_log_retention_days
 
   tags = {
-    Name = "${var.aws_resource_identifier}-waf-logs"
+    Name = "aws-waf-logs-${var.aws_resource_identifier}"
   }
 }
 
