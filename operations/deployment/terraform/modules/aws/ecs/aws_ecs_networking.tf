@@ -82,6 +82,7 @@ resource "aws_alb_listener" "lb_listener_ssl" {
   lifecycle {
     replace_triggered_by = [null_resource.http_redirect_dep.id]
   }
+  depends_on = [ aws_alb_listener.http_redirect ]
 }
 
 resource "aws_alb_listener" "lb_listener" {
@@ -96,6 +97,7 @@ resource "aws_alb_listener" "lb_listener" {
   lifecycle {
     replace_triggered_by = [null_resource.http_redirect_dep.id]
   }
+  depends_on = [ aws_alb_listener.http_redirect ]
 }
 
 resource "aws_alb_listener_rule" "redirect_based_on_path" {
@@ -122,7 +124,6 @@ resource "aws_alb_listener" "http_redirect" {
 
 
   default_action {
-    #type = var.aws_certificates_selected_arn != "" ? "redirect" : "forward"
     type = var.aws_certificate_enabled != "" ? "redirect" : "forward"
     target_group_arn = var.aws_certificates_selected_arn != "" ? null : aws_alb_target_group.lb_targets[0].id
 
