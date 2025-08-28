@@ -393,16 +393,17 @@ resource "aws_wafv2_web_acl_logging_configuration" "waf_logging" {
       name = "cookie"
     }
   }
+  depends_on = [ aws_cloudwatch_log_group.waf_log_group, aws_wafv2_web_acl.waf ]
 }
 
 # CloudWatch Log Group for WAF (optional)
 resource "aws_cloudwatch_log_group" "waf_log_group" {
   count             = var.aws_waf_enable && var.aws_waf_logging_enable ? 1 : 0
-  name              = "/aws/wafv2/${var.aws_resource_identifier}"
+  name              = "aws-waf-logs-${var.aws_resource_identifier}"
   retention_in_days = var.aws_waf_log_retention_days
 
   tags = {
-    Name = "${var.aws_resource_identifier}-waf-logs"
+    Name = "aws-waf-logs-${var.aws_resource_identifier}"
   }
 }
 

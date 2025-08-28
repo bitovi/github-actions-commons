@@ -82,6 +82,7 @@ resource "aws_alb_listener" "lb_listener_ssl" {
   lifecycle {
     replace_triggered_by = [null_resource.http_redirect_dep.id]
   }
+  depends_on = [ aws_alb_listener.http_redirect ]
 }
 
 resource "aws_alb_listener" "lb_listener" {
@@ -96,6 +97,7 @@ resource "aws_alb_listener" "lb_listener" {
   lifecycle {
     replace_triggered_by = [null_resource.http_redirect_dep.id]
   }
+  depends_on = [ aws_alb_listener.http_redirect ]
 }
 
 resource "aws_alb_listener_rule" "redirect_based_on_path" {
@@ -116,18 +118,17 @@ resource "aws_alb_listener_rule" "redirect_based_on_path" {
 
 resource "aws_alb_listener" "http_redirect" {
   count             = var.aws_ecs_lb_redirect_enable && !contains(local.aws_ecs_lb_port,80) ? 1 : 0
-  load_balancer_arn = "${aws_alb.ecs_lb.id}"
+  load_balancer_arn = aws_alb.ecs_lb.id
   port              = "80"
   protocol          = "HTTP"
 
 
   default_action {
-    #type = var.aws_certificates_selected_arn != "" ? "redirect" : "forward"
-    type = var.aws_certificate_enabled != "" ? "redirect" : "forward"
-    target_group_arn = var.aws_certificates_selected_arn != "" ? null : aws_alb_target_group.lb_targets[0].id
+    type = var.aws_certificate_enabled ? "redirect" : "forward"
+    target_group_arn = var.aws_certificate_enabled ? null : aws_alb_target_group.lb_targets[0].id
 
     dynamic "redirect" {
-      for_each = var.aws_certificates_selected_arn != "" ? [1] : [0]
+      for_each = var.aws_certificate_enabled ? [1] : [0]
       content {
         port        = 443
         protocol    = "HTTPS"
@@ -135,6 +136,10 @@ resource "aws_alb_listener" "http_redirect" {
       }
     }
   }
+  depends_on = [
+    aws_alb.ecs_lb,
+    aws_alb_target_group.lb_targets
+  ]
 }
 
 resource "aws_security_group_rule" "incoming_alb_http" {
