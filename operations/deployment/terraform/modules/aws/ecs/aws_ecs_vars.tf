@@ -25,6 +25,9 @@ variable "aws_ecs_autoscaling_min_nodes" {}
 variable "aws_ecs_autoscaling_max_mem" {}
 variable "aws_ecs_autoscaling_max_cpu" {}
 variable "aws_ecs_cloudwatch_enable" {}
+variable "aws_ecs_cloudwatch_log_driver" {}
+variable "aws_ecs_firelens_output_type" {}
+variable "aws_ecs_firelens_output_options" {}
 variable "aws_ecs_cloudwatch_lg_name" {}
 variable "aws_ecs_cloudwatch_skip_destroy" {}
 variable "aws_ecs_cloudwatch_retention_days" {}

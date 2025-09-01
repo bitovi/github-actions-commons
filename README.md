@@ -454,6 +454,9 @@ The following inputs can be used as `step.with` keys
 | `aws_ecs_autoscaling_max_cpu`| String | Define autoscaling max cpu. |
 | `aws_ecs_cloudwatch_enable`| Boolean | Toggle cloudwatch for ECS. Default `false`. |
 | `aws_ecs_cloudwatch_lg_name`| String | Log group name. Will default to `aws_identifier` if none. |
+| `aws_ecs_cloudwatch_log_driver`| String | Log driver to use for the ECS task. (awslogs/awsfirelens) Defaults to `awslogs`. |
+| `aws_ecs_firelens_output_type`| String | Firelens type, one of `otlp`, `loki`, `cloudwatch`, `firehose`, `kinesis`, `es`, `splunk`, `http`, `kafka`, `syslog`. |
+| `aws_ecs_firelens_output_options`| String | Option definitions. Eg. `"{\"Host\":\"collector\",\"Port\":\"4317\"}"`. See [this example repo.](https://github.com/aws-samples/amazon-ecs-firelens-examples)|
 | `aws_ecs_cloudwatch_skip_destroy`| Boolean | Toggle deletion or not when destroying the stack. |
 | `aws_ecs_cloudwatch_retention_days`| String | Number of days to retain logs. 0 to never expire. Defaults to `14`. |
 | `aws_ecs_additional_tags`| JSON | Add additional tags to the terraform [default tags](https://www.hashicorp.com/blog/default-tags-in-the-terraform-aws-provider), any tags put here will be added to ECS provisioned resources.|

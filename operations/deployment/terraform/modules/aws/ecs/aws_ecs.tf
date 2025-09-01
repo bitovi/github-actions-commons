@@ -26,40 +26,64 @@ locals {
 
 resource "aws_ecs_task_definition" "ecs_task" {
   count                    = length(local.aws_ecs_app_image)
-  family                   = var.aws_ecs_task_name  != "" ? local.aws_ecs_task_name[count.index] : "${local.aws_ecs_task_name[count.index]}${count.index}"
+  family                   = var.aws_ecs_task_name != "" ? local.aws_ecs_task_name[count.index] : "${local.aws_ecs_task_name[count.index]}${count.index}"
   network_mode             = local.aws_ecs_task_network_mode[count.index]
   requires_compatibilities = [local.aws_ecs_task_type[count.index]]
   cpu                      = local.aws_ecs_task_cpu[count.index]
   memory                   = local.aws_ecs_task_mem[count.index]
   execution_role_arn       = local.ecsTaskExecutionRole
-  container_definitions = sensitive(jsonencode([
-    {
-      "image": local.aws_ecs_app_image[count.index],
-      "cpu": local.aws_ecs_container_cpu[count.index],
-      "memory": local.aws_ecs_container_mem[count.index],
-      "name": var.aws_ecs_task_name != "" ? local.aws_ecs_task_name[count.index] : "${local.aws_ecs_task_name[count.index]}${count.index}",
-      "networkMode": "awsvpc",
-      "portMappings": [
-        {
-          "name": "port-${local.aws_ecs_container_port[count.index]}",
-          "containerPort": tonumber(local.aws_ecs_container_port[count.index]),
-          "hostPort": tonumber(local.aws_ecs_container_port[count.index]),
-          "protocol": "tcp",
-          "appProtocol": "http"
-        }
-      ],
-      "environment": local.env_repo_vars
-      "logConfiguration": var.aws_ecs_cloudwatch_enable ? {
-        "logDriver": "awslogs",
-        "options": {
-          "awslogs-create-group": "true",
-          "awslogs-region": var.aws_region_current_name,
-          "awslogs-group": var.aws_ecs_cloudwatch_lg_name,
-          "awslogs-stream-prefix": aws_ecs_cluster.cluster.name
+
+  container_definitions = sensitive(jsonencode(
+    compact([ # compact removes null entries
+      {
+        "name": var.aws_ecs_task_name != "" ? local.aws_ecs_task_name[count.index] : "${local.aws_ecs_task_name[count.index]}${count.index}",
+        "image": local.aws_ecs_app_image[count.index],
+        "cpu": local.aws_ecs_container_cpu[count.index],
+        "memory": local.aws_ecs_container_mem[count.index],
+        "networkMode": "awsvpc",
+        "portMappings": [
+          {
+            "containerPort": tonumber(local.aws_ecs_container_port[count.index]),
+            "hostPort": tonumber(local.aws_ecs_container_port[count.index]),
+            "protocol": "tcp"
+          }
+        ],
+        "environment": local.env_repo_vars,
+
+        # === Log configuration ===
+        "logConfiguration": (
+          var.aws_ecs_cloudwatch_enable && var.aws_ecs_cloudwatch_log_driver == "awslogs" ?
+          {
+            "logDriver": "awslogs",
+            "options": {
+              "awslogs-create-group": "true",
+              "awslogs-region": var.aws_region_current_name,
+              "awslogs-group": var.aws_ecs_cloudwatch_lg_name,
+              "awslogs-stream-prefix": aws_ecs_cluster.cluster.name
+            }
+          } :
+          var.aws_ecs_cloudwatch_enable && var.aws_ecs_cloudwatch_log_driver == "awsfirelens" ?
+          {
+            "logDriver": "awsfirelens",
+            "options": merge(
+              { "Name": var.aws_ecs_firelens_output_type },
+              jsondecode(var.aws_ecs_firelens_output_options)
+            )
+          } : null
+        )
+      },
+
+      # === FireLens sidecar ===
+      var.aws_ecs_cloudwatch_enable && var.aws_ecs_cloudwatch_log_driver == "awsfirelens" ? {
+        "name": "log_router",
+        "image": "public.ecr.aws/aws-observability/aws-for-fluent-bit:latest",
+        "essential": true,
+        "firelensConfiguration": {
+          "type": "fluentbit"
         }
       } : null
-    }
-  ]))
+    ])
+  ))
 }
 
 resource "aws_ecs_task_definition" "ecs_task_from_json" {
