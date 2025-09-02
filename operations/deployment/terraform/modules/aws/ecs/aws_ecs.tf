@@ -34,7 +34,7 @@ resource "aws_ecs_task_definition" "ecs_task" {
   execution_role_arn       = local.ecsTaskExecutionRole
 
   container_definitions = sensitive(jsonencode(
-    compact([ # compact removes null entries
+    [
       {
         "name": var.aws_ecs_task_name != "" ? local.aws_ecs_task_name[count.index] : "${local.aws_ecs_task_name[count.index]}${count.index}",
         "image": local.aws_ecs_app_image[count.index],
@@ -82,7 +82,7 @@ resource "aws_ecs_task_definition" "ecs_task" {
           "type": "fluentbit"
         }
       } : null
-    ])
+    ]
   ))
 }
 
