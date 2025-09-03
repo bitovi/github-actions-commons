@@ -40,7 +40,6 @@ resource "aws_ecs_task_definition" "ecs_task" {
         "image": local.aws_ecs_app_image[count.index],
         "cpu": local.aws_ecs_container_cpu[count.index],
         "memory": local.aws_ecs_container_mem[count.index],
-        "networkMode": "awsvpc",
         "portMappings": [
           {
             "containerPort": tonumber(local.aws_ecs_container_port[count.index]),
@@ -49,8 +48,6 @@ resource "aws_ecs_task_definition" "ecs_task" {
           }
         ],
         "environment": local.env_repo_vars,
-
-        # === Log configuration ===
         "logConfiguration": (
           var.aws_ecs_cloudwatch_enable && var.aws_ecs_cloudwatch_log_driver == "awslogs" ?
           {
@@ -72,12 +69,10 @@ resource "aws_ecs_task_definition" "ecs_task" {
           } : null
         )
       },
-
-      # === FireLens sidecar ===
       var.aws_ecs_cloudwatch_enable && var.aws_ecs_cloudwatch_log_driver == "awsfirelens" ? {
         "name": "log_router",
         "image": "public.ecr.aws/aws-observability/aws-for-fluent-bit:latest",
-        "essential": true,
+        "essential": false,
         "firelensConfiguration": {
           "type": "fluentbit"
         }
