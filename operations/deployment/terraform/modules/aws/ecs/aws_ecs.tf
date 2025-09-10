@@ -75,11 +75,11 @@ resource "aws_ecs_task_definition" "ecs_task_from_json" {
 
 resource "aws_ecs_task_definition" "aws_ecs_task_ignore_definition" {
   count                    = var.aws_ecs_task_ignore_definition ? 1 : 0
-  family                   = var.aws_ecs_task_name != "" ? local.aws_ecs_task_name[count.index + length(local.aws_ecs_app_image)] : "${local.aws_ecs_task_name[count.index + length(local.aws_ecs_app_image)]}${count.index+length(local.aws_ecs_app_image)}"
-  network_mode             = local.aws_ecs_task_network_mode[count.index + length(local.aws_ecs_app_image)]
-  requires_compatibilities = ["${local.aws_ecs_task_type[count.index +length(local.aws_ecs_app_image)]}"]
-  cpu                      = local.aws_ecs_task_cpu[count.index+length(local.aws_ecs_app_image)]
-  memory                   = local.aws_ecs_task_mem[count.index+length(local.aws_ecs_app_image)]
+  family                   = var.aws_ecs_task_name  != "" ? local.aws_ecs_task_name[count.index] : "${local.aws_ecs_task_name[count.index]}${count.index}"
+  network_mode             = local.aws_ecs_task_network_mode[count.index]
+  requires_compatibilities = [local.aws_ecs_task_type[count.index]]
+  cpu                      = local.aws_ecs_task_cpu[count.index]
+  memory                   = local.aws_ecs_task_mem[count.index]
   execution_role_arn       = local.ecsTaskExecutionRole
   container_definitions = sensitive(jsonencode([
     {
