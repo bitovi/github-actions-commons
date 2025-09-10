@@ -25,7 +25,7 @@ locals {
 }
 
 resource "aws_ecs_task_definition" "ecs_task" {
-  count                    = length(local.aws_ecs_app_image)
+  count                    = ws_ecs_task_ignore_definition ? 0 : length(local.aws_ecs_app_image)
   family                   = var.aws_ecs_task_name  != "" ? local.aws_ecs_task_name[count.index] : "${local.aws_ecs_task_name[count.index]}${count.index}"
   network_mode             = local.aws_ecs_task_network_mode[count.index]
   requires_compatibilities = [local.aws_ecs_task_type[count.index]]
@@ -63,7 +63,7 @@ resource "aws_ecs_task_definition" "ecs_task" {
 }
 
 resource "aws_ecs_task_definition" "ecs_task_from_json" {
-  count                    = length(local.aws_ecs_task_json_definition_file)
+  count                    = ws_ecs_task_ignore_definition ? 0 : length(local.aws_ecs_task_json_definition_file)
   family                   = var.aws_ecs_task_name != "" ? local.aws_ecs_task_name[count.index + length(local.aws_ecs_app_image)] : "${local.aws_ecs_task_name[count.index + length(local.aws_ecs_app_image)]}${count.index+length(local.aws_ecs_app_image)}"
   network_mode             = local.aws_ecs_task_network_mode[count.index + length(local.aws_ecs_app_image)]
   requires_compatibilities = ["${local.aws_ecs_task_type[count.index +length(local.aws_ecs_app_image)]}"]
@@ -89,7 +89,7 @@ resource "aws_ecs_task_definition" "aws_ecs_task_ignore_definition" {
       "portMappings": [
         {
           "containerPort": 80,
-          "protocol": "tcp"
+          "protocol": "http"
         }
       ]
     }
@@ -101,7 +101,7 @@ resource "aws_ecs_task_definition" "aws_ecs_task_ignore_definition" {
 
 locals {
   tasks_arns  = concat(aws_ecs_task_definition.ecs_task[*].arn,aws_ecs_task_definition.ecs_task_from_json[*].arn)
-  tasks_count = length(local.aws_ecs_app_image) + length(local.aws_ecs_task_json_definition_file)
+  tasks_count = aws_ecs_task_ignore_definition ? 1 : length(local.aws_ecs_app_image) + length(local.aws_ecs_task_json_definition_file)
 }
 
 resource "aws_ecs_service" "ecs_service" {
