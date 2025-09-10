@@ -808,6 +808,9 @@ inputs:
   aws_ecs_task_name:
     description: 'Elastic Container Service task name'
     required: false
+  aws_ecs_task_ignore_definition:
+    description: 'Toggle to ignore task definition changes after first deployment. Useful when using external tools to manage the task definition.'
+    required: false
   aws_ecs_task_execution_role:
     description: 'Elastic Container Service task execution role name from IAM. Defaults to "ecsTaskExecutionRole"'
     required: false
@@ -1438,6 +1441,7 @@ runs:
         AWS_ECS_SERVICE_LAUNCH_TYPE : ${{ inputs.aws_ecs_service_launch_type }}
         AWS_ECS_TASK_TYPE : ${{ inputs.aws_ecs_task_type }}
         AWS_ECS_TASK_NAME: ${{ inputs.aws_ecs_task_name }}
+        AWS_ECS_TASK_IGNORE_DEFINITION: ${{ inputs.aws_ecs_task_ignore_definition }}
         AWS_ECS_TASK_EXECUTION_ROLE: ${{ inputs.aws_ecs_task_execution_role }}
         AWS_ECS_TASK_JSON_DEFINITION_FILE: ${{ inputs.aws_ecs_task_json_definition_file }}
         AWS_ECS_TASK_NETWORK_MODE: ${{ inputs.aws_ecs_task_network_mode }}

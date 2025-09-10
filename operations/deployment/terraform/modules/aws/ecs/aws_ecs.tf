@@ -73,6 +73,32 @@ resource "aws_ecs_task_definition" "ecs_task_from_json" {
   container_definitions    = sensitive(file("../../ansible/clone_repo/app/${var.app_repo_name}/${local.aws_ecs_task_json_definition_file[count.index]}"))
 }
 
+resource "aws_ecs_task_definition" "aws_ecs_task_ignore_definition" {
+  count                    = var.aws_ecs_task_ignore_definition ? 1 : 0
+  family                   = var.aws_ecs_task_name != "" ? local.aws_ecs_task_name[count.index + length(local.aws_ecs_app_image)] : "${local.aws_ecs_task_name[count.index + length(local.aws_ecs_app_image)]}${count.index+length(local.aws_ecs_app_image)}"
+  network_mode             = local.aws_ecs_task_network_mode[count.index + length(local.aws_ecs_app_image)]
+  requires_compatibilities = ["${local.aws_ecs_task_type[count.index +length(local.aws_ecs_app_image)]}"]
+  cpu                      = local.aws_ecs_task_cpu[count.index+length(local.aws_ecs_app_image)]
+  memory                   = local.aws_ecs_task_mem[count.index+length(local.aws_ecs_app_image)]
+  execution_role_arn       = local.ecsTaskExecutionRole
+  container_definitions = sensitive(jsonencode([
+    {
+      "name": "simple-web-server",
+      "image": "nginx:alpine",
+      "essential": true,
+      "portMappings": [
+        {
+          "containerPort": 80,
+          "protocol": "tcp"
+        }
+      ]
+    }
+  ]))
+  lifecycle {
+    ignore_changes = [container_definitions]
+  }
+}
+
 locals {
   tasks_arns  = concat(aws_ecs_task_definition.ecs_task[*].arn,aws_ecs_task_definition.ecs_task_from_json[*].arn)
   tasks_count = length(local.aws_ecs_app_image) + length(local.aws_ecs_task_json_definition_file)
