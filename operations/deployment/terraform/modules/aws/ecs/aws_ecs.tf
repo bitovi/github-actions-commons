@@ -96,9 +96,9 @@ resource "aws_ecs_task_definition" "aws_ecs_task_ignore_definition" {
       ]
     }
   ]))
-  #lifecycle {
-  #  ignore_changes = [container_definitions]
-  #}
+  lifecycle {
+    ignore_changes = [container_definitions]
+  }
 }
 
 locals {
