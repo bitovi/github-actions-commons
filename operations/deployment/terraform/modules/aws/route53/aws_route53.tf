@@ -3,6 +3,14 @@ data "aws_route53_zone" "selected" {
   private_zone = false
 }
 
+data "aws_lb" "selected_lb" {
+  name = var.aws_elb_dns_name
+}
+
+#data "aws_elb" "selected_elb" {
+#  name = var.aws_elb_dns_name
+#}
+
 resource "aws_route53_record" "dev" {
   count   = var.fqdn_provided ? (var.aws_r53_root_domain_deploy ? 0 : 1) : 0
   zone_id = data.aws_route53_zone.selected.zone_id
@@ -11,9 +19,12 @@ resource "aws_route53_record" "dev" {
 
   alias {
     name                   = var.aws_elb_dns_name
-    zone_id                = var.aws_elb_zone_id
+    #zone_id                = var.aws_elb_zone_id
+    zone_id                = data.aws_lb.selected_lb.zone_id
     evaluate_target_health = true
   }
+
+  depends_on = [ data.aws_lb.selected_lb ]
 }
 
 resource "aws_route53_record" "root-a" {
