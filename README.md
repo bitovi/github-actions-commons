@@ -431,6 +431,7 @@ The following inputs can be used as `step.with` keys
 | `aws_ecs_service_launch_type`| String | Configuration type. Could be `EC2`, `FARGATE` or `EXTERNAL`. Defaults to `FARGATE`. |
 | `aws_ecs_task_type`| String | Configuration type. Could be `EC2`, `FARGATE` or empty. Will default to `aws_ecs_service_launch_type` if none defined. (Blank if `EXTERNAL`). |
 | `aws_ecs_task_name`| String | Elastic Container Service task name. If task is defined with a JSON file, should be the same as the container name. |
+| `aws_ecs_task_ignore_definition`| Boolean | Toggle to ignore task definition changes after first deployment. Useful when using external tools to manage the task definition. Default: `false`. |
 | `aws_ecs_task_execution_role`| String | Elastic Container Service task execution role name from IAM. Defaults to `ecsTaskExecutionRole`. |
 | `aws_ecs_task_json_definition_file`| String | Name of the json file containing task definition. Overrides every other input. |
 | `aws_ecs_task_network_mode`| String | Network type to use in task definition. One of `none`, `bridge`, `awsvpc`, and `host`. |

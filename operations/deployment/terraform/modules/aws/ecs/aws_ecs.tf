@@ -25,8 +25,8 @@ locals {
 }
 
 resource "aws_ecs_task_definition" "ecs_task" {
-  count                    = length(local.aws_ecs_app_image)
-  family                   = var.aws_ecs_task_name != "" ? local.aws_ecs_task_name[count.index] : "${local.aws_ecs_task_name[count.index]}${count.index}"
+  count                    = var.aws_ecs_task_ignore_definition ? 0 : length(local.aws_ecs_app_image)
+  family                   = var.aws_ecs_task_name  != "" ? local.aws_ecs_task_name[count.index] : "${local.aws_ecs_task_name[count.index]}${count.index}"
   network_mode             = local.aws_ecs_task_network_mode[count.index]
   requires_compatibilities = [local.aws_ecs_task_type[count.index]]
   cpu                      = local.aws_ecs_task_cpu[count.index]
@@ -95,7 +95,7 @@ resource "aws_ecs_task_definition" "ecs_task" {
 }
 
 resource "aws_ecs_task_definition" "ecs_task_from_json" {
-  count                    = length(local.aws_ecs_task_json_definition_file)
+  count                    = var.aws_ecs_task_ignore_definition ? 0 : length(local.aws_ecs_task_json_definition_file)
   family                   = var.aws_ecs_task_name != "" ? local.aws_ecs_task_name[count.index + length(local.aws_ecs_app_image)] : "${local.aws_ecs_task_name[count.index + length(local.aws_ecs_app_image)]}${count.index+length(local.aws_ecs_app_image)}"
   network_mode             = local.aws_ecs_task_network_mode[count.index + length(local.aws_ecs_app_image)]
   requires_compatibilities = ["${local.aws_ecs_task_type[count.index +length(local.aws_ecs_app_image)]}"]
@@ -105,13 +105,41 @@ resource "aws_ecs_task_definition" "ecs_task_from_json" {
   container_definitions    = sensitive(file("../../ansible/clone_repo/app/${var.app_repo_name}/${local.aws_ecs_task_json_definition_file[count.index]}"))
 }
 
+resource "aws_ecs_task_definition" "aws_ecs_task_ignore_definition" {
+  count                    = var.aws_ecs_task_ignore_definition ? 1 : 0
+  family                   = var.aws_ecs_task_name  != "" ? local.aws_ecs_task_name[count.index] : "${local.aws_ecs_task_name[count.index]}${count.index}"
+  network_mode             = local.aws_ecs_task_network_mode[count.index]
+  requires_compatibilities = [local.aws_ecs_task_type[count.index]]
+  cpu                      = local.aws_ecs_task_cpu[count.index]
+  memory                   = local.aws_ecs_task_mem[count.index]
+  execution_role_arn       = local.ecsTaskExecutionRole
+  container_definitions    = sensitive(jsonencode([
+    {
+      "name": var.aws_ecs_task_name != "" ? local.aws_ecs_task_name[count.index] : "${local.aws_ecs_task_name[count.index]}${count.index}",
+      "image": "nginx:alpine",
+      "essential": true,
+      "portMappings": [
+        {
+          "containerPort": 80,
+          "protocol": "tcp",
+          "hostPort": 80,
+          "appProtocol": "http"
+        }
+      ]
+    }
+  ]))
+  lifecycle {
+    ignore_changes = [container_definitions]
+  }
+}
+
 locals {
-  tasks_arns  = concat(aws_ecs_task_definition.ecs_task[*].arn,aws_ecs_task_definition.ecs_task_from_json[*].arn)
-  tasks_count = length(local.aws_ecs_app_image) + length(local.aws_ecs_task_json_definition_file)
+  tasks_arns  = concat(aws_ecs_task_definition.ecs_task[*].arn,aws_ecs_task_definition.ecs_task_from_json[*].arn,aws_ecs_task_definition.aws_ecs_task_ignore_definition[*].arn)
+  tasks_count = var.aws_ecs_task_ignore_definition ? 1 : length(local.aws_ecs_app_image) + length(local.aws_ecs_task_json_definition_file)
 }
 
 resource "aws_ecs_service" "ecs_service" {
-  count            = local.tasks_count
+  count            = var.aws_ecs_task_ignore_definition ? 0 : local.tasks_count
   name             = var.aws_ecs_service_name != "" ? "${var.aws_ecs_service_name}${count.index}" : "${var.aws_resource_identifier}-${count.index}-service"
   cluster          = aws_ecs_cluster.cluster.id
   task_definition = local.tasks_arns[count.index]
@@ -129,6 +157,32 @@ resource "aws_ecs_service" "ecs_service" {
     target_group_arn = aws_alb_target_group.lb_targets[count.index].id
     container_name   = var.aws_ecs_task_name != "" ? local.aws_ecs_task_name[count.index] : "${local.aws_ecs_task_name[count.index]}${count.index}"
     container_port   = local.aws_ecs_container_port[count.index]
+  }
+}
+
+resource "aws_ecs_service" "ecs_service_ignore_definition" {
+  count            = var.aws_ecs_task_ignore_definition ? 1 : 0
+  name             = var.aws_ecs_service_name != "" ? "${var.aws_ecs_service_name}${count.index}" : "${var.aws_resource_identifier}-${count.index}-service"
+  cluster          = aws_ecs_cluster.cluster.id
+  task_definition = local.tasks_arns[count.index]
+
+  desired_count    = local.aws_ecs_node_count[count.index]
+  launch_type      = var.aws_ecs_service_launch_type
+
+  network_configuration {
+    security_groups  = [aws_security_group.ecs_sg.id]
+    subnets          = var.aws_selected_subnets
+    assign_public_ip = var.aws_ecs_assign_public_ip
+  }
+
+  load_balancer {
+    target_group_arn = aws_alb_target_group.lb_targets[count.index].id
+    container_name   = var.aws_ecs_task_name != "" ? local.aws_ecs_task_name[count.index] : "${local.aws_ecs_task_name[count.index]}${count.index}"
+    container_port   = local.aws_ecs_container_port[count.index]
+  }
+
+  lifecycle {
+    ignore_changes = [task_definition]
   }
 }
 

@@ -317,6 +317,7 @@ if [[ $(alpha_only "$AWS_ECS_ENABLE") == true ]]; then
   aws_ecs_service_launch_type=$(generate_var aws_ecs_service_launch_type $AWS_ECS_SERVICE_LAUNCH_TYPE)
   aws_ecs_task_type=$(generate_var aws_ecs_task_type $AWS_ECS_TASK_TYPE)
   aws_ecs_task_name=$(generate_var aws_ecs_task_name $AWS_ECS_TASK_NAME)
+  aws_ecs_task_ignore_definition=$(generate_var aws_ecs_task_ignore_definition $AWS_ECS_TASK_IGNORE_DEFINITION)
   aws_ecs_task_execution_role=$(generate_var aws_ecs_task_execution_role $AWS_ECS_TASK_EXECUTION_ROLE)
   aws_ecs_task_json_definition_file=$(generate_var aws_ecs_task_json_definition_file $AWS_ECS_TASK_JSON_DEFINITION_FILE)
   aws_ecs_task_network_mode=$(generate_var aws_ecs_task_network_mode $AWS_ECS_TASK_NETWORK_MODE)
@@ -668,6 +669,7 @@ $aws_ecs_cluster_name
 $aws_ecs_service_launch_type
 $aws_ecs_task_type
 $aws_ecs_task_name
+$aws_ecs_task_ignore_definition
 $aws_ecs_task_execution_role
 $aws_ecs_task_json_definition_file
 $aws_ecs_task_network_mode
