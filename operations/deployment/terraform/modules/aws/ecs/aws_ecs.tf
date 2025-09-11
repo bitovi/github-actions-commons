@@ -81,15 +81,17 @@ resource "aws_ecs_task_definition" "aws_ecs_task_ignore_definition" {
   cpu                      = local.aws_ecs_task_cpu[count.index]
   memory                   = local.aws_ecs_task_mem[count.index]
   execution_role_arn       = local.ecsTaskExecutionRole
-  container_definitions = sensitive(jsonencode([
+  container_definitions    = sensitive(jsonencode([
     {
-      "name": "simple-web-server",
+      "name": var.aws_ecs_task_name != "" ? local.aws_ecs_task_name[count.index] : "${local.aws_ecs_task_name[count.index]}${count.index}",
       "image": "nginx:alpine",
       "essential": true,
       "portMappings": [
         {
           "containerPort": 80,
-          "protocol": "http"
+          "protocol": "tcp",
+          "hostPort": 80,
+          "appProtocol": "http"
         }
       ]
     }
