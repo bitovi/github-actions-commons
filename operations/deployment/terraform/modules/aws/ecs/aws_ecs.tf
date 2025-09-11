@@ -107,7 +107,7 @@ locals {
 }
 
 resource "aws_ecs_service" "ecs_service" {
-  count            = local.tasks_count
+  count            = var.aws_ecs_task_ignore_definition ? 0 : local.tasks_count
   name             = var.aws_ecs_service_name != "" ? "${var.aws_ecs_service_name}${count.index}" : "${var.aws_resource_identifier}-${count.index}-service"
   cluster          = aws_ecs_cluster.cluster.id
   task_definition = local.tasks_arns[count.index]
@@ -125,6 +125,32 @@ resource "aws_ecs_service" "ecs_service" {
     target_group_arn = aws_alb_target_group.lb_targets[count.index].id
     container_name   = var.aws_ecs_task_name != "" ? local.aws_ecs_task_name[count.index] : "${local.aws_ecs_task_name[count.index]}${count.index}"
     container_port   = local.aws_ecs_container_port[count.index]
+  }
+}
+
+resource "aws_ecs_service" "ecs_service_ignore_definition" {
+  count            = var.aws_ecs_task_ignore_definition ? 1 : 0
+  name             = var.aws_ecs_service_name != "" ? "${var.aws_ecs_service_name}${count.index}" : "${var.aws_resource_identifier}-${count.index}-service"
+  cluster          = aws_ecs_cluster.cluster.id
+  task_definition = local.tasks_arns[count.index]
+
+  desired_count    = local.aws_ecs_node_count[count.index]
+  launch_type      = var.aws_ecs_service_launch_type
+
+  network_configuration {
+    security_groups  = [aws_security_group.ecs_sg.id]
+    subnets          = var.aws_selected_subnets
+    assign_public_ip = var.aws_ecs_assign_public_ip
+  }
+
+  load_balancer {
+    target_group_arn = aws_alb_target_group.lb_targets[count.index].id
+    container_name   = var.aws_ecs_task_name != "" ? local.aws_ecs_task_name[count.index] : "${local.aws_ecs_task_name[count.index]}${count.index}"
+    container_port   = local.aws_ecs_container_port[count.index]
+  }
+
+  lifecycle {
+    ignore_changes = [task_definition]
   }
 }
 
