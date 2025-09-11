@@ -23,8 +23,6 @@ resource "aws_route53_record" "dev" {
     #zone_id                = data.aws_lb.selected_lb.zone_id
     evaluate_target_health = true
   }
-
-  depends_on = [ data.aws_lb.selected_lb ]
 }
 
 resource "aws_route53_record" "root-a" {
