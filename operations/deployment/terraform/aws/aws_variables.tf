@@ -1349,6 +1349,12 @@ variable "aws_ecs_task_name" {
   default     = ""
 }
 
+variable "aws_ecs_task_ignore_definition" {
+  type        = bool
+  description = "Toggle ignoring changes to the task definition"
+  default     = false
+}
+
 variable "aws_ecs_task_execution_role" {
   type        = string
   description = "Elastic Container Service task execution role name."

@@ -45,6 +45,11 @@ resource "aws_alb" "ecs_lb" {
   }
 }
 
+data "aws_alb" "selected_lb" {
+  name = var.aws_resource_identifier_supershort
+  depends_on = [ aws_alb.ecs_lb ]
+}
+
 resource "aws_alb_target_group" "lb_targets" {
   count       = length(local.aws_ecs_container_port)
   name        = "${var.aws_resource_identifier_supershort}${count.index}"
@@ -233,7 +238,8 @@ output "load_balancer_protocol" {
 }
 
 output "load_balancer_zone_id" {
-  value = aws_alb.ecs_lb.zone_id
+  #value = aws_alb.ecs_lb.zone_id
+  value = data.aws_alb.selected_lb.zone_id
 }
 
 output "load_balancer_arn" {
