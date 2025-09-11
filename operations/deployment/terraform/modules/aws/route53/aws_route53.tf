@@ -3,9 +3,9 @@ data "aws_route53_zone" "selected" {
   private_zone = false
 }
 
-data "aws_lb" "selected_lb" {
-  name = var.aws_elb_dns_name
-}
+#data "aws_lb" "selected_lb" {
+#  name = var.aws_elb_dns_name
+#}
 
 #data "aws_elb" "selected_elb" {
 #  name = var.aws_elb_dns_name
@@ -19,8 +19,8 @@ resource "aws_route53_record" "dev" {
 
   alias {
     name                   = var.aws_elb_dns_name
-    #zone_id                = var.aws_elb_zone_id
-    zone_id                = data.aws_lb.selected_lb.zone_id
+    zone_id                = var.aws_elb_zone_id
+    #zone_id                = data.aws_lb.selected_lb.zone_id
     evaluate_target_health = true
   }
 
