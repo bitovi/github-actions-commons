@@ -26,18 +26,22 @@ locals {
 #  }
 #}
 
-data "aws_route53_records" "existing_dev" {
-  count      = true ? 1 : 0
-  zone_id    = data.aws_route53_zone.selected.zone_id
-  name_regex = "${var.aws_r53_sub_domain_name}.${var.aws_r53_domain_name}"
-}
+#data "aws_route53_records" "existing_dev" {
+#  count      = true ? 1 : 0
+#  zone_id    = data.aws_route53_zone.selected.zone_id
+#  name_regex = "${var.aws_r53_sub_domain_name}.${var.aws_r53_domain_name}"
+#}
+#
+## Or if you really need to check existing records, make it safer:
+#locals {
+#  existing_zone_id = try(
+#    data.aws_route53_records.existing_dev[0].resource_record_sets[0].alias_target.zone_id,
+#    var.aws_elb_zone_id
+#  )
+#}
 
 locals {
-  existing_zone_id = length(data.aws_route53_records.existing_dev) > 0 && length(data.aws_route53_records.existing_dev[0].resource_record_sets) > 0 ? (
-    length(data.aws_route53_records.existing_dev[0].resource_record_sets[0].alias_target) > 0 ? 
-    data.aws_route53_records.existing_dev[0].resource_record_sets[0].alias_target[0].zone_id : 
-    var.aws_elb_zone_id
-  ) : var.aws_elb_zone_id
+  existing_zone_id = var.aws_elb_zone_id
 }
 
 resource "aws_route53_record" "dev" {
