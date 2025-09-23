@@ -14,6 +14,9 @@ resource "aws_route53_record" "dev" {
     zone_id                = var.aws_elb_zone_id
     evaluate_target_health = true
   }
+  lifecycle {
+    create_before_destroy = true
+  }
 }
 
 resource "aws_route53_record" "root-a" {
@@ -27,6 +30,9 @@ resource "aws_route53_record" "root-a" {
     zone_id                = var.aws_elb_zone_id
     evaluate_target_health = true
   }
+  lifecycle {
+    create_before_destroy = true
+  }
 }
 
 resource "aws_route53_record" "www-a" {
@@ -39,6 +45,9 @@ resource "aws_route53_record" "www-a" {
     name                   = var.aws_elb_dns_name
     zone_id                = var.aws_elb_zone_id
     evaluate_target_health = true
+  }
+  lifecycle {
+    create_before_destroy = true
   }
 }
 
