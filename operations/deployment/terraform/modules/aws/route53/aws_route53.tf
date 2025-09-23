@@ -7,9 +7,9 @@ locals {
   aws_elb_zone_id = var.aws_elb_zone_id
 }
 
-data "aws_route53_record" "dev" {
-  zone_id = data.aws_route53_zone.selected.zone_id
-  name    = "${var.aws_r53_sub_domain_name}.${var.aws_r53_domain_name}"
+data "aws_route53_records" "dev" {
+  zone_id    = data.aws_route53_zone.selected.zone_id
+  name_regex = "${var.aws_r53_sub_domain_name}.${var.aws_r53_domain_name}"
 }
 
 resource "aws_route53_record" "dev" {
@@ -20,7 +20,7 @@ resource "aws_route53_record" "dev" {
 
   alias {
     name                   = var.aws_elb_dns_name
-    zone_id                = data.aws_route53_zone.dev.alias_target[0].zone_id != var.aws_elb_zone_id ? var.aws_elb_zone_id : data.aws_route53_zone.dev.alias_target[0].zone_id
+    zone_id                = data.aws_route53_records.dev.alias_target[0].zone_id != var.aws_elb_zone_id ? var.aws_elb_zone_id : data.aws_route53_records.dev.alias_target[0].zone_id
      #zone_id                = var.aws_elb_zone_id  # <-- This is different!
     evaluate_target_health = true
   }
