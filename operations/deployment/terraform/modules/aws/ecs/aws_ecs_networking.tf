@@ -47,7 +47,20 @@ resource "aws_alb" "ecs_lb" {
 
 data "aws_alb" "selected_lb" {
   name = var.aws_resource_identifier_supershort
-  depends_on = [ aws_alb.ecs_lb ]
+  depends_on = [
+    aws_alb.ecs_lb,
+    aws_alb_target_group.lb_targets,
+    aws_alb_listener.lb_listener_ssl,
+    aws_alb_listener.lb_listener,
+    aws_alb_listener.http_redirect,
+    aws_alb_listener.https_redirect,
+    aws_alb_listener_rule.redirect_based_on_path,
+    aws_alb_listener_rule.redirect_based_on_path_for_http,
+    aws_security_group.ecs_lb_sg,
+    aws_security_group_rule.incoming_ecs_lb_ports,
+    aws_security_group_rule.incoming_alb_http,
+    aws_security_group_rule.incoming_alb_https
+  ]
 }
 
 resource "aws_alb_target_group" "lb_targets" {
