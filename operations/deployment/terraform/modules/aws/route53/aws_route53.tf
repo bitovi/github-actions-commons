@@ -33,7 +33,7 @@ data "aws_route53_records" "existing_dev" {
 
 # Or if you really need to check existing records, make it safer:
 locals {
-  existing_zone_id = try(data.aws_route53_records.existing_dev.resource_record_sets[0].alias_target.zone_id) != "" ? data.aws_route53_records.existing_dev.resource_record_sets[0].alias_target.zone_id : var.aws_elb_zone_id
+  existing_zone_id = try(data.aws_route53_records.existing_dev.resource_record_sets[0].alias_target.hosted_zone_id) != "" ? data.aws_route53_records.existing_dev.resource_record_sets[0].alias_target.hosted_zone_id : var.aws_elb_zone_id
 }
 
 resource "aws_route53_record" "dev" {
