@@ -3,6 +3,15 @@ data "aws_route53_zone" "selected" {
   private_zone = false
 }
 
+locals {
+  aws_elb_zone_id = var.aws_elb_zone_id
+}
+
+data "aws_route53_record" "dev" {
+  zone_id = data.aws_route53_zone.selected.zone_id
+  name    = "${var.aws_r53_sub_domain_name}.${var.aws_r53_domain_name}"
+}
+
 resource "aws_route53_record" "dev" {
   count   = var.fqdn_provided ? (var.aws_r53_root_domain_deploy ? 0 : 1) : 0
   zone_id = data.aws_route53_zone.selected.zone_id
@@ -11,11 +20,9 @@ resource "aws_route53_record" "dev" {
 
   alias {
     name                   = var.aws_elb_dns_name
-    zone_id                = var.aws_elb_zone_id
+    zone_id                = data.aws_route53_zone.dev.alias_target[0].zone_id != var.aws_elb_zone_id ? var.aws_elb_zone_id : data.aws_route53_zone.dev.alias_target[0].zone_id
+     #zone_id                = var.aws_elb_zone_id  # <-- This is different!
     evaluate_target_health = true
-  }
-  lifecycle {
-    create_before_destroy = true
   }
 }
 
@@ -30,9 +37,6 @@ resource "aws_route53_record" "root-a" {
     zone_id                = var.aws_elb_zone_id
     evaluate_target_health = true
   }
-  lifecycle {
-    create_before_destroy = true
-  }
 }
 
 resource "aws_route53_record" "www-a" {
@@ -45,9 +49,6 @@ resource "aws_route53_record" "www-a" {
     name                   = var.aws_elb_dns_name
     zone_id                = var.aws_elb_zone_id
     evaluate_target_health = true
-  }
-  lifecycle {
-    create_before_destroy = true
   }
 }
 
