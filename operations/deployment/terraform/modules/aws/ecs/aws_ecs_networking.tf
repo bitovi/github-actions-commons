@@ -1,5 +1,6 @@
 locals {
-  aws_ecs_container_port      = [for n in split(",", var.aws_ecs_container_port) : tonumber(n)]
+  aws_ecs_container_port      = var.aws_ecs_container_port != "" ? [for n in split(",", var.aws_ecs_container_port) : tonumber(n)] : [for _ in range(length(local.aws_ecs_app_image)) : 80]
+  #aws_ecs_container_port      = [for n in split(",", var.aws_ecs_container_port) : tonumber(n)]
   aws_ecs_sg_container_port   = distinct(local.aws_ecs_container_port)
   aws_ecs_lb_port             = var.aws_ecs_lb_port != "" ?  [for n in split(",", var.aws_ecs_lb_port) : tonumber(n)] : local.aws_ecs_container_port
   aws_ecs_sg_lb_port          = distinct(local.aws_ecs_lb_port)
