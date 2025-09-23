@@ -522,13 +522,13 @@ module "aws_route53_ecs" {
   aws_r53_root_domain_deploy    = var.aws_r53_root_domain_deploy
   aws_r53_enable_cert           = var.aws_r53_enable_cert
   # ELB
-  aws_elb_dns_name              = try(module.aws_ecs[0].load_balancer_dns,"")
-  aws_elb_zone_id               = try(module.aws_ecs[0].load_balancer_zone_id,"")
+  aws_elb_dns_name              = module.aws_ecs[0].load_balancer_dns #try(module.aws_ecs[0].load_balancer_dns,"")
+  aws_elb_zone_id               = module.aws_ecs[0].load_balancer_zone_id #try(module.aws_ecs[0].load_balancer_zone_id,"")
   # Certs
   aws_certificates_selected_arn = var.aws_r53_enable_cert && var.aws_r53_domain_name != "" ? module.aws_certificates[0].selected_arn : ""
   # Others
   fqdn_provided                 = local.fqdn_provided
-  depends_on = [ module.aws_certificates,module.aws_ecs ]
+  #depends_on = [ module.aws_certificates,module.aws_ecs ]
   providers = {
     aws = aws.r53
   }
