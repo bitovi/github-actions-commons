@@ -7,9 +7,37 @@ locals {
   aws_elb_zone_id = var.aws_elb_zone_id
 }
 
-data "aws_route53_records" "dev" {
+#data "aws_route53_records" "dev" {
+#  zone_id    = data.aws_route53_zone.selected.zone_id
+#  name_regex = "${var.aws_r53_sub_domain_name}.${var.aws_r53_domain_name}"
+#}
+#
+#resource "aws_route53_record" "dev" {
+#  count   = var.fqdn_provided ? (var.aws_r53_root_domain_deploy ? 0 : 1) : 0
+#  zone_id = data.aws_route53_zone.selected.zone_id
+#  name    = "${var.aws_r53_sub_domain_name}.${var.aws_r53_domain_name}"
+#  type    = "A"
+#
+#  alias {
+#    name                   = var.aws_elb_dns_name
+#    zone_id                = data.aws_route53_records.dev.resource_record_sets.alias_target[0].zone_id != var.aws_elb_zone_id ? var.aws_elb_zone_id : data.aws_route53_records.dev.resource_record_sets.alias_target[0].zone_id
+#     #zone_id                = var.aws_elb_zone_id  # <-- This is different!
+#    evaluate_target_health = true
+#  }
+#}
+
+data "aws_route53_records" "existing_dev" {
+  count      = true ? 1 : 0
   zone_id    = data.aws_route53_zone.selected.zone_id
   name_regex = "${var.aws_r53_sub_domain_name}.${var.aws_r53_domain_name}"
+}
+
+locals {
+  existing_zone_id = length(data.aws_route53_records.existing_dev) > 0 && length(data.aws_route53_records.existing_dev[0].resource_record_sets) > 0 ? (
+    length(data.aws_route53_records.existing_dev[0].resource_record_sets[0].alias_target) > 0 ? 
+    data.aws_route53_records.existing_dev[0].resource_record_sets[0].alias_target[0].zone_id : 
+    var.aws_elb_zone_id
+  ) : var.aws_elb_zone_id
 }
 
 resource "aws_route53_record" "dev" {
@@ -20,8 +48,7 @@ resource "aws_route53_record" "dev" {
 
   alias {
     name                   = var.aws_elb_dns_name
-    zone_id                = data.aws_route53_records.dev.alias_target[0].zone_id != var.aws_elb_zone_id ? var.aws_elb_zone_id : data.aws_route53_records.dev.alias_target[0].zone_id
-     #zone_id                = var.aws_elb_zone_id  # <-- This is different!
+    zone_id                = local.existing_zone_id
     evaluate_target_health = true
   }
 }
