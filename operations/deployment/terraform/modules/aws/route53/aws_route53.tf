@@ -36,10 +36,6 @@ locals {
   existing_zone_id = try(data.aws_route53_records.existing_dev.resource_record_sets[0].alias_target.zone_id) != "" ? data.aws_route53_records.existing_dev.resource_record_sets[0].alias_target.zone_id : var.aws_elb_zone_id
 }
 
-locals {
-  existing_zone_id = var.aws_elb_zone_id
-}
-
 resource "aws_route53_record" "dev" {
   count   = var.fqdn_provided ? (var.aws_r53_root_domain_deploy ? 0 : 1) : 0
   zone_id = data.aws_route53_zone.selected.zone_id
