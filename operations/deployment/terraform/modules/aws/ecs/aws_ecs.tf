@@ -235,22 +235,9 @@ resource "aws_iam_policy" "ecs_firelens_policy" {
       {
         Effect = "Allow"
         Action = [
-          "ec2:CreateNetworkInterface",
-          "ec2:DescribeNetworkInterfaces", 
-          "ec2:DeleteNetworkInterface",
-          "ec2:AttachNetworkInterface",
-          "ec2:DetachNetworkInterface"
-        ]
-        Resource = "*"
-      },
-      {
-        Effect = "Allow"
-        Action = [
           "logs:CreateLogGroup",
           "logs:CreateLogStream",
-          "logs:PutLogEvents",
-          "logs:DescribeLogStreams",
-          "logs:DescribeLogGroups"
+          "logs:PutLogEvents"
         ]
         Resource = [
           "arn:aws:logs:${var.aws_region_current_name}:*:log-group:/ecs/firelens*",
