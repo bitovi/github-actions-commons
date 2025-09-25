@@ -49,13 +49,13 @@ resource "aws_ecs_task_definition" "ecs_task" {
           "cpu": local.aws_ecs_container_cpu[count.index],
           "memory": local.aws_ecs_container_mem[count.index],
           "essential": true,
-          "portMappings": [
+          "portMappings": length(local.aws_ecs_container_port[count.index]) > 0 ? [
             {
               "containerPort": local.aws_ecs_container_port[count.index],
               "hostPort": local.aws_ecs_container_port[count.index],
               "protocol": "tcp"
             }
-          ],
+          ] : []
           "environment": local.env_repo_vars,
           "logConfiguration": var.aws_ecs_cloudwatch_enable ? {
             "logDriver": "awslogs",
