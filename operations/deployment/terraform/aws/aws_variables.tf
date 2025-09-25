@@ -1493,24 +1493,6 @@ variable "aws_ecs_cloudwatch_lg_name" {
   default     = null
 }
 
-variable "aws_ecs_cloudwatch_log_driver" {
-  type        = string
-  description = "Log driver to use for the ECS task."
-  default     = "awslogs" # or "awsfirelens"
-}
-
-variable "aws_ecs_firelens_output_type" {
-  type        = string
-  description = "The type of output for FireLens."
-  default     = "otlp" # options: otlp, loki, cloudwatch, firehose, kinesis, es, splunk, http, kafka, syslog
-}
-
-variable "aws_ecs_firelens_output_options" {
-  type        = string
-  description = "The options for the FireLens output."
-  default     = "{}"
-}
-
 variable "aws_ecs_cloudwatch_skip_destroy" {
   type        = string
   description = "Toggle deletion or not when destroying the stack."

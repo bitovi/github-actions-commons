@@ -492,9 +492,6 @@ module "aws_ecs" {
   aws_ecs_autoscaling_max_cpu        = var.aws_ecs_autoscaling_max_cpu
   aws_ecs_cloudwatch_enable          = var.aws_ecs_cloudwatch_enable
   aws_ecs_cloudwatch_lg_name         = var.aws_ecs_cloudwatch_enable ? ( var.aws_ecs_cloudwatch_lg_name != null ? var.aws_ecs_cloudwatch_lg_name : "${var.aws_resource_identifier}-ecs-logs" ) : null
-  aws_ecs_cloudwatch_log_driver      = var.aws_ecs_cloudwatch_log_driver
-  aws_ecs_firelens_output_type       = var.aws_ecs_firelens_output_type
-  aws_ecs_firelens_output_options    = var.aws_ecs_firelens_output_options
   aws_ecs_cloudwatch_skip_destroy    = var.aws_ecs_cloudwatch_skip_destroy
   aws_ecs_cloudwatch_retention_days  = var.aws_ecs_cloudwatch_retention_days
   aws_region_current_name            = module.vpc.aws_region_current_name

@@ -342,9 +342,6 @@ if [[ $(alpha_only "$AWS_ECS_ENABLE") == true ]]; then
   aws_ecs_autoscaling_max_cpu=$(generate_var aws_ecs_autoscaling_max_cpu $AWS_ECS_AUTOSCALING_MIN_MEM)
   aws_ecs_cloudwatch_enable=$(generate_var aws_ecs_cloudwatch_enable $AWS_ECS_CLOUDWATCH_ENABLE)
   aws_ecs_cloudwatch_lg_name=$(generate_var aws_ecs_cloudwatch_lg_name $AWS_ECS_CLOUDWATCH_LG_NAME)
-  aws_ecs_cloudwatch_log_driver=$(generate_var aws_ecs_cloudwatch_log_driver $AWS_ECS_CLOUDWATCH_LOG_DRIVER)
-  aws_ecs_firelens_output_type=$(generate_var aws_ecs_firelens_output_type $AWS_ECS_FIRELENS_OUTPUT_TYPE)
-  aws_ecs_firelens_output_options=$(generate_var aws_ecs_firelens_output_options $AWS_ECS_FIRELENS_OUTPUT_OPTIONS)
   aws_ecs_cloudwatch_skip_destroy=$(generate_var aws_ecs_cloudwatch_skip_destroy $AWS_ECS_CLOUDWATCH_SKIP_DESTROY)
   aws_ecs_cloudwatch_retention_days=$(generate_var aws_ecs_cloudwatch_retention_days $AWS_ECS_CLOUDWATCH_RETENTION_DAYS)
   aws_ecs_additional_tags=$(generate_var aws_ecs_additional_tags $AWS_ECS_ADDITIONAL_TAGS)
@@ -694,9 +691,6 @@ $aws_ecs_autoscaling_max_mem
 $aws_ecs_autoscaling_max_cpu
 $aws_ecs_cloudwatch_enable
 $aws_ecs_cloudwatch_lg_name
-$aws_ecs_cloudwatch_log_driver
-$aws_ecs_firelens_output_type
-$aws_ecs_firelens_output_options
 $aws_ecs_cloudwatch_skip_destroy
 $aws_ecs_cloudwatch_retention_days
 $aws_ecs_additional_tags

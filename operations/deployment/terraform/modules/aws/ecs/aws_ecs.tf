@@ -57,13 +57,7 @@ resource "aws_ecs_task_definition" "ecs_task" {
             }
           ],
           "environment": local.env_repo_vars,
-          "logConfiguration": var.aws_ecs_cloudwatch_enable && var.aws_ecs_cloudwatch_log_driver == "awsfirelens" ? {
-            "logDriver": "awsfirelens",
-            "options": merge(
-              { "Name": var.aws_ecs_firelens_output_type },
-              jsondecode(var.aws_ecs_firelens_output_options)
-            )
-          } : var.aws_ecs_cloudwatch_enable && var.aws_ecs_cloudwatch_log_driver == "awslogs" ? {
+          "logConfiguration": var.aws_ecs_cloudwatch_enable ? {
             "logDriver": "awslogs",
             "options": {
               "awslogs-create-group": "true",
@@ -73,26 +67,7 @@ resource "aws_ecs_task_definition" "ecs_task" {
             }
           } : null
         }
-      ],
-      var.aws_ecs_cloudwatch_enable && var.aws_ecs_cloudwatch_log_driver == "awsfirelens" ? [
-        {
-          "name": "log-router",
-          "image": "public.ecr.aws/aws-observability/aws-for-fluent-bit:latest",
-          "essential": false,
-          "firelensConfiguration": {
-            "type": "fluentbit"
-          }
-          "logConfiguration": {
-            "logDriver": "awslogs",
-            "options": {
-              "awslogs-create-group": "true",
-              "awslogs-region": var.aws_region_current_name,
-              "awslogs-group": var.aws_ecs_cloudwatch_lg_name,
-              "awslogs-stream-prefix": "log-router"
-            }
-          }
-        }
-      ] : []
+      ]
     )
   ))
 }
@@ -222,34 +197,4 @@ resource "aws_iam_policy_attachment" "ecsTaskExecutionRolePolicy" {
   name       = "AmazonECSTaskExecutionRolePolicyAttachment"
   roles      = [aws_iam_role.ecsTaskExecutionRole[0].name]
   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
-}
-
-# FireLens Network Policy
-resource "aws_iam_policy" "ecs_firelens_policy" {
-  count = var.aws_ecs_cloudwatch_enable && var.aws_ecs_cloudwatch_log_driver == "awsfirelens" ? 1 : 0
-  name  = "${var.aws_resource_identifier}-ecs-firelens"
-  
-  policy = jsonencode({
-    Version = "2012-10-17"
-    Statement = [
-      {
-        Effect = "Allow"
-        Action = [
-          "logs:CreateLogGroup",
-          "logs:CreateLogStream",
-          "logs:PutLogEvents"
-        ]
-        Resource = [
-          "arn:aws:logs:${var.aws_region_current_name}:*:log-group:/ecs/firelens*",
-          "arn:aws:logs:${var.aws_region_current_name}:*:log-group:${var.aws_ecs_cloudwatch_lg_name}*"
-        ]
-      }
-    ]
-  })
-}
-
-resource "aws_iam_role_policy_attachment" "ecs_firelens_policy_attachment" {
-  count      = var.aws_ecs_cloudwatch_enable && var.aws_ecs_cloudwatch_log_driver == "awsfirelens" ? 1 : 0
-  role       = var.aws_ecs_task_execution_role != "" ? data.aws_iam_role.ecsTaskExecutionRole[0].name : aws_iam_role.ecsTaskExecutionRole[0].name
-  policy_arn = aws_iam_policy.ecs_firelens_policy[0].arn
 }
