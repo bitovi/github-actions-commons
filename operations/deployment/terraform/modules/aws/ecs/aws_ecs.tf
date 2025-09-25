@@ -124,10 +124,13 @@ resource "aws_ecs_service" "ecs_service" {
     assign_public_ip = var.aws_ecs_assign_public_ip
   }
 
-  load_balancer {
-    target_group_arn = aws_alb_target_group.lb_targets[count.index].id
-    container_name   = var.aws_ecs_task_name != "" ? local.aws_ecs_task_name[count.index] : "${local.aws_ecs_task_name[count.index]}${count.index}"
-    container_port   = local.aws_ecs_container_port[count.index]
+  dynamic "load_balancer" {
+    for_each = length(local.aws_ecs_container_port) > 0 ? [1] : []
+    content {
+      target_group_arn = aws_alb_target_group.lb_targets[count.index].id
+      container_name   = var.aws_ecs_task_name != "" ? local.aws_ecs_task_name[count.index] : "${local.aws_ecs_task_name[count.index]}${count.index}"
+      container_port   = local.aws_ecs_container_port[count.index]
+    }
   }
 
   depends_on = [aws_alb_listener.lb_listener, aws_alb_listener.lb_listener_ssl]
@@ -148,10 +151,13 @@ resource "aws_ecs_service" "ecs_service_ignore_definition" {
     assign_public_ip = var.aws_ecs_assign_public_ip
   }
 
-  load_balancer {
-    target_group_arn = aws_alb_target_group.lb_targets[count.index].id
-    container_name   = var.aws_ecs_task_name != "" ? local.aws_ecs_task_name[count.index] : "${local.aws_ecs_task_name[count.index]}${count.index}"
-    container_port   = local.aws_ecs_container_port[count.index]
+  dynamic "load_balancer" {
+    for_each = length(local.aws_ecs_container_port) > 0 ? [1] : []
+    content {
+      target_group_arn = aws_alb_target_group.lb_targets[count.index].id
+      container_name   = var.aws_ecs_task_name != "" ? local.aws_ecs_task_name[count.index] : "${local.aws_ecs_task_name[count.index]}${count.index}"
+      container_port   = local.aws_ecs_container_port[count.index]
+    }
   }
 
   lifecycle {

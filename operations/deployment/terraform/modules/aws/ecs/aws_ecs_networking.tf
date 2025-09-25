@@ -37,7 +37,7 @@ resource "aws_security_group_rule" "incoming_alb" {
 ### ALB --- Make this optional -- Using ALB name intentionally. (To make clear is an A LB)
 
 resource "aws_alb" "ecs_lb" {
-  count           = length(local.aws_ecs_sg_container_port)
+  count           = length(local.aws_ecs_sg_container_port) > 1 ? 1 : 0
   name            = var.aws_resource_identifier_supershort
   subnets         = var.aws_selected_subnets
   security_groups = [aws_security_group.ecs_lb_sg.id]
@@ -233,20 +233,20 @@ output "load_balancer_dns" {
 }
 
 output "load_balancer_port" {
-  value = var.aws_certificate_enabled ? aws_alb_listener.lb_listener_ssl[0].port : aws_alb_listener.lb_listener[0].port
+  value = var.aws_certificate_enabled && length(local.aws_ecs_sg_container_port) > 1 ? aws_alb_listener.lb_listener_ssl[0].port : aws_alb_listener.lb_listener[0].port
 }
 
 output "load_balancer_protocol" {
-  value = var.aws_certificate_enabled ? aws_alb_listener.lb_listener_ssl[0].protocol : aws_alb_listener.lb_listener[0].protocol
+  value = var.aws_certificate_enabled && length(local.aws_ecs_sg_container_port) > 1 ? aws_alb_listener.lb_listener_ssl[0].protocol : aws_alb_listener.lb_listener[0].protocol
 }
 
 output "load_balancer_zone_id" {
   #value = aws_alb.ecs_lb[0].zone_id
-  value = try(data.aws_alb.selected_lb[0].zone_id)
+  value = length(local.aws_ecs_sg_container_port) > 1 ? data.aws_alb.selected_lb[0].zone_id : ""
 }
 
 output "load_balancer_arn" {
-  value = try(aws_alb.ecs_lb[0].arn)
+  value = length(local.aws_ecs_sg_container_port) > 1 ? aws_alb.ecs_lb[0].arn : ""
 }
 
 output "ecs_sg_id" {
@@ -254,5 +254,5 @@ output "ecs_sg_id" {
 }
 
 output "ecs_lb_sg_id" {
-  value = aws_security_group.ecs_lb_sg.id
+  value = length(local.aws_ecs_sg_container_port) > 1 ? aws_security_group.ecs_lb_sg.id : ""
 }
