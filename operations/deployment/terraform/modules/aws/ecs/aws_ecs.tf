@@ -111,11 +111,6 @@ resource "aws_ecs_task_definition" "aws_ecs_task_ignore_definition" {
   }
 }
 
-locals {
-  tasks_arns  = concat(aws_ecs_task_definition.ecs_task[*].arn,aws_ecs_task_definition.ecs_task_from_json[*].arn,aws_ecs_task_definition.aws_ecs_task_ignore_definition[*].arn)
-  tasks_count = var.aws_ecs_task_ignore_definition ? 1 : length(local.aws_ecs_app_image) + length(local.aws_ecs_task_json_definition_file)
-}
-
 resource "aws_ecs_service" "ecs_service" {
   count            = var.aws_ecs_task_ignore_definition ? 0 : local.tasks_count
   name             = var.aws_ecs_service_name != "" ? "${var.aws_ecs_service_name}${count.index}" : "${var.aws_resource_identifier}-${count.index}-service"
