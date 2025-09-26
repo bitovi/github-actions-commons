@@ -229,15 +229,15 @@ resource "aws_security_group_rule" "incoming_ecs_lb_ports" {
 }
 
 output "load_balancer_dns" {
-  value = aws_alb.ecs_lb[0].dns_name
+  value = length(local.aws_ecs_sg_container_port) > 1 ? aws_alb.ecs_lb[0].dns_name : ""
 }
 
 output "load_balancer_port" {
-  value = var.aws_certificate_enabled && length(local.aws_ecs_sg_container_port) > 1 ? aws_alb_listener.lb_listener_ssl[0].port : aws_alb_listener.lb_listener[0].port
+  value = length(local.aws_ecs_sg_container_port) > 1 ? (var.aws_certificate_enabled ? aws_alb_listener.lb_listener_ssl[0].port : aws_alb_listener.lb_listener[0].port) : ""
 }
 
 output "load_balancer_protocol" {
-  value = var.aws_certificate_enabled && length(local.aws_ecs_sg_container_port) > 1 ? aws_alb_listener.lb_listener_ssl[0].protocol : aws_alb_listener.lb_listener[0].protocol
+  value = length(local.aws_ecs_sg_container_port) > 1 ? (var.aws_certificate_enabled ? aws_alb_listener.lb_listener_ssl[0].protocol : aws_alb_listener.lb_listener[0].protocol) : ""
 }
 
 output "load_balancer_zone_id" {

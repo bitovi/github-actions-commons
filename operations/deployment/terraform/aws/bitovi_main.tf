@@ -533,7 +533,7 @@ module "aws_route53_ecs" {
 
 module "aws_waf_ecs" {
   source = "../modules/aws/waf"
-  count  = var.aws_waf_enable && var.aws_ecs_enable ? 1 : 0
+  count  = var.aws_waf_enable && var.aws_ecs_enable && module.aws_ecs[0].load_balancer_arn != "" ? 1 : 0
   aws_waf_enable             = var.aws_waf_enable
   aws_waf_logging_enable     = var.aws_waf_logging_enable
   aws_waf_log_retention_days = var.aws_waf_log_retention_days
