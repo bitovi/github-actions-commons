@@ -11,17 +11,24 @@ resource "aws_ecs_cluster" "cluster" {
 }
 
 locals {
-  aws_ecs_app_image           = var.aws_ecs_app_image     != "" ? [for n in split(",", var.aws_ecs_app_image) : n] : []
-  aws_ecs_cluster_name        = var.aws_ecs_cluster_name  != "" ? var.aws_ecs_cluster_name : "${var.aws_resource_identifier}"
-  aws_ecs_task_name           = var.aws_ecs_task_name     != "" ? [for n in split(",", var.aws_ecs_task_name) : n]               : [for _ in range(local.tasks_count) : "${var.aws_resource_identifier}-app" ]
-  aws_ecs_node_count          = var.aws_ecs_node_count    != "" ? [for n in split(",", var.aws_ecs_node_count)    : tonumber(n)] : [for _ in range(local.tasks_count) : 1]
-  aws_ecs_task_network_mode   = var.aws_ecs_task_network_mode != "" ? [for n in split(",", var.aws_ecs_task_network_mode) : n]   : [for _ in range(local.tasks_count) : "awsvpc" ]
-  aws_ecs_task_cpu            = var.aws_ecs_task_cpu      != "" ? [for n in split(",", var.aws_ecs_task_cpu)      : tonumber(n)] : [for _ in range(local.tasks_count) : 256] 
-  aws_ecs_task_mem            = var.aws_ecs_task_mem      != "" ? [for n in split(",", var.aws_ecs_task_mem)      : tonumber(n)] : [for _ in range(local.tasks_count) : 512]
-  aws_ecs_container_cpu       = var.aws_ecs_container_cpu != "" ? [for n in split(",", var.aws_ecs_container_cpu) : tonumber(n)] : [for _ in range(length(local.aws_ecs_app_image)) : null] 
-  aws_ecs_container_mem       = var.aws_ecs_container_mem != "" ? [for n in split(",", var.aws_ecs_container_mem) : tonumber(n)] : [for _ in range(length(local.aws_ecs_app_image)) : null]
+  aws_ecs_app_image           = var.aws_ecs_app_image         != "" ? [for n in split(",", var.aws_ecs_app_image) : n] : []
+  aws_ecs_cluster_name        = var.aws_ecs_cluster_name      != "" ? var.aws_ecs_cluster_name : "${var.aws_resource_identifier}"
+  aws_ecs_task_name           = var.aws_ecs_task_name         != "" ? [for n in split(",", var.aws_ecs_task_name) : n]                : [for _ in range(local.tasks_count) : "${var.aws_resource_identifier}-app" ]
+  aws_ecs_node_count          = var.aws_ecs_node_count        != "" ? [for n in split(",", var.aws_ecs_node_count)    : tonumber(n)]  : [for _ in range(local.tasks_count) : 1]
+  aws_ecs_task_network_mode   = var.aws_ecs_task_network_mode != "" ? [for n in split(",", var.aws_ecs_task_network_mode) : n]        : [for _ in range(local.tasks_count) : "awsvpc" ]
+  aws_ecs_task_cpu            = var.aws_ecs_task_cpu          != "" ? [for n in split(",", var.aws_ecs_task_cpu)       : tonumber(n)] : [for _ in range(local.tasks_count) : 256] 
+  aws_ecs_task_mem            = var.aws_ecs_task_mem          != "" ? [for n in split(",", var.aws_ecs_task_mem)       : tonumber(n)] : [for _ in range(local.tasks_count) : 512]
+  aws_ecs_container_cpu       = var.aws_ecs_container_cpu     != "" ? [for n in split(",", var.aws_ecs_container_cpu)  : tonumber(n)] : [for _ in range(length(local.aws_ecs_app_image)) : null] 
+  aws_ecs_container_mem       = var.aws_ecs_container_mem     != "" ? [for n in split(",", var.aws_ecs_container_mem)  : tonumber(n)] : [for _ in range(length(local.aws_ecs_app_image)) : null]
+  aws_ecs_task_type           = var.aws_ecs_task_type         != "" ? [for n in split(",", var.aws_ecs_task_type) : n] : [for _ in range(local.tasks_count) : (var.aws_ecs_service_launch_type == "FARGATE" || var.aws_ecs_service_launch_type == "EC2" ? var.aws_ecs_service_launch_type : "FARGATE" )]
+
   aws_ecs_task_json_definition_file = var.aws_ecs_task_json_definition_file != "" ? [for n in split(",", var.aws_ecs_task_json_definition_file) : n] : []
-  aws_ecs_task_type           = var.aws_ecs_task_type     != "" ? [for n in split(",", var.aws_ecs_task_network_mode) : n] : [for _ in range(local.tasks_count) : (var.aws_ecs_service_launch_type == "FARGATE" || var.aws_ecs_service_launch_type == "EC2" ? var.aws_ecs_service_launch_type : "" )]
+  
+  ecsTaskExecutionRole = var.aws_ecs_task_execution_role != "" ? data.aws_iam_role.ecsTaskExecutionRole[0].arn : aws_iam_role.ecsTaskExecutionRole[0].arn
+  
+  # Calculate tasks_count early to avoid circular dependency
+  tasks_count = var.aws_ecs_task_ignore_definition ? 1 : length(local.aws_ecs_app_image) + length(local.aws_ecs_task_json_definition_file)
+  tasks_arns  = concat(aws_ecs_task_definition.ecs_task[*].arn,aws_ecs_task_definition.ecs_task_from_json[*].arn,aws_ecs_task_definition.aws_ecs_task_ignore_definition[*].arn)
 }
 
 resource "aws_ecs_task_definition" "ecs_task" {
@@ -32,34 +39,39 @@ resource "aws_ecs_task_definition" "ecs_task" {
   cpu                      = local.aws_ecs_task_cpu[count.index]
   memory                   = local.aws_ecs_task_mem[count.index]
   execution_role_arn       = local.ecsTaskExecutionRole
-  container_definitions = sensitive(jsonencode([
-    {
-      "image": local.aws_ecs_app_image[count.index],
-      "cpu": local.aws_ecs_container_cpu[count.index],
-      "memory": local.aws_ecs_container_mem[count.index],
-      "name": var.aws_ecs_task_name != "" ? local.aws_ecs_task_name[count.index] : "${local.aws_ecs_task_name[count.index]}${count.index}",
-      "networkMode": "awsvpc",
-      "portMappings": [
+  container_definitions = sensitive(jsonencode(
+    concat(
+      [
         {
-          "name": "port-${local.aws_ecs_container_port[count.index]}",
-          "containerPort": tonumber(local.aws_ecs_container_port[count.index]),
-          "hostPort": tonumber(local.aws_ecs_container_port[count.index]),
-          "protocol": "tcp",
-          "appProtocol": "http"
+          "name": var.aws_ecs_task_name != "" ? local.aws_ecs_task_name[count.index] : "${local.aws_ecs_task_name[count.index]}${count.index}",
+          "image": local.aws_ecs_app_image[count.index],
+          "cpu": local.aws_ecs_container_cpu[count.index],
+          "memory": local.aws_ecs_container_mem[count.index],
+          "essential": true,
+          "networkMode": "awsvpc",
+          "portMappings": [
+            {
+              "name": "port-${local.aws_ecs_container_port[count.index]}",
+              "containerPort": tonumber(local.aws_ecs_container_port[count.index]),
+              "hostPort": tonumber(local.aws_ecs_container_port[count.index]),
+              "protocol": "tcp",
+              "appProtocol": "http"
+            }
+          ],
+          "environment": local.env_repo_vars,
+          "logConfiguration": var.aws_ecs_cloudwatch_enable ? {
+            "logDriver": "awslogs",
+            "options": {
+              "awslogs-create-group": "true",
+              "awslogs-region": var.aws_region_current_name,
+              "awslogs-group": var.aws_ecs_cloudwatch_lg_name,
+              "awslogs-stream-prefix": aws_ecs_cluster.cluster.name
+            }
+           } : null
         }
-      ],
-      "environment": local.env_repo_vars
-      "logConfiguration": var.aws_ecs_cloudwatch_enable ? {
-        "logDriver": "awslogs",
-        "options": {
-          "awslogs-create-group": "true",
-          "awslogs-region": var.aws_region_current_name,
-          "awslogs-group": var.aws_ecs_cloudwatch_lg_name,
-          "awslogs-stream-prefix": aws_ecs_cluster.cluster.name
-        }
-      } : null
-    }
-  ]))
+      ]
+    )
+  ))
 }
 
 resource "aws_ecs_task_definition" "ecs_task_from_json" {
@@ -89,9 +101,7 @@ resource "aws_ecs_task_definition" "aws_ecs_task_ignore_definition" {
       "portMappings": [
         {
           "containerPort": 80,
-          "protocol": "tcp",
-          "hostPort": 80,
-          "appProtocol": "http"
+          "protocol": "tcp"
         }
       ]
     }
@@ -132,7 +142,7 @@ resource "aws_ecs_service" "ecs_service_ignore_definition" {
   count            = var.aws_ecs_task_ignore_definition ? 1 : 0
   name             = var.aws_ecs_service_name != "" ? "${var.aws_ecs_service_name}${count.index}" : "${var.aws_resource_identifier}-${count.index}-service"
   cluster          = aws_ecs_cluster.cluster.id
-  task_definition = local.tasks_arns[count.index]
+  task_definition  = aws_ecs_task_definition.aws_ecs_task_ignore_definition[0].arn
 
   desired_count    = local.aws_ecs_node_count[count.index]
   launch_type      = var.aws_ecs_service_launch_type
@@ -166,7 +176,7 @@ resource "aws_cloudwatch_log_group" "ecs_cw_log_group" {
 # IAM
 data "aws_iam_role" "ecsTaskExecutionRole" {
   count = var.aws_ecs_task_execution_role != "" ? 1 : 0
-  name = var.aws_ecs_task_execution_role
+  name  = var.aws_ecs_task_execution_role
 }
 
 resource "aws_iam_role" "ecsTaskExecutionRole" {
@@ -187,12 +197,8 @@ resource "aws_iam_role" "ecsTaskExecutionRole" {
 }
 
 resource "aws_iam_policy_attachment" "ecsTaskExecutionRolePolicy" {
-  count = var.aws_ecs_task_execution_role != "" ? 0 : 1
+  count      = var.aws_ecs_task_execution_role != "" ? 0 : 1
   name       = "AmazonECSTaskExecutionRolePolicyAttachment"
   roles      = [aws_iam_role.ecsTaskExecutionRole[0].name]
   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
-}
-
-locals {
-  ecsTaskExecutionRole = var.aws_ecs_task_execution_role != "" ? data.aws_iam_role.ecsTaskExecutionRole[0].arn : aws_iam_role.ecsTaskExecutionRole[0].arn
 }
