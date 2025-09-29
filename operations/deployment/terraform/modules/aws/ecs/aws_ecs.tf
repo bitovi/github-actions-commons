@@ -52,8 +52,8 @@ resource "aws_ecs_task_definition" "ecs_task" {
           "portMappings": length(local.aws_ecs_container_port) > 0 ? [
             {
               "name": "port-${local.aws_ecs_container_port[count.index]}",
-              "containerPort": local.aws_ecs_container_port[count.index],
-              "hostPort": local.aws_ecs_container_port[count.index],
+              "containerPort": tonumber(local.aws_ecs_container_port[count.index]),
+              "hostPort": tonumber(local.aws_ecs_container_port[count.index]),
               "protocol": "tcp",
               "appProtocol": "http"
             }
