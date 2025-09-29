@@ -21,14 +21,14 @@ locals {
   aws_ecs_container_cpu       = var.aws_ecs_container_cpu     != "" ? [for n in split(",", var.aws_ecs_container_cpu)  : tonumber(n)] : [for _ in range(length(local.aws_ecs_app_image)) : null] 
   aws_ecs_container_mem       = var.aws_ecs_container_mem     != "" ? [for n in split(",", var.aws_ecs_container_mem)  : tonumber(n)] : [for _ in range(length(local.aws_ecs_app_image)) : null]
   aws_ecs_task_type           = var.aws_ecs_task_type         != "" ? [for n in split(",", var.aws_ecs_task_type) : n] : [for _ in range(local.tasks_count) : (var.aws_ecs_service_launch_type == "FARGATE" || var.aws_ecs_service_launch_type == "EC2" ? var.aws_ecs_service_launch_type : "FARGATE" )]
-  
+
   aws_ecs_task_json_definition_file = var.aws_ecs_task_json_definition_file != "" ? [for n in split(",", var.aws_ecs_task_json_definition_file) : n] : []
   
   ecsTaskExecutionRole = var.aws_ecs_task_execution_role != "" ? data.aws_iam_role.ecsTaskExecutionRole[0].arn : aws_iam_role.ecsTaskExecutionRole[0].arn
   
   # Calculate tasks_count early to avoid circular dependency
   tasks_count = var.aws_ecs_task_ignore_definition ? 1 : length(local.aws_ecs_app_image) + length(local.aws_ecs_task_json_definition_file)
-  tasks_arns_calculated  = concat(aws_ecs_task_definition.ecs_task[*].arn, aws_ecs_task_definition.ecs_task_from_json[*].arn, aws_ecs_task_definition.aws_ecs_task_ignore_definition[*].arn)
+  tasks_arns  = concat(aws_ecs_task_definition.ecs_task[*].arn,aws_ecs_task_definition.ecs_task_from_json[*].arn,aws_ecs_task_definition.aws_ecs_task_ignore_definition[*].arn)
 }
 
 resource "aws_ecs_task_definition" "ecs_task" {
@@ -39,7 +39,6 @@ resource "aws_ecs_task_definition" "ecs_task" {
   cpu                      = local.aws_ecs_task_cpu[count.index]
   memory                   = local.aws_ecs_task_mem[count.index]
   execution_role_arn       = local.ecsTaskExecutionRole
-
   container_definitions = sensitive(jsonencode(
     concat(
       [
@@ -49,11 +48,14 @@ resource "aws_ecs_task_definition" "ecs_task" {
           "cpu": local.aws_ecs_container_cpu[count.index],
           "memory": local.aws_ecs_container_mem[count.index],
           "essential": true,
+          "networkMode": "awsvpc",
           "portMappings": length(local.aws_ecs_container_port) > 0 ? [
             {
+              "name": "port-${local.aws_ecs_container_port[count.index]}",
               "containerPort": local.aws_ecs_container_port[count.index],
               "hostPort": local.aws_ecs_container_port[count.index],
-              "protocol": "tcp"
+              "protocol": "tcp",
+              "appProtocol": "http"
             }
           ] : []
           "environment": local.env_repo_vars,
@@ -65,7 +67,7 @@ resource "aws_ecs_task_definition" "ecs_task" {
               "awslogs-group": var.aws_ecs_cloudwatch_lg_name,
               "awslogs-stream-prefix": aws_ecs_cluster.cluster.name
             }
-          } : null
+           } : null
         }
       ]
     )
@@ -113,7 +115,7 @@ resource "aws_ecs_service" "ecs_service" {
   count            = var.aws_ecs_task_ignore_definition ? 0 : local.tasks_count
   name             = var.aws_ecs_service_name != "" ? "${var.aws_ecs_service_name}${count.index}" : "${var.aws_resource_identifier}-${count.index}-service"
   cluster          = aws_ecs_cluster.cluster.id
-  task_definition  = local.tasks_arns_calculated[count.index]
+  task_definition  = local.tasks_arns[count.index]
 
   desired_count    = local.aws_ecs_node_count[count.index]
   launch_type      = var.aws_ecs_service_launch_type
