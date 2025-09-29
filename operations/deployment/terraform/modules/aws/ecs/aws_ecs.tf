@@ -49,7 +49,7 @@ resource "aws_ecs_task_definition" "ecs_task" {
           "memory": local.aws_ecs_container_mem[count.index],
           "essential": true,
           "networkMode": "awsvpc",
-          "portMappings": [
+          "portMappings": length(local.aws_ecs_container_port) > 0 ? [
             {
               "name": "port-${local.aws_ecs_container_port[count.index]}",
               "containerPort": tonumber(local.aws_ecs_container_port[count.index]),
@@ -57,7 +57,7 @@ resource "aws_ecs_task_definition" "ecs_task" {
               "protocol": "tcp",
               "appProtocol": "http"
             }
-          ],
+          ] : []
           "environment": local.env_repo_vars,
           "logConfiguration": var.aws_ecs_cloudwatch_enable ? {
             "logDriver": "awslogs",
@@ -78,9 +78,9 @@ resource "aws_ecs_task_definition" "ecs_task_from_json" {
   count                    = var.aws_ecs_task_ignore_definition ? 0 : length(local.aws_ecs_task_json_definition_file)
   family                   = var.aws_ecs_task_name != "" ? local.aws_ecs_task_name[count.index + length(local.aws_ecs_app_image)] : "${local.aws_ecs_task_name[count.index + length(local.aws_ecs_app_image)]}${count.index+length(local.aws_ecs_app_image)}"
   network_mode             = local.aws_ecs_task_network_mode[count.index + length(local.aws_ecs_app_image)]
-  requires_compatibilities = ["${local.aws_ecs_task_type[count.index +length(local.aws_ecs_app_image)]}"]
-  cpu                      = local.aws_ecs_task_cpu[count.index+length(local.aws_ecs_app_image)]
-  memory                   = local.aws_ecs_task_mem[count.index+length(local.aws_ecs_app_image)]
+  requires_compatibilities = [local.aws_ecs_task_type[count.index + length(local.aws_ecs_app_image)]]
+  cpu                      = local.aws_ecs_task_cpu[count.index + length(local.aws_ecs_app_image)]
+  memory                   = local.aws_ecs_task_mem[count.index + length(local.aws_ecs_app_image)]
   execution_role_arn       = local.ecsTaskExecutionRole
   container_definitions    = sensitive(file("../../ansible/clone_repo/app/${var.app_repo_name}/${local.aws_ecs_task_json_definition_file[count.index]}"))
 }
@@ -115,7 +115,7 @@ resource "aws_ecs_service" "ecs_service" {
   count            = var.aws_ecs_task_ignore_definition ? 0 : local.tasks_count
   name             = var.aws_ecs_service_name != "" ? "${var.aws_ecs_service_name}${count.index}" : "${var.aws_resource_identifier}-${count.index}-service"
   cluster          = aws_ecs_cluster.cluster.id
-  task_definition = local.tasks_arns[count.index]
+  task_definition  = local.tasks_arns[count.index]
 
   desired_count    = local.aws_ecs_node_count[count.index]
   launch_type      = var.aws_ecs_service_launch_type
@@ -126,11 +126,16 @@ resource "aws_ecs_service" "ecs_service" {
     assign_public_ip = var.aws_ecs_assign_public_ip
   }
 
-  load_balancer {
-    target_group_arn = aws_alb_target_group.lb_targets[count.index].id
-    container_name   = var.aws_ecs_task_name != "" ? local.aws_ecs_task_name[count.index] : "${local.aws_ecs_task_name[count.index]}${count.index}"
-    container_port   = local.aws_ecs_container_port[count.index]
+  dynamic "load_balancer" {
+    for_each = length(local.aws_ecs_container_port) > 0 ? [1] : []
+    content {
+      target_group_arn = aws_alb_target_group.lb_targets[count.index].id
+      container_name   = var.aws_ecs_task_name != "" ? local.aws_ecs_task_name[count.index] : "${local.aws_ecs_task_name[count.index]}${count.index}"
+      container_port   = local.aws_ecs_container_port[count.index]
+    }
   }
+
+  depends_on = [aws_alb_listener.lb_listener, aws_alb_listener.lb_listener_ssl]
 }
 
 resource "aws_ecs_service" "ecs_service_ignore_definition" {
@@ -148,19 +153,23 @@ resource "aws_ecs_service" "ecs_service_ignore_definition" {
     assign_public_ip = var.aws_ecs_assign_public_ip
   }
 
-  load_balancer {
-    target_group_arn = aws_alb_target_group.lb_targets[count.index].id
-    container_name   = var.aws_ecs_task_name != "" ? local.aws_ecs_task_name[count.index] : "${local.aws_ecs_task_name[count.index]}${count.index}"
-    container_port   = local.aws_ecs_container_port[count.index]
+  dynamic "load_balancer" {
+    for_each = length(local.aws_ecs_container_port) > 0 ? [1] : []
+    content {
+      target_group_arn = aws_alb_target_group.lb_targets[count.index].id
+      container_name   = var.aws_ecs_task_name != "" ? local.aws_ecs_task_name[count.index] : "${local.aws_ecs_task_name[count.index]}${count.index}"
+      container_port   = local.aws_ecs_container_port[count.index]
+    }
   }
 
   lifecycle {
     ignore_changes = [task_definition]
   }
+
+  depends_on = [aws_alb_listener.lb_listener, aws_alb_listener.lb_listener_ssl]
 }
 
 # Cloudwatch config
-
 resource "aws_cloudwatch_log_group" "ecs_cw_log_group" {
   count             = var.aws_ecs_cloudwatch_enable ? 1 : 0
   name              = var.aws_ecs_cloudwatch_lg_name
