@@ -713,6 +713,24 @@ variable "aws_rds_db_apply_immediately" {
   default     = false
 }
 
+variable "aws_rds_db_performance_insights_enable" {
+  type        = bool
+  description = "Specifies whether to enable Performance Insights for the DB instance."
+  default     = false
+}
+
+variable "aws_rds_db_performance_insights_retention" {
+  type        = string
+  description = "The amount of time, in days, to retain Performance Insights data. Valid values are 7 or 731 (2 years)."
+  default     = "7"
+}
+
+variable "aws_rds_db_performance_insights_kms_key_id" {
+  type        = string
+  description = "The ARN for the KMS key to encrypt performance insights data."
+  default     = ""
+}
+
 variable "aws_rds_db_additional_tags" {
   type        = string
   description = "A list of strings that will be added to created resources"
@@ -986,6 +1004,24 @@ variable "aws_aurora_db_ca_cert_identifier" {
 variable "aws_aurora_db_maintenance_window" {
   type        = string
   description = "Maintenance window"
+  default     = ""
+}
+
+variable "aws_aurora_performance_insights_enable" {
+  type        = bool
+  description = "Specifies whether to enable Performance Insights for the DB instance."
+  default     = false
+}
+
+variable "aws_aurora_performance_insights_retention" {
+  type        = string
+  description = "The amount of time, in days, to retain Performance Insights data. Valid values are 7 or 731 (2 years)."
+  default     = "7"
+}
+
+variable "aws_aurora_performance_insights_kms_key_id" {
+  type        = string
+  description = "The ARN for the KMS key to encrypt performance insights data."
   default     = ""
 }
 

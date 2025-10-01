@@ -22,6 +22,9 @@ variable "aws_rds_db_cloudwatch_logs_exports" {}
 variable "aws_rds_db_multi_az" {}
 variable "aws_rds_db_maintenance_window" {}
 variable "aws_rds_db_apply_immediately" {}
+variable "aws_rds_db_performance_insights_enable" {}
+variable "aws_rds_db_performance_insights_retention" {}
+variable "aws_rds_db_performance_insights_kms_key_id" {}
 variable "aws_resource_identifier" {}
 variable "aws_resource_identifier_supershort" {}
 variable "aws_selected_vpc_id" {}

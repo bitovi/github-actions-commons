@@ -205,6 +205,9 @@ if [[ $(alpha_only "$AWS_RDS_DB_ENABLE") == true ]]; then
   aws_rds_db_multi_az=$(generate_var aws_rds_db_multi_az $AWS_RDS_DB_MULTI_AZ)
   aws_rds_db_maintenance_window=$(generate_var aws_rds_db_maintenance_window $AWS_RDS_DB_MAINTENANCE_WINDOWS)
   aws_rds_db_apply_immediately=$(generate_var aws_rds_db_apply_immediately $AWS_RDS_DB_APPLY_IMMEDIATELY)
+  aws_rds_db_performance_insights_enable=$(generate_var aws_rds_db_performance_insights_enable $AWS_RDS_DB_PERFORMANCE_INSIGHTS_ENABLE)
+  aws_rds_db_performance_insights_retention=$(generate_var aws_rds_db_performance_insights_retention $AWS_RDS_DB_PERFORMANCE_INSIGHTS_RETENTION)
+  aws_rds_db_performance_insights_kms_key_id=$(generate_var aws_rds_db_performance_insights_kms_key_id $AWS_RDS_DB_PERFORMANCE_INSIGHTS_KMS_KEY_ID)
   aws_rds_db_additional_tags=$(generate_var aws_rds_db_additional_tags $AWS_RDS_DB_ADDITIONAL_TAGS)
 fi
 
@@ -254,6 +257,9 @@ if [[ $(alpha_only "$AWS_AURORA_ENABLE") == true ]]; then
   aws_aurora_db_apply_immediately=$(generate_var aws_aurora_db_apply_immediately $AWS_AURORA_DB_APPLY_IMMEDIATELY)
   aws_aurora_db_ca_cert_identifier=$(generate_var aws_aurora_db_ca_cert_identifier $AWS_AURORA_DB_CA_CERT_IDENTIFIER)
   aws_aurora_db_maintenance_window=$(generate_var aws_aurora_db_maintenance_window $AWS_AURORA_DB_MAINTENANCE_WINDOW)
+  aws_aurora_performance_insights_enable=$(generate_var aws_aurora_performance_insights_enable $AWS_AURORA_PERFORMANCE_INSIGHTS_ENABLE)
+  aws_aurora_performance_insights_kms_key_id=$(generate_var aws_aurora_performance_insights_kms_key_id $AWS_AURORA_PERFORMANCE_INSIGHTS_KMS_KEY_ID)
+  aws_aurora_performance_insights_retention=$(generate_var aws_aurora_performance_insights_retention $AWS_AURORA_PERFORMANCE_INSIGHTS_RETENTION)
   aws_aurora_additional_tags=$(generate_var aws_aurora_additional_tags $AWS_AURORA_ADDITIONAL_TAGS)
 fi
 
@@ -560,6 +566,9 @@ $aws_rds_db_cloudwatch_logs_exports
 $aws_rds_db_multi_az
 $aws_rds_db_maintenance_window
 $aws_rds_db_apply_immediately
+$aws_rds_db_performance_insights_enable
+$aws_rds_db_performance_insights_retention
+$aws_rds_db_performance_insights_kms_key_id
 $aws_rds_db_additional_tags
 
 #-- AURORA --#
@@ -607,6 +616,9 @@ $aws_aurora_db_instance_class
 $aws_aurora_db_apply_immediately
 $aws_aurora_db_ca_cert_identifier
 $aws_aurora_db_maintenance_window
+$aws_aurora_performance_insights_enable
+$aws_aurora_performance_insights_kms_key_id
+$aws_aurora_performance_insights_retention
 $aws_aurora_additional_tags
 
 #-- DB PROXY --#

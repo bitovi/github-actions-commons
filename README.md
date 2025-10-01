@@ -288,6 +288,9 @@ The following inputs can be used as `step.with` keys
 | `aws_rds_db_multi_az` | Boolean| Specifies if the RDS instance is multi-AZ. Defaults to `false`. |
 | `aws_rds_db_maintenance_window` | String | The window to perform maintenance in. Eg: `Mon:00:00-Mon:03:00` |
 | `aws_rds_db_apply_immediately` | Boolean | Specifies whether any database modifications are applied immediately, or during the next maintenance window. Defaults to `false`.|
+| `aws_rds_db_performance_insights_enable` | Boolean | Enables performance insights for the database. Defaults to `false`. |
+| `aws_rds_db_performance_insights_retention` | String | KMS key ID to use for encrypting performance insights data. |
+| `aws_rds_db_performance_insights_kms_key_id` | String | Number of days to retain performance insights data. Defaults to `7`. |
 | `aws_rds_db_additional_tags` | JSON | Add additional tags to the terraform [default tags](https://www.hashicorp.com/blog/default-tags-in-the-terraform-aws-provider), any tags put here will be added to RDS provisioned resources.|
 <hr/>
 <br/>
@@ -344,6 +347,9 @@ The following inputs can be used as `step.with` keys
 | `aws_aurora_db_ca_cert_identifier` | String | Certificate to use with the database. Defaults to `rds-ca-ecc384-g1`. |
 | `aws_aurora_db_maintenance_window` | String | Maintenance window. |
 | `aws_aurora_db_publicly_accessible` | Boolean | Make database publicly accessible. Defaults to `false`. | 
+| `aws_aurora_performance_insights_enable`| Boolean | Enables performance insights for the database. Defaults to false. |
+| `aws_aurora_performance_insights_kms_key_id`| String | KMS key ID to use for encrypting performance insights data. |
+| `aws_aurora_performance_insights_retention`| String | Number of days to retain performance insights data. Defaults to 7. |
 | `aws_aurora_additional_tags` | JSON | A JSON object of additional tags that will be included on created resources. Example: `{"key1": "value1", "key2": "value2"}`. |
 <hr/>
 <br/>
