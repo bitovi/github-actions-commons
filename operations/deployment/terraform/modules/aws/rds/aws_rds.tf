@@ -78,8 +78,8 @@ resource "aws_db_instance" "default" {
   maintenance_window                         = var.aws_rds_db_maintenance_window
   apply_immediately                          = var.aws_rds_db_apply_immediately
   performance_insights_enabled               = var.aws_rds_db_performance_insights_enable
-  performance_insights_retention_period      = var.aws_rds_db_performance_insights_retention
-  performance_insights_kms_key_id            = var.aws_rds_db_performance_insights_kms_key_id
+  performance_insights_retention_period      = aws_rds_db_performance_insights_enable ? var.aws_rds_db_performance_insights_retention : null
+  performance_insights_kms_key_id            = aws_rds_db_performance_insights_enable ? var.aws_rds_db_performance_insights_kms_key_id : null
   tags = {
     Name = "${var.aws_resource_identifier}-rds"
   }
