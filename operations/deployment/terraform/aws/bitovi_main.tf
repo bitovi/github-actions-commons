@@ -194,6 +194,13 @@ module "rds" {
   aws_rds_db_performance_insights_enable     = var.aws_rds_db_performance_insights_enable
   aws_rds_db_performance_insights_retention  = var.aws_rds_db_performance_insights_retention
   aws_rds_db_performance_insights_kms_key_id = var.aws_rds_db_performance_insights_kms_key_id
+  aws_rds_db_insights_mode                   = var.aws_rds_db_insights_mode
+  aws_rds_db_allow_major_version_upgrade     = var.aws_rds_db_allow_major_version_upgrade
+  aws_rds_db_auto_minor_version_upgrade      = var.aws_rds_db_auto_minor_version_upgrade
+  aws_rds_db_backup_retention_period         = var.aws_rds_db_backup_retention_period
+  aws_rds_db_backup_window                   = var.aws_rds_db_backup_window
+  aws_rds_db_blue_green_update               = var.aws_rds_db_blue_green_update
+  aws_rds_db_copy_tags_to_snapshot           = var.aws_rds_db_copy_tags_to_snapshot
   # Others
   #aws_ec2_security_group                 = var.aws_ec2_instance_create ? module.ec2[0].aws_security_group_ec2_sg_id : ""
   aws_selected_vpc_id                    = module.vpc.aws_selected_vpc_id

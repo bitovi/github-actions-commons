@@ -731,6 +731,48 @@ variable "aws_rds_db_performance_insights_kms_key_id" {
   default     = ""
 }
 
+variable "aws_rds_db_insights_mode" {
+  type        = string
+  description = "The mode for Performance Insights."
+  default     = "standard"
+}
+
+variable "aws_rds_db_allow_major_version_upgrade" {
+  type        = bool
+  description = "Indicates that major version upgrades are allowed."
+  default     = false
+}
+
+variable "aws_rds_db_auto_minor_version_upgrade" {
+  type        = bool
+  description = "Indicates that minor version upgrades are allowed."
+  default     = true
+}
+
+variable "aws_rds_db_backup_retention_period" {
+  type        = string
+  description = "The number of days to retain backups for. Must be between 0 (disabled) and 35."
+  default     = 0
+}
+
+variable "aws_rds_db_backup_window" {
+  type        = string
+  description = "The window during which backups are taken."
+  default     = ""
+}
+
+variable "aws_rds_db_blue_green_update" {
+  type        = bool
+  description = "Toggle for Blue/Green deployments, minimizing downtime."
+  default     = false
+}
+
+variable "aws_rds_db_copy_tags_to_snapshot" {
+  type        = bool
+  description = "Indicates whether to copy tags to snapshots."
+  default     = false
+}
+
 variable "aws_rds_db_additional_tags" {
   type        = string
   description = "A list of strings that will be added to created resources"
