@@ -208,6 +208,12 @@ if [[ $(alpha_only "$AWS_RDS_DB_ENABLE") == true ]]; then
   aws_rds_db_performance_insights_enable=$(generate_var aws_rds_db_performance_insights_enable $AWS_RDS_DB_PERFORMANCE_INSIGHTS_ENABLE)
   aws_rds_db_performance_insights_retention=$(generate_var aws_rds_db_performance_insights_retention $AWS_RDS_DB_PERFORMANCE_INSIGHTS_RETENTION)
   aws_rds_db_performance_insights_kms_key_id=$(generate_var aws_rds_db_performance_insights_kms_key_id $AWS_RDS_DB_PERFORMANCE_INSIGHTS_KMS_KEY_ID)
+  aws_rds_db_insights_mode=$(generate_var aws_rds_db_insights_mode $AWS_RDS_DB_INSIGHTS_MODE)
+  aws_rds_db_allow_major_version_upgrade=$(generate_var aws_rds_db_allow_major_version_upgrade $AWS_RDS_DB_ALLOW_MAJOR_VERSION_UPGRADE)
+  aws_rds_db_auto_minor_version_upgrade=$(generate_var aws_rds_db_auto_minor_version_upgrade $AWS_RDS_DB_AUTO_MINOR_VERSION_UPGRADE)
+  aws_rds_db_backup_retention_period=$(generate_var aws_rds_db_backup_retention_period $AWS_RDS_DB_BACKUP_RETENTION_PERIOD)
+  aws_rds_db_backup_window=$(generate_var aws_rds_db_backup_window $AWS_RDS_DB_BACKUP_WINDOW)
+  aws_rds_db_copy_tags_to_snapshot=$(generate_var aws_rds_db_copy_tags_to_snapshot $AWS_RDS_DB_COPY_TAGS_TO_SNAPSHOT)
   aws_rds_db_additional_tags=$(generate_var aws_rds_db_additional_tags $AWS_RDS_DB_ADDITIONAL_TAGS)
 fi
 
@@ -569,6 +575,12 @@ $aws_rds_db_apply_immediately
 $aws_rds_db_performance_insights_enable
 $aws_rds_db_performance_insights_retention
 $aws_rds_db_performance_insights_kms_key_id
+$aws_rds_db_insights_mode
+$aws_rds_db_allow_major_version_upgrade
+$aws_rds_db_auto_minor_version_upgrade
+$aws_rds_db_backup_retention_period
+$aws_rds_db_backup_window
+$aws_rds_db_copy_tags_to_snapshot
 $aws_rds_db_additional_tags
 
 #-- AURORA --#

@@ -291,6 +291,12 @@ The following inputs can be used as `step.with` keys
 | `aws_rds_db_performance_insights_enable` | Boolean | Enables performance insights for the database. Defaults to `false`. |
 | `aws_rds_db_performance_insights_retention` | String | KMS key ID to use for encrypting performance insights data. |
 | `aws_rds_db_performance_insights_kms_key_id` | String | Number of days to retain performance insights data. Defaults to `7`. |
+| `aws_rds_db_insights_mode` | String | The mode for Performance Insights. Could be `standard` (default) or `advanced`. |
+| `aws_rds_db_allow_major_version_upgrade` | Boolean | Indicates that major version upgrades are allowed. Defaults to `false`. |
+| `aws_rds_db_auto_minor_version_upgrade` | Boolean | Indicates that minor version upgrades are allowed. Defaults to `true`. |
+| `aws_rds_db_backup_retention_period` | String | The number of days to retain backups for. Must be between 0 (disabled) and 35. Defaults to `0`. |
+| `aws_rds_db_backup_window` | String | The window during which backups are taken. Eg: `"09:46-10:16"`. |
+| `aws_rds_db_copy_tags_to_snapshot` | Boolean | Indicates whether to copy tags to snapshots. Defaults to `false`. |
 | `aws_rds_db_additional_tags` | JSON | Add additional tags to the terraform [default tags](https://www.hashicorp.com/blog/default-tags-in-the-terraform-aws-provider), any tags put here will be added to RDS provisioned resources.|
 <hr/>
 <br/>
