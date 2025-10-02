@@ -167,30 +167,39 @@ module "rds" {
   source = "../modules/aws/rds"
   count  = var.aws_rds_db_enable ? 1 : 0
   # RDS
-  aws_rds_db_name                        = var.aws_rds_db_name
-  aws_rds_db_user                        = var.aws_rds_db_user
-  aws_rds_db_identifier                  = var.aws_rds_db_identifier != "" ? var.aws_rds_db_identifier : lower(var.aws_resource_identifier)
-  aws_rds_db_engine                      = var.aws_rds_db_engine
-  aws_rds_db_engine_version              = var.aws_rds_db_engine_version
-  aws_rds_db_ca_cert_identifier          = var.aws_rds_db_ca_cert_identifier
-  aws_rds_db_security_group_name         = var.aws_rds_db_security_group_name
-  aws_rds_db_allowed_security_groups     = var.aws_rds_db_allowed_security_groups
-  aws_rds_db_ingress_allow_all           = var.aws_rds_db_ingress_allow_all
-  aws_rds_db_publicly_accessible         = var.aws_rds_db_publicly_accessible
-  aws_rds_db_port                        = var.aws_rds_db_port
-  aws_rds_db_subnets                     = var.aws_rds_db_subnets
-  aws_rds_db_allocated_storage           = var.aws_rds_db_allocated_storage
-  aws_rds_db_max_allocated_storage       = var.aws_rds_db_max_allocated_storage
-  aws_rds_db_storage_encrypted           = var.aws_rds_db_storage_encrypted
-  aws_rds_db_storage_type                = var.aws_rds_db_storage_type
-  aws_rds_db_kms_key_id                  = var.aws_rds_db_kms_key_id
-  aws_rds_db_instance_class              = var.aws_rds_db_instance_class
-  aws_rds_db_final_snapshot              = var.aws_rds_db_final_snapshot
-  aws_rds_db_restore_snapshot_identifier = var.aws_rds_db_restore_snapshot_identifier
-  aws_rds_db_cloudwatch_logs_exports     = var.aws_rds_db_cloudwatch_logs_exports
-  aws_rds_db_multi_az                    = var.aws_rds_db_multi_az
-  aws_rds_db_maintenance_window          = var.aws_rds_db_maintenance_window
-  aws_rds_db_apply_immediately           = var.aws_rds_db_apply_immediately
+  aws_rds_db_name                            = var.aws_rds_db_name
+  aws_rds_db_user                            = var.aws_rds_db_user
+  aws_rds_db_identifier                      = var.aws_rds_db_identifier != "" ? var.aws_rds_db_identifier : lower(var.aws_resource_identifier)
+  aws_rds_db_engine                          = var.aws_rds_db_engine
+  aws_rds_db_engine_version                  = var.aws_rds_db_engine_version
+  aws_rds_db_ca_cert_identifier              = var.aws_rds_db_ca_cert_identifier
+  aws_rds_db_security_group_name             = var.aws_rds_db_security_group_name
+  aws_rds_db_allowed_security_groups         = var.aws_rds_db_allowed_security_groups
+  aws_rds_db_ingress_allow_all               = var.aws_rds_db_ingress_allow_all
+  aws_rds_db_publicly_accessible             = var.aws_rds_db_publicly_accessible
+  aws_rds_db_port                            = var.aws_rds_db_port
+  aws_rds_db_subnets                         = var.aws_rds_db_subnets
+  aws_rds_db_allocated_storage               = var.aws_rds_db_allocated_storage
+  aws_rds_db_max_allocated_storage           = var.aws_rds_db_max_allocated_storage
+  aws_rds_db_storage_encrypted               = var.aws_rds_db_storage_encrypted
+  aws_rds_db_storage_type                    = var.aws_rds_db_storage_type
+  aws_rds_db_kms_key_id                      = var.aws_rds_db_kms_key_id
+  aws_rds_db_instance_class                  = var.aws_rds_db_instance_class
+  aws_rds_db_final_snapshot                  = var.aws_rds_db_final_snapshot
+  aws_rds_db_restore_snapshot_identifier     = var.aws_rds_db_restore_snapshot_identifier
+  aws_rds_db_cloudwatch_logs_exports         = var.aws_rds_db_cloudwatch_logs_exports
+  aws_rds_db_multi_az                        = var.aws_rds_db_multi_az
+  aws_rds_db_maintenance_window              = var.aws_rds_db_maintenance_window
+  aws_rds_db_apply_immediately               = var.aws_rds_db_apply_immediately
+  aws_rds_db_performance_insights_enable     = var.aws_rds_db_performance_insights_enable
+  aws_rds_db_performance_insights_retention  = var.aws_rds_db_performance_insights_retention
+  aws_rds_db_performance_insights_kms_key_id = var.aws_rds_db_performance_insights_kms_key_id
+  aws_rds_db_insights_mode                   = var.aws_rds_db_insights_mode
+  aws_rds_db_allow_major_version_upgrade     = var.aws_rds_db_allow_major_version_upgrade
+  aws_rds_db_auto_minor_version_upgrade      = var.aws_rds_db_auto_minor_version_upgrade
+  aws_rds_db_backup_retention_period         = var.aws_rds_db_backup_retention_period
+  aws_rds_db_backup_window                   = var.aws_rds_db_backup_window
+  aws_rds_db_copy_tags_to_snapshot           = var.aws_rds_db_copy_tags_to_snapshot
   # Others
   #aws_ec2_security_group                 = var.aws_ec2_instance_create ? module.ec2[0].aws_security_group_ec2_sg_id : ""
   aws_selected_vpc_id                    = module.vpc.aws_selected_vpc_id
@@ -289,6 +298,11 @@ module "aurora_rds" {
   aws_aurora_db_apply_immediately      = var.aws_aurora_db_apply_immediately
   aws_aurora_db_ca_cert_identifier     = var.aws_aurora_db_ca_cert_identifier
   aws_aurora_db_maintenance_window     = var.aws_aurora_db_maintenance_window
+  # Extras
+  aws_aurora_performance_insights_enable     = var.aws_aurora_performance_insights_enable
+  aws_aurora_performance_insights_kms_key_id = var.aws_aurora_performance_insights_kms_key_id
+  aws_aurora_performance_insights_retention  = var.aws_aurora_performance_insights_retention
+  # Others
   # Incoming
   #aws_ec2_security_group               = var.aws_ec2_instance_create ? module.ec2[0].aws_security_group_ec2_sg_id : ""
   aws_selected_vpc_id                  = module.vpc.aws_selected_vpc_id
