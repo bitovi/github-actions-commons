@@ -30,7 +30,6 @@ variable "aws_rds_db_allow_major_version_upgrade" {}
 variable "aws_rds_db_auto_minor_version_upgrade" {}
 variable "aws_rds_db_backup_retention_period" {}
 variable "aws_rds_db_backup_window" {}
-variable "aws_rds_db_blue_green_update" {}
 variable "aws_rds_db_copy_tags_to_snapshot" {}
 variable "aws_resource_identifier" {}
 variable "aws_resource_identifier_supershort" {}

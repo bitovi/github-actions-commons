@@ -761,12 +761,6 @@ variable "aws_rds_db_backup_window" {
   default     = ""
 }
 
-variable "aws_rds_db_blue_green_update" {
-  type        = bool
-  description = "Toggle for Blue/Green deployments, minimizing downtime."
-  default     = false
-}
-
 variable "aws_rds_db_copy_tags_to_snapshot" {
   type        = bool
   description = "Indicates whether to copy tags to snapshots."

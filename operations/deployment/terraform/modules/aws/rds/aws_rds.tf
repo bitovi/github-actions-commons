@@ -81,13 +81,12 @@ resource "aws_db_instance" "default" {
   performance_insights_retention_period      = var.aws_rds_db_performance_insights_enable ? var.aws_rds_db_performance_insights_retention : null
   performance_insights_kms_key_id            = var.aws_rds_db_performance_insights_enable ? var.aws_rds_db_performance_insights_kms_key_id : null
   # Updgrades
-  database_insights_mode                     = var.aws_rds_db_insights_mode ## NTH
-  allow_major_version_upgrade                = var.aws_rds_db_allow_major_version_upgrade ## NTH
-  auto_minor_version_upgrade                 = var.aws_rds_db_auto_minor_version_upgrade ## NTH
-  backup_retention_period                    = var.aws_rds_db_backup_retention_period ## NTH
-  backup_window                              = var.aws_rds_db_backup_window ## NTH
-  blue_green_update                          = var.aws_rds_db_blue_green_update ## NTH
-  copy_tags_to_snapshot                      = var.aws_rds_db_copy_tags_to_snapshot ## NTH 
+  database_insights_mode                     = var.aws_rds_db_insights_mode
+  allow_major_version_upgrade                = var.aws_rds_db_allow_major_version_upgrade
+  auto_minor_version_upgrade                 = var.aws_rds_db_auto_minor_version_upgrade
+  backup_retention_period                    = var.aws_rds_db_backup_retention_period
+  backup_window                              = var.aws_rds_db_backup_window
+  copy_tags_to_snapshot                      = var.aws_rds_db_copy_tags_to_snapshot
   tags = {
     Name = "${var.aws_resource_identifier}-rds"
   }
