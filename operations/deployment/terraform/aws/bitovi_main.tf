@@ -194,6 +194,8 @@ module "rds" {
   aws_rds_db_performance_insights_enable     = var.aws_rds_db_performance_insights_enable
   aws_rds_db_performance_insights_retention  = var.aws_rds_db_performance_insights_retention
   aws_rds_db_performance_insights_kms_key_id = var.aws_rds_db_performance_insights_kms_key_id
+  aws_rds_db_monitoring_interval             = var.aws_rds_db_monitoring_interval
+  aws_rds_db_monitoring_role_arn             = var.aws_rds_db_monitoring_role_arn
   aws_rds_db_insights_mode                   = var.aws_rds_db_insights_mode
   aws_rds_db_allow_major_version_upgrade     = var.aws_rds_db_allow_major_version_upgrade
   aws_rds_db_auto_minor_version_upgrade      = var.aws_rds_db_auto_minor_version_upgrade

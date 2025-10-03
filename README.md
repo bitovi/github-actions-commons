@@ -291,6 +291,8 @@ The following inputs can be used as `step.with` keys
 | `aws_rds_db_performance_insights_enable` | Boolean | Enables performance insights for the database. Defaults to `false`. |
 | `aws_rds_db_performance_insights_retention` | String | KMS key ID to use for encrypting performance insights data. |
 | `aws_rds_db_performance_insights_kms_key_id` | String | Number of days to retain performance insights data. Defaults to `7`. |
+| `aws_rds_db_monitoring_interval` | String | The interval, in seconds, between points when metrics are collected. Defaults to `0` (disabled). Valid values are `0,1,5,10,15,30,60`. |
+| `aws_rds_db_monitoring_role_arn` | String | The ARN of the IAM role that provides access to the Enhanced Monitoring metrics. |
 | `aws_rds_db_insights_mode` | String | The mode for Performance Insights. Could be `standard` (default) or `advanced`. |
 | `aws_rds_db_allow_major_version_upgrade` | Boolean | Indicates that major version upgrades are allowed. Defaults to `false`. |
 | `aws_rds_db_auto_minor_version_upgrade` | Boolean | Indicates that minor version upgrades are allowed. Defaults to `true`. |

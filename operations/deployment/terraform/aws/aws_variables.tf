@@ -731,6 +731,18 @@ variable "aws_rds_db_performance_insights_kms_key_id" {
   default     = ""
 }
 
+variable "aws_rds_db_monitoring_interval" {
+  type        = string
+  description = "The interval, in seconds, between points when Enhanced Monitoring metrics are collected for the DB instance. To disable collecting specify 0."
+  default     = "0"
+}
+
+variable "aws_rds_db_monitoring_role_arn" {
+  type        = string
+  description = "The ARN of the IAM role that provides access to the Enhanced Monitoring metrics."
+  default     = ""
+}
+
 variable "aws_rds_db_insights_mode" {
   type        = string
   description = "The mode for Performance Insights."
