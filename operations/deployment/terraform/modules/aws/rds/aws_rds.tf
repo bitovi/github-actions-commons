@@ -95,7 +95,7 @@ resource "aws_db_instance" "default" {
 }
 
 data "aws_iam_role" "monitoring" {
-  count = var.aws_rds_db_monitoring_role_arn != "" ? 1 : 0
+  count = var.aws_rds_db_monitoring_role_arn != "" ? 0 : 1
   name  = "rds-monitoring-role"
 }
 
