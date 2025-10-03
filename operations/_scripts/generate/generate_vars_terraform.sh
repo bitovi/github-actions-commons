@@ -208,6 +208,8 @@ if [[ $(alpha_only "$AWS_RDS_DB_ENABLE") == true ]]; then
   aws_rds_db_performance_insights_enable=$(generate_var aws_rds_db_performance_insights_enable $AWS_RDS_DB_PERFORMANCE_INSIGHTS_ENABLE)
   aws_rds_db_performance_insights_retention=$(generate_var aws_rds_db_performance_insights_retention $AWS_RDS_DB_PERFORMANCE_INSIGHTS_RETENTION)
   aws_rds_db_performance_insights_kms_key_id=$(generate_var aws_rds_db_performance_insights_kms_key_id $AWS_RDS_DB_PERFORMANCE_INSIGHTS_KMS_KEY_ID)
+  aws_rds_db_monitoring_interval=$(generate_var aws_rds_db_monitoring_interval $AWS_RDS_DB_MONITORING_INTERVAL)
+  aws_rds_db_monitoring_role_arn=$(generate_var aws_rds_db_monitoring_role_arn $AWS_RDS_DB_MONITORING_ROLE_ARN)
   aws_rds_db_insights_mode=$(generate_var aws_rds_db_insights_mode $AWS_RDS_DB_INSIGHTS_MODE)
   aws_rds_db_allow_major_version_upgrade=$(generate_var aws_rds_db_allow_major_version_upgrade $AWS_RDS_DB_ALLOW_MAJOR_VERSION_UPGRADE)
   aws_rds_db_auto_minor_version_upgrade=$(generate_var aws_rds_db_auto_minor_version_upgrade $AWS_RDS_DB_AUTO_MINOR_VERSION_UPGRADE)
@@ -575,6 +577,8 @@ $aws_rds_db_apply_immediately
 $aws_rds_db_performance_insights_enable
 $aws_rds_db_performance_insights_retention
 $aws_rds_db_performance_insights_kms_key_id
+$aws_rds_db_monitoring_interval
+$aws_rds_db_monitoring_role_arn
 $aws_rds_db_insights_mode
 $aws_rds_db_allow_major_version_upgrade
 $aws_rds_db_auto_minor_version_upgrade

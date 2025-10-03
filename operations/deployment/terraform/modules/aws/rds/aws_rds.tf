@@ -81,6 +81,8 @@ resource "aws_db_instance" "default" {
   performance_insights_retention_period      = var.aws_rds_db_performance_insights_enable ? var.aws_rds_db_performance_insights_retention : null
   performance_insights_kms_key_id            = var.aws_rds_db_performance_insights_enable ? var.aws_rds_db_performance_insights_kms_key_id : null
   # Updgrades
+  monitoring_interval                        = var.aws_rds_db_monitoring_interval
+  monitoring_role_arn                        = var.aws_rds_db_monitoring_role_arn != "" ? var.aws_rds_db_monitoring_role_arn : data.aws_iam_role.monitoring[0].arn
   database_insights_mode                     = var.aws_rds_db_insights_mode
   allow_major_version_upgrade                = var.aws_rds_db_allow_major_version_upgrade
   auto_minor_version_upgrade                 = var.aws_rds_db_auto_minor_version_upgrade
@@ -90,6 +92,11 @@ resource "aws_db_instance" "default" {
   tags = {
     Name = "${var.aws_resource_identifier}-rds"
   }
+}
+
+data "aws_iam_role" "monitoring" {
+  count = var.aws_rds_db_monitoring_role_arn != "" ? 0 : 1
+  name  = "rds-monitoring-role"
 }
 
 // Creates a secret manager secret for the databse credentials

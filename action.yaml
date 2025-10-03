@@ -480,6 +480,12 @@ inputs:
   aws_rds_db_performance_insights_kms_key_id:
     description: 'KMS key ID to use for encrypting performance insights data.'
     required: false
+  aws_rds_db_monitoring_interval:
+    description: 'The interval, in seconds, between points when Enhanced Monitoring metrics are collected for the DB instance. To disable, set to 0.'
+    required: false
+  aws_rds_db_monitoring_role_arn:
+    description: 'The ARN for the IAM role that permits RDS to send enhanced monitoring metrics to CloudWatch Logs.'
+    required: false
   aws_rds_db_insights_mode:
     description: 'The mode for Performance Insights.'
     required: false
@@ -1362,6 +1368,8 @@ runs:
         AWS_RDS_DB_PERFORMANCE_INSIGHTS_ENABLE: ${{ inputs.aws_rds_db_performance_insights_enable }}
         AWS_RDS_DB_PERFORMANCE_INSIGHTS_RETENTION: ${{ inputs.aws_rds_db_performance_insights_retention }}
         AWS_RDS_DB_PERFORMANCE_INSIGHTS_KMS_KEY_ID: ${{ inputs.aws_rds_db_performance_insights_kms_key_id }}
+        AWS_RDS_DB_MONITORING_INTERVAL: ${{ inputs.aws_rds_db_monitoring_interval }}
+        AWS_RDS_DB_MONITORING_ROLE_ARN: ${{ inputs.aws_rds_db_monitoring_role_arn }}
         AWS_RDS_DB_INSIGHTS_MODE: ${{ inputs.aws_rds_db_insights_mode }}
         AWS_RDS_DB_ALLOW_MAJOR_VERSION_UPGRADE: ${{ inputs.aws_rds_db_allow_major_version_upgrade }}
         AWS_RDS_DB_AUTO_MINOR_VERSION_UPGRADE: ${{ inputs.aws_rds_db_auto_minor_version_upgrade }}

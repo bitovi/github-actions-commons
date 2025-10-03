@@ -25,6 +25,8 @@ variable "aws_rds_db_apply_immediately" {}
 variable "aws_rds_db_performance_insights_enable" {}
 variable "aws_rds_db_performance_insights_retention" {}
 variable "aws_rds_db_performance_insights_kms_key_id" {}
+variable "aws_rds_db_monitoring_interval" {}
+variable "aws_rds_db_monitoring_role_arn" {}
 variable "aws_rds_db_insights_mode" {}
 variable "aws_rds_db_allow_major_version_upgrade" {}
 variable "aws_rds_db_auto_minor_version_upgrade" {}
