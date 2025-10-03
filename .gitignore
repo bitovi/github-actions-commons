@@ -16,3 +16,5 @@ operations/deployment/terraform/inventory.yaml
 
 *.pem
 .vscode/
+operations/deployment/terraform/modules/aws/lb**
+**/lb**
