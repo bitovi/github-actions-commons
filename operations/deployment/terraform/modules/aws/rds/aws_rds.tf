@@ -95,7 +95,7 @@ resource "aws_db_instance" "default" {
 }
 
 resource "aws_iam_role" "rds_enhanced_monitoring" {
-  count = var.aws_rds_db_monitoring_role_arn != "" ? 0 : 1
+  count = var.aws_rds_db_monitoring_interval > 0 && var.aws_rds_db_monitoring_role_arn != "" ? 0 : 1
   name  = "${var.aws_resource_identifier}-rds"
 
   assume_role_policy = jsonencode({
@@ -111,7 +111,7 @@ resource "aws_iam_role" "rds_enhanced_monitoring" {
 }
 
 resource "aws_iam_role_policy_attachment" "rds_enhanced_monitoring_attach" {
-  count      = var.aws_rds_db_monitoring_role_arn != "" ? 0 : 1
+  count      = var.aws_rds_db_monitoring_interval > 0 && var.aws_rds_db_monitoring_role_arn != "" ? 0 : 1
   role       = aws_iam_role.rds_enhanced_monitoring[0].name
   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonRDSEnhancedMonitoringRole"
 }
