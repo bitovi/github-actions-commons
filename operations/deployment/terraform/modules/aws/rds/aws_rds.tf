@@ -96,7 +96,7 @@ resource "aws_db_instance" "default" {
 
 resource "aws_iam_role" "rds_enhanced_monitoring" {
   count = var.aws_rds_db_monitoring_role_arn != "" ? 0 : 1
-  name  = "${var.aws_resource_identifier}-rds-enhanced-monitoring"
+  name  = "${var.aws_resource_identifier}-rds"
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17",
