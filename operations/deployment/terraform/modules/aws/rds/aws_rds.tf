@@ -82,7 +82,7 @@ resource "aws_db_instance" "default" {
   performance_insights_kms_key_id            = var.aws_rds_db_performance_insights_enable ? var.aws_rds_db_performance_insights_kms_key_id : null
   # Updgrades
   monitoring_interval                        = var.aws_rds_db_monitoring_interval
-  monitoring_role_arn                        = var.aws_rds_db_monitoring_interval > 0 ? var.aws_rds_db_monitoring_role_arn != "" ? var.aws_rds_db_monitoring_role_arn : data.aws_iam_role.monitoring[0].arn : null
+  monitoring_role_arn                        = var.aws_rds_db_monitoring_interval > 0 ? var.aws_rds_db_monitoring_role_arn != "" ? var.aws_rds_db_monitoring_role_arn : aws_iam_role.rds_enhanced_monitoring[0].arn : null
   database_insights_mode                     = var.aws_rds_db_insights_mode
   allow_major_version_upgrade                = var.aws_rds_db_allow_major_version_upgrade
   auto_minor_version_upgrade                 = var.aws_rds_db_auto_minor_version_upgrade
@@ -94,9 +94,26 @@ resource "aws_db_instance" "default" {
   }
 }
 
-data "aws_iam_role" "monitoring" {
+resource "aws_iam_role" "rds_enhanced_monitoring" {
   count = var.aws_rds_db_monitoring_role_arn != "" ? 0 : 1
-  name  = "rds-monitoring-role"
+  name  = "${var.aws_resource_identifier}-rds-enhanced-monitoring"
+
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17",
+    Statement = [{
+      Effect = "Allow",
+      Principal = {
+        Service = "monitoring.rds.amazonaws.com"
+      },
+      Action = "sts:AssumeRole"
+    }]
+  })
+}
+
+resource "aws_iam_role_policy_attachment" "rds_enhanced_monitoring_attach" {
+  count      = var.aws_rds_db_monitoring_role_arn != "" ? 0 : 1
+  role       = aws_iam_role.rds_enhanced_monitoring[0].name
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonRDSEnhancedMonitoringRole"
 }
 
 // Creates a secret manager secret for the databse credentials
