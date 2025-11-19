@@ -124,24 +124,35 @@ resource "aws_alb_listener_rule" "redirect_based_on_path" {
 }
 
 resource "aws_alb_listener" "http_redirect" {
-  count             = var.aws_ecs_lb_redirect_enable && !contains(local.aws_ecs_lb_port,80) ? 1 : 0
+  count             = var.aws_ecs_lb_redirect_enable && !contains(local.aws_ecs_lb_port,80) && var.aws_certificate_enabled ? 1 : 0
   load_balancer_arn = aws_alb.ecs_lb[0].id
   port              = "80"
   protocol          = "HTTP"
 
+  default_action {
+    type = "redirect"
+
+    redirect {
+      port        = "443"
+      protocol    = "HTTPS"
+      status_code = "HTTP_301"
+    }
+  }
+  depends_on = [
+    aws_alb.ecs_lb,
+    aws_alb_target_group.lb_targets
+  ]
+}
+
+resource "aws_alb_listener" "http_forward" {
+  count             = var.aws_ecs_lb_redirect_enable && !contains(local.aws_ecs_lb_port,80) && !var.aws_certificate_enabled ? 1 : 0
+  load_balancer_arn = aws_alb.ecs_lb[0].id
+  port              = "80"
+  protocol          = "HTTP"
 
   default_action {
-    type = var.aws_certificate_enabled ? "redirect" : "forward"
-    target_group_arn = var.aws_certificate_enabled ? null : aws_alb_target_group.lb_targets[0].id
-
-    dynamic "redirect" {
-      for_each = var.aws_certificate_enabled ? [1] : [0]
-      content {
-        port        = 443
-        protocol    = "HTTPS"
-        status_code = "HTTP_301"
-      }
-    }
+    type             = "forward"
+    target_group_arn = aws_alb_target_group.lb_targets[0].id
   }
   depends_on = [
     aws_alb.ecs_lb,
