@@ -193,7 +193,7 @@ resource "aws_alb_listener_rule" "redirect_based_on_path_for_http" {
 
 resource "aws_lb_listener_rule" "redirect_www_to_apex" {
   count        = var.aws_ecs_lb_www_to_apex_redirect && var.aws_r53_domain_name != "" ? 1 : 0
-  listener_arn = var.aws_certificates_selected_arn != "" ? aws_alb_listener.https_redirect[0].arn : aws_alb_listener.http_redirect[0].arn
+  listener_arn = var.aws_certificate_enabled ? aws_alb_listener.lb_listener_ssl[0].arn : aws_alb_listener.lb_listener[0].arn
   priority     = 10
 
   condition {
@@ -206,8 +206,8 @@ resource "aws_lb_listener_rule" "redirect_www_to_apex" {
     type = "redirect"
 
     redirect {
-      port        = var.aws_certificates_selected_arn != "" ? "443" : "80"
-      protocol    = var.aws_certificates_selected_arn != "" ? "HTTPS" : "HTTP"
+      port        = var.aws_certificate_enabled ? "443" : "80"
+      protocol    = var.aws_certificate_enabled ? "HTTPS" : "HTTP"
       status_code = "HTTP_301"
       host        = "${var.aws_r53_domain_name}"
       path        = "/#{path}"
