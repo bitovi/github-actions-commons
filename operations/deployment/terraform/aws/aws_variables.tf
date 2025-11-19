@@ -1535,6 +1535,12 @@ variable "aws_ecs_lb_ssl_policy" {
   default     = "ELBSecurityPolicy-TLS13-1-2-2021-06"
 }
 
+variable "aws_ecs_lb_www_to_apex_redirect" {
+  type        = bool
+  description = "Toggle redirect from www to apex domain. Need aws_r53_domain_name variable defined."
+  default     = false
+}
+
 variable "aws_ecs_autoscaling_enable" {
   type        = bool
   description = "Toggle ecs autoscaling policy"

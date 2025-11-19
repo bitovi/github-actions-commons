@@ -124,24 +124,35 @@ resource "aws_alb_listener_rule" "redirect_based_on_path" {
 }
 
 resource "aws_alb_listener" "http_redirect" {
-  count             = var.aws_ecs_lb_redirect_enable && !contains(local.aws_ecs_lb_port,80) ? 1 : 0
+  count             = var.aws_ecs_lb_redirect_enable && !contains(local.aws_ecs_lb_port,80) && var.aws_certificate_enabled ? 1 : 0
   load_balancer_arn = aws_alb.ecs_lb[0].id
   port              = "80"
   protocol          = "HTTP"
 
+  default_action {
+    type = "redirect"
+
+    redirect {
+      port        = "443"
+      protocol    = "HTTPS"
+      status_code = "HTTP_301"
+    }
+  }
+  depends_on = [
+    aws_alb.ecs_lb,
+    aws_alb_target_group.lb_targets
+  ]
+}
+
+resource "aws_alb_listener" "http_forward" {
+  count             = var.aws_ecs_lb_redirect_enable && !contains(local.aws_ecs_lb_port,80) && !var.aws_certificate_enabled ? 1 : 0
+  load_balancer_arn = aws_alb.ecs_lb[0].id
+  port              = "80"
+  protocol          = "HTTP"
 
   default_action {
-    type = var.aws_certificate_enabled ? "redirect" : "forward"
-    target_group_arn = var.aws_certificate_enabled ? null : aws_alb_target_group.lb_targets[0].id
-
-    dynamic "redirect" {
-      for_each = var.aws_certificate_enabled ? [1] : [0]
-      content {
-        port        = 443
-        protocol    = "HTTPS"
-        status_code = "HTTP_301"
-      }
-    }
+    type             = "forward"
+    target_group_arn = aws_alb_target_group.lb_targets[0].id
   }
   depends_on = [
     aws_alb.ecs_lb,
@@ -187,6 +198,31 @@ resource "aws_alb_listener_rule" "redirect_based_on_path_for_http" {
   condition {
     path_pattern {
       values = ["/${each.value}/*"]
+    }
+  }
+}
+
+resource "aws_lb_listener_rule" "redirect_www_to_apex" {
+  count        = var.aws_ecs_lb_www_to_apex_redirect && var.aws_r53_domain_name != "" ? 1 : 0
+  listener_arn = var.aws_certificate_enabled ? aws_alb_listener.lb_listener_ssl[0].arn : aws_alb_listener.lb_listener[0].arn
+  priority     = 10
+
+  condition {
+    host_header {
+      values = ["www.${var.aws_r53_domain_name}"]
+    }
+  }
+
+  action {
+    type = "redirect"
+
+    redirect {
+      port        = var.aws_certificate_enabled ? "443" : "80"
+      protocol    = var.aws_certificate_enabled ? "HTTPS" : "HTTP"
+      status_code = "HTTP_301"
+      host        = "${var.aws_r53_domain_name}"
+      path        = "/#{path}"
+      query       = "#{query}"
     }
   }
 }
