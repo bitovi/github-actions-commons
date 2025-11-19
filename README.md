@@ -462,6 +462,7 @@ The following inputs can be used as `step.with` keys
 | `aws_ecs_lb_redirect_enable`| String | Toggle redirect from HTTP and/or HTTPS to the main port. |
 | `aws_ecs_lb_container_path`| String | Comma separated list of paths for subsequent deployed containers. Need `aws_ecs_lb_redirect_enable` to be true. eg. api. (For http://bitovi.com/api/). If you have multiple, set them to `api,monitor,prom,,` (This example is for 6 containers) |
 | `aws_ecs_lb_ssl_policy` | String | SSL Policy for HTTPS listener in ALB. Will default to ELBSecurityPolicy-TLS13-1-2-2021-06 if none provided. See [this link](https://docs.aws.amazon.com/elasticloadbalancing/latest/application/create-https-listener.html) for other policies. |
+| `aws_ecs_lb_www_to_apex_redirect` | Boolean | Toggle redirect from www to apex domain. `aws_r53_domain_name` must be set. Defaults to `false`. |
 | `aws_ecs_autoscaling_enable`| Boolean | Toggle ecs autoscaling policy. |
 | `aws_ecs_autoscaling_max_nodes`| String | Max ammount of nodes to scale up to. |
 | `aws_ecs_autoscaling_min_nodes`| String | Min ammount of nodes to scale down to. |

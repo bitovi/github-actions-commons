@@ -20,6 +20,7 @@ variable "aws_ecs_lb_port" {}
 variable "aws_ecs_lb_redirect_enable" {}
 variable "aws_ecs_lb_container_path" {}
 variable "aws_ecs_lb_ssl_policy" {}
+variable "aws_ecs_lb_www_to_apex_redirect" {}
 variable "aws_ecs_autoscaling_enable" {}
 variable "aws_ecs_autoscaling_max_nodes" {}
 variable "aws_ecs_autoscaling_min_nodes" {}
@@ -29,6 +30,7 @@ variable "aws_ecs_cloudwatch_enable" {}
 variable "aws_ecs_cloudwatch_lg_name" {}
 variable "aws_ecs_cloudwatch_skip_destroy" {}
 variable "aws_ecs_cloudwatch_retention_days" {}
+variable "aws_r53_domain_name" {}
 variable "aws_certificate_enabled" {}
 variable "aws_certificates_selected_arn" {}
 variable "aws_region_current_name" {}

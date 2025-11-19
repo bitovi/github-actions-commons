@@ -479,7 +479,7 @@ module "aws_ecs" {
   source = "../modules/aws/ecs"
   count  = var.aws_ecs_enable ? 1 : 0
   # ECS
-  aws_ecs_service_name               = var.aws_ecs_service_name 
+  aws_ecs_service_name               = var.aws_ecs_service_name
   aws_ecs_cluster_name               = var.aws_ecs_cluster_name 
   aws_ecs_service_launch_type        = var.aws_ecs_service_launch_type
   aws_ecs_task_type                  = var.aws_ecs_task_type
@@ -501,6 +501,7 @@ module "aws_ecs" {
   aws_ecs_lb_redirect_enable         = var.aws_ecs_lb_redirect_enable
   aws_ecs_lb_container_path          = var.aws_ecs_lb_container_path
   aws_ecs_lb_ssl_policy              = var.aws_ecs_lb_ssl_policy
+  aws_ecs_lb_www_to_apex_redirect    = var.aws_ecs_lb_www_to_apex_redirect
   aws_ecs_autoscaling_enable         = var.aws_ecs_autoscaling_enable
   aws_ecs_autoscaling_max_nodes      = var.aws_ecs_autoscaling_max_nodes
   aws_ecs_autoscaling_min_nodes      = var.aws_ecs_autoscaling_min_nodes
@@ -514,6 +515,7 @@ module "aws_ecs" {
   aws_selected_vpc_id                = module.vpc.aws_selected_vpc_id
   aws_selected_subnets               = module.vpc.aws_selected_vpc_subnets
   # Others
+  aws_r53_domain_name                = var.aws_r53_enable && var.aws_r53_domain_name != "" ? var.aws_r53_domain_name : ""
   aws_certificate_enabled            = var.aws_r53_enable_cert && length(module.aws_certificates) > 0 ? true : false
   aws_certificates_selected_arn      = var.aws_r53_enable_cert && var.aws_r53_domain_name != "" ? module.aws_certificates[0].selected_arn : ""
   aws_resource_identifier            = var.aws_resource_identifier
