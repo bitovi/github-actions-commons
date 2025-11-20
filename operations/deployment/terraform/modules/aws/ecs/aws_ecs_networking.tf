@@ -228,7 +228,7 @@ resource "aws_alb_listener" "http_www_redirect" {
 }
 
 resource "aws_lb_listener_rule" "http_forward_apex" {
-  count        = var.aws_ecs_lb_www_to_apex_redirect && var.aws_r53_domain_name != "" && !var.aws_certificate_enabled ? 1 : 0
+  count        = var.aws_ecs_lb_www_to_apex_redirect && var.aws_r53_domain_name != "" && !var.aws_certificate_enabled && length(aws_alb_listener.http_www_redirect) > 0 ? 1 : 0
   listener_arn = aws_alb_listener.http_www_redirect[0].arn
   priority     = 20
 
@@ -245,7 +245,7 @@ resource "aws_lb_listener_rule" "http_forward_apex" {
 }
 
 resource "aws_lb_listener_rule" "redirect_www_to_apex" {
-  count        = var.aws_ecs_lb_www_to_apex_redirect && var.aws_r53_domain_name != "" ? 1 : 0
+  count        = var.aws_ecs_lb_www_to_apex_redirect && var.aws_r53_domain_name != "" && (var.aws_certificate_enabled ? length(aws_alb_listener.https_redirect) > 0 : length(aws_alb_listener.http_www_redirect) > 0) ? 1 : 0
   listener_arn = var.aws_certificate_enabled ? aws_alb_listener.https_redirect[0].arn : aws_alb_listener.http_www_redirect[0].arn
   priority     = 10
 
