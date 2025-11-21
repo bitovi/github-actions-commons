@@ -600,6 +600,8 @@ module "aws_ecr" {
   aws_ecr_repo_policy_input                 = var.aws_ecr_repo_policy_input
   aws_ecr_repo_read_arn                     = var.aws_ecr_repo_read_arn
   aws_ecr_repo_write_arn                    = var.aws_ecr_repo_write_arn
+  aws_ecr_repo_read_external_aws_account    = var.aws_ecr_repo_read_external_aws_account
+  aws_ecr_repo_write_external_aws_account   = var.aws_ecr_repo_write_external_aws_account
   aws_ecr_repo_read_arn_lambda              = var.aws_ecr_repo_read_arn_lambda
   aws_ecr_lifecycle_policy_input            = var.aws_ecr_lifecycle_policy_input
   aws_ecr_public_repo_catalog               = var.aws_ecr_public_repo_catalog

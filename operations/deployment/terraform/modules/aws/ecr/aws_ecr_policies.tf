@@ -5,6 +5,8 @@ locals {
     aws_ecr_repo_read_arn = var.aws_ecr_repo_read_arn != "" ? [for n in split(",", var.aws_ecr_repo_read_arn) : (n)] : []
     aws_ecr_repo_write_arn = var.aws_ecr_repo_write_arn != "" ? [for n in split(",", var.aws_ecr_repo_write_arn) : (n)] : []
     aws_ecr_repo_read_arn_lambda = var.aws_ecr_repo_read_arn_lambda != "" ? [for n in split(",", var.aws_ecr_repo_read_arn_lambda) : (n)] : []
+    aws_ecr_repo_read_external_aws_account = var.aws_ecr_repo_read_external_aws_account != "" ? [for n in split(",", var.aws_ecr_repo_read_external_aws_account) : "arn:${data.aws_partition.current.partition}:iam::${n}:root"] : []
+    aws_ecr_repo_write_external_aws_account = var.aws_ecr_repo_write_external_aws_account != "" ? [for n in split(",", var.aws_ecr_repo_write_external_aws_account) : "arn:${data.aws_partition.current.partition}:iam::${n}:root"] : []
 }
 
 # Policy used by both private and public repositories
@@ -126,6 +128,87 @@ data "aws_iam_policy_document" "repository" {
         "ecr-public:InitiateLayerUpload",
         "ecr-public:PutImage",
         "ecr-public:UploadLayerPart",
+      ]
+    }
+  }
+
+  dynamic "statement" {
+    for_each = length(local.aws_ecr_repo_write_arn) > 0 && var.aws_ecr_repo_type == "public" ? [local.aws_ecr_repo_write_arn] : []
+
+    content {
+      sid = "ReadWrite"
+
+      principals {
+        type        = "AWS"
+        identifiers = statement.value
+      }
+
+      actions = [
+        "ecr-public:BatchCheckLayerAvload",
+        "ecr-public:CompleteLayerUpload",
+        "ecr-public:InitiateLayerUpload",
+        "ecr-public:PutImage",
+        "ecr-public:UploadLayerPart",
+      ]
+    }
+  }
+
+  dynamic "statement" {
+    for_each = length(local.aws_ecr_repo_read_external_aws_account) > 0 && var.aws_ecr_repo_type == "private" ? [local.aws_ecr_repo_read_external_aws_account] : []
+
+    content {
+      sid = "ExternalAccountReadOnly"
+
+      principals {
+        type        = "AWS"
+        identifiers = statement.value
+      }
+
+      actions = [
+        "ecr:GetAuthorizationToken",
+        "ecr:BatchCheckLayerAvailability",
+        "ecr:BatchGetImage",
+        "ecr:DescribeImageScanFindings",
+        "ecr:DescribeImages",
+        "ecr:DescribeRepositories",
+        "ecr:GetDownloadUrlForLayer",
+        "ecr:GetLifecyclePolicy",
+        "ecr:GetLifecyclePolicyPreview",
+        "ecr:GetRepositoryPolicy",
+        "ecr:ListImages",
+        "ecr:ListTagsForResource",
+      ]
+    }
+  }
+
+  dynamic "statement" {
+    for_each = length(local.aws_ecr_repo_write_external_aws_account) > 0 && var.aws_ecr_repo_type == "private" ? [local.aws_ecr_repo_write_external_aws_account] : []
+
+    content {
+      sid = "ExternalAccountReadWrite"
+
+      principals {
+        type        = "AWS"
+        identifiers = statement.value
+      }
+
+      actions = [
+        "ecr:GetAuthorizationToken",
+        "ecr:BatchCheckLayerAvailability",
+        "ecr:BatchGetImage",
+        "ecr:DescribeImageScanFindings",
+        "ecr:DescribeImages",
+        "ecr:DescribeRepositories",
+        "ecr:GetDownloadUrlForLayer",
+        "ecr:GetLifecyclePolicy",
+        "ecr:GetLifecyclePolicyPreview",
+        "ecr:GetRepositoryPolicy",
+        "ecr:ListImages",
+        "ecr:ListTagsForResource",
+        "ecr:PutImage",
+        "ecr:InitiateLayerUpload",
+        "ecr:UploadLayerPart",
+        "ecr:CompleteLayerUpload",
       ]
     }
   }

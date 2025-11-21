@@ -496,6 +496,8 @@ The following inputs can be used as `step.with` keys
 | `aws_ecr_repo_policy_input` | String | The JSON policy to apply to the repository. If defined overrides the default policy' |
 | `aws_ecr_repo_read_arn` | String | The ARNs of the IAM users/roles that have read access to the repository. (Comma separated list)' |
 | `aws_ecr_repo_write_arn` | String | The ARNs of the IAM users/roles that have read/write access to the repository. (Comma separated list)' |
+| `aws_ecr_repo_read_external_aws_account`| String | Comma separated list of AWS Accounts IDs that will be provided with read access to the registry. |
+| `aws_ecr_repo_write_external_aws_account`| String | Comma separated list of AWS Accounts IDs that will be provided with write access to the registry. |
 | `aws_ecr_repo_read_arn_lambda` | String | The ARNs of the Lambda service roles that have read access to the repository. (Comma separated list)' |
 | `aws_ecr_lifecycle_policy_input` | JSON | The policy document. This is a JSON formatted string. See more details about [Policy Parameters](http://docs.aws.amazon.com/AmazonECR/latest/userguide/LifecyclePolicies.html#lifecycle_policy_parameters) in the official AWS docs' |
 | `aws_ecr_public_repo_catalog` | String | Catalog data configuration for the repository. Defaults to `{}`.' |
