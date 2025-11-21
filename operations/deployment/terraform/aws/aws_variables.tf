@@ -1718,6 +1718,18 @@ variable "aws_ecr_lifecycle_policy_input" {
   default     = ""
 }
 
+variable "aws_ecr_repo_read_external_aws_account" {
+  description = "The ARNs of the external AWS accounts that have read access to the repository"
+  type        = string
+  default     = ""
+}
+
+variable "aws_ecr_repo_write_external_aws_account" {
+  description = "The ARNs of the external AWS accounts that have write access to the repository"
+  type        = string
+  default     = ""
+}
+
 variable "aws_ecr_public_repo_catalog" {
   description = "Catalog data configuration for the repository"
   type        = any

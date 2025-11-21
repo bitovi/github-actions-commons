@@ -381,6 +381,8 @@ if [[ $(alpha_only "$AWS_ECR_REPO_CREATE") == true ]]; then
   aws_ecr_repo_policy_input=$(generate_var aws_ecr_repo_policy_input $AWS_ECR_REPO_POLICY_INPUT)
   aws_ecr_repo_read_arn=$(generate_var aws_ecr_repo_read_arn $AWS_ECR_REPO_READ_ARN)
   aws_ecr_repo_write_arn=$(generate_var aws_ecr_repo_write_arn $AWS_ECR_REPO_WRITE_ARN)
+  aws_ecr_repo_read_external_aws_account=$(generate_var aws_ecr_repo_read_external_aws_account $AWS_ECR_REPO_READ_EXTERNAL_AWS_ACCOUNT)
+  aws_ecr_repo_write_external_aws_account=$(generate_var aws_ecr_repo_write_external_aws_account $AWS_ECR_REPO_WRITE_EXTERNAL_AWS_ACCOUNT)
   aws_ecr_repo_read_arn_lambda=$(generate_var aws_ecr_repo_read_arn_lambda $AWS_ECR_REPO_READ_ARN_LAMBDA)
   aws_ecr_lifecycle_policy_input=$(generate_var aws_ecr_lifecycle_policy_input $AWS_ECR_LIFECYCLE_POLICY_INPUT)
   aws_ecr_public_repo_catalog=$(generate_var aws_ecr_public_repo_catalog $AWS_ECR_PUBLIC_REPO_CATALOG)
@@ -743,6 +745,8 @@ $aws_ecr_repo_policy_create
 $aws_ecr_repo_policy_input
 $aws_ecr_repo_read_arn
 $aws_ecr_repo_write_arn
+$aws_ecr_repo_read_external_aws_account
+$aws_ecr_repo_write_external_aws_account
 $aws_ecr_repo_read_arn_lambda
 $aws_ecr_lifecycle_policy_input
 $aws_ecr_public_repo_catalog

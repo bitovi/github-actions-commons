@@ -15,6 +15,8 @@ variable "aws_ecr_repo_policy_create" {}
 variable "aws_ecr_repo_policy_input" {}
 variable "aws_ecr_repo_read_arn" {}
 variable "aws_ecr_repo_write_arn" {}
+variable "aws_ecr_repo_read_external_aws_account" {}
+variable "aws_ecr_repo_write_external_aws_account" {}
 variable "aws_ecr_repo_read_arn_lambda" {}
 variable "aws_ecr_lifecycle_policy_input" {}
 variable "aws_ecr_public_repo_catalog" {}
