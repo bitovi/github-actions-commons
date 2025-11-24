@@ -91,7 +91,10 @@ resource "aws_rds_cluster" "aurora" {
   db_cluster_instance_class           = var.aws_aurora_cluster_db_instance_class
   vpc_security_group_ids              = [aws_security_group.aurora_security_group.id]
   port                                = var.aws_aurora_database_port
-
+  # Extras
+  performance_insights_enabled          = var.aws_aurora_performance_insights_enable
+  performance_insights_retention_period = var.aws_aurora_performance_insights_enable ? var.aws_aurora_performance_insights_retention : null
+  performance_insights_kms_key_id       = var.aws_aurora_performance_insights_enable ? var.aws_aurora_performance_insights_kms_key_id : null
   dynamic "restore_to_point_in_time" {
      for_each = length(var.aws_aurora_restore_to_point_in_time) > 0 ? [var.aws_aurora_restore_to_point_in_time] : []
 

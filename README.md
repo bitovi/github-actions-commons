@@ -57,6 +57,7 @@ jobs:
 1. [VPC](#vpc-inputs)
 1. [AWS Route53 Domains and Certificates](#aws-route53-domains-and-certificate-inputs)
 1. [Load Balancer](#load-balancer-inputs)
+1. [WAF](#waf)
 1. [EFS](#efs-inputs)
 1. [RDS](#rds-inputs)
 1. [Amazon Aurora Inputs](#aurora-inputs)
@@ -210,8 +211,31 @@ The following inputs can be used as `step.with` keys
 <hr/>
 <br/>
 
-#### **EFS Inputs**
+#### **WAF**
 | Name             | Type    | Description                        |
+|------------------|---------|------------------------------------|
+| `aws_waf_enable` | Boolean | Enable WAF for load balancer (LB only - NOT ELB). Default is `false` |
+| `aws_waf_logging_enable`| Boolean | Enable WAF logging to CloudWatch. Default `false` |
+| `aws_waf_log_retention_days`| Number | CloudWatch log retention period for WAF logs. Default `30` |
+| `aws_waf_rule_rate_limit`| String | Rate limit for WAF rules. Default is `2000` |
+| `aws_waf_rule_managed_rules`| Boolean | Enable common managed rule groups to use. Default `false` |
+| `aws_waf_rule_managed_bad_inputs`| Boolean | Enable managed rule for bad inputs. Default `false` |
+| `aws_waf_rule_ip_reputation`| Boolean | Enable managed rule for IP reputation. Default `false` |
+| `aws_waf_rule_anonymous_ip`| Boolean | Enable managed rule for anonymous IP. Default `false` |
+| `aws_waf_rule_bot_control`| Boolean | Enable managed rule for bot control (costs extra). Default `false` |
+| `aws_waf_rule_geo_block_countries`| String | Comma separated list of countries to block. |
+| `aws_waf_rule_geo_allow_only_countries`| String | Comma separated list of countries to allow. |
+| `aws_waf_rule_sqli`| Boolean | Enable managed rule for SQL injection. Default `false` |
+| `aws_waf_rule_linux`| Boolean | Enable managed rule for Linux. Default `false` |
+| `aws_waf_rule_unix`| Boolean | Enable managed rule for Unix. Default `false` |
+| `aws_waf_rule_admin_protection`| Boolean | Enable managed rule for admin protection. Default `false` |
+| `aws_waf_rule_user_arn`| String | String of the user created ARN set of rules. |
+| `aws_waf_additional_tags`| String | A list of strings that will be added to created resources. Default `"{}"` |
+<hr/>
+<br/>
+
+#### **EFS Inputs**
+| Name             | Type    | Descrifption                        |
 |------------------|---------|------------------------------------|
 | `aws_efs_create` | Boolean | Toggle to indicate whether to create an EFS volume and mount it to the EC2 instance as a part of the provisioning. Note: The stack will manage the EFS and will be destroyed along with the stack. |
 | `aws_efs_fs_id` | String | ID of existing EFS volume if you wish to use an existing one. |
@@ -264,6 +288,17 @@ The following inputs can be used as `step.with` keys
 | `aws_rds_db_multi_az` | Boolean| Specifies if the RDS instance is multi-AZ. Defaults to `false`. |
 | `aws_rds_db_maintenance_window` | String | The window to perform maintenance in. Eg: `Mon:00:00-Mon:03:00` |
 | `aws_rds_db_apply_immediately` | Boolean | Specifies whether any database modifications are applied immediately, or during the next maintenance window. Defaults to `false`.|
+| `aws_rds_db_performance_insights_enable` | Boolean | Enables performance insights for the database. Defaults to `false`. |
+| `aws_rds_db_performance_insights_retention` | String | KMS key ID to use for encrypting performance insights data. |
+| `aws_rds_db_performance_insights_kms_key_id` | String | Number of days to retain performance insights data. Defaults to `7`. |
+| `aws_rds_db_monitoring_interval` | String | The interval, in seconds, between points when metrics are collected. Defaults to `0` (disabled). Valid values are `0,1,5,10,15,30,60`. |
+| `aws_rds_db_monitoring_role_arn` | String | The ARN of the IAM role that provides access to the Enhanced Monitoring metrics. If empty will use the standard `rds-monitoring-role`. |
+| `aws_rds_db_insights_mode` | String | The mode for Performance Insights. Could be `standard` (default) or `advanced`. |
+| `aws_rds_db_allow_major_version_upgrade` | Boolean | Indicates that major version upgrades are allowed. Defaults to `false`. |
+| `aws_rds_db_auto_minor_version_upgrade` | Boolean | Indicates that minor version upgrades are allowed. Defaults to `true`. |
+| `aws_rds_db_backup_retention_period` | String | The number of days to retain backups for. Must be between 0 (disabled) and 35. Defaults to `0`. |
+| `aws_rds_db_backup_window` | String | The window during which backups are taken. Eg: `"09:46-10:16"`. |
+| `aws_rds_db_copy_tags_to_snapshot` | Boolean | Indicates whether to copy tags to snapshots. Defaults to `false`. |
 | `aws_rds_db_additional_tags` | JSON | Add additional tags to the terraform [default tags](https://www.hashicorp.com/blog/default-tags-in-the-terraform-aws-provider), any tags put here will be added to RDS provisioned resources.|
 <hr/>
 <br/>
@@ -320,6 +355,9 @@ The following inputs can be used as `step.with` keys
 | `aws_aurora_db_ca_cert_identifier` | String | Certificate to use with the database. Defaults to `rds-ca-ecc384-g1`. |
 | `aws_aurora_db_maintenance_window` | String | Maintenance window. |
 | `aws_aurora_db_publicly_accessible` | Boolean | Make database publicly accessible. Defaults to `false`. | 
+| `aws_aurora_performance_insights_enable`| Boolean | Enables performance insights for the database. Defaults to false. |
+| `aws_aurora_performance_insights_kms_key_id`| String | KMS key ID to use for encrypting performance insights data. |
+| `aws_aurora_performance_insights_retention`| String | Number of days to retain performance insights data. Defaults to 7. |
 | `aws_aurora_additional_tags` | JSON | A JSON object of additional tags that will be included on created resources. Example: `{"key1": "value1", "key2": "value2"}`. |
 <hr/>
 <br/>
@@ -407,6 +445,7 @@ The following inputs can be used as `step.with` keys
 | `aws_ecs_service_launch_type`| String | Configuration type. Could be `EC2`, `FARGATE` or `EXTERNAL`. Defaults to `FARGATE`. |
 | `aws_ecs_task_type`| String | Configuration type. Could be `EC2`, `FARGATE` or empty. Will default to `aws_ecs_service_launch_type` if none defined. (Blank if `EXTERNAL`). |
 | `aws_ecs_task_name`| String | Elastic Container Service task name. If task is defined with a JSON file, should be the same as the container name. |
+| `aws_ecs_task_ignore_definition`| Boolean | Toggle to ignore task definition changes after first deployment. Useful when using external tools to manage the task definition. Default: `false`. |
 | `aws_ecs_task_execution_role`| String | Elastic Container Service task execution role name from IAM. Defaults to `ecsTaskExecutionRole`. |
 | `aws_ecs_task_json_definition_file`| String | Name of the json file containing task definition. Overrides every other input. |
 | `aws_ecs_task_network_mode`| String | Network type to use in task definition. One of `none`, `bridge`, `awsvpc`, and `host`. |
@@ -423,6 +462,7 @@ The following inputs can be used as `step.with` keys
 | `aws_ecs_lb_redirect_enable`| String | Toggle redirect from HTTP and/or HTTPS to the main port. |
 | `aws_ecs_lb_container_path`| String | Comma separated list of paths for subsequent deployed containers. Need `aws_ecs_lb_redirect_enable` to be true. eg. api. (For http://bitovi.com/api/). If you have multiple, set them to `api,monitor,prom,,` (This example is for 6 containers) |
 | `aws_ecs_lb_ssl_policy` | String | SSL Policy for HTTPS listener in ALB. Will default to ELBSecurityPolicy-TLS13-1-2-2021-06 if none provided. See [this link](https://docs.aws.amazon.com/elasticloadbalancing/latest/application/create-https-listener.html) for other policies. |
+| `aws_ecs_lb_www_to_apex_redirect` | Boolean | Toggle redirect from www to apex domain. `aws_r53_domain_name` must be set. Defaults to `false`. |
 | `aws_ecs_autoscaling_enable`| Boolean | Toggle ecs autoscaling policy. |
 | `aws_ecs_autoscaling_max_nodes`| String | Max ammount of nodes to scale up to. |
 | `aws_ecs_autoscaling_min_nodes`| String | Min ammount of nodes to scale down to. |
@@ -456,8 +496,10 @@ The following inputs can be used as `step.with` keys
 | `aws_ecr_repo_policy_input` | String | The JSON policy to apply to the repository. If defined overrides the default policy' |
 | `aws_ecr_repo_read_arn` | String | The ARNs of the IAM users/roles that have read access to the repository. (Comma separated list)' |
 | `aws_ecr_repo_write_arn` | String | The ARNs of the IAM users/roles that have read/write access to the repository. (Comma separated list)' |
+| `aws_ecr_repo_read_external_aws_account`| String | Comma separated list of AWS Accounts IDs that will be provided with read access to the registry. |
+| `aws_ecr_repo_write_external_aws_account`| String | Comma separated list of AWS Accounts IDs that will be provided with write access to the registry. |
 | `aws_ecr_repo_read_arn_lambda` | String | The ARNs of the Lambda service roles that have read access to the repository. (Comma separated list)' |
-| `aws_ecr_lifecycle_policy_input` | String | The policy document. This is a JSON formatted string. See more details about [Policy Parameters](http://docs.aws.amazon.com/AmazonECR/latest/userguide/LifecyclePolicies.html#lifecycle_policy_parameters) in the official AWS docs' |
+| `aws_ecr_lifecycle_policy_input` | JSON | The policy document. This is a JSON formatted string. See more details about [Policy Parameters](http://docs.aws.amazon.com/AmazonECR/latest/userguide/LifecyclePolicies.html#lifecycle_policy_parameters) in the official AWS docs' |
 | `aws_ecr_public_repo_catalog` | String | Catalog data configuration for the repository. Defaults to `{}`.' |
 | `aws_ecr_registry_policy_input` | String | The policy document. This is a JSON formatted string' |
 | `aws_ecr_additional_tags ` | JSON | Add additional tags to the terraform [default tags](https://www.hashicorp.com/blog/default-tags-in-the-terraform-aws-provider), any tags put here will be added to ECR provisioned resources.|

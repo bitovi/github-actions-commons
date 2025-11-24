@@ -53,33 +53,67 @@ resource "aws_db_subnet_group" "selected" {
 }
 
 resource "aws_db_instance" "default" {
-  identifier                       = var.aws_rds_db_identifier
-  engine                           = var.aws_rds_db_engine
-  engine_version                   = var.aws_rds_db_engine_version
-  ca_cert_identifier               = var.aws_rds_db_ca_cert_identifier
-  db_subnet_group_name             = aws_db_subnet_group.selected.name
-  db_name                          = var.aws_rds_db_name != null ? var.aws_rds_db_name : null
-  port                             = var.aws_rds_db_port != null ? tonumber(var.aws_rds_db_port) : null
-  allocated_storage                = tonumber(var.aws_rds_db_allocated_storage)
-  max_allocated_storage            = tonumber(var.aws_rds_db_max_allocated_storage)
-  storage_encrypted                = var.aws_rds_db_storage_encrypted
-  storage_type                     = var.aws_rds_db_storage_type
-  kms_key_id                       = var.aws_rds_db_kms_key_id
-  instance_class                   = var.aws_rds_db_instance_class
-  username                         = var.aws_rds_db_user != null ? var.aws_rds_db_user : "dbuser"
-  password                         = random_password.rds.result
-  skip_final_snapshot              = var.aws_rds_db_final_snapshot != "" ? false : true
-  final_snapshot_identifier        = var.aws_rds_db_final_snapshot != "" ? var.aws_rds_db_final_snapshot : null
-  snapshot_identifier              = var.aws_rds_db_restore_snapshot_identifier 
-  publicly_accessible              = var.aws_rds_db_publicly_accessible 
-  enabled_cloudwatch_logs_exports  = [var.aws_rds_db_cloudwatch_logs_exports]
-  vpc_security_group_ids           = [aws_security_group.rds_db_security_group.id]
-  multi_az                         = var.aws_rds_db_multi_az
-  maintenance_window               = var.aws_rds_db_maintenance_window
-  apply_immediately                = var.aws_rds_db_apply_immediately
+  identifier                                 = var.aws_rds_db_identifier
+  engine                                     = var.aws_rds_db_engine
+  engine_version                             = var.aws_rds_db_engine_version
+  ca_cert_identifier                         = var.aws_rds_db_ca_cert_identifier
+  db_subnet_group_name                       = aws_db_subnet_group.selected.name
+  db_name                                    = var.aws_rds_db_name != null ? var.aws_rds_db_name : null
+  port                                       = var.aws_rds_db_port != null ? tonumber(var.aws_rds_db_port) : null
+  allocated_storage                          = tonumber(var.aws_rds_db_allocated_storage)
+  max_allocated_storage                      = tonumber(var.aws_rds_db_max_allocated_storage)
+  storage_encrypted                          = var.aws_rds_db_storage_encrypted
+  storage_type                               = var.aws_rds_db_storage_type
+  kms_key_id                                 = var.aws_rds_db_kms_key_id
+  instance_class                             = var.aws_rds_db_instance_class
+  username                                   = var.aws_rds_db_user != null ? var.aws_rds_db_user : "dbuser"
+  password                                   = random_password.rds.result
+  skip_final_snapshot                        = var.aws_rds_db_final_snapshot != "" ? false : true
+  final_snapshot_identifier                  = var.aws_rds_db_final_snapshot != "" ? var.aws_rds_db_final_snapshot : null
+  snapshot_identifier                        = var.aws_rds_db_restore_snapshot_identifier 
+  publicly_accessible                        = var.aws_rds_db_publicly_accessible 
+  enabled_cloudwatch_logs_exports            = [var.aws_rds_db_cloudwatch_logs_exports]
+  vpc_security_group_ids                     = [aws_security_group.rds_db_security_group.id]
+  multi_az                                   = var.aws_rds_db_multi_az
+  maintenance_window                         = var.aws_rds_db_maintenance_window
+  apply_immediately                          = var.aws_rds_db_apply_immediately
+  performance_insights_enabled               = var.aws_rds_db_performance_insights_enable
+  performance_insights_retention_period      = var.aws_rds_db_performance_insights_enable ? var.aws_rds_db_performance_insights_retention : null
+  performance_insights_kms_key_id            = var.aws_rds_db_performance_insights_enable ? var.aws_rds_db_performance_insights_kms_key_id : null
+  # Updgrades
+  monitoring_interval                        = var.aws_rds_db_monitoring_interval
+  monitoring_role_arn                        = var.aws_rds_db_monitoring_interval > 0 ? var.aws_rds_db_monitoring_role_arn != "" ? var.aws_rds_db_monitoring_role_arn : aws_iam_role.rds_enhanced_monitoring[0].arn : null
+  database_insights_mode                     = var.aws_rds_db_insights_mode
+  allow_major_version_upgrade                = var.aws_rds_db_allow_major_version_upgrade
+  auto_minor_version_upgrade                 = var.aws_rds_db_auto_minor_version_upgrade
+  backup_retention_period                    = var.aws_rds_db_backup_retention_period
+  backup_window                              = var.aws_rds_db_backup_window
+  copy_tags_to_snapshot                      = var.aws_rds_db_copy_tags_to_snapshot
   tags = {
     Name = "${var.aws_resource_identifier}-rds"
   }
+}
+
+resource "aws_iam_role" "rds_enhanced_monitoring" {
+  count  = var.aws_rds_db_monitoring_role_arn != "" ? 0 : var.aws_rds_db_monitoring_interval > 0 ? 1 : 0 
+  name  = "${var.aws_resource_identifier}-rds"
+
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17",
+    Statement = [{
+      Effect = "Allow",
+      Principal = {
+        Service = "monitoring.rds.amazonaws.com"
+      },
+      Action = "sts:AssumeRole"
+    }]
+  })
+}
+
+resource "aws_iam_role_policy_attachment" "rds_enhanced_monitoring_attach" {
+  count      = var.aws_rds_db_monitoring_role_arn != "" ? 0 : var.aws_rds_db_monitoring_interval > 0 ? 1 : 0 
+  role       = aws_iam_role.rds_enhanced_monitoring[0].name
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonRDSEnhancedMonitoringRole"
 }
 
 // Creates a secret manager secret for the databse credentials

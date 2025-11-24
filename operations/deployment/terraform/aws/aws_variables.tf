@@ -327,6 +327,111 @@ variable "aws_elb_additional_tags" {
   default     = "{}"
 }
 
+# AWS LB
+
+# AWS WAF
+variable "aws_waf_enable" {
+  type        = bool
+  description = "Enable WAF for load balancer"
+  default     = false
+}
+
+variable "aws_waf_logging_enable" {
+  type        = bool
+  description = "Enable WAF logging to CloudWatch"
+  default     = false
+}
+
+variable "aws_waf_log_retention_days" {
+  type        = number
+  description = "CloudWatch log retention period for WAF logs"
+  default     = 30
+}
+
+variable "aws_waf_additional_tags" {
+  type        = string
+  description = "A list of strings that will be added to created resources"
+  default     = "{}"
+}
+
+variable "aws_waf_rule_rate_limit" {
+  type        = string
+  description = "Rate limit for WAF rules"
+  default     = "2000"
+}
+
+variable "aws_waf_rule_managed_rules" {
+  type        = bool
+  description = "Enable common managed rule groups to use"
+  default     = false
+}
+
+variable "aws_waf_rule_managed_bad_inputs" {
+  type        = bool
+  description = "Enable managed rule for bad inputs"
+  default     = false
+}
+
+variable "aws_waf_rule_ip_reputation" {
+  type        = bool
+  description = "Enable managed rule for IP reputation"
+  default     = false
+}
+
+variable "aws_waf_rule_anonymous_ip" {
+  type        = bool
+  description = "Enable managed rule for anonymous IP"
+  default     = false
+}
+
+variable "aws_waf_rule_bot_control" {
+  type        = bool
+  description = "Enable managed rule for bot control (costs extra)"
+  default     = false
+}
+
+variable "aws_waf_rule_geo_block_countries" {
+  type        = string
+  description = "Comma separated list of countries to block"
+  default     = ""
+}
+
+variable "aws_waf_rule_geo_allow_only_countries" {
+  type        = string
+  description = "Comma separated list of countries to allow"
+  default     = ""
+}
+
+variable "aws_waf_rule_sqli" {
+  type        = bool
+  description = "Enable managed rule for SQL injection"
+  default     = false
+}
+
+variable "aws_waf_rule_linux" {
+  type        = bool
+  description = "Enable managed rule for Linux"
+  default     = false
+}
+
+variable "aws_waf_rule_unix" {
+  type        = bool
+  description = "Enable managed rule for Unix"
+  default     = false
+}
+
+variable "aws_waf_rule_admin_protection" {
+  type        = bool
+  description = "Enable managed rule for admin protection"
+  default     = false
+}
+
+variable "aws_waf_rule_user_arn" {
+  type        = string
+  description = "ARN of the user rule"
+  default     = ""
+}
+
 # AWS EFS
 
 ### This variable is hidden for the end user. Is built in deploy.sh based on the next 3 variables. 
@@ -608,6 +713,72 @@ variable "aws_rds_db_apply_immediately" {
   default     = false
 }
 
+variable "aws_rds_db_performance_insights_enable" {
+  type        = bool
+  description = "Specifies whether to enable Performance Insights for the DB instance."
+  default     = false
+}
+
+variable "aws_rds_db_performance_insights_retention" {
+  type        = string
+  description = "The amount of time, in days, to retain Performance Insights data. Valid values are 7 or 731 (2 years)."
+  default     = "7"
+}
+
+variable "aws_rds_db_performance_insights_kms_key_id" {
+  type        = string
+  description = "The ARN for the KMS key to encrypt performance insights data."
+  default     = ""
+}
+
+variable "aws_rds_db_monitoring_interval" {
+  type        = string
+  description = "The interval, in seconds, between points when Enhanced Monitoring metrics are collected for the DB instance. To disable collecting specify 0."
+  default     = "0"
+}
+
+variable "aws_rds_db_monitoring_role_arn" {
+  type        = string
+  description = "The ARN of the IAM role that provides access to the Enhanced Monitoring metrics."
+  default     = ""
+}
+
+variable "aws_rds_db_insights_mode" {
+  type        = string
+  description = "The mode for Performance Insights."
+  default     = "standard"
+}
+
+variable "aws_rds_db_allow_major_version_upgrade" {
+  type        = bool
+  description = "Indicates that major version upgrades are allowed."
+  default     = false
+}
+
+variable "aws_rds_db_auto_minor_version_upgrade" {
+  type        = bool
+  description = "Indicates that minor version upgrades are allowed."
+  default     = true
+}
+
+variable "aws_rds_db_backup_retention_period" {
+  type        = string
+  description = "The number of days to retain backups for. Must be between 0 (disabled) and 35."
+  default     = 0
+}
+
+variable "aws_rds_db_backup_window" {
+  type        = string
+  description = "The window during which backups are taken."
+  default     = ""
+}
+
+variable "aws_rds_db_copy_tags_to_snapshot" {
+  type        = bool
+  description = "Indicates whether to copy tags to snapshots."
+  default     = false
+}
+
 variable "aws_rds_db_additional_tags" {
   type        = string
   description = "A list of strings that will be added to created resources"
@@ -881,6 +1052,24 @@ variable "aws_aurora_db_ca_cert_identifier" {
 variable "aws_aurora_db_maintenance_window" {
   type        = string
   description = "Maintenance window"
+  default     = ""
+}
+
+variable "aws_aurora_performance_insights_enable" {
+  type        = bool
+  description = "Specifies whether to enable Performance Insights for the DB instance."
+  default     = false
+}
+
+variable "aws_aurora_performance_insights_retention" {
+  type        = string
+  description = "The amount of time, in days, to retain Performance Insights data. Valid values are 7 or 731 (2 years)."
+  default     = "7"
+}
+
+variable "aws_aurora_performance_insights_kms_key_id" {
+  type        = string
+  description = "The ARN for the KMS key to encrypt performance insights data."
   default     = ""
 }
 
@@ -1244,6 +1433,12 @@ variable "aws_ecs_task_name" {
   default     = ""
 }
 
+variable "aws_ecs_task_ignore_definition" {
+  type        = bool
+  description = "Toggle ignoring changes to the task definition"
+  default     = false
+}
+
 variable "aws_ecs_task_execution_role" {
   type        = string
   description = "Elastic Container Service task execution role name."
@@ -1338,6 +1533,12 @@ variable "aws_ecs_lb_ssl_policy" {
   type        = string
   description = "SSL Policy to use in the ALB HTTPS protocol"
   default     = "ELBSecurityPolicy-TLS13-1-2-2021-06"
+}
+
+variable "aws_ecs_lb_www_to_apex_redirect" {
+  type        = bool
+  description = "Toggle redirect from www to apex domain. Need aws_r53_domain_name variable defined."
+  default     = false
 }
 
 variable "aws_ecs_autoscaling_enable" {
@@ -1513,6 +1714,18 @@ variable "aws_ecr_repo_read_arn_lambda" {
 
 variable "aws_ecr_lifecycle_policy_input" {
   description = "The policy document. This is a JSON formatted string. See more details about [Policy Parameters](http://docs.aws.amazon.com/AmazonECR/latest/userguide/LifecyclePolicies.html#lifecycle_policy_parameters) in the official AWS docs"
+  type        = string
+  default     = ""
+}
+
+variable "aws_ecr_repo_read_external_aws_account" {
+  description = "The ARNs of the external AWS accounts that have read access to the repository"
+  type        = string
+  default     = ""
+}
+
+variable "aws_ecr_repo_write_external_aws_account" {
+  description = "The ARNs of the external AWS accounts that have write access to the repository"
   type        = string
   default     = ""
 }

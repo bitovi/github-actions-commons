@@ -101,7 +101,7 @@ module "aws_route53" {
 
 module "aws_elb" {
   source = "../modules/aws/elb"
-  count  = var.aws_ec2_instance_create && var.aws_elb_create ? 1 : 0 
+  count  = var.aws_ec2_instance_create && var.aws_elb_create ? 1 : 0
   # ELB Values
   aws_elb_security_group_name        = var.aws_elb_security_group_name
   aws_elb_app_port                   = var.aws_elb_app_port
@@ -167,30 +167,41 @@ module "rds" {
   source = "../modules/aws/rds"
   count  = var.aws_rds_db_enable ? 1 : 0
   # RDS
-  aws_rds_db_name                        = var.aws_rds_db_name
-  aws_rds_db_user                        = var.aws_rds_db_user
-  aws_rds_db_identifier                  = var.aws_rds_db_identifier != "" ? var.aws_rds_db_identifier : lower(var.aws_resource_identifier)
-  aws_rds_db_engine                      = var.aws_rds_db_engine
-  aws_rds_db_engine_version              = var.aws_rds_db_engine_version
-  aws_rds_db_ca_cert_identifier          = var.aws_rds_db_ca_cert_identifier
-  aws_rds_db_security_group_name         = var.aws_rds_db_security_group_name
-  aws_rds_db_allowed_security_groups     = var.aws_rds_db_allowed_security_groups
-  aws_rds_db_ingress_allow_all           = var.aws_rds_db_ingress_allow_all
-  aws_rds_db_publicly_accessible         = var.aws_rds_db_publicly_accessible
-  aws_rds_db_port                        = var.aws_rds_db_port
-  aws_rds_db_subnets                     = var.aws_rds_db_subnets
-  aws_rds_db_allocated_storage           = var.aws_rds_db_allocated_storage
-  aws_rds_db_max_allocated_storage       = var.aws_rds_db_max_allocated_storage
-  aws_rds_db_storage_encrypted           = var.aws_rds_db_storage_encrypted
-  aws_rds_db_storage_type                = var.aws_rds_db_storage_type
-  aws_rds_db_kms_key_id                  = var.aws_rds_db_kms_key_id
-  aws_rds_db_instance_class              = var.aws_rds_db_instance_class
-  aws_rds_db_final_snapshot              = var.aws_rds_db_final_snapshot
-  aws_rds_db_restore_snapshot_identifier = var.aws_rds_db_restore_snapshot_identifier
-  aws_rds_db_cloudwatch_logs_exports     = var.aws_rds_db_cloudwatch_logs_exports
-  aws_rds_db_multi_az                    = var.aws_rds_db_multi_az
-  aws_rds_db_maintenance_window          = var.aws_rds_db_maintenance_window
-  aws_rds_db_apply_immediately           = var.aws_rds_db_apply_immediately
+  aws_rds_db_name                            = var.aws_rds_db_name
+  aws_rds_db_user                            = var.aws_rds_db_user
+  aws_rds_db_identifier                      = var.aws_rds_db_identifier != "" ? var.aws_rds_db_identifier : lower(var.aws_resource_identifier)
+  aws_rds_db_engine                          = var.aws_rds_db_engine
+  aws_rds_db_engine_version                  = var.aws_rds_db_engine_version
+  aws_rds_db_ca_cert_identifier              = var.aws_rds_db_ca_cert_identifier
+  aws_rds_db_security_group_name             = var.aws_rds_db_security_group_name
+  aws_rds_db_allowed_security_groups         = var.aws_rds_db_allowed_security_groups
+  aws_rds_db_ingress_allow_all               = var.aws_rds_db_ingress_allow_all
+  aws_rds_db_publicly_accessible             = var.aws_rds_db_publicly_accessible
+  aws_rds_db_port                            = var.aws_rds_db_port
+  aws_rds_db_subnets                         = var.aws_rds_db_subnets
+  aws_rds_db_allocated_storage               = var.aws_rds_db_allocated_storage
+  aws_rds_db_max_allocated_storage           = var.aws_rds_db_max_allocated_storage
+  aws_rds_db_storage_encrypted               = var.aws_rds_db_storage_encrypted
+  aws_rds_db_storage_type                    = var.aws_rds_db_storage_type
+  aws_rds_db_kms_key_id                      = var.aws_rds_db_kms_key_id
+  aws_rds_db_instance_class                  = var.aws_rds_db_instance_class
+  aws_rds_db_final_snapshot                  = var.aws_rds_db_final_snapshot
+  aws_rds_db_restore_snapshot_identifier     = var.aws_rds_db_restore_snapshot_identifier
+  aws_rds_db_cloudwatch_logs_exports         = var.aws_rds_db_cloudwatch_logs_exports
+  aws_rds_db_multi_az                        = var.aws_rds_db_multi_az
+  aws_rds_db_maintenance_window              = var.aws_rds_db_maintenance_window
+  aws_rds_db_apply_immediately               = var.aws_rds_db_apply_immediately
+  aws_rds_db_performance_insights_enable     = var.aws_rds_db_performance_insights_enable
+  aws_rds_db_performance_insights_retention  = var.aws_rds_db_performance_insights_retention
+  aws_rds_db_performance_insights_kms_key_id = var.aws_rds_db_performance_insights_kms_key_id
+  aws_rds_db_monitoring_interval             = var.aws_rds_db_monitoring_interval
+  aws_rds_db_monitoring_role_arn             = var.aws_rds_db_monitoring_role_arn
+  aws_rds_db_insights_mode                   = var.aws_rds_db_insights_mode
+  aws_rds_db_allow_major_version_upgrade     = var.aws_rds_db_allow_major_version_upgrade
+  aws_rds_db_auto_minor_version_upgrade      = var.aws_rds_db_auto_minor_version_upgrade
+  aws_rds_db_backup_retention_period         = var.aws_rds_db_backup_retention_period
+  aws_rds_db_backup_window                   = var.aws_rds_db_backup_window
+  aws_rds_db_copy_tags_to_snapshot           = var.aws_rds_db_copy_tags_to_snapshot
   # Others
   #aws_ec2_security_group                 = var.aws_ec2_instance_create ? module.ec2[0].aws_security_group_ec2_sg_id : ""
   aws_selected_vpc_id                    = module.vpc.aws_selected_vpc_id
@@ -289,6 +300,11 @@ module "aurora_rds" {
   aws_aurora_db_apply_immediately      = var.aws_aurora_db_apply_immediately
   aws_aurora_db_ca_cert_identifier     = var.aws_aurora_db_ca_cert_identifier
   aws_aurora_db_maintenance_window     = var.aws_aurora_db_maintenance_window
+  # Extras
+  aws_aurora_performance_insights_enable     = var.aws_aurora_performance_insights_enable
+  aws_aurora_performance_insights_kms_key_id = var.aws_aurora_performance_insights_kms_key_id
+  aws_aurora_performance_insights_retention  = var.aws_aurora_performance_insights_retention
+  # Others
   # Incoming
   #aws_ec2_security_group               = var.aws_ec2_instance_create ? module.ec2[0].aws_security_group_ec2_sg_id : ""
   aws_selected_vpc_id                  = module.vpc.aws_selected_vpc_id
@@ -329,7 +345,7 @@ module "db_proxy_aurora" {
   aws_resource_identifier_supershort          = var.aws_resource_identifier_supershort
   incoming_random_string                      = module.aurora_rds[0].random_string
   # Dependencies
-  depends_on = [module.vpc,module.aurora_rds,module.ec2]
+  depends_on = [module.vpc,module.aurora_rds]
 
   providers = {
     aws = aws.db_proxy
@@ -463,11 +479,12 @@ module "aws_ecs" {
   source = "../modules/aws/ecs"
   count  = var.aws_ecs_enable ? 1 : 0
   # ECS
-  aws_ecs_service_name               = var.aws_ecs_service_name 
+  aws_ecs_service_name               = var.aws_ecs_service_name
   aws_ecs_cluster_name               = var.aws_ecs_cluster_name 
   aws_ecs_service_launch_type        = var.aws_ecs_service_launch_type
   aws_ecs_task_type                  = var.aws_ecs_task_type
   aws_ecs_task_name                  = var.aws_ecs_task_name
+  aws_ecs_task_ignore_definition     = var.aws_ecs_task_ignore_definition
   aws_ecs_task_execution_role        = var.aws_ecs_task_execution_role
   aws_ecs_task_json_definition_file  = var.aws_ecs_task_json_definition_file
   aws_ecs_task_network_mode          = var.aws_ecs_task_network_mode
@@ -484,6 +501,7 @@ module "aws_ecs" {
   aws_ecs_lb_redirect_enable         = var.aws_ecs_lb_redirect_enable
   aws_ecs_lb_container_path          = var.aws_ecs_lb_container_path
   aws_ecs_lb_ssl_policy              = var.aws_ecs_lb_ssl_policy
+  aws_ecs_lb_www_to_apex_redirect    = var.aws_r53_root_domain_deploy ? var.aws_ecs_lb_www_to_apex_redirect : false
   aws_ecs_autoscaling_enable         = var.aws_ecs_autoscaling_enable
   aws_ecs_autoscaling_max_nodes      = var.aws_ecs_autoscaling_max_nodes
   aws_ecs_autoscaling_min_nodes      = var.aws_ecs_autoscaling_min_nodes
@@ -497,6 +515,7 @@ module "aws_ecs" {
   aws_selected_vpc_id                = module.vpc.aws_selected_vpc_id
   aws_selected_subnets               = module.vpc.aws_selected_vpc_subnets
   # Others
+  aws_r53_domain_name                = var.aws_r53_enable && var.aws_r53_domain_name != "" ? var.aws_r53_domain_name : ""
   aws_certificate_enabled            = var.aws_r53_enable_cert && length(module.aws_certificates) > 0 ? true : false
   aws_certificates_selected_arn      = var.aws_r53_enable_cert && var.aws_r53_domain_name != "" ? module.aws_certificates[0].selected_arn : ""
   aws_resource_identifier            = var.aws_resource_identifier
@@ -511,24 +530,55 @@ module "aws_ecs" {
 
 module "aws_route53_ecs" {
   source = "../modules/aws/route53"
-  count  = var.aws_ecs_enable && var.aws_r53_enable && var.aws_r53_domain_name != "" ? 1 : 0
+  count  = var.aws_ecs_enable && var.aws_r53_enable && var.aws_r53_domain_name != "" && ( var.aws_ecs_container_port != "" || var.aws_ecs_task_ignore_definition ) ? 1 : 0
   # R53 values
   aws_r53_domain_name           = var.aws_r53_domain_name
   aws_r53_sub_domain_name       = var.aws_r53_sub_domain_name
   aws_r53_root_domain_deploy    = var.aws_r53_root_domain_deploy
   aws_r53_enable_cert           = var.aws_r53_enable_cert
   # ELB
-  aws_elb_dns_name              = try(module.aws_ecs[0].load_balancer_dns,"")
-  aws_elb_zone_id               = try(module.aws_ecs[0].load_balancer_zone_id,"")
+  aws_elb_dns_name              = module.aws_ecs[0].load_balancer_dns
+  aws_elb_zone_id               = module.aws_ecs[0].load_balancer_zone_id
   # Certs
   aws_certificates_selected_arn = var.aws_r53_enable_cert && var.aws_r53_domain_name != "" ? module.aws_certificates[0].selected_arn : ""
   # Others
   fqdn_provided                 = local.fqdn_provided
-  depends_on = [ module.aws_certificates,module.aws_ecs ]
+  depends_on = [ module.aws_certificates ]
   providers = {
     aws = aws.r53
   }
 }
+
+module "aws_waf_ecs" {
+  source = "../modules/aws/waf"
+  count  = var.aws_waf_enable && var.aws_ecs_enable && ( var.aws_ecs_container_port != "" || var.aws_ecs_task_ignore_definition ) ? 1 : 0
+  aws_waf_enable             = var.aws_waf_enable
+  aws_waf_logging_enable     = var.aws_waf_logging_enable
+  aws_waf_log_retention_days = var.aws_waf_log_retention_days
+  aws_resource_identifier    = var.aws_resource_identifier
+  # Rules
+  aws_waf_rule_rate_limit               = var.aws_waf_rule_rate_limit
+  aws_waf_rule_managed_rules            = var.aws_waf_rule_managed_rules
+  aws_waf_rule_managed_bad_inputs       = var.aws_waf_rule_managed_bad_inputs
+  aws_waf_rule_ip_reputation            = var.aws_waf_rule_ip_reputation
+  aws_waf_rule_anonymous_ip             = var.aws_waf_rule_anonymous_ip
+  aws_waf_rule_bot_control              = var.aws_waf_rule_bot_control
+  aws_waf_rule_geo_block_countries      = var.aws_waf_rule_geo_block_countries
+  aws_waf_rule_geo_allow_only_countries = var.aws_waf_rule_geo_allow_only_countries
+  aws_waf_rule_user_arn                 = var.aws_waf_rule_user_arn
+  aws_waf_rule_sqli                     = var.aws_waf_rule_sqli
+  aws_waf_rule_linux                    = var.aws_waf_rule_linux
+  aws_waf_rule_unix                     = var.aws_waf_rule_unix
+  aws_waf_rule_admin_protection         = var.aws_waf_rule_admin_protection
+  # Incoming
+  aws_lb_resource_arn = module.aws_ecs[0].load_balancer_arn
+  # Others
+  depends_on = [ module.aws_ecs ]
+  providers = {
+    aws = aws.waf
+  }
+}
+
 
 module "aws_ecr" {
   source = "../modules/aws/ecr"
@@ -550,6 +600,8 @@ module "aws_ecr" {
   aws_ecr_repo_policy_input                 = var.aws_ecr_repo_policy_input
   aws_ecr_repo_read_arn                     = var.aws_ecr_repo_read_arn
   aws_ecr_repo_write_arn                    = var.aws_ecr_repo_write_arn
+  aws_ecr_repo_read_external_aws_account    = var.aws_ecr_repo_read_external_aws_account
+  aws_ecr_repo_write_external_aws_account   = var.aws_ecr_repo_write_external_aws_account
   aws_ecr_repo_read_arn_lambda              = var.aws_ecr_repo_read_arn_lambda
   aws_ecr_lifecycle_policy_input            = var.aws_ecr_lifecycle_policy_input
   aws_ecr_public_repo_catalog               = var.aws_ecr_public_repo_catalog
@@ -649,6 +701,7 @@ locals {
   ecr_tags      = merge(local.default_tags,jsondecode(var.aws_ecr_additional_tags))
   db_proxy_tags = merge(local.default_tags,jsondecode(var.aws_db_proxy_additional_tags))
   redis_tags    = merge(local.default_tags,jsondecode(var.aws_redis_additional_tags))
+  waf_tags      = merge(local.default_tags,jsondecode(var.aws_waf_additional_tags))
 
   eks_vpc_tags = {
     // This is needed for k8s to use VPC resources

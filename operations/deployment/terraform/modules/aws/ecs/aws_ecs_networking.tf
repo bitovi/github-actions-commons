@@ -1,5 +1,5 @@
 locals {
-  aws_ecs_container_port      = [for n in split(",", var.aws_ecs_container_port) : tonumber(n)]
+  aws_ecs_container_port      = var.aws_ecs_container_port != "" ? [for n in split(",", var.aws_ecs_container_port) : tonumber(n)] : var.aws_ecs_task_ignore_definition ? [80] : []
   aws_ecs_sg_container_port   = distinct(local.aws_ecs_container_port)
   aws_ecs_lb_port             = var.aws_ecs_lb_port != "" ?  [for n in split(",", var.aws_ecs_lb_port) : tonumber(n)] : local.aws_ecs_container_port
   aws_ecs_sg_lb_port          = distinct(local.aws_ecs_lb_port)
@@ -36,6 +36,7 @@ resource "aws_security_group_rule" "incoming_alb" {
 ### ALB --- Make this optional -- Using ALB name intentionally. (To make clear is an A LB)
 
 resource "aws_alb" "ecs_lb" {
+  count           = length(local.aws_ecs_sg_container_port) > 0 ? 1 : 0
   name            = var.aws_resource_identifier_supershort
   subnets         = var.aws_selected_subnets
   security_groups = [aws_security_group.ecs_lb_sg.id]
@@ -43,6 +44,12 @@ resource "aws_alb" "ecs_lb" {
   tags = {
     Name = "${var.aws_resource_identifier_supershort}"
   }
+}
+
+data "aws_alb" "selected_lb" {
+  count      = length(local.aws_ecs_sg_container_port)
+  name       = var.aws_resource_identifier_supershort
+  depends_on = [aws_alb.ecs_lb]
 }
 
 resource "aws_alb_target_group" "lb_targets" {
@@ -54,14 +61,22 @@ resource "aws_alb_target_group" "lb_targets" {
   target_type = "ip"
 
   lifecycle { 
-    replace_triggered_by = [aws_security_group.ecs_sg]
+    replace_triggered_by = [aws_security_group.ecs_sg.id]
   }
 }
 
-# Redirect all traffic from the ALB to the target group
+# Always exists, acts as a safe dependency wrapper
+resource "null_resource" "http_redirect_dep" {
+  triggers = {
+    id = (
+      length(aws_alb_listener.http_redirect) > 0
+    ) ? aws_alb_listener.http_redirect[0].id : "none"
+  }
+}
+
 resource "aws_alb_listener" "lb_listener_ssl" {
   count             = var.aws_certificate_enabled ? length(local.aws_ecs_lb_port) : 0
-  load_balancer_arn = "${aws_alb.ecs_lb.id}"
+  load_balancer_arn = aws_alb.ecs_lb[0].id
   port              = local.aws_ecs_lb_port[count.index]
   # https://docs.aws.amazon.com/elasticloadbalancing/latest/application/create-https-listener.html
   ssl_policy        = var.aws_ecs_lb_ssl_policy
@@ -72,13 +87,14 @@ resource "aws_alb_listener" "lb_listener_ssl" {
     type             = "forward"
   }
   lifecycle {
-    replace_triggered_by = [ aws_alb_listener.http_redirect ]
+    replace_triggered_by = [null_resource.http_redirect_dep.id]
   }
+  depends_on = [ aws_alb_listener.http_redirect ]
 }
 
 resource "aws_alb_listener" "lb_listener" {
   count             = var.aws_certificate_enabled ? 0 : length(local.aws_ecs_lb_port)
-  load_balancer_arn = "${aws_alb.ecs_lb.id}"
+  load_balancer_arn = aws_alb.ecs_lb[0].id
   port              = local.aws_ecs_lb_port[count.index]
   protocol          = "HTTP"
   default_action {
@@ -86,11 +102,10 @@ resource "aws_alb_listener" "lb_listener" {
     type             = "forward"
   }
   lifecycle {
-    replace_triggered_by = [ aws_alb_listener.http_redirect ]
+    replace_triggered_by = [null_resource.http_redirect_dep.id]
   }
+  depends_on = [ aws_alb_listener.http_redirect ]
 }
-
-
 
 resource "aws_alb_listener_rule" "redirect_based_on_path" {
   for_each = { for idx, path in local.aws_ecs_lb_container_path : idx => path if length(path) > 0 }
@@ -109,30 +124,44 @@ resource "aws_alb_listener_rule" "redirect_based_on_path" {
 }
 
 resource "aws_alb_listener" "http_redirect" {
-  count             = var.aws_ecs_lb_redirect_enable && !contains(local.aws_ecs_lb_port,80) ? 1 : 0
-  load_balancer_arn = "${aws_alb.ecs_lb.id}"
+  count             = var.aws_ecs_lb_redirect_enable && !contains(local.aws_ecs_lb_port,80) && var.aws_certificate_enabled ? 1 : 0
+  load_balancer_arn = aws_alb.ecs_lb[0].id
   port              = "80"
   protocol          = "HTTP"
 
-
   default_action {
-    #type = var.aws_certificates_selected_arn != "" ? "redirect" : "forward"
-    type = var.aws_certificate_enabled != "" ? "redirect" : "forward"
-    target_group_arn = var.aws_certificates_selected_arn != "" ? null : aws_alb_target_group.lb_targets[0].id
+    type = "redirect"
 
-    dynamic "redirect" {
-      for_each = var.aws_certificates_selected_arn != "" ? [1] : [0]
-      content {
-        port        = 443
-        protocol    = "HTTPS"
-        status_code = "HTTP_301"
-      }
+    redirect {
+      port        = "443"
+      protocol    = "HTTPS"
+      status_code = "HTTP_301"
     }
   }
+  depends_on = [
+    aws_alb.ecs_lb,
+    aws_alb_target_group.lb_targets
+  ]
+}
+
+resource "aws_alb_listener" "http_forward" {
+  count             = var.aws_ecs_lb_redirect_enable && !contains(local.aws_ecs_lb_port,80) && !var.aws_certificate_enabled && !var.aws_ecs_lb_www_to_apex_redirect ? 1 : 0
+  load_balancer_arn = aws_alb.ecs_lb[0].id
+  port              = "80"
+  protocol          = "HTTP"
+
+  default_action {
+    type             = "forward"
+    target_group_arn = aws_alb_target_group.lb_targets[0].id
+  }
+  depends_on = [
+    aws_alb.ecs_lb,
+    aws_alb_target_group.lb_targets
+  ]
 }
 
 resource "aws_security_group_rule" "incoming_alb_http" {
-  count             = length(aws_alb_listener.http_redirect)
+  count             = length(aws_alb_listener.http_redirect) + length(aws_alb_listener.http_forward) + length(aws_alb_listener.http_www_redirect)
   type              = "ingress"
   from_port         = 80
   to_port           = 80
@@ -145,11 +174,11 @@ resource "aws_alb_listener" "https_redirect" {
   count             = var.aws_ecs_lb_redirect_enable && !contains(local.aws_ecs_lb_port,443) && var.aws_certificate_enabled ? 1 : 0
   #count             = var.aws_ecs_lb_redirect_enable && !contains(local.aws_ecs_lb_port,443) ? var.aws_certificates_selected_arn != "" ? 1 : 0 : 0
   #count             = var.aws_ecs_lb_redirect_enable && var.aws_certificates_selected_arn != "" && !contains(local.aws_ecs_lb_port,443) ? 1 : 0
-  load_balancer_arn = "${aws_alb.ecs_lb.id}"
+  load_balancer_arn = aws_alb.ecs_lb[0].id
   port              = "443"
   protocol          = "HTTPS"
   certificate_arn   = var.aws_certificates_selected_arn
-  ssl_policy        = var.aws_certificates_selected_arn != "" ? "ELBSecurityPolicy-TLS13-1-2-2021-06" : "" # https://docs.aws.amazon.com/elasticloadbalancing/latest/application/create-https-listener.html
+  ssl_policy        = var.aws_certificates_selected_arn != "" ? var.aws_ecs_lb_ssl_policy : "" # https://docs.aws.amazon.com/elasticloadbalancing/latest/application/create-https-listener.html
 
   default_action {
     target_group_arn = aws_alb_target_group.lb_targets[0].id
@@ -159,8 +188,12 @@ resource "aws_alb_listener" "https_redirect" {
 
 resource "aws_alb_listener_rule" "redirect_based_on_path_for_http" {
   for_each = { for idx, path in local.aws_ecs_lb_container_path_redirect : idx => path if length(path) > 0 }
-  listener_arn = var.aws_certificates_selected_arn != "" ? aws_alb_listener.https_redirect[0].arn : aws_alb_listener.http_redirect[0].arn
-
+  #listener_arn = var.aws_certificates_selected_arn != "" ? aws_alb_listener.https_redirect[0].arn : aws_alb_listener.http_redirect[0].arn
+  listener_arn = var.aws_certificate_enabled ? aws_alb_listener.https_redirect[0].arn : (
+    length(aws_alb_listener.http_redirect) > 0 ? aws_alb_listener.http_redirect[0].arn : (
+      length(aws_alb_listener.http_forward) > 0 ? aws_alb_listener.http_forward[0].arn : aws_alb_listener.http_www_redirect[0].arn
+    )
+  )
   action {
     type             = "forward"
     target_group_arn = aws_alb_target_group.lb_targets[each.key + 1].arn
@@ -169,6 +202,69 @@ resource "aws_alb_listener_rule" "redirect_based_on_path_for_http" {
   condition {
     path_pattern {
       values = ["/${each.value}/*"]
+    }
+  }
+}
+
+resource "aws_alb_listener" "http_www_redirect" {
+  count             = var.aws_ecs_lb_redirect_enable && !contains(local.aws_ecs_lb_port,80) && !var.aws_certificate_enabled && var.aws_ecs_lb_www_to_apex_redirect ? 1 : 0
+  load_balancer_arn = aws_alb.ecs_lb[0].id
+  port              = "80"
+  protocol          = "HTTP"
+
+  default_action {
+    type = "fixed-response"
+    
+    fixed_response {
+      content_type = "text/plain"
+      message_body = "Not Found"
+      status_code  = "404"
+    }
+  }
+  depends_on = [
+    aws_alb.ecs_lb,
+    aws_alb_target_group.lb_targets
+  ]
+}
+
+resource "aws_lb_listener_rule" "http_forward_apex" {
+  count        = var.aws_ecs_lb_www_to_apex_redirect && var.aws_r53_domain_name != "" && !var.aws_certificate_enabled && length(aws_alb_listener.http_www_redirect) > 0 ? 1 : 0
+  listener_arn = aws_alb_listener.http_www_redirect[0].arn
+  priority     = 20
+
+  condition {
+    host_header {
+      values = [var.aws_r53_domain_name]
+    }
+  }
+
+  action {
+    type             = "forward"
+    target_group_arn = aws_alb_target_group.lb_targets[0].id
+  }
+}
+
+resource "aws_lb_listener_rule" "redirect_www_to_apex" {
+  count        = var.aws_ecs_lb_www_to_apex_redirect && var.aws_r53_domain_name != "" && (var.aws_certificate_enabled ? length(aws_alb_listener.https_redirect) > 0 : length(aws_alb_listener.http_www_redirect) > 0) ? 1 : 0
+  listener_arn = var.aws_certificate_enabled ? aws_alb_listener.https_redirect[0].arn : aws_alb_listener.http_www_redirect[0].arn
+  priority     = 10
+
+  condition {
+    host_header {
+      values = ["www.${var.aws_r53_domain_name}"]
+    }
+  }
+
+  action {
+    type = "redirect"
+
+    redirect {
+      port        = var.aws_certificate_enabled ? "443" : "80"
+      protocol    = var.aws_certificate_enabled ? "HTTPS" : "HTTP"
+      status_code = "HTTP_301"
+      host        = var.aws_r53_domain_name
+      path        = "/#{path}"
+      query       = "#{query}"
     }
   }
 }
@@ -210,19 +306,24 @@ resource "aws_security_group_rule" "incoming_ecs_lb_ports" {
 }
 
 output "load_balancer_dns" {
-  value = aws_alb.ecs_lb.dns_name
+  value = length(local.aws_ecs_sg_container_port) > 0 ? aws_alb.ecs_lb[0].dns_name : ""
 }
 
 output "load_balancer_port" {
-  value = var.aws_certificate_enabled ? aws_alb_listener.lb_listener_ssl[0].port : aws_alb_listener.lb_listener[0].port
+  value = length(local.aws_ecs_sg_container_port) > 0 ? (var.aws_certificate_enabled ? aws_alb_listener.lb_listener_ssl[0].port : aws_alb_listener.lb_listener[0].port) : ""
 }
 
 output "load_balancer_protocol" {
-  value = var.aws_certificate_enabled ? aws_alb_listener.lb_listener_ssl[0].protocol : aws_alb_listener.lb_listener[0].protocol
+  value = length(local.aws_ecs_sg_container_port) > 0 ? (var.aws_certificate_enabled ? aws_alb_listener.lb_listener_ssl[0].protocol : aws_alb_listener.lb_listener[0].protocol) : ""
 }
 
 output "load_balancer_zone_id" {
-  value = aws_alb.ecs_lb.zone_id
+  #value = aws_alb.ecs_lb[0].zone_id
+  value = length(local.aws_ecs_sg_container_port) > 0 ? data.aws_alb.selected_lb[0].zone_id : ""
+}
+
+output "load_balancer_arn" {
+  value = length(local.aws_ecs_sg_container_port) > 0 ? aws_alb.ecs_lb[0].arn : ""
 }
 
 output "ecs_sg_id" {
@@ -230,5 +331,5 @@ output "ecs_sg_id" {
 }
 
 output "ecs_lb_sg_id" {
-  value = aws_security_group.ecs_lb_sg.id
+  value = length(local.aws_ecs_sg_container_port) > 0 ? aws_security_group.ecs_lb_sg.id : ""
 }

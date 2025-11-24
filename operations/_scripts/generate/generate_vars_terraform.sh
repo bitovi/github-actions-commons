@@ -132,6 +132,27 @@ if [[ $(alpha_only "$AWS_ELB_CREATE") == true ]]; then
   aws_elb_additional_tags=$(generate_var aws_elb_additional_tags $AWS_ELB_ADDITIONAL_TAGS)
 fi
 
+#-- AWS WAF --#
+if [[ $(alpha_only "$AWS_WAF_ENABLE") == true ]]; then
+  aws_waf_enable=$(generate_var aws_waf_enable $AWS_WAF_ENABLE)
+  aws_waf_logging_enable=$(generate_var aws_waf_logging_enable $AWS_WAF_LOGGING_ENABLE)
+  aws_waf_log_retention_days=$(generate_var aws_waf_log_retention_days $AWS_WAF_LOG_RETENTION_DAYS)
+  aws_waf_additional_tags=$(generate_var aws_waf_additional_tags $AWS_WAF_ADDITIONAL_TAGS)
+  aws_waf_rule_rate_limit=$(generate_var aws_waf_rule_rate_limit $AWS_WAF_RULE_RATE_LIMIT)
+  aws_waf_rule_managed_rules=$(generate_var aws_waf_rule_managed_rules $AWS_WAF_RULE_MANAGED_RULES)
+  aws_waf_rule_managed_bad_inputs=$(generate_var aws_waf_rule_managed_bad_inputs $AWS_WAF_RULE_MANAGED_BAD_INPUTS)
+  aws_waf_rule_ip_reputation=$(generate_var aws_waf_rule_ip_reputation $AWS_WAF_RULE_IP_REPUTATION)
+  aws_waf_rule_anonymous_ip=$(generate_var aws_waf_rule_anonymous_ip $AWS_WAF_RULE_ANONYMOUS_IP)
+  aws_waf_rule_bot_control=$(generate_var aws_waf_rule_bot_control $AWS_WAF_RULE_BOT_CONTROL)
+  aws_waf_rule_geo_block_countries=$(generate_var aws_waf_rule_geo_block_countries $AWS_WAF_RULE_GEO_BLOCK_COUNTRIES)
+  aws_waf_rule_geo_allow_only_countries=$(generate_var aws_waf_rule_geo_allow_only_countries $AWS_WAF_RULE_GEO_ALLOW_ONLY_COUNTRIES)
+  aws_waf_rule_user_arn=$(generate_var aws_waf_rule_user_arn $AWS_WAF_RULE_USER_ARN)
+  aws_waf_rule_sqli=$(generate_var aws_waf_rule_sqli $AWS_WAF_RULE_SQLI)
+  aws_waf_rule_linux=$(generate_var aws_waf_rule_linux $AWS_WAF_RULE_LINUX)
+  aws_waf_rule_unix=$(generate_var aws_waf_rule_unix $AWS_WAF_RULE_UNIX)
+  aws_waf_rule_admin_protection=$(generate_var aws_waf_rule_admin_protection $AWS_WAF_RULE_ADMIN_PROTECTION)
+fi
+
 #-- AWS EFS --#
 if [[ $(alpha_only "$AWS_EFS_ENABLE") == true ]]; then
   aws_efs_enable=$(generate_var aws_efs_enable $AWS_EFS_ENABLE)
@@ -184,6 +205,17 @@ if [[ $(alpha_only "$AWS_RDS_DB_ENABLE") == true ]]; then
   aws_rds_db_multi_az=$(generate_var aws_rds_db_multi_az $AWS_RDS_DB_MULTI_AZ)
   aws_rds_db_maintenance_window=$(generate_var aws_rds_db_maintenance_window $AWS_RDS_DB_MAINTENANCE_WINDOWS)
   aws_rds_db_apply_immediately=$(generate_var aws_rds_db_apply_immediately $AWS_RDS_DB_APPLY_IMMEDIATELY)
+  aws_rds_db_performance_insights_enable=$(generate_var aws_rds_db_performance_insights_enable $AWS_RDS_DB_PERFORMANCE_INSIGHTS_ENABLE)
+  aws_rds_db_performance_insights_retention=$(generate_var aws_rds_db_performance_insights_retention $AWS_RDS_DB_PERFORMANCE_INSIGHTS_RETENTION)
+  aws_rds_db_performance_insights_kms_key_id=$(generate_var aws_rds_db_performance_insights_kms_key_id $AWS_RDS_DB_PERFORMANCE_INSIGHTS_KMS_KEY_ID)
+  aws_rds_db_monitoring_interval=$(generate_var aws_rds_db_monitoring_interval $AWS_RDS_DB_MONITORING_INTERVAL)
+  aws_rds_db_monitoring_role_arn=$(generate_var aws_rds_db_monitoring_role_arn $AWS_RDS_DB_MONITORING_ROLE_ARN)
+  aws_rds_db_insights_mode=$(generate_var aws_rds_db_insights_mode $AWS_RDS_DB_INSIGHTS_MODE)
+  aws_rds_db_allow_major_version_upgrade=$(generate_var aws_rds_db_allow_major_version_upgrade $AWS_RDS_DB_ALLOW_MAJOR_VERSION_UPGRADE)
+  aws_rds_db_auto_minor_version_upgrade=$(generate_var aws_rds_db_auto_minor_version_upgrade $AWS_RDS_DB_AUTO_MINOR_VERSION_UPGRADE)
+  aws_rds_db_backup_retention_period=$(generate_var aws_rds_db_backup_retention_period $AWS_RDS_DB_BACKUP_RETENTION_PERIOD)
+  aws_rds_db_backup_window=$(generate_var aws_rds_db_backup_window $AWS_RDS_DB_BACKUP_WINDOW)
+  aws_rds_db_copy_tags_to_snapshot=$(generate_var aws_rds_db_copy_tags_to_snapshot $AWS_RDS_DB_COPY_TAGS_TO_SNAPSHOT)
   aws_rds_db_additional_tags=$(generate_var aws_rds_db_additional_tags $AWS_RDS_DB_ADDITIONAL_TAGS)
 fi
 
@@ -233,6 +265,9 @@ if [[ $(alpha_only "$AWS_AURORA_ENABLE") == true ]]; then
   aws_aurora_db_apply_immediately=$(generate_var aws_aurora_db_apply_immediately $AWS_AURORA_DB_APPLY_IMMEDIATELY)
   aws_aurora_db_ca_cert_identifier=$(generate_var aws_aurora_db_ca_cert_identifier $AWS_AURORA_DB_CA_CERT_IDENTIFIER)
   aws_aurora_db_maintenance_window=$(generate_var aws_aurora_db_maintenance_window $AWS_AURORA_DB_MAINTENANCE_WINDOW)
+  aws_aurora_performance_insights_enable=$(generate_var aws_aurora_performance_insights_enable $AWS_AURORA_PERFORMANCE_INSIGHTS_ENABLE)
+  aws_aurora_performance_insights_kms_key_id=$(generate_var aws_aurora_performance_insights_kms_key_id $AWS_AURORA_PERFORMANCE_INSIGHTS_KMS_KEY_ID)
+  aws_aurora_performance_insights_retention=$(generate_var aws_aurora_performance_insights_retention $AWS_AURORA_PERFORMANCE_INSIGHTS_RETENTION)
   aws_aurora_additional_tags=$(generate_var aws_aurora_additional_tags $AWS_AURORA_ADDITIONAL_TAGS)
 fi
 
@@ -296,6 +331,7 @@ if [[ $(alpha_only "$AWS_ECS_ENABLE") == true ]]; then
   aws_ecs_service_launch_type=$(generate_var aws_ecs_service_launch_type $AWS_ECS_SERVICE_LAUNCH_TYPE)
   aws_ecs_task_type=$(generate_var aws_ecs_task_type $AWS_ECS_TASK_TYPE)
   aws_ecs_task_name=$(generate_var aws_ecs_task_name $AWS_ECS_TASK_NAME)
+  aws_ecs_task_ignore_definition=$(generate_var aws_ecs_task_ignore_definition $AWS_ECS_TASK_IGNORE_DEFINITION)
   aws_ecs_task_execution_role=$(generate_var aws_ecs_task_execution_role $AWS_ECS_TASK_EXECUTION_ROLE)
   aws_ecs_task_json_definition_file=$(generate_var aws_ecs_task_json_definition_file $AWS_ECS_TASK_JSON_DEFINITION_FILE)
   aws_ecs_task_network_mode=$(generate_var aws_ecs_task_network_mode $AWS_ECS_TASK_NETWORK_MODE)
@@ -313,6 +349,7 @@ if [[ $(alpha_only "$AWS_ECS_ENABLE") == true ]]; then
   aws_ecs_lb_redirect_enable=$(generate_var aws_ecs_lb_redirect_enable $AWS_ECS_LB_REDIRECT_ENABLE)
   aws_ecs_lb_container_path=$(generate_var aws_ecs_lb_container_path $AWS_ECS_LB_CONTAINER_PATH)
   aws_ecs_lb_ssl_policy=$(generate_var aws_ecs_lb_ssl_policy $AWS_ECS_LB_SSL_POLICY)
+  aws_ecs_lb_www_to_apex_redirect=$(generate_var aws_ecs_lb_www_to_apex_redirect $AWS_ECS_LB_WWW_TO_APEX_REDIRECT)
   aws_ecs_autoscaling_enable=$(generate_var aws_ecs_autoscaling_enable $AWS_ECS_AUTOSCALING_ENABLE)
   aws_ecs_autoscaling_max_nodes=$(generate_var aws_ecs_autoscaling_max_nodes $AWS_ECS_AUTOSCALING_MAX_NODES)
   aws_ecs_autoscaling_min_nodes=$(generate_var aws_ecs_autoscaling_min_nodes $AWS_ECS_AUTOSCALING_MIN_NODES)
@@ -344,6 +381,8 @@ if [[ $(alpha_only "$AWS_ECR_REPO_CREATE") == true ]]; then
   aws_ecr_repo_policy_input=$(generate_var aws_ecr_repo_policy_input $AWS_ECR_REPO_POLICY_INPUT)
   aws_ecr_repo_read_arn=$(generate_var aws_ecr_repo_read_arn $AWS_ECR_REPO_READ_ARN)
   aws_ecr_repo_write_arn=$(generate_var aws_ecr_repo_write_arn $AWS_ECR_REPO_WRITE_ARN)
+  aws_ecr_repo_read_external_aws_account=$(generate_var aws_ecr_repo_read_external_aws_account $AWS_ECR_REPO_READ_EXTERNAL_AWS_ACCOUNT)
+  aws_ecr_repo_write_external_aws_account=$(generate_var aws_ecr_repo_write_external_aws_account $AWS_ECR_REPO_WRITE_EXTERNAL_AWS_ACCOUNT)
   aws_ecr_repo_read_arn_lambda=$(generate_var aws_ecr_repo_read_arn_lambda $AWS_ECR_REPO_READ_ARN_LAMBDA)
   aws_ecr_lifecycle_policy_input=$(generate_var aws_ecr_lifecycle_policy_input $AWS_ECR_LIFECYCLE_POLICY_INPUT)
   aws_ecr_public_repo_catalog=$(generate_var aws_ecr_public_repo_catalog $AWS_ECR_PUBLIC_REPO_CATALOG)
@@ -470,6 +509,25 @@ $aws_elb_access_log_expire
 $aws_elb_access_log_bucket_name
 $aws_elb_additional_tags
 
+#-- WAF --#
+$aws_waf_enable
+$aws_waf_logging_enable
+$aws_waf_log_retention_days
+$aws_waf_additional_tags
+$aws_waf_rule_rate_limit
+$aws_waf_rule_managed_rules
+$aws_waf_rule_managed_bad_inputs
+$aws_waf_rule_ip_reputation
+$aws_waf_rule_anonymous_ip
+$aws_waf_rule_bot_control
+$aws_waf_rule_geo_block_countries
+$aws_waf_rule_geo_allow_only_countries
+$aws_waf_rule_user_arn
+$aws_waf_rule_sqli
+$aws_waf_rule_linux
+$aws_waf_rule_unix
+$aws_waf_rule_admin_protection
+
 #-- EFS --#
 $aws_efs_enable
 $aws_efs_create
@@ -519,6 +577,17 @@ $aws_rds_db_cloudwatch_logs_exports
 $aws_rds_db_multi_az
 $aws_rds_db_maintenance_window
 $aws_rds_db_apply_immediately
+$aws_rds_db_performance_insights_enable
+$aws_rds_db_performance_insights_retention
+$aws_rds_db_performance_insights_kms_key_id
+$aws_rds_db_monitoring_interval
+$aws_rds_db_monitoring_role_arn
+$aws_rds_db_insights_mode
+$aws_rds_db_allow_major_version_upgrade
+$aws_rds_db_auto_minor_version_upgrade
+$aws_rds_db_backup_retention_period
+$aws_rds_db_backup_window
+$aws_rds_db_copy_tags_to_snapshot
 $aws_rds_db_additional_tags
 
 #-- AURORA --#
@@ -566,6 +635,9 @@ $aws_aurora_db_instance_class
 $aws_aurora_db_apply_immediately
 $aws_aurora_db_ca_cert_identifier
 $aws_aurora_db_maintenance_window
+$aws_aurora_performance_insights_enable
+$aws_aurora_performance_insights_kms_key_id
+$aws_aurora_performance_insights_retention
 $aws_aurora_additional_tags
 
 #-- DB PROXY --#
@@ -625,6 +697,7 @@ $aws_ecs_cluster_name
 $aws_ecs_service_launch_type
 $aws_ecs_task_type
 $aws_ecs_task_name
+$aws_ecs_task_ignore_definition
 $aws_ecs_task_execution_role
 $aws_ecs_task_json_definition_file
 $aws_ecs_task_network_mode
@@ -642,6 +715,7 @@ $aws_ecs_lb_port
 $aws_ecs_lb_redirect_enable
 $aws_ecs_lb_container_path
 $aws_ecs_lb_ssl_policy
+$aws_ecs_lb_www_to_apex_redirect
 $aws_ecs_autoscaling_enable
 $aws_ecs_autoscaling_max_nodes
 $aws_ecs_autoscaling_min_nodes
@@ -671,6 +745,8 @@ $aws_ecr_repo_policy_create
 $aws_ecr_repo_policy_input
 $aws_ecr_repo_read_arn
 $aws_ecr_repo_write_arn
+$aws_ecr_repo_read_external_aws_account
+$aws_ecr_repo_write_external_aws_account
 $aws_ecr_repo_read_arn_lambda
 $aws_ecr_lifecycle_policy_input
 $aws_ecr_public_repo_catalog

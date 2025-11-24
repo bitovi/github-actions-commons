@@ -280,6 +280,59 @@ inputs:
     description: 'A JSON object of additional tags that will be included on created resources. Example: `{"key1": "value1", "key2": "value2"}`'
     required: false
   
+  # AWS WAF
+  aws_waf_enable:
+    description: 'Enable WAF for load balancer.'
+    required: false
+  aws_waf_logging_enable:
+    description: 'Enable WAF logging to CloudWatch.'
+    required: false
+  aws_waf_log_retention_days:
+    description: 'CloudWatch log retention period for WAF logs.'
+    required: false
+  aws_waf_rule_rate_limit:
+    description: 'Rate limit for WAF rules.'
+    required: false
+  aws_waf_rule_managed_rules:
+    description: 'Enable common managed rule groups to use.'
+    required: false
+  aws_waf_rule_managed_bad_inputs:
+    description: 'Enable managed rule for bad inputs.'
+    required: false
+  aws_waf_rule_ip_reputation:
+    description: 'Enable managed rule for IP reputation.'
+    required: false
+  aws_waf_rule_anonymous_ip:
+    description: 'Enable managed rule for anonymous IP.'
+    required: false
+  aws_waf_rule_bot_control:
+    description: 'Enable managed rule for bot control (costs extra).'
+    required: false
+  aws_waf_rule_geo_block_countries:
+    description: 'Comma separated list of countries to block.'
+    required: false
+  aws_waf_rule_geo_allow_only_countries:
+    description: 'Comma separated list of countries to allow.'
+    required: false
+  aws_waf_rule_sqli:
+    description: 'Enable managed rule for SQL injection.'
+    required: false
+  aws_waf_rule_linux:
+    description: 'Enable managed rule for Linux.'
+    required: false
+  aws_waf_rule_unix:
+    description: 'Enable managed rule for Unix.'
+    required: false
+  aws_waf_rule_admin_protection:
+    description: 'Enable managed rule for admin protection.'
+    required: false
+  aws_waf_rule_user_arn:
+    description: 'ARN of the user rule.'
+    required: false
+  aws_waf_additional_tags:
+    description: 'A JSON object of additional tags that will be included on created resources. Example: `{"key1": "value1", "key2": "value2"}`'
+    required: false
+
   # AWS EFS
   aws_efs_create: 
     description: 'Toggle to indicate whether to create and EFS and mount it to the ec2 as a part of the provisioning. Note: The EFS will be managed by the stack and will be destroyed along with the stack.'
@@ -417,6 +470,39 @@ inputs:
     required: false
   aws_rds_db_apply_immediately:
     description: 'Specifies whether any database modifications are applied immediately, or during the next maintenance window'
+    required: false
+  aws_rds_db_performance_insights_enable:
+    description: 'Enables performance insights for the database. Defaults to false.'
+    required: false
+  aws_rds_db_performance_insights_retention:
+    description: 'Number of days to retain performance insights data. Defaults to 7.'
+    required: false
+  aws_rds_db_performance_insights_kms_key_id:
+    description: 'KMS key ID to use for encrypting performance insights data.'
+    required: false
+  aws_rds_db_monitoring_interval:
+    description: 'The interval, in seconds, between points when Enhanced Monitoring metrics are collected for the DB instance. To disable, set to 0.'
+    required: false
+  aws_rds_db_monitoring_role_arn:
+    description: 'The ARN for the IAM role that permits RDS to send enhanced monitoring metrics to CloudWatch Logs.'
+    required: false
+  aws_rds_db_insights_mode:
+    description: 'The mode for Performance Insights.'
+    required: false
+  aws_rds_db_allow_major_version_upgrade:
+    description: 'Indicates that major version upgrades are allowed.'
+    required: false
+  aws_rds_db_auto_minor_version_upgrade:
+    description: 'Indicates that minor version upgrades are allowed.'
+    required: false
+  aws_rds_db_backup_retention_period:
+    description: 'The number of days to retain backups for. Must be between 0 (disabled) and 35.'
+    required: false
+  aws_rds_db_backup_window:
+    description: 'The window during which backups are taken.'
+    required: false
+  aws_rds_db_copy_tags_to_snapshot:
+    description: 'Indicates whether to copy tags to snapshots.'
     required: false
   aws_rds_db_additional_tags:
     description: 'A JSON object of additional tags that will be included on created resources. Example: `{"key1": "value1", "key2": "value2"}`'
@@ -557,6 +643,15 @@ inputs:
     required: false
   aws_aurora_db_maintenance_window:
     description: 'Maintenance window.'
+    required: false
+  aws_aurora_performance_insights_enable:
+    description: 'Enables performance insights for the database. Defaults to false.'
+    required: false
+  aws_aurora_performance_insights_kms_key_id:
+    description: 'KMS key ID to use for encrypting performance insights data.'
+    required: false
+  aws_aurora_performance_insights_retention:
+    description: 'Number of days to retain performance insights data. Defaults to 7.'
     required: false
   aws_aurora_additional_tags:
     description: 'A JSON object of additional tags that will be included on created resources. Example: `{"key1": "value1", "key2": "value2"}`'
@@ -755,6 +850,9 @@ inputs:
   aws_ecs_task_name:
     description: 'Elastic Container Service task name'
     required: false
+  aws_ecs_task_ignore_definition:
+    description: 'Toggle to ignore task definition changes after first deployment. Useful when using external tools to manage the task definition.'
+    required: false
   aws_ecs_task_execution_role:
     description: 'Elastic Container Service task execution role name from IAM. Defaults to "ecsTaskExecutionRole"'
     required: false
@@ -802,6 +900,9 @@ inputs:
     required: false
   aws_ecs_lb_ssl_policy:
     description: 'SSL Policy for HTTPS listener in ALB. Will default to ELBSecurityPolicy-TLS13-1-2-2021-06 if none provided.'
+    required: false
+  aws_ecs_lb_www_to_apex_redirect:
+    description: 'Toggle redirect from www to apex domain. aws_r53_domain_name must be set.'
     required: false
   aws_ecs_autoscaling_enable:
     description: 'Toggle ecs autoscaling policy'
@@ -885,6 +986,12 @@ inputs:
     required: false
   aws_ecr_repo_write_arn:
     description: 'The ARNs of the IAM users/roles that have read/write access to the repository. (Comma separated list)'
+    required: false
+  aws_ecr_repo_read_external_aws_account:
+    description: 'The ARNs of the external AWS accounts that have read access to the repository'
+    required: false
+  aws_ecr_repo_write_external_aws_account:
+    description: 'The ARNs of the external AWS accounts that have write access to the repository'
     required: false
   aws_ecr_repo_read_arn_lambda:
     description: 'The ARNs of the Lambda service roles that have read access to the repository. (Comma separated list)'
@@ -1208,6 +1315,25 @@ runs:
         AWS_ELB_ACCESS_LOG_EXPIRE: ${{ inputs.aws_elb_access_log_expire }}
         AWS_ELB_ADDITIONAL_TAGS: ${{ inputs.aws_elb_additional_tags }}
 
+        # AWS WAF
+        AWS_WAF_ENABLE: ${{ inputs.aws_waf_enable }}
+        AWS_WAF_LOGGING_ENABLE: ${{ inputs.aws_waf_logging_enable }}
+        AWS_WAF_LOG_RETENTION_DAYS: ${{ inputs.aws_waf_log_retention_days }}
+        AWS_WAF_ADDITIONAL_TAGS: ${{ inputs.aws_waf_additional_tags }}
+        AWS_WAF_RULE_RATE_LIMIT: ${{ inputs.aws_waf_rule_rate_limit }}
+        AWS_WAF_RULE_MANAGED_RULES: ${{ inputs.aws_waf_rule_managed_rules }}
+        AWS_WAF_RULE_MANAGED_BAD_INPUTS: ${{ inputs.aws_waf_rule_managed_bad_inputs }}
+        AWS_WAF_RULE_IP_REPUTATION: ${{ inputs.aws_waf_rule_ip_reputation }}
+        AWS_WAF_RULE_ANONYMOUS_IP: ${{ inputs.aws_waf_rule_anonymous_ip }}
+        AWS_WAF_RULE_BOT_CONTROL: ${{ inputs.aws_waf_rule_bot_control }}
+        AWS_WAF_RULE_GEO_BLOCK_COUNTRIES: ${{ inputs.aws_waf_rule_geo_block_countries }}
+        AWS_WAF_RULE_GEO_ALLOW_ONLY_COUNTRIES: ${{ inputs.aws_waf_rule_geo_allow_only_countries }}
+        AWS_WAF_RULE_USER_ARN: ${{ inputs.aws_waf_rule_user_arn }}
+        AWS_WAF_RULE_SQLI: ${{ inputs.aws_waf_rule_sqli }}
+        AWS_WAF_RULE_LINUX: ${{ inputs.aws_waf_rule_linux }}
+        AWS_WAF_RULE_UNIX: ${{ inputs.aws_waf_rule_unix }}
+        AWS_WAF_RULE_ADMIN_PROTECTION: ${{ inputs.aws_waf_rule_admin_protection }}
+
         # AWS EFS
         AWS_EFS_CREATE: ${{ inputs.aws_efs_create }}
         AWS_EFS_FS_ID: ${{ inputs.aws_efs_fs_id }}
@@ -1256,6 +1382,17 @@ runs:
         AWS_RDS_DB_MULTI_AZ: ${{ inputs.aws_rds_db_multi_az }}
         AWS_RDS_DB_MAINTENANCE_WINDOWS: ${{ inputs.aws_rds_db_maintenance_window }}
         AWS_RDS_DB_APPLY_IMMEDIATELY: ${{ inputs.aws_rds_db_apply_immediately }}
+        AWS_RDS_DB_PERFORMANCE_INSIGHTS_ENABLE: ${{ inputs.aws_rds_db_performance_insights_enable }}
+        AWS_RDS_DB_PERFORMANCE_INSIGHTS_RETENTION: ${{ inputs.aws_rds_db_performance_insights_retention }}
+        AWS_RDS_DB_PERFORMANCE_INSIGHTS_KMS_KEY_ID: ${{ inputs.aws_rds_db_performance_insights_kms_key_id }}
+        AWS_RDS_DB_MONITORING_INTERVAL: ${{ inputs.aws_rds_db_monitoring_interval }}
+        AWS_RDS_DB_MONITORING_ROLE_ARN: ${{ inputs.aws_rds_db_monitoring_role_arn }}
+        AWS_RDS_DB_INSIGHTS_MODE: ${{ inputs.aws_rds_db_insights_mode }}
+        AWS_RDS_DB_ALLOW_MAJOR_VERSION_UPGRADE: ${{ inputs.aws_rds_db_allow_major_version_upgrade }}
+        AWS_RDS_DB_AUTO_MINOR_VERSION_UPGRADE: ${{ inputs.aws_rds_db_auto_minor_version_upgrade }}
+        AWS_RDS_DB_BACKUP_RETENTION_PERIOD: ${{ inputs.aws_rds_db_backup_retention_period }}
+        AWS_RDS_DB_BACKUP_WINDOW: ${{ inputs.aws_rds_db_backup_window }}
+        AWS_RDS_DB_COPY_TAGS_TO_SNAPSHOT: ${{ inputs.aws_rds_db_copy_tags_to_snapshot }}
         AWS_RDS_DB_ADDITIONAL_TAGS: ${{ inputs.aws_rds_db_additional_tags }}
 
         # AWS AURORA
@@ -1303,6 +1440,9 @@ runs:
         AWS_AURORA_DB_APPLY_IMMEDIATELY: ${{ inputs.aws_aurora_db_apply_immediately }}
         AWS_AURORA_DB_CA_CERT_IDENTIFIER: ${{ inputs.aws_aurora_db_ca_cert_identifier }}
         AWS_AURORA_DB_MAINTENANCE_WINDOW: ${{ inputs.aws_aurora_db_maintenance_window }}
+        AWS_AURORA_PERFORMANCE_INSIGHTS_ENABLE: ${{ inputs.aws_aurora_performance_insights_enable }}
+        AWS_AURORA_PERFORMANCE_INSIGHTS_KMS_KEY_ID: ${{ inputs.aws_aurora_performance_insights_kms_key_id }}
+        AWS_AURORA_PERFORMANCE_INSIGHTS_RETENTION: ${{ inputs.aws_aurora_performance_insights_retention }}
         AWS_AURORA_ADDITIONAL_TAGS: ${{ inputs.aws_aurora_additional_tags }}
 
         # AWS DB PROXY
@@ -1371,16 +1511,17 @@ runs:
         AWS_ECS_ENABLE: ${{ inputs.aws_ecs_enable }}
         AWS_ECS_SERVICE_NAME: ${{ inputs.aws_ecs_service_name }}
         AWS_ECS_CLUSTER_NAME: ${{ inputs.aws_ecs_cluster_name }}
-        AWS_ECS_SERVICE_LAUNCH_TYPE : ${{ inputs.aws_ecs_service_launch_type }}
-        AWS_ECS_TASK_TYPE : ${{ inputs.aws_ecs_task_type }}
+        AWS_ECS_SERVICE_LAUNCH_TYPE: ${{ inputs.aws_ecs_service_launch_type }}
+        AWS_ECS_TASK_TYPE: ${{ inputs.aws_ecs_task_type }}
         AWS_ECS_TASK_NAME: ${{ inputs.aws_ecs_task_name }}
+        AWS_ECS_TASK_IGNORE_DEFINITION: ${{ inputs.aws_ecs_task_ignore_definition }}
         AWS_ECS_TASK_EXECUTION_ROLE: ${{ inputs.aws_ecs_task_execution_role }}
         AWS_ECS_TASK_JSON_DEFINITION_FILE: ${{ inputs.aws_ecs_task_json_definition_file }}
         AWS_ECS_TASK_NETWORK_MODE: ${{ inputs.aws_ecs_task_network_mode }}
         AWS_ECS_TASK_CPU: ${{ inputs.aws_ecs_task_cpu }}
         AWS_ECS_TASK_MEM: ${{ inputs.aws_ecs_task_mem }}
         AWS_ECS_CONTAINER_CPU: ${{ inputs.aws_ecs_container_cpu }}
-        AWS_ECS_CONTAINER_MEM: ${{ inputs.aws_ecs_container_cpu }}
+        AWS_ECS_CONTAINER_MEM: ${{ inputs.aws_ecs_container_mem }}
         AWS_ECS_NODE_COUNT: ${{ inputs.aws_ecs_node_count }}
         AWS_ECS_APP_IMAGE: ${{ inputs.aws_ecs_app_image }}
         AWS_ECS_SECURITY_GROUP_NAME: ${{ inputs.aws_ecs_security_group_name }}
@@ -1388,17 +1529,18 @@ runs:
         AWS_ECS_CONTAINER_PORT: ${{ inputs.aws_ecs_container_port }}
         AWS_ECS_LB_PORT: ${{ inputs.aws_ecs_lb_port }}
         AWS_ECS_LB_REDIRECT_ENABLE: ${{ inputs.aws_ecs_lb_redirect_enable }}
-        AWS_ECS_LB_CONTAINER_PATH : ${{ inputs.aws_ecs_lb_container_path }}
+        AWS_ECS_LB_CONTAINER_PATH: ${{ inputs.aws_ecs_lb_container_path }}
         AWS_ECS_LB_SSL_POLICY: ${{ inputs.aws_ecs_lb_ssl_policy }}
+        AWS_ECS_LB_WWW_TO_APEX_REDIRECT: ${{ inputs.aws_ecs_lb_www_to_apex_redirect }}
         AWS_ECS_AUTOSCALING_ENABLE: ${{ inputs.aws_ecs_autoscaling_enable }}
         AWS_ECS_AUTOSCALING_MAX_NODES: ${{ inputs.aws_ecs_autoscaling_max_nodes }}
         AWS_ECS_AUTOSCALING_MIN_NODES: ${{ inputs.aws_ecs_autoscaling_min_nodes }}
         AWS_ECS_AUTOSCALING_MAX_MEM: ${{ inputs.aws_ecs_autoscaling_max_mem }}
-        AWS_ECS_AUTOSCALING_MIN_MEM: ${{ inputs.aws_ecs_autoscaling_max_cpu }}
-        AWS_ECS_CLOUDWATCH_ENABLE : ${{ inputs.aws_ecs_cloudwatch_enable }}
-        AWS_ECS_CLOUDWATCH_LG_NAME : ${{ inputs.aws_ecs_cloudwatch_lg_name }}
-        AWS_ECS_CLOUDWATCH_SKIP_DESTROY : ${{ inputs.aws_ecs_cloudwatch_skip_destroy }}
-        AWS_ECS_CLOUDWATCH_RETENTION_DAYS : ${{ inputs.aws_ecs_cloudwatch_retention_days }}
+        AWS_ECS_AUTOSCALING_MAX_CPU: ${{ inputs.aws_ecs_autoscaling_max_cpu }}
+        AWS_ECS_CLOUDWATCH_ENABLE: ${{ inputs.aws_ecs_cloudwatch_enable }}
+        AWS_ECS_CLOUDWATCH_LG_NAME: ${{ inputs.aws_ecs_cloudwatch_lg_name }}
+        AWS_ECS_CLOUDWATCH_SKIP_DESTROY: ${{ inputs.aws_ecs_cloudwatch_skip_destroy }}
+        AWS_ECS_CLOUDWATCH_RETENTION_DAYS: ${{ inputs.aws_ecs_cloudwatch_retention_days }}
         AWS_ECS_ADDITIONAL_TAGS: ${{ inputs.aws_ecs_additional_tags }}
        
         # ECR
@@ -1419,6 +1561,8 @@ runs:
         AWS_ECR_REPO_POLICY_INPUT: ${{ inputs.aws_ecr_repo_policy_input }}
         AWS_ECR_REPO_READ_ARN: ${{ inputs.aws_ecr_repo_read_arn }}
         AWS_ECR_REPO_WRITE_ARN: ${{ inputs.aws_ecr_repo_write_arn }}
+        AWS_ECR_REPO_READ_EXTERNAL_AWS_ACCOUNT: ${{ inputs.aws_ecr_repo_read_external_aws_account }}
+        AWS_ECR_REPO_WRITE_EXTERNAL_AWS_ACCOUNT: ${{ inputs.aws_ecr_repo_write_external_aws_account }}
         AWS_ECR_REPO_READ_ARN_LAMBDA: ${{ inputs.aws_ecr_repo_read_arn_lambda }}
         AWS_ECR_LIFECYCLE_POLICY_INPUT: ${{ inputs.aws_ecr_lifecycle_policy_input }}
         AWS_ECR_PUBLIC_REPO_CATALOG: ${{ inputs.aws_ecr_public_repo_catalog }}
