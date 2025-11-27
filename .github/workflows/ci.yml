@@ -48,19 +48,109 @@ jobs:
             skip_metadata_api_check     = true
           }
 
-          provider "aws" { alias = "ec2" region = "us-east-1" skip_credentials_validation = true skip_requesting_account_id = true skip_metadata_api_check = true }
-          provider "aws" { alias = "r53" region = "us-east-1" skip_credentials_validation = true skip_requesting_account_id = true skip_metadata_api_check = true }
-          provider "aws" { alias = "elb" region = "us-east-1" skip_credentials_validation = true skip_requesting_account_id = true skip_metadata_api_check = true }
-          provider "aws" { alias = "efs" region = "us-east-1" skip_credentials_validation = true skip_requesting_account_id = true skip_metadata_api_check = true }
-          provider "aws" { alias = "vpc" region = "us-east-1" skip_credentials_validation = true skip_requesting_account_id = true skip_metadata_api_check = true }
-          provider "aws" { alias = "rds" region = "us-east-1" skip_credentials_validation = true skip_requesting_account_id = true skip_metadata_api_check = true }
-          provider "aws" { alias = "aurora" region = "us-east-1" skip_credentials_validation = true skip_requesting_account_id = true skip_metadata_api_check = true }
-          provider "aws" { alias = "ecs" region = "us-east-1" skip_credentials_validation = true skip_requesting_account_id = true skip_metadata_api_check = true }
-          provider "aws" { alias = "db_proxy" region = "us-east-1" skip_credentials_validation = true skip_requesting_account_id = true skip_metadata_api_check = true }
-          provider "aws" { alias = "redis" region = "us-east-1" skip_credentials_validation = true skip_requesting_account_id = true skip_metadata_api_check = true }
-          provider "aws" { alias = "eks" region = "us-east-1" skip_credentials_validation = true skip_requesting_account_id = true skip_metadata_api_check = true }
-          provider "aws" { alias = "ecr" region = "us-east-1" skip_credentials_validation = true skip_requesting_account_id = true skip_metadata_api_check = true }
-          provider "aws" { alias = "waf" region = "us-east-1" skip_credentials_validation = true skip_requesting_account_id = true skip_metadata_api_check = true }
+          provider "aws" {
+            alias = "ec2"
+            region = "us-east-1"
+            skip_credentials_validation = true
+            skip_requesting_account_id = true
+            skip_metadata_api_check = true
+          }
+
+          provider "aws" {
+            alias = "r53"
+            region = "us-east-1"
+            skip_credentials_validation = true
+            skip_requesting_account_id = true
+            skip_metadata_api_check = true
+          }
+
+          provider "aws" {
+            alias = "elb"
+            region = "us-east-1"
+            skip_credentials_validation = true
+            skip_requesting_account_id = true
+            skip_metadata_api_check = true
+          }
+
+          provider "aws" {
+            alias = "efs"
+            region = "us-east-1"
+            skip_credentials_validation = true
+            skip_requesting_account_id = true
+            skip_metadata_api_check = true
+          }
+
+          provider "aws" {
+            alias = "vpc"
+            region = "us-east-1"
+            skip_credentials_validation = true
+            skip_requesting_account_id = true
+            skip_metadata_api_check = true
+          }
+
+          provider "aws" {
+            alias = "rds"
+            region = "us-east-1"
+            skip_credentials_validation = true
+            skip_requesting_account_id = true
+            skip_metadata_api_check = true
+          }
+
+          provider "aws" {
+            alias = "aurora"
+            region = "us-east-1"
+            skip_credentials_validation = true
+            skip_requesting_account_id = true
+            skip_metadata_api_check = true
+          }
+
+          provider "aws" {
+            alias = "ecs"
+            region = "us-east-1"
+            skip_credentials_validation = true
+            skip_requesting_account_id = true
+            skip_metadata_api_check = true
+          }
+
+          provider "aws" {
+            alias = "db_proxy"
+            region = "us-east-1"
+            skip_credentials_validation = true
+            skip_requesting_account_id = true
+            skip_metadata_api_check = true
+          }
+
+          provider "aws" {
+            alias = "redis"
+            region = "us-east-1"
+            skip_credentials_validation = true
+            skip_requesting_account_id = true
+            skip_metadata_api_check = true
+          }
+
+          provider "aws" {
+            alias = "eks"
+            region = "us-east-1"
+            skip_credentials_validation = true
+            skip_requesting_account_id = true
+            skip_metadata_api_check = true
+          }
+
+          provider "aws" {
+            alias = "ecr"
+            region = "us-east-1"
+            skip_credentials_validation = true
+            skip_requesting_account_id = true
+            skip_metadata_api_check = true
+          }
+
+          provider "aws" {
+            alias = "waf"
+            region = "us-east-1"
+            skip_credentials_validation = true
+            skip_requesting_account_id = true
+            skip_metadata_api_check = true
+          }
 
           provider "kubernetes" {
             alias                  = "eks"
