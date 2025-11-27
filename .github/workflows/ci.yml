@@ -21,6 +21,11 @@ jobs:
         run: terraform fmt -check -recursive operations/deployment/terraform/aws/
         continue-on-error: true
 
+      - name: Terraform Format Check
+        id: modules
+        run: terraform fmt -check -recursive operations/deployment/terraform/modules/
+        continue-on-error: true
+
       - name: Create mock provider.tf
         run: |
           cat > operations/deployment/terraform/aws/provider.tf << 'EOF'
