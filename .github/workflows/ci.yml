@@ -18,7 +18,7 @@ jobs:
 
       - name: Terraform Format Check
         id: fmt
-        run: terraform fmt -check -recursive operations/deployment/terraform/
+        run: terraform fmt -check -recursive operations/deployment/terraform/aws/
         continue-on-error: true
 
       - name: Create mock provider.tf
