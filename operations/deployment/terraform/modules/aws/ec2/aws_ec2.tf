@@ -1,12 +1,12 @@
 resource "aws_iam_instance_profile" "ec2_profile" {
   count = var.aws_ec2_iam_instance_profile != "" ? 0 : 1
-  name = var.aws_resource_identifier
-  role = aws_iam_role.ec2_role[0].name
+  name  = var.aws_resource_identifier
+  role  = aws_iam_role.ec2_role[0].name
 }
 
 data "aws_iam_instance_profile" "ec2_profile_provided" {
   count = var.aws_ec2_iam_instance_profile != "" ? 1 : 0
-  name = var.aws_ec2_iam_instance_profile
+  name  = var.aws_ec2_iam_instance_profile
 }
 
 data "aws_ami" "image_selected" {
@@ -44,7 +44,7 @@ resource "aws_instance" "server" {
 data "aws_instance" "server_ip" {
   count       = var.aws_ec2_ami_update ? 1 : 0
   instance_id = aws_instance.server[0].id
-  depends_on  = [ aws_instance.server ]
+  depends_on  = [aws_instance.server]
 }
 
 resource "aws_instance" "server_ignore_ami" {
@@ -74,9 +74,9 @@ resource "aws_instance" "server_ignore_ami" {
 }
 
 data "aws_instance" "server_ignore_ami_ip" {
-  count      = var.aws_ec2_ami_update ? 0 : 1
+  count       = var.aws_ec2_ami_update ? 0 : 1
   instance_id = aws_instance.server_ignore_ami[0].id
-  depends_on  = [ aws_instance.server_ignore_ami ]
+  depends_on  = [aws_instance.server_ignore_ami]
 }
 
 resource "tls_private_key" "key" {
@@ -98,16 +98,16 @@ resource "aws_key_pair" "aws_key" {
 
 // Creates a secret manager secret for the public key
 resource "aws_secretsmanager_secret" "keys_sm_secret" {
-  count  = var.aws_ec2_create_keypair_sm ? 1 : 0
-  name   = "${var.aws_resource_identifier_supershort}-sm-${random_string.random.result}"
+  count = var.aws_ec2_create_keypair_sm ? 1 : 0
+  name  = "${var.aws_resource_identifier_supershort}-sm-${random_string.random.result}"
   lifecycle {
     replace_triggered_by = [tls_private_key.key]
   }
 }
- 
+
 resource "aws_secretsmanager_secret_version" "keys_sm_secret_version" {
-  count     = var.aws_ec2_create_keypair_sm ? 1 : 0
-  secret_id = aws_secretsmanager_secret.keys_sm_secret[0].id
+  count         = var.aws_ec2_create_keypair_sm ? 1 : 0
+  secret_id     = aws_secretsmanager_secret.keys_sm_secret[0].id
   secret_string = <<EOF
    {
     "key": "public_key",
@@ -121,34 +121,34 @@ EOF
 }
 
 resource "random_string" "random" {
-  length    = 5
-  lower     = true
-  special   = false
-  numeric   = false
+  length  = 5
+  lower   = true
+  special = false
+  numeric = false
 }
 
 output "instance_public_dns" {
   description = "Public DNS address of the EC2 instance"
-  value       = var.aws_vpc_dns_enabled ? var.aws_ec2_instance_public_ip ? try(data.aws_instance.server_ip[0].public_dns,data.aws_instance.server_ignore_ami_ip[0].public_dns) :null : null
+  value       = var.aws_vpc_dns_enabled ? var.aws_ec2_instance_public_ip ? try(data.aws_instance.server_ip[0].public_dns, data.aws_instance.server_ignore_ami_ip[0].public_dns) : null : null
 }
 
 output "instance_private_dns" {
   description = "Public DNS address of the EC2 instance"
-  value       = var.aws_vpc_dns_enabled ? try(data.aws_instance.server_ip[0].private_dns,data.aws_instance.server_ignore_ami_ip[0].private_dns) : null
+  value       = var.aws_vpc_dns_enabled ? try(data.aws_instance.server_ip[0].private_dns, data.aws_instance.server_ignore_ami_ip[0].private_dns) : null
 }
 
 output "instance_public_ip" {
   description = "Public IP address of the EC2 instance"
-  value       = var.aws_ec2_instance_public_ip ? try(data.aws_instance.server_ip[0].public_ip,data.aws_instance.server_ignore_ami_ip[0].public_ip) : null
+  value       = var.aws_ec2_instance_public_ip ? try(data.aws_instance.server_ip[0].public_ip, data.aws_instance.server_ignore_ami_ip[0].public_ip) : null
 }
 
 output "instance_private_ip" {
   description = "Public IP address of the EC2 instance"
-  value       = try(data.aws_instance.server_ip[0].private_ip,data.aws_instance.server_ignore_ami_ip[0].private_ip)
+  value       = try(data.aws_instance.server_ip[0].private_ip, data.aws_instance.server_ignore_ami_ip[0].private_ip)
 }
 
 output "aws_instance_server_id" {
-  value = try(data.aws_instance.server_ip[0].id,data.aws_instance.server_ignore_ami_ip[0].id)
+  value = try(data.aws_instance.server_ip[0].id, data.aws_instance.server_ignore_ami_ip[0].id)
 }
 
 output "private_key_filename" {

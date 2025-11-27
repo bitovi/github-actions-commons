@@ -13,13 +13,13 @@ resource "aws_key_pair" "aws_key" {
 
 // Creates a secret manager secret for the public key
 resource "aws_secretsmanager_secret" "keys_sm_secret" {
-  count  = var.aws_eks_ec2_key_pair == "" ? ( var.aws_eks_store_keypair_sm ? 1 : 0 ) : 0
-  name   = "${var.aws_resource_identifier}-ec2kp-eks-${random_string.random.result}"
+  count = var.aws_eks_ec2_key_pair == "" ? (var.aws_eks_store_keypair_sm ? 1 : 0) : 0
+  name  = "${var.aws_resource_identifier}-ec2kp-eks-${random_string.random.result}"
 }
- 
+
 resource "aws_secretsmanager_secret_version" "keys_sm_secret_version" {
-  count  = var.aws_eks_ec2_key_pair == "" ? ( var.aws_eks_store_keypair_sm ? 1 : 0 ) : 0
-  secret_id = aws_secretsmanager_secret.keys_sm_secret[0].id
+  count         = var.aws_eks_ec2_key_pair == "" ? (var.aws_eks_store_keypair_sm ? 1 : 0) : 0
+  secret_id     = aws_secretsmanager_secret.keys_sm_secret[0].id
   secret_string = <<EOF
    {
     "key": "public_key",
@@ -33,10 +33,10 @@ EOF
 }
 
 resource "random_string" "random" {
-  length    = 5
-  lower     = true
-  special   = false
-  numeric   = false
+  length  = 5
+  lower   = true
+  special = false
+  numeric = false
   lifecycle {
     ignore_changes = all
   }

@@ -37,12 +37,12 @@ locals {
 }
 
 data "aws_db_instance" "db" {
-  count = var.aws_db_proxy_cluster ? 0 : 1
+  count                  = var.aws_db_proxy_cluster ? 0 : 1
   db_instance_identifier = var.aws_db_proxy_database_id
 }
 
 data "aws_rds_cluster" "db" {
-  count = var.aws_db_proxy_cluster ? 1 : 0
+  count              = var.aws_db_proxy_cluster ? 1 : 0
   cluster_identifier = var.aws_db_proxy_database_id
 }
 
@@ -59,14 +59,14 @@ resource "aws_db_proxy" "rds_proxy" {
   vpc_subnet_ids         = var.aws_selected_subnets
 
   auth {
-    auth_scheme = "SECRETS"
+    auth_scheme               = "SECRETS"
     client_password_auth_type = var.aws_db_proxy_client_password_auth_type != "" ? var.aws_db_proxy_client_password_auth_type : local.auth_selected
-    description = "RDS Proxy for master user"
-    iam_auth    = "DISABLED"
-    secret_arn  = data.aws_secretsmanager_secret_version.database_credentials.arn
+    description               = "RDS Proxy for master user"
+    iam_auth                  = "DISABLED"
+    secret_arn                = data.aws_secretsmanager_secret_version.database_credentials.arn
   }
   lifecycle {
-    ignore_changes = [ debug_logging,engine_family,vpc_subnet_ids ] # Need this to avoid recreation each time. 
+    ignore_changes = [debug_logging, engine_family, vpc_subnet_ids] # Need this to avoid recreation each time. 
   }
 }
 
@@ -77,57 +77,57 @@ resource "aws_db_proxy_default_target_group" "default" {
     connection_borrow_timeout    = 120
     max_connections_percent      = 100
     max_idle_connections_percent = 50
- }
+  }
 }
 
 resource "aws_db_proxy_target" "db_instance" {
-  count = var.aws_db_proxy_cluster ? 0 : 1
+  count                  = var.aws_db_proxy_cluster ? 0 : 1
   db_instance_identifier = data.aws_db_instance.db[0].id
   db_proxy_name          = aws_db_proxy.rds_proxy[0].name
   target_group_name      = aws_db_proxy_default_target_group.default.name
   lifecycle {
-    ignore_changes = [ db_instance_identifier ]
-    replace_triggered_by = [ data.aws_db_instance.db ]
+    ignore_changes       = [db_instance_identifier]
+    replace_triggered_by = [data.aws_db_instance.db]
   }
-  depends_on = [ aws_db_proxy.rds_proxy ]
+  depends_on = [aws_db_proxy.rds_proxy]
 }
 
 resource "aws_db_proxy_target" "db_cluster" {
-  count = var.aws_db_proxy_cluster ? 1 : 0
-  db_cluster_identifier  = data.aws_rds_cluster.db[0].id
-  db_proxy_name          = aws_db_proxy.rds_proxy[0].name
-  target_group_name      = aws_db_proxy_default_target_group.default.name
+  count                 = var.aws_db_proxy_cluster ? 1 : 0
+  db_cluster_identifier = data.aws_rds_cluster.db[0].id
+  db_proxy_name         = aws_db_proxy.rds_proxy[0].name
+  target_group_name     = aws_db_proxy_default_target_group.default.name
   lifecycle {
-    ignore_changes = [ db_instance_identifier ]
-    replace_triggered_by = [ data.aws_rds_cluster.db ]
+    ignore_changes       = [db_instance_identifier]
+    replace_triggered_by = [data.aws_rds_cluster.db]
   }
-  depends_on = [ aws_db_proxy.rds_proxy ]
+  depends_on = [aws_db_proxy.rds_proxy]
 }
 
 // Creates a secret manager secret for the databse credentials
 resource "aws_secretsmanager_secret" "proxy_credentials" {
-  name   = "${var.aws_resource_identifier_supershort}-proxy-${local.random_string}"
+  name = "${var.aws_resource_identifier_supershort}-proxy-${local.random_string}"
 }
 
 # Username and Password are repeated for compatibility with proxy and legacy code.
 resource "aws_secretsmanager_secret_version" "database_credentials_sm_secret_version_dev" {
   secret_id = aws_secretsmanager_secret.proxy_credentials.id
   secret_string = jsonencode({
-   username          = sensitive(try(local.secret_json.DB_USER,local.secret_json.DB_USERNAME,local.secret_json.username))
-   password          = sensitive(try(local.secret_json.DB_PASS,local.secret_json.DB_PASSWORD,local.secret_json.password))
-   host              = sensitive(aws_db_proxy.rds_proxy[0].endpoint)
-   port              = sensitive(try(local.secret_json.DB_PORT,local.secret_json.port))
-   database          = sensitive(try(local.secret_json.DB_NAME,local.secret_json.database))
-   engine            = sensitive(try(local.secret_json.DB_ENGINE,local.secret_json.engine))
-   engine_version    = sensitive(try(local.secret_json.DB_ENGINE_VERSION,local.secret_json.engine_version))
-   DB_USER           = sensitive(try(local.secret_json.DB_USER,local.secret_json.DB_USERNAME,local.secret_json.username))
-   DB_USERNAME       = sensitive(try(local.secret_json.DB_USER,local.secret_json.DB_USERNAME,local.secret_json.username))
-   DB_PASSWORD       = sensitive(try(local.secret_json.DB_PASS,local.secret_json.DB_PASSWORD,local.secret_json.password))
-   DB_HOST           = sensitive(aws_db_proxy.rds_proxy[0].endpoint)
-   DB_PORT           = sensitive(try(local.secret_json.DB_PORT,local.secret_json.port))
-   DB_NAME           = sensitive(try(local.secret_json.DB_NAME,local.secret_json.database))
-   DB_ENGINE         = sensitive(try(local.secret_json.DB_ENGINE,local.secret_json.engine))
-   DB_ENGINE_VERSION = sensitive(try(local.secret_json.DB_ENGINE_VERSION,local.secret_json.engine_version))
+    username          = sensitive(try(local.secret_json.DB_USER, local.secret_json.DB_USERNAME, local.secret_json.username))
+    password          = sensitive(try(local.secret_json.DB_PASS, local.secret_json.DB_PASSWORD, local.secret_json.password))
+    host              = sensitive(aws_db_proxy.rds_proxy[0].endpoint)
+    port              = sensitive(try(local.secret_json.DB_PORT, local.secret_json.port))
+    database          = sensitive(try(local.secret_json.DB_NAME, local.secret_json.database))
+    engine            = sensitive(try(local.secret_json.DB_ENGINE, local.secret_json.engine))
+    engine_version    = sensitive(try(local.secret_json.DB_ENGINE_VERSION, local.secret_json.engine_version))
+    DB_USER           = sensitive(try(local.secret_json.DB_USER, local.secret_json.DB_USERNAME, local.secret_json.username))
+    DB_USERNAME       = sensitive(try(local.secret_json.DB_USER, local.secret_json.DB_USERNAME, local.secret_json.username))
+    DB_PASSWORD       = sensitive(try(local.secret_json.DB_PASS, local.secret_json.DB_PASSWORD, local.secret_json.password))
+    DB_HOST           = sensitive(aws_db_proxy.rds_proxy[0].endpoint)
+    DB_PORT           = sensitive(try(local.secret_json.DB_PORT, local.secret_json.port))
+    DB_NAME           = sensitive(try(local.secret_json.DB_NAME, local.secret_json.database))
+    DB_ENGINE         = sensitive(try(local.secret_json.DB_ENGINE, local.secret_json.engine))
+    DB_ENGINE_VERSION = sensitive(try(local.secret_json.DB_ENGINE_VERSION, local.secret_json.engine_version))
   })
 }
 
@@ -147,10 +147,10 @@ resource "aws_security_group" "sg_rds_proxy" {
   vpc_id      = var.aws_selected_vpc_id
 
   egress {
-    from_port        = 0
-    to_port          = 0
-    protocol         = "-1"
-    cidr_blocks      = ["0.0.0.0/0"]
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
   }
 }
 
@@ -180,14 +180,14 @@ resource "aws_security_group_rule" "sg_rds_proxy_extras" {
 
 # Proxy SG incoming from 0.0.0.0
 resource "aws_security_group_rule" "sg_rds_proxy_outside" {
-  count                    = var.aws_db_proxy_allow_all_incoming ? 1 : 0
-  type                     = "ingress"
-  description              = "${var.aws_resource_identifier} - RDS All internal"
-  from_port                = local.db_port
-  to_port                  = local.db_port
-  protocol                 = "tcp"
-  cidr_blocks              = ["0.0.0.0/0"]
-  security_group_id        = aws_security_group.sg_rds_proxy.id
+  count             = var.aws_db_proxy_allow_all_incoming ? 1 : 0
+  type              = "ingress"
+  description       = "${var.aws_resource_identifier} - RDS All internal"
+  from_port         = local.db_port
+  to_port           = local.db_port
+  protocol          = "tcp"
+  cidr_blocks       = ["0.0.0.0/0"]
+  security_group_id = aws_security_group.sg_rds_proxy.id
 }
 
 locals {
@@ -225,7 +225,7 @@ resource "aws_iam_role" "rds_proxy" {
 }
 
 resource "aws_iam_policy" "rds_proxy_iam" {
-  name = "${var.aws_resource_identifier}-RdsProxySecretsManager"
+  name   = "${var.aws_resource_identifier}-RdsProxySecretsManager"
   policy = <<POLICY
 {
     "Version": "2012-10-17",
@@ -256,7 +256,7 @@ resource "aws_iam_policy" "rds_proxy_iam" {
 }
 POLICY
   lifecycle {
-    ignore_changes = [ policy ]
+    ignore_changes = [policy]
   }
 }
 
@@ -278,10 +278,10 @@ output "db_proxy_secret_name" {
 }
 
 resource "random_string" "random_sm" {
-  length    = 5
-  lower     = true
-  special   = false
-  numeric   = false
+  length  = 5
+  lower   = true
+  special = false
+  numeric = false
 }
 
 locals {
@@ -289,5 +289,5 @@ locals {
 }
 
 output "db_proxy_sg_id" {
-    value = aws_security_group.sg_rds_proxy.id
+  value = aws_security_group.sg_rds_proxy.id
 }

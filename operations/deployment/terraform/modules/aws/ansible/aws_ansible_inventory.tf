@@ -16,7 +16,7 @@ EOT
 }
 
 data "aws_efs_file_system" "mount_efs" {
-  count = var.aws_efs_enable ? 1 : 0
+  count          = var.aws_efs_enable ? 1 : 0
   file_system_id = var.aws_efs_fs_id
 }
 

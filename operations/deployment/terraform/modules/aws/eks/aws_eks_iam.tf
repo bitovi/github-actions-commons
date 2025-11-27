@@ -1,8 +1,8 @@
 resource "aws_iam_role" "iam_role_cluster" {
-  name               = "${var.aws_resource_identifier}-eks-cluster"
+  name = "${var.aws_resource_identifier}-eks-cluster"
   assume_role_policy = jsonencode({
-    Version: "2012-10-17"
-    Statement: [
+    Version : "2012-10-17"
+    Statement : [
       {
         Action = "sts:AssumeRole"
         Effect = "Allow"
@@ -16,10 +16,10 @@ resource "aws_iam_role" "iam_role_cluster" {
 }
 
 resource "aws_iam_role" "iam_role_node" {
-  name               = "${var.aws_resource_identifier}-eks-node"
+  name = "${var.aws_resource_identifier}-eks-node"
   assume_role_policy = jsonencode({
-    Version: "2012-10-17"
-    Statement: [
+    Version : "2012-10-17"
+    Statement : [
       {
         Action = "sts:AssumeRole"
         Effect = "Allow"
@@ -32,10 +32,10 @@ resource "aws_iam_role" "iam_role_node" {
 }
 
 locals {
-    cluster_policies = ["arn:aws:iam::aws:policy/AmazonEKSClusterPolicy",
-  "arn:aws:iam::aws:policy/AmazonEKSVPCResourceController",
+  cluster_policies = ["arn:aws:iam::aws:policy/AmazonEKSClusterPolicy",
+    "arn:aws:iam::aws:policy/AmazonEKSVPCResourceController",
   "arn:aws:iam::aws:policy/AmazonEKSServicePolicy"]
-    node_policies = ["arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy",
+  node_policies = ["arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy",
     "arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy",
     "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly",
     "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore",

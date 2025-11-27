@@ -11,8 +11,8 @@ resource "aws_appautoscaling_target" "ecs_target" {
 locals {
   aws_ecs_autoscaling_max_nodes = var.aws_ecs_autoscaling_max_nodes != "" ? [for n in split(",", var.aws_ecs_autoscaling_max_nodes) : tonumber(n)] : [for _ in range(local.tasks_count) : 2]
   aws_ecs_autoscaling_min_nodes = var.aws_ecs_autoscaling_min_nodes != "" ? [for n in split(",", var.aws_ecs_autoscaling_min_nodes) : tonumber(n)] : [for _ in range(local.tasks_count) : 1]
-  aws_ecs_autoscaling_max_mem   = var.aws_ecs_autoscaling_max_mem   != "" ? [for n in split(",", var.aws_ecs_autoscaling_max_mem)   : tonumber(n)] : [for _ in range(local.tasks_count) : 80]
-  aws_ecs_autoscaling_max_cpu   = var.aws_ecs_autoscaling_max_cpu   != "" ? [for n in split(",", var.aws_ecs_autoscaling_max_cpu)   : tonumber(n)] : [for _ in range(local.tasks_count) : 80]
+  aws_ecs_autoscaling_max_mem   = var.aws_ecs_autoscaling_max_mem != "" ? [for n in split(",", var.aws_ecs_autoscaling_max_mem) : tonumber(n)] : [for _ in range(local.tasks_count) : 80]
+  aws_ecs_autoscaling_max_cpu   = var.aws_ecs_autoscaling_max_cpu != "" ? [for n in split(",", var.aws_ecs_autoscaling_max_cpu) : tonumber(n)] : [for _ in range(local.tasks_count) : 80]
 }
 
 resource "aws_appautoscaling_policy" "ecs_policy_memory" {

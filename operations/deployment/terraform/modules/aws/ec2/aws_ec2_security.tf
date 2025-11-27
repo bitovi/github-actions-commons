@@ -19,22 +19,22 @@ resource "aws_security_group" "ec2_security_group" {
 
 # This is needed for Ansible to connect
 resource "aws_security_group_rule" "ingress_ssh" {
-  type        = "ingress"
-  description = "SSH"
-  from_port   = 22
-  to_port     = 22
-  protocol    = "tcp"
-  cidr_blocks = ["0.0.0.0/0"]
+  type              = "ingress"
+  description       = "SSH"
+  from_port         = 22
+  to_port           = 22
+  protocol          = "tcp"
+  cidr_blocks       = ["0.0.0.0/0"]
   security_group_id = aws_security_group.ec2_security_group.id
 }
 
 resource "aws_security_group_rule" "incoming_ports" {
-  count       = length(local.aws_ec2_port_list) != 0 ? length(local.aws_ec2_port_list) : 0
-  type        = "ingress"
-  from_port   = local.aws_ec2_port_list[count.index]
-  to_port     = local.aws_ec2_port_list[count.index]
-  protocol    = "tcp"
-  cidr_blocks = ["0.0.0.0/0"]
+  count             = length(local.aws_ec2_port_list) != 0 ? length(local.aws_ec2_port_list) : 0
+  type              = "ingress"
+  from_port         = local.aws_ec2_port_list[count.index]
+  to_port           = local.aws_ec2_port_list[count.index]
+  protocol          = "tcp"
+  cidr_blocks       = ["0.0.0.0/0"]
   security_group_id = aws_security_group.ec2_security_group.id
 }
 
@@ -44,7 +44,7 @@ locals {
 
 resource "aws_iam_role" "ec2_role" {
   count = var.aws_ec2_iam_instance_profile != "" ? 0 : 1
-  name = var.aws_resource_identifier
+  name  = var.aws_resource_identifier
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
@@ -63,7 +63,7 @@ resource "aws_iam_role" "ec2_role" {
 # attach a policy to allow cloudwatch access
 resource "aws_iam_policy" "cloudwatch" {
   count = var.aws_ec2_iam_instance_profile != "" ? 0 : 1
-  name = var.aws_resource_identifier
+  name  = var.aws_resource_identifier
 
   policy = <<EOF
 {
