@@ -44,7 +44,7 @@ resource "aws_route53_record" "www-a" {
 
 locals {
   protocol = var.aws_r53_enable_cert ? var.aws_certificates_selected_arn != "" ? "https://" : "http://" : "http://"
-  url      = (var.fqdn_provided ?
+  url = (var.fqdn_provided ?
     (var.aws_r53_root_domain_deploy ?
       "${local.protocol}${var.aws_r53_domain_name}" :
       "${local.protocol}${var.aws_r53_sub_domain_name}.${var.aws_r53_domain_name}"

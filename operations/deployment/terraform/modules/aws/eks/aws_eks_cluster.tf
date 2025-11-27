@@ -3,7 +3,7 @@ locals {
 }
 
 resource "aws_cloudwatch_log_group" "eks" {
-  count             =  var.aws_eks_cluster_log_types != "" ? 1 : 0
+  count             = var.aws_eks_cluster_log_types != "" ? 1 : 0
   name              = "/aws/eks/${var.aws_eks_cluster_name}/cluster"
   retention_in_days = tonumber(var.aws_eks_cluster_log_retention_days)
   skip_destroy      = var.aws_eks_cluster_log_skip_destroy
@@ -25,12 +25,12 @@ resource "aws_eks_cluster" "main" {
   tags = {
     "kubernetes.io/cluster/${var.aws_eks_cluster_name}" = "owned"
   }
-  depends_on = [ aws_cloudwatch_log_group.eks ]
+  depends_on = [aws_cloudwatch_log_group.eks]
 }
 
 data "aws_subnets" "private" {
   filter {
-    name    = "vpc-id"
+    name   = "vpc-id"
     values = [var.aws_selected_vpc_id]
   }
   tags = {
@@ -72,7 +72,7 @@ resource "aws_eks_node_group" "node_nodes" {
     max_unavailable = 1
   }
 
-  ami_type = "AL2_x86_64"
+  ami_type       = "AL2_x86_64"
   instance_types = [var.aws_eks_instance_type]
 
   remote_access {
@@ -86,10 +86,10 @@ resource "aws_eks_node_group" "node_nodes" {
     aws_security_group.eks_security_group_cluster,
     aws_security_group.eks_security_group_node
   ]
-  tags                   = {
+  tags = {
     "Name" = "${aws_eks_cluster.main.name}-node"
   }
-  tags_all               = {
+  tags_all = {
     "Name" = "${aws_eks_cluster.main.name}-node"
   }
 }
@@ -102,7 +102,7 @@ locals {
     {
       rolearn  = aws_iam_role.iam_role_node.arn
       username = "system:node:{{EC2PrivateDNSName}}"
-      groups   = [
+      groups = [
         "system:bootstrappers",
         "system:nodes"
       ]
@@ -112,7 +112,7 @@ locals {
     for role_arn in local.aws_eks_cluster_admin_role_arn : {
       rolearn  = role_arn
       username = "cluster-admin"
-      groups   = [
+      groups = [
         "system:masters"
       ]
     }
@@ -121,7 +121,7 @@ locals {
 
 
 resource "terraform_data" "replacement" {
-    input = yamlencode(distinct(concat(local.cluster_admin_roles,local.map_worker_roles)))
+  input = yamlencode(distinct(concat(local.cluster_admin_roles, local.map_worker_roles)))
 }
 
 resource "kubernetes_config_map" "aws_auth" {
@@ -131,7 +131,7 @@ resource "kubernetes_config_map" "aws_auth" {
   }
 
   data = {
-    mapRoles    = yamlencode(distinct(concat(local.cluster_admin_roles,local.map_worker_roles)))
+    mapRoles = yamlencode(distinct(concat(local.cluster_admin_roles, local.map_worker_roles)))
     #mapUsers    = replace(yamlencode(var.map_additional_iam_users), "\"", local.yaml_quote)
     mapAccounts = "${data.aws_caller_identity.current.account_id}"
   }

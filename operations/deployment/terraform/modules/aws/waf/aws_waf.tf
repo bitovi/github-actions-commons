@@ -10,10 +10,10 @@ locals {
 
 ### WAF Configuration
 resource "aws_wafv2_web_acl" "waf" {
-  count = var.aws_waf_enable ? 1 : 0
-  name  = "${var.aws_resource_identifier}-waf"
+  count       = var.aws_waf_enable ? 1 : 0
+  name        = "${var.aws_resource_identifier}-waf"
   description = "WAF for ${var.aws_resource_identifier}"
-  scope = "REGIONAL"
+  scope       = "REGIONAL"
 
   default_action {
     allow {}
@@ -393,7 +393,7 @@ resource "aws_wafv2_web_acl_logging_configuration" "waf_logging" {
       name = "cookie"
     }
   }
-  depends_on = [ aws_cloudwatch_log_group.waf_log_group, aws_wafv2_web_acl.waf ]
+  depends_on = [aws_cloudwatch_log_group.waf_log_group, aws_wafv2_web_acl.waf]
 }
 
 # CloudWatch Log Group for WAF (optional)

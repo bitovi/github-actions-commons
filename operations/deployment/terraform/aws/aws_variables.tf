@@ -125,7 +125,7 @@ variable "aws_ec2_port_list" {
   default     = ""
 }
 
-variable "aws_ec2_user_data_replace_on_change"  {
+variable "aws_ec2_user_data_replace_on_change" {
   type        = bool
   description = "Forces destruction of EC2 instance"
   default     = true
@@ -145,21 +145,21 @@ variable "aws_vpc_create" {
 }
 
 variable "aws_vpc_name" {
-  type = string
+  type        = string
   description = "Name for the aws vpc"
-  default = ""
+  default     = ""
 }
 
 variable "aws_vpc_id" {
-  type = string
+  type        = string
   description = "aws vpc id"
-  default = ""
+  default     = ""
 }
 
 variable "aws_vpc_subnet_id" {
-  type = string
+  type        = string
   description = "aws vpc subnet id"
-  default = ""
+  default     = ""
 }
 
 variable "aws_vpc_cidr_block" {
@@ -1602,13 +1602,13 @@ variable "aws_ecs_additional_tags" {
 }
 
 # ECR
-variable "aws_ecr_repo_create" { 
+variable "aws_ecr_repo_create" {
   description = "Determines whether a repository will be created"
   type        = bool
   default     = false
 }
 
-variable "aws_ecr_repo_type" { 
+variable "aws_ecr_repo_type" {
   description = "The type of repository to create. Either `public` or `private`"
   type        = string
   default     = "private"
@@ -1736,7 +1736,7 @@ variable "aws_ecr_public_repo_catalog" {
   default     = {}
 }
 
-variable "aws_ecr_registry_policy_input" { 
+variable "aws_ecr_registry_policy_input" {
   description = "The policy document. This is a JSON formatted string"
   type        = string
   default     = ""
