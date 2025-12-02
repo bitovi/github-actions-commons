@@ -317,6 +317,9 @@ inputs:
   aws_alb_access_log_expire:
     description: "Delete the access logs after this amount of days"
     required: false
+  aws_alb_additional_tags:
+    description: 'A JSON object of additional tags that will be included on created resources. Example: `{"key1": "value1", "key2": "value2"}`'
+    required: false
 
   # AWS WAF
   aws_waf_enable:
@@ -1358,6 +1361,7 @@ runs:
         AWS_ALB_ACCESS_LOG_ENABLED: ${{ inputs.aws_alb_access_log_enabled }}
         AWS_ALB_ACCESS_LOG_BUCKET_NAME: ${{ inputs.aws_alb_access_log_bucket_name }}
         AWS_ALB_ACCESS_LOG_EXPIRE: ${{ inputs.aws_alb_access_log_expire }}
+        AWS_ALB_ADDITIONAL_TAGS: ${{ inputs.aws_alb_additional_tags }}
 
         # AWS WAF
         AWS_WAF_ENABLE: ${{ inputs.aws_waf_enable }}

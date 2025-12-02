@@ -401,6 +401,12 @@ variable "aws_alb_access_log_expire" {
   default     = "90"
 }
 
+variable "aws_alb_additional_tags" {
+  type        = string
+  description = "A list of strings that will be added to created resources"
+  default     = "{}"
+}
+
 # AWS WAF
 variable "aws_waf_enable" {
   type        = bool

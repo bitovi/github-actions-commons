@@ -766,6 +766,7 @@ locals {
   db_proxy_tags = merge(local.default_tags, jsondecode(var.aws_db_proxy_additional_tags))
   redis_tags    = merge(local.default_tags, jsondecode(var.aws_redis_additional_tags))
   waf_tags      = merge(local.default_tags, jsondecode(var.aws_waf_additional_tags))
+  lb_tags       = merge(local.default_tags, jsondecode(var.aws_alb_additional_tags))
 
   eks_vpc_tags = {
     // This is needed for k8s to use VPC resources

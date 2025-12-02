@@ -146,6 +146,7 @@ if [[ $(alpha_only "$AWS_ALB_CREATE") == true ]]; then
   aws_alb_access_log_enabled=$(generate_var aws_alb_access_log_enabled $AWS_ALB_ACCESS_LOG_ENABLED)
   aws_alb_access_log_bucket_name=$(generate_var aws_alb_access_log_bucket_name $AWS_ALB_ACCESS_LOG_BUCKET_NAME)
   aws_alb_access_log_expire=$(generate_var aws_alb_access_log_expire $AWS_ALB_ACCESS_LOG_EXPIRE)
+  aws_alb_additional_tags=$(generate_var aws_alb_additional_tags $AWS_ALB_ADDITIONAL_TAGS)
 fi
 
 #-- AWS WAF --#
@@ -538,6 +539,7 @@ $aws_alb_ssl_policy
 $aws_alb_access_log_enabled
 $aws_alb_access_log_bucket_name
 $aws_alb_access_log_expire
+$aws_alb_additional_tags
 
 #-- WAF --#
 $aws_waf_enable
