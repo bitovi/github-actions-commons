@@ -41,7 +41,7 @@ resource "aws_lb" "vm_alb" {
   internal           = false
   load_balancer_type = "application"
   security_groups    = [aws_security_group.alb_security_group.id]
-  subnets            = [var.aws_vpc_subnet_selected]
+  subnets            = var.aws_vpc_subnet_selected
 
   dynamic "access_logs" {
     for_each = var.aws_alb_access_log_enabled ? [1] : []
