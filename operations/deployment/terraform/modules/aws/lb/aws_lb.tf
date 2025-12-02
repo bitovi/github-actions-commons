@@ -104,13 +104,6 @@ resource "aws_lb_target_group_attachment" "vm_alb_attachment" {
   port             = local.alb_app_port[count.index]
 }
 
-# Outputs
-output "aws_alb_dns_name" {
-  value = aws_lb.vm_alb.dns_name
-}
-output "aws_alb_zone_id" {
-  value = aws_lb.vm_alb.zone_id
-}
 
 # S3 bucket for ALB access logs (created only if logging is enabled)
 resource "aws_s3_bucket" "alb_access_logs" {
@@ -183,4 +176,15 @@ locals {
   )
 
   # Optionally, you can pad arrays if needed, but min() is safest for count
+}
+
+# Outputs
+output "aws_alb_dns_name" {
+  value = aws_lb.vm_alb.dns_name
+}
+output "aws_alb_zone_id" {
+  value = aws_lb.vm_alb.zone_id
+}
+output "aws_lb_resource_arn" {
+  value = aws_lb.vm_alb.arn
 }
