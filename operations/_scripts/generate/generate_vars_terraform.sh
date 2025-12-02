@@ -132,6 +132,22 @@ if [[ $(alpha_only "$AWS_ELB_CREATE") == true ]]; then
   aws_elb_additional_tags=$(generate_var aws_elb_additional_tags $AWS_ELB_ADDITIONAL_TAGS)
 fi
 
+#-- AWS ALB --#
+if [[ $(alpha_only "$AWS_ALB_CREATE") == true ]]; then
+  aws_alb_create=$(generate_var aws_alb_create $AWS_ALB_CREATE)
+  aws_alb_security_group_name=$(generate_var aws_alb_security_group_name $AWS_ALB_SECURITY_GROUP_NAME)
+  aws_alb_app_port=$(generate_var aws_alb_app_port $AWS_ALB_APP_PORT)
+  aws_alb_app_protocol=$(generate_var aws_alb_app_protocol $AWS_ALB_APP_PROTOCOL)
+  aws_alb_listen_port=$(generate_var aws_alb_listen_port $AWS_ALB_LISTEN_PORT)
+  aws_alb_listen_protocol=$(generate_var aws_alb_listen_protocol $AWS_ALB_LISTEN_PROTOCOL)
+  aws_alb_healthcheck_path=$(generate_var aws_alb_healthcheck_path $AWS_ALB_HEALTHCHECK_PATH)
+  aws_alb_healthcheck_protocol=$(generate_var aws_alb_healthcheck_protocol $AWS_ALB_HEALTHCHECK_PROTOCOL)
+  aws_alb_ssl_policy=$(generate_var aws_alb_ssl_policy $AWS_ALB_SSL_POLICY)
+  aws_alb_access_log_enabled=$(generate_var aws_alb_access_log_enabled $AWS_ALB_ACCESS_LOG_ENABLED)
+  aws_alb_access_log_bucket_name=$(generate_var aws_alb_access_log_bucket_name $AWS_ALB_ACCESS_LOG_BUCKET_NAME)
+  aws_alb_access_log_expire=$(generate_var aws_alb_access_log_expire $AWS_ALB_ACCESS_LOG_EXPIRE)
+fi
+
 #-- AWS WAF --#
 if [[ $(alpha_only "$AWS_WAF_ENABLE") == true ]]; then
   aws_waf_enable=$(generate_var aws_waf_enable $AWS_WAF_ENABLE)
@@ -508,6 +524,20 @@ $aws_elb_healthcheck
 $aws_elb_access_log_expire
 $aws_elb_access_log_bucket_name
 $aws_elb_additional_tags
+
+#-- ALB --#
+$aws_alb_create
+$aws_alb_security_group_name
+$aws_alb_app_port
+$aws_alb_app_protocol
+$aws_alb_listen_port
+$aws_alb_listen_protocol
+$aws_alb_healthcheck_path
+$aws_alb_healthcheck_protocol
+$aws_alb_ssl_policy
+$aws_alb_access_log_enabled
+$aws_alb_access_log_bucket_name
+$aws_alb_access_log_expire
 
 #-- WAF --#
 $aws_waf_enable

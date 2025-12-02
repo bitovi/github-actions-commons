@@ -327,7 +327,79 @@ variable "aws_elb_additional_tags" {
   default     = "{}"
 }
 
-# AWS LB
+# AWS ALB
+variable "aws_alb_create" {
+  type        = bool
+  description = "Global toggle for ALB creation"
+  default     = false
+}
+
+variable "aws_alb_security_group_name" {
+  type        = string
+  description = "Name of the security group to use for ALB"
+  default     = ""
+}
+
+variable "aws_alb_app_port" {
+  type        = string
+  description = "Comma-separated list of application ports for ALB target group"
+  default     = ""
+}
+
+variable "aws_alb_app_protocol" {
+  type        = string
+  description = "Comma-separated list of protocols for ALB target group (HTTP/HTTPS)"
+  default     = ""
+}
+
+variable "aws_alb_listen_port" {
+  type        = string
+  description = "Comma-separated list of listener ports for ALB"
+  default     = ""
+}
+
+variable "aws_alb_listen_protocol" {
+  type        = string
+  description = "Comma-separated list of listener protocols for ALB (HTTP/HTTPS)"
+  default     = ""
+}
+
+# Healthcheck
+variable "aws_alb_healthcheck_path" {
+  type        = string
+  description = "Health check path for ALB target group"
+  default     = "/"
+}
+
+variable "aws_alb_healthcheck_protocol" {
+  type        = string
+  description = "Health check protocol for ALB target group"
+  default     = "HTTP"
+}
+
+variable "aws_alb_ssl_policy" {
+  type        = string
+  description = "SSL policy for HTTPS listeners"
+  default     = null
+}
+# Logging
+variable "aws_alb_access_log_enabled" {
+  type        = bool
+  description = "Enable ALB access logs"
+  default     = false
+}
+
+variable "aws_alb_access_log_bucket_name" {
+  type        = string
+  description = "S3 bucket name to store the ALB access logs"
+  default     = ""
+}
+
+variable "aws_alb_access_log_expire" {
+  type        = string
+  description = "Delete the access logs after this amount of days"
+  default     = "90"
+}
 
 # AWS WAF
 variable "aws_waf_enable" {

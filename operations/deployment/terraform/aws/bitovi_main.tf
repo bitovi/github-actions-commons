@@ -130,6 +130,70 @@ module "aws_elb" {
   }
 }
 
+module "aws_lb" {
+  source = "../modules/aws/lb"
+  count  = var.aws_ec2_instance_create && var.aws_alb_create ? 1 : 0
+  # ALB Values
+  aws_alb_security_group_name  = var.aws_alb_security_group_name
+  aws_alb_app_port             = var.aws_alb_app_port
+  aws_alb_app_protocol         = var.aws_alb_app_protocol
+  aws_alb_listen_port          = var.aws_alb_listen_port
+  aws_alb_listen_protocol      = var.aws_alb_listen_protocol
+  aws_alb_healthcheck_path     = var.aws_alb_healthcheck_path
+  aws_alb_healthcheck_protocol = var.aws_alb_healthcheck_protocol
+  aws_alb_ssl_policy           = var.aws_alb_ssl_policy
+  # Logging
+  aws_alb_access_log_enabled     = var.aws_alb_access_log_enabled
+  aws_alb_access_log_bucket_name = var.aws_alb_access_log_bucket_name
+  aws_alb_access_log_expire      = var.aws_alb_access_log_expire
+  # EC2
+  aws_vpc_selected_id     = module.vpc.aws_selected_vpc_id
+  aws_vpc_subnet_selected = module.vpc.aws_vpc_subnet_selected
+  aws_instance_server_id  = module.ec2[0].aws_instance_server_id
+  aws_alb_target_sg_id    = module.ec2[0].aws_security_group_ec2_sg_id
+  # Certs
+  aws_certificates_selected_arn = var.aws_r53_enable_cert && var.aws_r53_domain_name != "" ? module.aws_certificates[0].selected_arn : ""
+  # Others
+  aws_resource_identifier            = var.aws_resource_identifier
+  aws_resource_identifier_supershort = var.aws_resource_identifier_supershort
+  # Module dependencies
+  depends_on = [module.vpc, module.ec2]
+
+  providers = {
+    aws = aws.lb
+  }
+}
+
+module "aws_waf_ec2_alb" {
+  source                     = "../modules/aws/waf"
+  count                      = var.aws_waf_enable && var.aws_ec2_instance_create && var.aws_alb_create ? 1 : 0
+  aws_waf_enable             = var.aws_waf_enable
+  aws_waf_logging_enable     = var.aws_waf_logging_enable
+  aws_waf_log_retention_days = var.aws_waf_log_retention_days
+  aws_resource_identifier    = var.aws_resource_identifier
+  # Rules
+  aws_waf_rule_rate_limit               = var.aws_waf_rule_rate_limit
+  aws_waf_rule_managed_rules            = var.aws_waf_rule_managed_rules
+  aws_waf_rule_managed_bad_inputs       = var.aws_waf_rule_managed_bad_inputs
+  aws_waf_rule_ip_reputation            = var.aws_waf_rule_ip_reputation
+  aws_waf_rule_anonymous_ip             = var.aws_waf_rule_anonymous_ip
+  aws_waf_rule_bot_control              = var.aws_waf_rule_bot_control
+  aws_waf_rule_geo_block_countries      = var.aws_waf_rule_geo_block_countries
+  aws_waf_rule_geo_allow_only_countries = var.aws_waf_rule_geo_allow_only_countries
+  aws_waf_rule_user_arn                 = var.aws_waf_rule_user_arn
+  aws_waf_rule_sqli                     = var.aws_waf_rule_sqli
+  aws_waf_rule_linux                    = var.aws_waf_rule_linux
+  aws_waf_rule_unix                     = var.aws_waf_rule_unix
+  aws_waf_rule_admin_protection         = var.aws_waf_rule_admin_protection
+  # Incoming
+  aws_lb_resource_arn = module.aws_lb[0].aws_lb_resource_arn
+  # Others
+  depends_on = [module.aws_lb]
+  providers = {
+    aws = aws.waf
+  }
+}
+
 module "efs" {
   source = "../modules/aws/efs"
   count  = var.aws_efs_enable ? 1 : 0

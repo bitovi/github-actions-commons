@@ -280,6 +280,44 @@ inputs:
     description: 'A JSON object of additional tags that will be included on created resources. Example: `{"key1": "value1", "key2": "value2"}`'
     required: false
   
+  # AWS ALB
+  aws_alb_create:
+    description: "Global toggle for ALB creation"
+    required: false
+  aws_alb_security_group_name:
+    description: "Name of the security group to use for ALB"
+    required: false
+  aws_alb_app_port:
+    description: "Comma-separated list of application ports for ALB target group"
+    required: false
+  aws_alb_app_protocol:
+    description: "Comma-separated list of protocols for ALB target group (HTTP/HTTPS)"
+    required: false
+  aws_alb_listen_port:
+    description: "Comma-separated list of listener ports for ALB"
+    required: false
+  aws_alb_listen_protocol:
+    description: "Comma-separated list of listener protocols for ALB (HTTP/HTTPS)"
+    required: false
+  aws_alb_healthcheck_path:
+    description: "Health check path for ALB target group"
+    required: false
+  aws_alb_healthcheck_protocol:
+    description: "Health check protocol for ALB target group"
+    required: false
+  aws_alb_ssl_policy:
+    description: "SSL policy for HTTPS listeners"
+    required: false
+  aws_alb_access_log_enabled:
+    description: "Enable ALB access logs"
+    required: false
+  aws_alb_access_log_bucket_name:
+    description: "S3 bucket name to store the ALB access logs"
+    required: false
+  aws_alb_access_log_expire:
+    description: "Delete the access logs after this amount of days"
+    required: false
+
   # AWS WAF
   aws_waf_enable:
     description: 'Enable WAF for load balancer.'
@@ -1306,6 +1344,20 @@ runs:
         AWS_ELB_ACCESS_LOG_BUCKET_NAME: ${{ inputs.aws_elb_access_log_bucket_name }}
         AWS_ELB_ACCESS_LOG_EXPIRE: ${{ inputs.aws_elb_access_log_expire }}
         AWS_ELB_ADDITIONAL_TAGS: ${{ inputs.aws_elb_additional_tags }}
+
+        # AWS ALB
+        AWS_ALB_CREATE: ${{ inputs.aws_alb_create }}
+        AWS_ALB_SECURITY_GROUP_NAME: ${{ inputs.aws_alb_security_group_name }}
+        AWS_ALB_APP_PORT: ${{ inputs.aws_alb_app_port }}
+        AWS_ALB_APP_PROTOCOL: ${{ inputs.aws_alb_app_protocol }}
+        AWS_ALB_LISTEN_PORT: ${{ inputs.aws_alb_listen_port }}
+        AWS_ALB_LISTEN_PROTOCOL: ${{ inputs.aws_alb_listen_protocol }}
+        AWS_ALB_HEALTHCHECK_PATH: ${{ inputs.aws_alb_healthcheck_path }}
+        AWS_ALB_HEALTHCHECK_PROTOCOL: ${{ inputs.aws_alb_healthcheck_protocol }}
+        AWS_ALB_SSL_POLICY: ${{ inputs.aws_alb_ssl_policy }}
+        AWS_ALB_ACCESS_LOG_ENABLED: ${{ inputs.aws_alb_access_log_enabled }}
+        AWS_ALB_ACCESS_LOG_BUCKET_NAME: ${{ inputs.aws_alb_access_log_bucket_name }}
+        AWS_ALB_ACCESS_LOG_EXPIRE: ${{ inputs.aws_alb_access_log_expire }}
 
         # AWS WAF
         AWS_WAF_ENABLE: ${{ inputs.aws_waf_enable }}
