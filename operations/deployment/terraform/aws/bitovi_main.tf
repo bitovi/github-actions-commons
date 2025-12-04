@@ -123,7 +123,7 @@ module "aws_elb" {
   aws_resource_identifier            = var.aws_resource_identifier
   aws_resource_identifier_supershort = var.aws_resource_identifier_supershort
   # Module dependencies
-  depends_on = [module.vpc, module.ec2]
+  #depends_on = [module.vpc, module.ec2]
 
   providers = {
     aws = aws.elb
@@ -157,7 +157,7 @@ module "aws_lb" {
   aws_resource_identifier            = var.aws_resource_identifier
   aws_resource_identifier_supershort = var.aws_resource_identifier_supershort
   # Module dependencies
-  depends_on = [module.vpc, module.ec2]
+  #depends_on = [module.vpc, module.ec2]
 
   providers = {
     aws = aws.lb
