@@ -9,10 +9,13 @@ resource "aws_route53_record" "dev" {
   name    = "${var.aws_r53_sub_domain_name}.${var.aws_r53_domain_name}"
   type    = "A"
 
-  alias {
-    name                   = var.aws_elb_dns_name
-    zone_id                = var.aws_elb_zone_id
-    evaluate_target_health = true
+  dynamic "alias" {
+    for_each = var.aws_elb_zone_id != "" ? [1] : []
+    content {
+      name                   = var.aws_elb_dns_name
+      zone_id                = var.aws_elb_zone_id
+      evaluate_target_health = true
+    }
   }
 }
 
@@ -22,10 +25,13 @@ resource "aws_route53_record" "root-a" {
   name    = var.aws_r53_domain_name
   type    = "A"
 
-  alias {
-    name                   = var.aws_elb_dns_name
-    zone_id                = var.aws_elb_zone_id
-    evaluate_target_health = true
+  dynamic "alias" {
+    for_each = var.aws_elb_zone_id != "" ? [1] : []
+    content {
+      name                   = var.aws_elb_dns_name
+      zone_id                = var.aws_elb_zone_id
+      evaluate_target_health = true
+    }
   }
 }
 
@@ -35,10 +41,13 @@ resource "aws_route53_record" "www-a" {
   name    = "www.${var.aws_r53_domain_name}"
   type    = "A"
 
-  alias {
-    name                   = var.aws_elb_dns_name
-    zone_id                = var.aws_elb_zone_id
-    evaluate_target_health = true
+  dynamic "alias" {
+    for_each = var.aws_elb_zone_id != "" ? [1] : []
+    content {
+      name                   = var.aws_elb_dns_name
+      zone_id                = var.aws_elb_zone_id
+      evaluate_target_health = true
+    }
   }
 }
 
