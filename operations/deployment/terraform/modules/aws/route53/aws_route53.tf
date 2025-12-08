@@ -17,6 +17,7 @@ resource "aws_route53_record" "dev" {
       evaluate_target_health = true
     }
   }
+  records = var.aws_elb_zone_id == "" ? [var.aws_elb_dns_name] : null
 }
 
 resource "aws_route53_record" "root-a" {
@@ -33,6 +34,7 @@ resource "aws_route53_record" "root-a" {
       evaluate_target_health = true
     }
   }
+  records = var.aws_elb_zone_id == "" ? [var.aws_elb_dns_name] : null
 }
 
 resource "aws_route53_record" "www-a" {
@@ -49,6 +51,7 @@ resource "aws_route53_record" "www-a" {
       evaluate_target_health = true
     }
   }
+  records = var.aws_elb_zone_id == "" ? [var.aws_elb_dns_name] : null
 }
 
 locals {
