@@ -18,6 +18,7 @@ resource "aws_route53_record" "dev" {
     }
   }
   records = var.aws_elb_zone_id == "" ? [var.aws_elb_dns_name] : null
+  ttl     = var.aws_elb_zone_id == "" ? 300 : null
 }
 
 resource "aws_route53_record" "root-a" {
@@ -35,6 +36,7 @@ resource "aws_route53_record" "root-a" {
     }
   }
   records = var.aws_elb_zone_id == "" ? [var.aws_elb_dns_name] : null
+  ttl     = var.aws_elb_zone_id == "" ? 300 : null
 }
 
 resource "aws_route53_record" "www-a" {
@@ -52,6 +54,7 @@ resource "aws_route53_record" "www-a" {
     }
   }
   records = var.aws_elb_zone_id == "" ? [var.aws_elb_dns_name] : null
+  ttl     = var.aws_elb_zone_id == "" ? 300 : null
 }
 
 locals {
