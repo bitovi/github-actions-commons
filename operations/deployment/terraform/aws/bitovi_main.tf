@@ -88,7 +88,7 @@ module "aws_route53" {
   aws_r53_enable_cert        = var.aws_r53_enable_cert
   # ELB
   aws_elb_dns_name = try(module.aws_lb[0].aws_alb_dns_name,module.aws_elb[0].aws_elb_dns_name,module.ec2[0].instance_public_ip,"")
-  aws_elb_zone_id  = try(module.aws_lb[0].aws_alb_zone_id,module.aws_elb[0].aws_elb_zone_id,null,"")
+  aws_elb_zone_id  = try(module.aws_lb[0].aws_alb_zone_id,module.aws_elb[0].aws_elb_zone_id,"","")
   # Certs
   aws_certificates_selected_arn = var.aws_r53_enable_cert && var.aws_r53_domain_name != "" ? module.aws_certificates[0].selected_arn : ""
   # Others
