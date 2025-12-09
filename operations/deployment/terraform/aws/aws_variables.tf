@@ -364,6 +364,18 @@ variable "aws_alb_listen_protocol" {
   default     = ""
 }
 
+variable "aws_alb_redirect_enable" {
+  type        = bool
+  description = "Enable HTTP to HTTPS redirection on ALB"
+  default     = false
+}
+
+variable "aws_alb_www_to_apex_redirect" {
+  type        = bool
+  description = "Enable www to apex domain redirection on ALB"
+  default     = false
+}
+
 # Healthcheck
 variable "aws_alb_healthcheck_path" {
   type        = string
@@ -382,6 +394,7 @@ variable "aws_alb_ssl_policy" {
   description = "SSL policy for HTTPS listeners"
   default     = null
 }
+
 # Logging
 variable "aws_alb_access_log_enabled" {
   type        = bool

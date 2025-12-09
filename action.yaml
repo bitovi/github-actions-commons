@@ -299,6 +299,12 @@ inputs:
   aws_alb_listen_protocol:
     description: "Comma-separated list of listener protocols for ALB (HTTP/HTTPS)"
     required: false
+  aws_alb_redirect_enable:
+    description: "Enable HTTP to HTTPS redirection on ALB"
+    required: false
+  aws_alb_www_to_apex_redirect:
+    description: 'Enable www to apex domain redirection on ALB'
+    required: false
   aws_alb_healthcheck_path:
     description: "Health check path for ALB target group"
     required: false
@@ -1355,6 +1361,8 @@ runs:
         AWS_ALB_APP_PROTOCOL: ${{ inputs.aws_alb_app_protocol }}
         AWS_ALB_LISTEN_PORT: ${{ inputs.aws_alb_listen_port }}
         AWS_ALB_LISTEN_PROTOCOL: ${{ inputs.aws_alb_listen_protocol }}
+        AWS_ALB_REDIRECT_ENABLE: ${{ inputs.aws_alb_redirect_enable }}
+        AWS_ALB_WWW_TO_APEX_REDIRECT: ${{ inputs.aws_alb_www_to_apex_redirect }}
         AWS_ALB_HEALTHCHECK_PATH: ${{ inputs.aws_alb_healthcheck_path }}
         AWS_ALB_HEALTHCHECK_PROTOCOL: ${{ inputs.aws_alb_healthcheck_protocol }}
         AWS_ALB_SSL_POLICY: ${{ inputs.aws_alb_ssl_policy }}

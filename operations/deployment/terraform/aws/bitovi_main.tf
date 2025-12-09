@@ -160,6 +160,8 @@ module "aws_lb" {
   aws_alb_app_protocol         = var.aws_alb_app_protocol
   aws_alb_listen_port          = var.aws_alb_listen_port
   aws_alb_listen_protocol      = var.aws_alb_listen_protocol
+  aws_alb_redirect_enable      = var.aws_alb_redirect_enable
+  aws_alb_www_to_apex_redirect = var.aws_alb_www_to_apex_redirect
   aws_alb_healthcheck_path     = var.aws_alb_healthcheck_path
   aws_alb_healthcheck_protocol = var.aws_alb_healthcheck_protocol
   aws_alb_ssl_policy           = var.aws_alb_ssl_policy
@@ -172,6 +174,7 @@ module "aws_lb" {
   aws_vpc_subnet_selected = module.vpc.aws_selected_vpc_subnets #module.vpc.aws_vpc_subnet_selected
   aws_instance_server_id  = module.ec2[0].aws_instance_server_id
   aws_alb_target_sg_id    = module.ec2[0].aws_security_group_ec2_sg_id
+  aws_r53_domain_name     = var.aws_r53_domain_name
   # Certs
   aws_certificates_selected_arn = var.aws_r53_enable_cert && var.aws_r53_domain_name != "" ? module.aws_certificates[0].selected_arn : ""
   # Others

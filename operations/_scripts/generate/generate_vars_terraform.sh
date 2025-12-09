@@ -140,6 +140,8 @@ if [[ $(alpha_only "$AWS_ALB_CREATE") == true ]]; then
   aws_alb_app_protocol=$(generate_var aws_alb_app_protocol $AWS_ALB_APP_PROTOCOL)
   aws_alb_listen_port=$(generate_var aws_alb_listen_port $AWS_ALB_LISTEN_PORT)
   aws_alb_listen_protocol=$(generate_var aws_alb_listen_protocol $AWS_ALB_LISTEN_PROTOCOL)
+  aws_alb_redirect_enable=$(generate_var aws_alb_redirect_enable $AWS_ALB_REDIRECT_ENABLE)
+  aws_alb_www_to_apex_redirect=$(generate_var aws_alb_www_to_apex_redirect $AWS_ALB_WWW_TO_APEX_REDIRECT)
   aws_alb_healthcheck_path=$(generate_var aws_alb_healthcheck_path $AWS_ALB_HEALTHCHECK_PATH)
   aws_alb_healthcheck_protocol=$(generate_var aws_alb_healthcheck_protocol $AWS_ALB_HEALTHCHECK_PROTOCOL)
   aws_alb_ssl_policy=$(generate_var aws_alb_ssl_policy $AWS_ALB_SSL_POLICY)
@@ -533,6 +535,8 @@ $aws_alb_app_port
 $aws_alb_app_protocol
 $aws_alb_listen_port
 $aws_alb_listen_protocol
+$aws_alb_redirect_enable
+$aws_alb_www_to_apex_redirect
 $aws_alb_healthcheck_path
 $aws_alb_healthcheck_protocol
 $aws_alb_ssl_policy
