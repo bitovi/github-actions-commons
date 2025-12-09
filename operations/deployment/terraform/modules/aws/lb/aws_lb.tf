@@ -95,7 +95,7 @@ resource "null_resource" "http_redirect_dep" {
 
 # Listeners for ALB
 resource "aws_alb_listener" "lb_listener_ssl" {
-  count             = local.alb_ssl_available ? length(local.alb_ports_ammount) : 0
+  count             = local.alb_ssl_available ? local.alb_ports_ammount : 0
   load_balancer_arn = aws_lb.vm_alb.arn
   port              = local.alb_listen_port[count.index]
   protocol          = local.alb_listen_protocol[count.index]
@@ -114,7 +114,7 @@ resource "aws_alb_listener" "lb_listener_ssl" {
 }
 
 resource "aws_alb_listener" "lb_listener" {
-  count             = local.alb_ssl_available ? 0 : length(local.alb_ports_ammount)
+  count             = local.alb_ssl_available ? 0 : local.alb_ports_ammount
   load_balancer_arn = aws_lb.vm_alb.arn
   port              = local.alb_listen_port[count.index]
   protocol          = local.alb_listen_protocol[count.index]
