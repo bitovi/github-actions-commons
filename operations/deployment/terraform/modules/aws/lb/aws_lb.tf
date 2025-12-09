@@ -92,19 +92,10 @@ resource "aws_lb_listener" "vm_alb_listener" {
     target_group_arn = aws_lb_target_group.vm_alb_tg[count.index].arn
   }
   # https://docs.aws.amazon.com/elasticloadbalancing/latest/application/create-https-listener.html
-
-  dynamic "ssl_policy" {
-    for_each = local.alb_listen_protocol[count.index] == "HTTPS" ? [1] : []
-    content {
-      ssl_policy = var.aws_alb_ssl_policy
-    }
-  }
-
-  dynamic "certificate_arn" {
-    for_each = local.alb_listen_protocol[count.index] == "HTTPS" ? [1] : []
-    content {
-      certificate_arn = var.aws_certificates_selected_arn
-    }
+  ssl_policy      = local.alb_listen_protocol[count.index] == "HTTPS" ? var.aws_alb_ssl_policy : null
+  certificate_arn = local.alb_listen_protocol[count.index] == "HTTPS" ? var.aws_certificates_selected_arn : null
+  lifecycle {
+    replace_triggered_by = [local.alb_listen_protocol[count.index]]
   }
 }
 
