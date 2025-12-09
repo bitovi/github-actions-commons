@@ -61,7 +61,7 @@ resource "aws_lb" "vm_alb" {
 # Target groups for ALB
 resource "aws_lb_target_group" "vm_alb_tg" {
   count    = local.alb_ports_ammount
-  name     = "${var.aws_resource_identifier_supershort}-tg-${local.alb_app_port[count.index]}"
+  name     = "${var.aws_resource_identifier_supershort}-${count.index}"
   port     = local.alb_app_port[count.index]
   protocol = local.alb_app_protocol[count.index]
   vpc_id   = var.aws_vpc_selected_id
@@ -76,7 +76,7 @@ resource "aws_lb_target_group" "vm_alb_tg" {
   }
 
   tags = {
-    Name = "${var.aws_resource_identifier_supershort}-tg-${local.alb_app_port[count.index]}"
+    Name = "${var.aws_resource_identifier_supershort}-${count.index}-${local.alb_app_port[count.index]}"
   }
 }
 
