@@ -199,7 +199,7 @@ resource "aws_lb_listener_rule" "http_forward_apex" {
 
   action {
     type             = "forward"
-    target_group_arn = aws_alb_target_group.lb_targets[0].id
+    target_group_arn = aws_alb_target_group.vm_alb_tg[0].id
   }
 }
 
