@@ -21,12 +21,6 @@ resource "aws_acm_certificate" "root_domain" {
   domain_name               = var.aws_r53_domain_name
   subject_alternative_names = ["*.${var.aws_r53_domain_name}", "${var.aws_r53_domain_name}"]
   validation_method         = "DNS"
-  dynamic "options" {
-    for_each = var.aws_r53_export_cert ? [1] : []
-    content {
-      export = "ENABLED"
-    } 
-  }
   lifecycle {
     create_before_destroy = true
   }
@@ -54,12 +48,6 @@ resource "aws_acm_certificate" "sub_domain" {
   count             = local.is_enabled_and_valid ? (var.aws_r53_create_sub_cert ? (var.aws_r53_domain_name != "" ? (var.aws_r53_sub_domain_name != "" ? (var.aws_r53_create_root_cert ? 0 : 1) : 0) : 0) : 0) : 0
   domain_name       = "${var.aws_r53_sub_domain_name}.${var.aws_r53_domain_name}"
   validation_method = "DNS"
-  dynamic "options" {
-    for_each = var.aws_r53_export_cert ? [1] : []
-    content {
-      export = "ENABLED"
-    } 
-  }
   lifecycle {
     create_before_destroy = true
   }
