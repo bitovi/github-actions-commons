@@ -67,6 +67,7 @@ module "aws_certificates" {
   aws_r53_cert_arn         = var.aws_r53_cert_arn
   aws_r53_create_root_cert = var.aws_r53_create_root_cert
   aws_r53_create_sub_cert  = var.aws_r53_create_sub_cert
+  aws_r53_export_cert      = var.aws_r53_export_cert
   # R53
   aws_r53_domain_name     = var.aws_r53_domain_name
   aws_r53_sub_domain_name = var.aws_r53_sub_domain_name

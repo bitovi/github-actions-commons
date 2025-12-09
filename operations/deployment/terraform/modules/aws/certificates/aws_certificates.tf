@@ -6,12 +6,13 @@ data "aws_route53_zone" "selected" {
 
 data "aws_acm_certificate" "issued" {
   #count  = local.is_enabled_and_valid ? (!var.aws_r53_create_root_cert ? (!var.aws_r53_create_sub_cert ? (var.fqdn_provided ? 1 : 0) : 0) : 0) :0
-  for_each = local.is_enabled_and_valid ? {
-    "domain" : var.aws_r53_domain_name,
-    "wildcard" : "*.${var.aws_r53_domain_name}"
-    "sub" : "${var.aws_r53_sub_domain_name}.${var.aws_r53_domain_name}"
+  for_each = (!var.aws_r53_create_root_cert && !var.aws_r53_create_sub_cert && local.is_enabled_and_valid) ? {
+    "domain"   = var.aws_r53_domain_name,
+    "wildcard" = "*.${var.aws_r53_domain_name}",
+    "sub"      = "${var.aws_r53_sub_domain_name}.${var.aws_r53_domain_name}"
   } : {}
-  domain = var.aws_r53_domain_name
+  domain = each.value
+  #domain = var.aws_r53_domain_name
 }
 
 # This block will create and validate the root domain and www cert
@@ -20,6 +21,15 @@ resource "aws_acm_certificate" "root_domain" {
   domain_name               = var.aws_r53_domain_name
   subject_alternative_names = ["*.${var.aws_r53_domain_name}", "${var.aws_r53_domain_name}"]
   validation_method         = "DNS"
+  dynamic "options" {
+    for_each = var.aws_r53_export_cert ? [1] : []
+    content {
+      export = "ENABLED"
+    } 
+  }
+  lifecycle {
+    create_before_destroy = true
+  }
 }
 
 resource "aws_route53_record" "root_domain" {
@@ -44,6 +54,15 @@ resource "aws_acm_certificate" "sub_domain" {
   count             = local.is_enabled_and_valid ? (var.aws_r53_create_sub_cert ? (var.aws_r53_domain_name != "" ? (var.aws_r53_sub_domain_name != "" ? (var.aws_r53_create_root_cert ? 0 : 1) : 0) : 0) : 0) : 0
   domain_name       = "${var.aws_r53_sub_domain_name}.${var.aws_r53_domain_name}"
   validation_method = "DNS"
+  dynamic "options" {
+    for_each = var.aws_r53_export_cert ? [1] : []
+    content {
+      export = "ENABLED"
+    } 
+  }
+  lifecycle {
+    create_before_destroy = true
+  }
 }
 
 resource "aws_route53_record" "sub_domain" {

@@ -116,6 +116,7 @@ if [[ $(alpha_only "$AWS_R53_ENABLE_CERT") == true ]]; then
   aws_r53_cert_arn=$(generate_var aws_r53_cert_arn $AWS_R53_CERT_ARN)
   aws_r53_create_root_cert=$(generate_var aws_r53_create_root_cert $AWS_R53_CREATE_ROOT_CERT)
   aws_r53_create_sub_cert=$(generate_var aws_r53_create_sub_cert $AWS_R53_CREATE_SUB_CERT)
+  aws_r53_export_cert=$(generate_var aws_r53_export_cert $AWS_R53_EXPORT_CERT)
 fi
 
 #-- AWS ELB --#
@@ -512,6 +513,7 @@ $aws_r53_enable_cert
 $aws_r53_cert_arn
 $aws_r53_create_root_cert
 $aws_r53_create_sub_cert
+$aws_r53_export_cert
 $aws_r53_additional_tags
 
 #-- ELB --#

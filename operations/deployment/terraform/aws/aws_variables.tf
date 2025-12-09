@@ -260,6 +260,12 @@ variable "aws_r53_create_sub_cert" {
   default     = false
 }
 
+variable "aws_r53_export_cert" {
+  type        = bool
+  description = "Enables export flag of the certificate."
+  default     = false
+} 
+
 variable "aws_r53_additional_tags" {
   type        = string
   description = "A list of strings that will be added to created resources"
