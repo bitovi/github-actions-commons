@@ -148,7 +148,7 @@ resource "aws_alb_listener" "lb_listener" {
 }
 
 resource "aws_alb_listener" "http_redirect" {
-  count             = var.aws_alb_redirect_enable && var.aws_certificate_enabled ? 1 : 0 #!contains(local.alb_listen_port, 80) ? 1 : 0 : 0
+  count             = var.aws_alb_redirect_enable && var.aws_certificate_enabled && !contains(local.alb_listen_port, 80) ? 1 : 0 #!contains(local.alb_listen_port, 80) ? 1 : 0 : 0
   load_balancer_arn = aws_lb.vm_alb.arn
   port              = "80"
   protocol          = "HTTP"
@@ -169,7 +169,7 @@ resource "aws_alb_listener" "http_redirect" {
 }
 
 resource "aws_alb_listener" "http_forward" {
-  count             = var.aws_alb_redirect_enable && !var.aws_alb_www_to_apex_redirect && !var.aws_certificate_enabled ? 1 : 0 #!contains(local.alb_listen_port, 80) ? 1 : 0 : 0
+  count             = var.aws_alb_redirect_enable && !var.aws_alb_www_to_apex_redirect && !var.aws_certificate_enabled && !contains(local.alb_listen_port, 80) ? 1 : 0 #!contains(local.alb_listen_port, 80) ? 1 : 0 : 0
   load_balancer_arn = aws_lb.vm_alb.arn
   port              = "80"
   protocol          = "HTTP"
@@ -269,7 +269,7 @@ resource "aws_security_group_rule" "incoming_alb_https" {
 ###
 
 resource "aws_alb_listener" "https_redirect" {
-  count             = var.aws_alb_redirect_enable && var.aws_certificate_enabled ? 1 : 0 #!contains(local.alb_listen_port, 443) ? 1 : 0 : 0
+  count             = var.aws_alb_redirect_enable && var.aws_certificate_enabled && !contains(local.alb_listen_port, 443) ? 1 : 0 #!contains(local.alb_listen_port, 443) ? 1 : 0 : 0
   load_balancer_arn = aws_lb.vm_alb.arn
   port              = "443"
   protocol          = "HTTPS"
