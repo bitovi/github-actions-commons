@@ -329,8 +329,8 @@ POLICY
 locals {
   alb_ssl_available = var.aws_certificates_selected_arn != "" ? true : false
 
-  alb_listen_port     = var.aws_alb_listen_port != "" ? [for n in split(",", var.aws_alb_listen_port) : tonumber(n)] : (local.alb_ssl_available ? [443] : [80])
-  alb_listen_protocol = var.aws_alb_listen_protocol != "" ? [for n in split(",", var.aws_alb_listen_protocol) : n] : (local.alb_ssl_available ? ["HTTPS"] : ["HTTP"])
+  alb_listen_port     = var.aws_alb_listen_port != "" ? [for n in split(",", var.aws_alb_listen_port) : tonumber(n)] : (var.aws_certificates_selected_arn != "" ? [443] : [80])
+  alb_listen_protocol = var.aws_alb_listen_protocol != "" ? [for n in split(",", var.aws_alb_listen_protocol) : n] : (var.aws_certificates_selected_arn != "" ? ["HTTPS"] : ["HTTP"])
   alb_app_port        = var.aws_alb_app_port != "" ? [for n in split(",", var.aws_alb_app_port) : tonumber(n)] : local.alb_listen_port
   alb_app_protocol    = var.aws_alb_app_protocol != "" ? [for n in split(",", var.aws_alb_app_protocol) : n] : [for _ in local.alb_app_port : "HTTP"]
 
