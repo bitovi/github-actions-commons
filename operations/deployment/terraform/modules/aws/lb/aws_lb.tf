@@ -1,3 +1,22 @@
+# Locals for ALB
+locals {
+  alb_ssl_available = var.aws_certificates_selected_arn != "" ? true : false
+
+  alb_listen_port     = var.aws_alb_listen_port != "" ? [for n in split(",", var.aws_alb_listen_port) : tonumber(n)] : var.aws_certificates_selected_arn != "" ? [443] : [80]
+  alb_listen_protocol = var.aws_alb_listen_protocol != "" ? [for n in split(",", var.aws_alb_listen_protocol) : n] : var.aws_certificates_selected_arn != "" ? ["HTTPS"] : ["HTTP"]
+  alb_app_port        = var.aws_alb_app_port != "" ? [for n in split(",", var.aws_alb_app_port) : tonumber(n)] : local.alb_listen_port
+  alb_app_protocol    = var.aws_alb_app_protocol != "" ? [for n in split(",", var.aws_alb_app_protocol) : n] : [for _ in local.alb_app_port : "HTTP"]
+
+  # Ensure all arrays have the same length
+  alb_ports_ammount = min(
+    length(local.alb_listen_port),
+    length(local.alb_app_port),
+    length(local.alb_listen_protocol),
+    length(local.alb_app_protocol)
+  )
+}
+
+
 # Security group for ALB
 resource "aws_security_group" "alb_security_group" {
   name        = var.aws_alb_security_group_name != "" ? var.aws_alb_security_group_name : "SG for ${var.aws_resource_identifier} - ALB"
@@ -323,24 +342,6 @@ POLICY
   lifecycle {
     ignore_changes = [policy]
   }
-}
-
-# Locals for ALB
-locals {
-  alb_ssl_available = var.aws_certificates_selected_arn != "" ? true : false
-
-  alb_listen_port     = var.aws_alb_listen_port != "" ? [for n in split(",", var.aws_alb_listen_port) : tonumber(n)] : (var.aws_certificates_selected_arn != "" ? [443] : [80])
-  alb_listen_protocol = var.aws_alb_listen_protocol != "" ? [for n in split(",", var.aws_alb_listen_protocol) : n] : (var.aws_certificates_selected_arn != "" ? ["HTTPS"] : ["HTTP"])
-  alb_app_port        = var.aws_alb_app_port != "" ? [for n in split(",", var.aws_alb_app_port) : tonumber(n)] : local.alb_listen_port
-  alb_app_protocol    = var.aws_alb_app_protocol != "" ? [for n in split(",", var.aws_alb_app_protocol) : n] : [for _ in local.alb_app_port : "HTTP"]
-
-  # Ensure all arrays have the same length
-  alb_ports_ammount = min(
-    length(local.alb_listen_port),
-    length(local.alb_app_port),
-    length(local.alb_listen_protocol),
-    length(local.alb_app_protocol)
-  )
 }
 
 # Outputs

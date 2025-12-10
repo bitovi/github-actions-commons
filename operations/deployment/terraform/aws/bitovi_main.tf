@@ -176,7 +176,8 @@ module "aws_lb" {
   aws_alb_target_sg_id    = module.ec2[0].aws_security_group_ec2_sg_id
   aws_r53_domain_name     = var.aws_r53_domain_name
   # Certs
-  aws_certificates_selected_arn = var.aws_r53_enable_cert && var.aws_r53_domain_name != "" ? module.aws_certificates[0].selected_arn : ""
+  #aws_certificates_selected_arn = var.aws_r53_enable_cert && var.aws_r53_domain_name != "" ? module.aws_certificates[0].selected_arn : ""
+  aws_certificates_selected_arn = try(module.aws_certificates[0].selected_arn, "")
   # Others
   aws_resource_identifier            = var.aws_resource_identifier
   aws_resource_identifier_supershort = var.aws_resource_identifier_supershort
