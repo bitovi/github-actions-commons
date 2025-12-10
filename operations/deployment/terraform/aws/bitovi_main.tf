@@ -177,12 +177,13 @@ module "aws_lb" {
   aws_r53_domain_name     = var.aws_r53_domain_name
   # Certs
   #aws_certificates_selected_arn = var.aws_r53_enable_cert && var.aws_r53_domain_name != "" ? module.aws_certificates[0].selected_arn : ""
+  aws_certificate_enabled       = var.aws_r53_enable_cert && length(module.aws_certificates) > 0 ? true : false
   aws_certificates_selected_arn = try(module.aws_certificates[0].selected_arn, "")
   # Others
   aws_resource_identifier            = var.aws_resource_identifier
   aws_resource_identifier_supershort = var.aws_resource_identifier_supershort
   # Module dependencies
-  depends_on = [module.vpc, module.ec2, module.aws_certificates]
+  #depends_on = [module.vpc, module.ec2, module.aws_certificates]
 
   providers = {
     aws = aws.lb
