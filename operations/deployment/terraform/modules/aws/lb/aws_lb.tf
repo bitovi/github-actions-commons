@@ -129,7 +129,7 @@ resource "aws_alb_listener" "lb_listener" {
 }
 
 resource "aws_alb_listener" "http_redirect" {
-  count             = var.aws_alb_redirect_enable && !contains(local.alb_listen_port, 80) && var.aws_certificates_selected_arn != ""  ? 1 : 0
+  count             = var.aws_alb_redirect_enable && !contains(local.alb_listen_port, 80) ? 1 : 0 #&& var.aws_certificates_selected_arn != ""  ? 1 : 0
   load_balancer_arn = aws_lb.vm_alb.arn
   port              = "80"
   protocol          = "HTTP"
@@ -150,7 +150,7 @@ resource "aws_alb_listener" "http_redirect" {
 }
 
 resource "aws_alb_listener" "http_forward" {
-  count             = var.aws_alb_redirect_enable && !contains(local.alb_listen_port, 80) && var.aws_certificates_selected_arn == ""  && !var.aws_alb_www_to_apex_redirect ? 1 : 0
+  count             = var.aws_alb_redirect_enable && !var.aws_alb_www_to_apex_redirect && !contains(local.alb_listen_port, 80) ? 1 : 0 # && var.aws_certificates_selected_arn == ""   ? 1 : 0
   load_balancer_arn = aws_lb.vm_alb.arn
   port              = "80"
   protocol          = "HTTP"
@@ -166,7 +166,7 @@ resource "aws_alb_listener" "http_forward" {
 }
 
 resource "aws_alb_listener" "http_www_redirect" {
-  count             = var.aws_alb_redirect_enable && !contains(local.alb_listen_port, 80) && var.aws_certificates_selected_arn == "" && var.aws_alb_www_to_apex_redirect ? 1 : 0
+  count             = var.aws_alb_redirect_enable && var.aws_alb_www_to_apex_redirect && !contains(local.alb_listen_port, 80) ? 1 : 0 #&& var.aws_certificates_selected_arn == "" ? 1 : 0
   load_balancer_arn = aws_lb.vm_alb.arn
   port              = "80"
   protocol          = "HTTP"
@@ -250,7 +250,7 @@ resource "aws_security_group_rule" "incoming_alb_https" {
 ###
 
 resource "aws_alb_listener" "https_redirect" {
-  count             = var.aws_alb_redirect_enable && !contains(local.alb_listen_port, 443) && local.alb_ssl_available ? 1 : 0
+  count             = var.aws_alb_redirect_enable && !contains(local.alb_listen_port, 443) ? 1 : 0 #&& local.alb_ssl_available ? 1 : 0
   load_balancer_arn = aws_lb.vm_alb.arn
   port              = "443"
   protocol          = "HTTPS"
