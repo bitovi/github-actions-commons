@@ -114,7 +114,7 @@ resource "null_resource" "http_redirect_dep" {
 
 # Listeners for ALB
 resource "aws_alb_listener" "lb_listener_ssl" {
-  count             = local.alb_ssl_available ? local.alb_ports_ammount : 0
+  count             = var.aws_certificate_enabled ? local.alb_ports_ammount : 0
   load_balancer_arn = aws_lb.vm_alb.arn
   port              = local.alb_listen_port[count.index]
   protocol          = local.alb_listen_protocol[count.index]
@@ -133,7 +133,7 @@ resource "aws_alb_listener" "lb_listener_ssl" {
 }
 
 resource "aws_alb_listener" "lb_listener" {
-  count             = local.alb_ssl_available ? 0 : local.alb_ports_ammount
+  count             = var.aws_certificate_enabled ? 0 : local.alb_ports_ammount
   load_balancer_arn = aws_lb.vm_alb.arn
   port              = local.alb_listen_port[count.index]
   protocol          = local.alb_listen_protocol[count.index]
@@ -185,7 +185,7 @@ resource "aws_alb_listener" "http_forward" {
 }
 
 resource "aws_alb_listener" "http_www_redirect" {
-  count             = var.aws_alb_redirect_enable && var.aws_alb_www_to_apex_redirect && !var.aws_certificate_enabled ? 1 : 0 #!contains(local.alb_listen_port, 80) ? 1 : 0 : 0
+  count             = var.aws_alb_redirect_enable && var.aws_alb_www_to_apex_redirect && !var.aws_certificate_enabled ? !contains(local.alb_listen_port, 80) ? 1 : 0 : 0
   load_balancer_arn = aws_lb.vm_alb.arn
   port              = "80"
   protocol          = "HTTP"
@@ -206,7 +206,7 @@ resource "aws_alb_listener" "http_www_redirect" {
 }
 
 resource "aws_lb_listener_rule" "http_forward_apex" {
-  count        = var.aws_alb_www_to_apex_redirect && var.aws_r53_domain_name != "" && !local.alb_ssl_available && length(aws_alb_listener.http_www_redirect) > 0 ? 1 : 0
+  count        = var.aws_alb_www_to_apex_redirect && var.aws_r53_domain_name != "" && !var.aws_certificate_enabled && length(aws_alb_listener.http_www_redirect) > 0 ? 1 : 0
   listener_arn = aws_alb_listener.http_www_redirect[0].arn
   priority     = 20
 
@@ -223,8 +223,8 @@ resource "aws_lb_listener_rule" "http_forward_apex" {
 }
 
 resource "aws_lb_listener_rule" "redirect_www_to_apex" {
-  count        = var.aws_alb_www_to_apex_redirect && var.aws_r53_domain_name != "" && (local.alb_ssl_available ? length(aws_alb_listener.https_redirect) > 0 : length(aws_alb_listener.http_www_redirect) > 0) ? 1 : 0
-  listener_arn = local.alb_ssl_available ? aws_alb_listener.https_redirect[0].arn : aws_alb_listener.http_www_redirect[0].arn
+  count        = var.aws_alb_www_to_apex_redirect && var.aws_r53_domain_name != "" && (var.aws_certificate_enabled ? length(aws_alb_listener.https_redirect) > 0 : length(aws_alb_listener.http_www_redirect) > 0) ? 1 : 0
+  listener_arn = var.aws_certificate_enabled ? aws_alb_listener.https_redirect[0].arn : aws_alb_listener.http_www_redirect[0].arn
   priority     = 10
 
   condition {
