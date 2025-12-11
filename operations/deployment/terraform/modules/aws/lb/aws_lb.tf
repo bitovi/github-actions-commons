@@ -250,7 +250,7 @@ resource "aws_lb_listener_rule" "redirect_www_to_apex" {
 }
 
 resource "aws_security_group_rule" "incoming_alb_http" {
-  count             = length(aws_alb_listener.http_redirect) + length(aws_alb_listener.http_forward) + length(aws_alb_listener.http_www_redirect)
+  count             = !contains(local.alb_listen_port_list, 80) ? length(aws_alb_listener.http_redirect) + length(aws_alb_listener.http_forward) + length(aws_alb_listener.http_www_redirect) : 0
   type              = "ingress"
   from_port         = 80
   to_port           = 80
@@ -260,7 +260,7 @@ resource "aws_security_group_rule" "incoming_alb_http" {
 }
 
 resource "aws_security_group_rule" "incoming_alb_https" {
-  count             = length(aws_alb_listener.https_redirect)
+  count             = !contains(local.alb_listen_port_list, 443) ? length(aws_alb_listener.https_redirect) : 0
   type              = "ingress"
   from_port         = 443
   to_port           = 443
