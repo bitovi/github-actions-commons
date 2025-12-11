@@ -155,7 +155,6 @@ module "aws_lb" {
   aws_alb_target_sg_id    = module.ec2[0].aws_security_group_ec2_sg_id
   aws_r53_domain_name     = var.aws_r53_domain_name
   # Certs
-  #aws_certificates_selected_arn = var.aws_r53_enable_cert && var.aws_r53_domain_name != "" ? module.aws_certificates[0].selected_arn : ""
   aws_certificate_enabled       = var.aws_r53_enable_cert && length(module.aws_certificates) > 0 ? true : false
   aws_certificates_selected_arn = try(module.aws_certificates[0].selected_arn, "")
   # Others
@@ -787,11 +786,13 @@ locals {
     ) :
     false
   )
+  protocol             = var.aws_r53_enable_cert ? module.aws_certificates[0].selected_arn != "" ? "https://" : "http://" : "http://"
   create_efs           = var.aws_efs_create == true ? true : (var.aws_efs_create_ha == true ? true : false)
   ec2_public_endpoint  = var.aws_ec2_instance_create ? (module.ec2[0].instance_public_dns != null ? module.ec2[0].instance_public_dns : module.ec2[0].instance_public_ip) : null
   ec2_private_endpoint = var.aws_ec2_instance_create ? (module.ec2[0].instance_private_dns != null ? module.ec2[0].instance_private_dns : module.ec2[0].instance_private_ip) : null
-  ec2_endpoint         = var.aws_ec2_instance_create ? (local.ec2_public_endpoint != null ? "http://${local.ec2_public_endpoint}" : "http://${local.ec2_private_endpoint}") : null
-  elb_url              = try(module.aws_elb[0].aws_elb_dns_name, null) != null ? "http://${module.aws_elb[0].aws_elb_dns_name}" : null
+  ec2_endpoint         = var.aws_ec2_instance_create ? (local.ec2_public_endpoint != null ? "${local.protocol}${local.ec2_public_endpoint}" : "${local.protocol}${local.ec2_private_endpoint}") : null
+  elb_url              = try(module.aws_elb[0].aws_elb_dns_name, null) != null ? "${local.protocol}${module.aws_elb[0].aws_elb_dns_name}" : null
+  alb_url              = try(module.aws_alb[0].aws_alb_dns_name, null) != null ? "${local.protocol}${module.aws_alb[0].aws_alb_dns_name}" : null
 }
 
 # VPC
@@ -839,13 +840,18 @@ output "aws_elb_dns_name" {
   value       = try(module.aws_elb[0].aws_elb_dns_name, null)
 }
 
+output "aws_alb_dns_name" {
+  description = "Public DNS address of the ALB"
+  value       = try(module.aws_alb[0].aws_alb_dns_name, null)
+}
+
 output "application_public_dns" {
   description = "Public DNS address for the application or load balancer public DNS"
   value       = try(module.aws_route53[0].vm_url, null)
 }
 
 output "vm_url" {
-  value = try(module.aws_route53[0].vm_url, local.elb_url)
+  value = try(module.aws_route53[0].vm_url, local.alb_url, local.elb_url)
 }
 
 # EFS
