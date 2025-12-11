@@ -99,30 +99,9 @@ module "aws_route53" {
   }
 }
 
-#module "aws_route53_lb" {
-#  source = "../modules/aws/route53"
-#  count  = var.aws_ec2_instance_create && var.aws_r53_enable && var.aws_r53_domain_name != "" && var.aws_alb_create ? 1 : 0
-#  # R53 values
-#  aws_r53_domain_name        = var.aws_r53_domain_name
-#  aws_r53_sub_domain_name    = var.aws_r53_sub_domain_name
-#  aws_r53_root_domain_deploy = var.aws_r53_root_domain_deploy
-#  aws_r53_enable_cert        = var.aws_r53_enable_cert
-#  # ELB
-#  aws_elb_dns_name = module.aws_lb[0].aws_alb_dns_name
-#  aws_elb_zone_id  = module.aws_lb[0].aws_alb_zone_id
-#  # Certs
-#  aws_certificates_selected_arn = var.aws_r53_enable_cert && var.aws_r53_domain_name != "" ? module.aws_certificates[0].selected_arn : ""
-#  # Others
-#  fqdn_provided = local.fqdn_provided
-#
-#  providers = {
-#    aws = aws.r53
-#  }
-#}
-
 module "aws_elb" {
   source = "../modules/aws/elb"
-  count  = var.aws_ec2_instance_create && var.aws_elb_create && !var.aws_alb_create ? 1 : 0
+  count  = var.aws_ec2_instance_create && var.aws_elb_create ? 1 : 0
   # ELB Values
   aws_elb_security_group_name    = var.aws_elb_security_group_name
   aws_elb_app_port               = var.aws_elb_app_port
