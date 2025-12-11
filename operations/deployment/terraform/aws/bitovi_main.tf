@@ -792,7 +792,7 @@ locals {
   ec2_private_endpoint = var.aws_ec2_instance_create ? (module.ec2[0].instance_private_dns != null ? module.ec2[0].instance_private_dns : module.ec2[0].instance_private_ip) : null
   ec2_endpoint         = var.aws_ec2_instance_create ? (local.ec2_public_endpoint != null ? "${local.protocol}${local.ec2_public_endpoint}" : "${local.protocol}${local.ec2_private_endpoint}") : null
   elb_url              = try(module.aws_elb[0].aws_elb_dns_name, null) != null ? "${local.protocol}${module.aws_elb[0].aws_elb_dns_name}" : null
-  alb_url              = try(module.aws_alb[0].aws_alb_dns_name, null) != null ? "${local.protocol}${module.aws_alb[0].aws_alb_dns_name}" : null
+  alb_url              = try(module.aws_lb[0].aws_alb_dns_name, null) != null ? "${local.protocol}${module.aws_lb[0].aws_alb_dns_name}" : null
 }
 
 # VPC
@@ -842,7 +842,7 @@ output "aws_elb_dns_name" {
 
 output "aws_alb_dns_name" {
   description = "Public DNS address of the ALB"
-  value       = try(module.aws_alb[0].aws_alb_dns_name, null)
+  value       = try(module.aws_lb[0].aws_alb_dns_name, null)
 }
 
 output "application_public_dns" {
