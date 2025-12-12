@@ -158,18 +158,31 @@ if [[ $(alpha_only "$AWS_WAF_ENABLE") == true ]]; then
   aws_waf_log_retention_days=$(generate_var aws_waf_log_retention_days $AWS_WAF_LOG_RETENTION_DAYS)
   aws_waf_additional_tags=$(generate_var aws_waf_additional_tags $AWS_WAF_ADDITIONAL_TAGS)
   aws_waf_rule_rate_limit=$(generate_var aws_waf_rule_rate_limit $AWS_WAF_RULE_RATE_LIMIT)
+  aws_waf_rule_rate_limit_priority=$(generate_var aws_waf_rule_rate_limit_priority $AWS_WAF_RULE_RATE_LIMIT_PRIORITY)
   aws_waf_rule_managed_rules=$(generate_var aws_waf_rule_managed_rules $AWS_WAF_RULE_MANAGED_RULES)
+  aws_waf_rule_managed_rules_priority=$(generate_var aws_waf_rule_managed_rules_priority $AWS_WAF_RULE_MANAGED_RULES_PRIORITY)
   aws_waf_rule_managed_bad_inputs=$(generate_var aws_waf_rule_managed_bad_inputs $AWS_WAF_RULE_MANAGED_BAD_INPUTS)
+  aws_waf_rule_managed_bad_inputs_priority=$(generate_var aws_waf_rule_managed_bad_inputs_priority $AWS_WAF_RULE_MANAGED_BAD_INPUTS_PRIORITY)
   aws_waf_rule_ip_reputation=$(generate_var aws_waf_rule_ip_reputation $AWS_WAF_RULE_IP_REPUTATION)
+  aws_waf_rule_ip_reputation_priority=$(generate_var aws_waf_rule_ip_reputation_priority $AWS_WAF_RULE_IP_REPUTATION_PRIORITY)
   aws_waf_rule_anonymous_ip=$(generate_var aws_waf_rule_anonymous_ip $AWS_WAF_RULE_ANONYMOUS_IP)
+  aws_waf_rule_anonymous_ip_priority=$(generate_var aws_waf_rule_anonymous_ip_priority $AWS_WAF_RULE_ANONYMOUS_IP_PRIORITY)
   aws_waf_rule_bot_control=$(generate_var aws_waf_rule_bot_control $AWS_WAF_RULE_BOT_CONTROL)
+  aws_waf_rule_bot_control_priority=$(generate_var aws_waf_rule_bot_control_priority $AWS_WAF_RULE_BOT_CONTROL_PRIORITY)
   aws_waf_rule_geo_block_countries=$(generate_var aws_waf_rule_geo_block_countries $AWS_WAF_RULE_GEO_BLOCK_COUNTRIES)
+  aws_waf_rule_geo_block_countries_priority=$(generate_var aws_waf_rule_geo_block_countries_priority $AWS_WAF_RULE_GEO_BLOCK_COUNTRIES_PRIORITY)
   aws_waf_rule_geo_allow_only_countries=$(generate_var aws_waf_rule_geo_allow_only_countries $AWS_WAF_RULE_GEO_ALLOW_ONLY_COUNTRIES)
+  aws_waf_rule_geo_allow_only_countries_priority=$(generate_var aws_waf_rule_geo_allow_only_countries_priority $AWS_WAF_RULE_GEO_ALLOW_ONLY_COUNTRIES_PRIORITY)
   aws_waf_rule_user_arn=$(generate_var aws_waf_rule_user_arn $AWS_WAF_RULE_USER_ARN)
+  aws_waf_rule_user_arn_priority=$(generate_var aws_waf_rule_user_arn_priority $AWS_WAF_RULE_USER_ARN_PRIORITY)
   aws_waf_rule_sqli=$(generate_var aws_waf_rule_sqli $AWS_WAF_RULE_SQLI)
+  aws_waf_rule_sqli_priority=$(generate_var aws_waf_rule_sqli_priority $AWS_WAF_RULE_SQLI_PRIORITY)
   aws_waf_rule_linux=$(generate_var aws_waf_rule_linux $AWS_WAF_RULE_LINUX)
+  aws_waf_rule_linux_priority=$(generate_var aws_waf_rule_linux_priority $AWS_WAF_RULE_LINUX_PRIORITY)
   aws_waf_rule_unix=$(generate_var aws_waf_rule_unix $AWS_WAF_RULE_UNIX)
+  aws_waf_rule_unix_priority=$(generate_var aws_waf_rule_unix_priority $AWS_WAF_RULE_UNIX_PRIORITY)
   aws_waf_rule_admin_protection=$(generate_var aws_waf_rule_admin_protection $AWS_WAF_RULE_ADMIN_PROTECTION)
+  aws_waf_rule_admin_protection_priority=$(generate_var aws_waf_rule_admin_protection_priority $AWS_WAF_RULE_ADMIN_PROTECTION_PRIORITY)
 fi
 
 #-- AWS EFS --#
@@ -551,18 +564,31 @@ $aws_waf_logging_enable
 $aws_waf_log_retention_days
 $aws_waf_additional_tags
 $aws_waf_rule_rate_limit
+$aws_waf_rule_rate_limit_priority
 $aws_waf_rule_managed_rules
+$aws_waf_rule_managed_rules_priority
 $aws_waf_rule_managed_bad_inputs
+$aws_waf_rule_managed_bad_inputs_priority
 $aws_waf_rule_ip_reputation
+$aws_waf_rule_ip_reputation_priority
 $aws_waf_rule_anonymous_ip
+$aws_waf_rule_anonymous_ip_priority
 $aws_waf_rule_bot_control
+$aws_waf_rule_bot_control_priority
 $aws_waf_rule_geo_block_countries
+$aws_waf_rule_geo_block_countries_priority
 $aws_waf_rule_geo_allow_only_countries
+$aws_waf_rule_geo_allow_only_countries_priority
 $aws_waf_rule_user_arn
+$aws_waf_rule_user_arn_priority
 $aws_waf_rule_sqli
+$aws_waf_rule_sqli_priority
 $aws_waf_rule_linux
+$aws_waf_rule_linux_priority
 $aws_waf_rule_unix
+$aws_waf_rule_unix_priority
 $aws_waf_rule_admin_protection
+$aws_waf_rule_admin_protection_priority
 
 #-- EFS --#
 $aws_efs_enable
