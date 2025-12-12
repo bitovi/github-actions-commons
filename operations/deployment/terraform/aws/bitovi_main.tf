@@ -62,7 +62,7 @@ module "efs_to_ec2_sg" {
 
 module "aws_certificates" {
   source = "../modules/aws/certificates"
-  count  = (var.aws_ec2_instance_create || var.aws_ecs_enable ) && var.aws_r53_enable_cert && var.aws_r53_cert_arn == "" ? 1 : 0
+  count  = (var.aws_ec2_instance_create || var.aws_ecs_enable) && var.aws_r53_enable_cert && var.aws_r53_cert_arn == "" && var.aws_r53_domain_name != "" ? 1 : 0
   # Cert
   aws_r53_cert_arn         = var.aws_r53_cert_arn
   aws_r53_create_root_cert = var.aws_r53_create_root_cert
@@ -812,7 +812,7 @@ locals {
     ) :
     false
   )
-  protocol             = var.aws_r53_enable_cert ? try(module.aws_certificates[0].selected_arn,  var.aws_r53_cert_arn, "") != "" ? "https://" : "http://" : "http://"
+  protocol             = var.aws_r53_enable_cert ? try(module.aws_certificates[0].selected_arn, var.aws_r53_cert_arn, "") != "" ? "https://" : "http://" : "http://"
   create_efs           = var.aws_efs_create == true ? true : (var.aws_efs_create_ha == true ? true : false)
   ec2_public_endpoint  = var.aws_ec2_instance_create ? (module.ec2[0].instance_public_dns != null ? module.ec2[0].instance_public_dns : module.ec2[0].instance_public_ip) : null
   ec2_private_endpoint = var.aws_ec2_instance_create ? (module.ec2[0].instance_private_dns != null ? module.ec2[0].instance_private_dns : module.ec2[0].instance_private_ip) : null
