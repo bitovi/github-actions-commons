@@ -176,19 +176,32 @@ module "aws_waf_ec2_alb" {
   aws_waf_log_retention_days = var.aws_waf_log_retention_days
   aws_resource_identifier    = var.aws_resource_identifier
   # Rules
-  aws_waf_rule_rate_limit               = var.aws_waf_rule_rate_limit
-  aws_waf_rule_managed_rules            = var.aws_waf_rule_managed_rules
-  aws_waf_rule_managed_bad_inputs       = var.aws_waf_rule_managed_bad_inputs
-  aws_waf_rule_ip_reputation            = var.aws_waf_rule_ip_reputation
-  aws_waf_rule_anonymous_ip             = var.aws_waf_rule_anonymous_ip
-  aws_waf_rule_bot_control              = var.aws_waf_rule_bot_control
-  aws_waf_rule_geo_block_countries      = var.aws_waf_rule_geo_block_countries
-  aws_waf_rule_geo_allow_only_countries = var.aws_waf_rule_geo_allow_only_countries
-  aws_waf_rule_user_arn                 = var.aws_waf_rule_user_arn
-  aws_waf_rule_sqli                     = var.aws_waf_rule_sqli
-  aws_waf_rule_linux                    = var.aws_waf_rule_linux
-  aws_waf_rule_unix                     = var.aws_waf_rule_unix
-  aws_waf_rule_admin_protection         = var.aws_waf_rule_admin_protection
+  aws_waf_rule_rate_limit                        = var.aws_waf_rule_rate_limit
+  aws_waf_rule_rate_limit_priority               = var.aws_waf_rule_rate_limit_priority
+  aws_waf_rule_managed_rules                     = var.aws_waf_rule_managed_rules
+  aws_waf_rule_managed_rules_priority            = var.aws_waf_rule_managed_rules_priority
+  aws_waf_rule_managed_bad_inputs                = var.aws_waf_rule_managed_bad_inputs
+  aws_waf_rule_managed_bad_inputs_priority       = var.aws_waf_rule_managed_bad_inputs_priority
+  aws_waf_rule_ip_reputation                     = var.aws_waf_rule_ip_reputation
+  aws_waf_rule_ip_reputation_priority            = var.aws_waf_rule_ip_reputation_priority
+  aws_waf_rule_anonymous_ip                      = var.aws_waf_rule_anonymous_ip
+  aws_waf_rule_anonymous_ip_priority             = var.aws_waf_rule_anonymous_ip_priority
+  aws_waf_rule_bot_control                       = var.aws_waf_rule_bot_control
+  aws_waf_rule_bot_control_priority              = var.aws_waf_rule_bot_control_priority
+  aws_waf_rule_geo_block_countries               = var.aws_waf_rule_geo_block_countries
+  aws_waf_rule_geo_block_countries_priority      = var.aws_waf_rule_geo_block_countries_priority
+  aws_waf_rule_geo_allow_only_countries          = var.aws_waf_rule_geo_allow_only_countries
+  aws_waf_rule_geo_allow_only_countries_priority = var.aws_waf_rule_geo_allow_only_countries_priority
+  aws_waf_rule_user_arn                          = var.aws_waf_rule_user_arn
+  aws_waf_rule_user_arn_priority                 = var.aws_waf_rule_user_arn_priority
+  aws_waf_rule_sqli                              = var.aws_waf_rule_sqli
+  aws_waf_rule_sqli_priority                     = var.aws_waf_rule_sqli_priority
+  aws_waf_rule_linux                             = var.aws_waf_rule_linux
+  aws_waf_rule_linux_priority                    = var.aws_waf_rule_linux_priority
+  aws_waf_rule_unix                              = var.aws_waf_rule_unix
+  aws_waf_rule_unix_priority                     = var.aws_waf_rule_unix_priority
+  aws_waf_rule_admin_protection                  = var.aws_waf_rule_admin_protection
+  aws_waf_rule_admin_protection_priority         = var.aws_waf_rule_admin_protection_priority
   # Incoming
   aws_lb_resource_arn = module.aws_lb[0].aws_lb_resource_arn
   # Others
@@ -625,19 +638,32 @@ module "aws_waf_ecs" {
   aws_waf_log_retention_days = var.aws_waf_log_retention_days
   aws_resource_identifier    = var.aws_resource_identifier
   # Rules
-  aws_waf_rule_rate_limit               = var.aws_waf_rule_rate_limit
-  aws_waf_rule_managed_rules            = var.aws_waf_rule_managed_rules
-  aws_waf_rule_managed_bad_inputs       = var.aws_waf_rule_managed_bad_inputs
-  aws_waf_rule_ip_reputation            = var.aws_waf_rule_ip_reputation
-  aws_waf_rule_anonymous_ip             = var.aws_waf_rule_anonymous_ip
-  aws_waf_rule_bot_control              = var.aws_waf_rule_bot_control
-  aws_waf_rule_geo_block_countries      = var.aws_waf_rule_geo_block_countries
-  aws_waf_rule_geo_allow_only_countries = var.aws_waf_rule_geo_allow_only_countries
-  aws_waf_rule_user_arn                 = var.aws_waf_rule_user_arn
-  aws_waf_rule_sqli                     = var.aws_waf_rule_sqli
-  aws_waf_rule_linux                    = var.aws_waf_rule_linux
-  aws_waf_rule_unix                     = var.aws_waf_rule_unix
-  aws_waf_rule_admin_protection         = var.aws_waf_rule_admin_protection
+  aws_waf_rule_rate_limit                        = var.aws_waf_rule_rate_limit
+  aws_waf_rule_rate_limit_priority               = var.aws_waf_rule_rate_limit_priority
+  aws_waf_rule_managed_rules                     = var.aws_waf_rule_managed_rules
+  aws_waf_rule_managed_rules_priority            = var.aws_waf_rule_managed_rules_priority
+  aws_waf_rule_managed_bad_inputs                = var.aws_waf_rule_managed_bad_inputs
+  aws_waf_rule_managed_bad_inputs_priority       = var.aws_waf_rule_managed_bad_inputs_priority
+  aws_waf_rule_ip_reputation                     = var.aws_waf_rule_ip_reputation
+  aws_waf_rule_ip_reputation_priority            = var.aws_waf_rule_ip_reputation_priority
+  aws_waf_rule_anonymous_ip                      = var.aws_waf_rule_anonymous_ip
+  aws_waf_rule_anonymous_ip_priority             = var.aws_waf_rule_anonymous_ip_priority
+  aws_waf_rule_bot_control                       = var.aws_waf_rule_bot_control
+  aws_waf_rule_bot_control_priority              = var.aws_waf_rule_bot_control_priority
+  aws_waf_rule_geo_block_countries               = var.aws_waf_rule_geo_block_countries
+  aws_waf_rule_geo_block_countries_priority      = var.aws_waf_rule_geo_block_countries_priority
+  aws_waf_rule_geo_allow_only_countries          = var.aws_waf_rule_geo_allow_only_countries
+  aws_waf_rule_geo_allow_only_countries_priority = var.aws_waf_rule_geo_allow_only_countries_priority
+  aws_waf_rule_user_arn                          = var.aws_waf_rule_user_arn
+  aws_waf_rule_user_arn_priority                 = var.aws_waf_rule_user_arn_priority
+  aws_waf_rule_sqli                              = var.aws_waf_rule_sqli
+  aws_waf_rule_sqli_priority                     = var.aws_waf_rule_sqli_priority
+  aws_waf_rule_linux                             = var.aws_waf_rule_linux
+  aws_waf_rule_linux_priority                    = var.aws_waf_rule_linux_priority
+  aws_waf_rule_unix                              = var.aws_waf_rule_unix
+  aws_waf_rule_unix_priority                     = var.aws_waf_rule_unix_priority
+  aws_waf_rule_admin_protection                  = var.aws_waf_rule_admin_protection
+  aws_waf_rule_admin_protection_priority         = var.aws_waf_rule_admin_protection_priority
   # Incoming
   aws_lb_resource_arn = module.aws_ecs[0].load_balancer_arn
   # Others
@@ -786,7 +812,7 @@ locals {
     ) :
     false
   )
-  protocol             = var.aws_r53_enable_cert ? try(module.aws_certificates[0].selected_arn,"") != "" ? "https://" : "http://" : "http://"
+  protocol             = var.aws_r53_enable_cert ? try(module.aws_certificates[0].selected_arn, "") != "" ? "https://" : "http://" : "http://"
   create_efs           = var.aws_efs_create == true ? true : (var.aws_efs_create_ha == true ? true : false)
   ec2_public_endpoint  = var.aws_ec2_instance_create ? (module.ec2[0].instance_public_dns != null ? module.ec2[0].instance_public_dns : module.ec2[0].instance_public_ip) : null
   ec2_private_endpoint = var.aws_ec2_instance_create ? (module.ec2[0].instance_private_dns != null ? module.ec2[0].instance_private_dns : module.ec2[0].instance_private_ip) : null

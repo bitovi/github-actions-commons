@@ -56,7 +56,8 @@ jobs:
 1. [EC2](#ec2-inputs)
 1. [VPC](#vpc-inputs)
 1. [AWS Route53 Domains and Certificates](#aws-route53-domains-and-certificate-inputs)
-1. [Load Balancer](#load-balancer-inputs)
+1. [Load Balancer](#load-balancer-inputs-classic-elb)
+1. [Application Load Balancer Inputs (ALB)](#application-load-balancer-inputs-alb)
 1. [WAF](#waf)
 1. [EFS](#efs-inputs)
 1. [RDS](#rds-inputs)
@@ -195,7 +196,7 @@ The following inputs can be used as `step.with` keys
 <hr/>
 <br/>
 
-#### **Load Balancer Inputs**
+#### **Load Balancer Inputs (Classic ELB)**
 | Name             | Type    | Description                        |
 |------------------|---------|------------------------------------|
 | `aws_elb_create` | Boolean | Toggles the creation of a load balancer and map ports to the EC2 instance. Defaults to `false`.|
@@ -211,25 +212,61 @@ The following inputs can be used as `step.with` keys
 <hr/>
 <br/>
 
+#### **Application Load Balancer Inputs (ALB)**
+| Name             | Type    | Description                        |
+|------------------|---------|------------------------------------|
+| `aws_alb_create` | Boolean | Global toggle for ALB creation. Defaults to `false` |
+| `aws_alb_security_group_name` | String | Name of the security group to use for ALB. Defaults to `` |
+| `aws_alb_app_port` | String | Comma-separated list of application ports for ALB target group. Defaults to `` |
+| `aws_alb_app_protocol` | String | Comma-separated list of protocols for ALB target group (HTTP/HTTPS). Defaults to `` |
+| `aws_alb_listen_port` | String | Comma-separated list of listener ports for ALB. Defaults to `` |
+| `aws_alb_listen_protocol` | String | Comma-separated list of listener protocols for ALB (HTTP/HTTPS). Defaults to `""` |
+| `aws_alb_redirect_enable` | Boolean | Enable HTTP to HTTPS redirection on ALB. Defaults to `false` |
+| `aws_alb_www_to_apex_redirect` | Boolean | Enable www to apex domain redirection on ALB. Defaults to `false` |
+# Healthcheck
+| `aws_alb_healthcheck_path` | String | Health check path for ALB target group. Defaults to `"/"` |
+| `aws_alb_healthcheck_protocol` | String | Health check protocol for ALB target group. Defaults to `"HTTP"` |
+| `aws_alb_ssl_policy` | String | SSL policy for HTTPS listeners. Defaults to `null` |
+| `aws_alb_additional_tags`| String | A list of strings that will be added to created resources. Example: `{"key1": "value1", "key2": "value2"}`. Default `"{}"` |
+
+
+| `aws_alb_additional_tags` |description: 'A JSON object of additional tags that will be included on created resources. Example: `{"key1": "value1", "key2": "value2"}`'
+    required: false
+<hr/>
+<br/>
+
 #### **WAF**
 | Name             | Type    | Description                        |
 |------------------|---------|------------------------------------|
 | `aws_waf_enable` | Boolean | Enable WAF for load balancer (LB only - NOT ELB). Default is `false` |
 | `aws_waf_logging_enable`| Boolean | Enable WAF logging to CloudWatch. Default `false` |
 | `aws_waf_log_retention_days`| Number | CloudWatch log retention period for WAF logs. Default `30` |
-| `aws_waf_rule_rate_limit`| String | Rate limit for WAF rules. Default is `2000` |
-| `aws_waf_rule_managed_rules`| Boolean | Enable common managed rule groups to use. Default `false` |
-| `aws_waf_rule_managed_bad_inputs`| Boolean | Enable managed rule for bad inputs. Default `false` |
-| `aws_waf_rule_ip_reputation`| Boolean | Enable managed rule for IP reputation. Default `false` |
-| `aws_waf_rule_anonymous_ip`| Boolean | Enable managed rule for anonymous IP. Default `false` |
-| `aws_waf_rule_bot_control`| Boolean | Enable managed rule for bot control (costs extra). Default `false` |
-| `aws_waf_rule_geo_block_countries`| String | Comma separated list of countries to block. |
-| `aws_waf_rule_geo_allow_only_countries`| String | Comma separated list of countries to allow. |
-| `aws_waf_rule_sqli`| Boolean | Enable managed rule for SQL injection. Default `false` |
-| `aws_waf_rule_linux`| Boolean | Enable managed rule for Linux. Default `false` |
-| `aws_waf_rule_unix`| Boolean | Enable managed rule for Unix. Default `false` |
-| `aws_waf_rule_admin_protection`| Boolean | Enable managed rule for admin protection. Default `false` |
-| `aws_waf_rule_user_arn`| String | String of the user created ARN set of rules. |
+| `aws_waf_rule_rate_limit`| String | Rate limit for WAF rules. Default is `2000`. |
+| `aws_waf_rule_rate_limit_priority` | Number | Priority for rate limit rule. Defaults to `10`. |
+| `aws_waf_rule_managed_rules` | Boolean | Enable common managed rule groups to use. Defaults to `false`. |
+| `aws_waf_rule_managed_rules_priority` | Number | Priority for managed rules. Defaults to `20`. |
+| `aws_waf_rule_managed_bad_inputs` | Boolean | Enable managed rule for bad inputs. Defaults to `false`. |
+| `aws_waf_rule_managed_bad_inputs_priority` | Number | Priority for bad inputs rule. Defaults to `30`. |
+| `aws_waf_rule_ip_reputation` | Boolean | Enable managed rule for IP reputation. Defaults to `false`. |
+| `aws_waf_rule_ip_reputation_priority`  | Number | Priority for IP reputation rule. Defaults to `40`. |
+| `aws_waf_rule_anonymous_ip`  | Boolean | Enable managed rule for anonymous IP. Defaults to `false`. |
+| `aws_waf_rule_anonymous_ip_priority` | Number | Priority for anonymous IP rule. Defaults to `50`. |
+| `aws_waf_rule_bot_control` | Boolean | Enable managed rule for bot control (costs extra). Defaults to `false`. |
+| `aws_waf_rule_bot_control_priority`  | Number | Priority for bot control rule. Defaults to `60`. |
+| `aws_waf_rule_geo_block_countries` | String | Comma separated list of countries to block. Defaults to ``. |
+| `aws_waf_rule_geo_block_countries_priority`  | Number | Priority for geo block countries rule. Defaults to `70`. |
+| `aws_waf_rule_geo_allow_only_countries`  | String | Comma separated list of countries to allow. Defaults to ``. |
+| `aws_waf_rule_geo_allow_only_countries_priority` | Number | Priority for geo allow only countries rule. Defaults to `75`. |
+| `aws_waf_rule_sqli`  | Boolean | Enable managed rule for SQL injection. Defaults to `false`. |
+| `aws_waf_rule_sqli_priority` | Number | Priority for SQL injection rule. Defaults to `85`. |
+| `aws_waf_rule_linux` | Boolean | Enable managed rule for Linux. Defaults to `false`. |
+| `aws_waf_rule_linux_priority`  | Number | Priority for Linux rule. Defaults to `90`. |
+| `aws_waf_rule_unix`  | Boolean | Enable managed rule for Unix. Defaults to `false`. |
+| `aws_waf_rule_unix_priority` | Number | Priority for Unix rule. Defaults to `95`. |
+| `aws_waf_rule_admin_protection`  | Boolean | Enable managed rule for admin protection. Defaults to `false`. |
+| `aws_waf_rule_admin_protection_priority` | Number | Priority for admin protection rule. Defaults to `100`. |
+| `aws_waf_rule_user_arn` | String | ARN of the user rule. Defaults to ``. |
+| `aws_waf_rule_user_arn_priority` | Number | Priority for user ARN rule. Defaults to `80`. |
 | `aws_waf_additional_tags`| String | A list of strings that will be added to created resources. Default `"{}"` |
 <hr/>
 <br/>

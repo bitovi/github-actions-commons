@@ -24,7 +24,7 @@ resource "aws_wafv2_web_acl" "waf" {
     for_each = var.aws_waf_rule_rate_limit != "" ? [1] : []
     content {
       name     = "RateLimitRule"
-      priority = 10
+      priority = var.aws_waf_rule_rate_limit_priority
 
       action {
         block {}
@@ -50,7 +50,7 @@ resource "aws_wafv2_web_acl" "waf" {
     for_each = var.aws_waf_rule_managed_rules ? [1] : []
     content {
       name     = "AWSManagedRulesCommonRuleSet"
-      priority = 20
+      priority = var.aws_waf_rule_managed_rules_priority
 
       override_action {
         none {}
@@ -76,7 +76,7 @@ resource "aws_wafv2_web_acl" "waf" {
     for_each = var.aws_waf_rule_managed_bad_inputs ? [1] : []
     content {
       name     = "AWSManagedRulesKnownBadInputsRuleSet"
-      priority = 30
+      priority = var.aws_waf_rule_managed_bad_inputs_priority
 
       override_action {
         none {}
@@ -102,7 +102,7 @@ resource "aws_wafv2_web_acl" "waf" {
     for_each = var.aws_waf_rule_ip_reputation ? [1] : []
     content {
       name     = "AWSManagedRulesAmazonIpReputationList"
-      priority = 40
+      priority = var.aws_waf_rule_ip_reputation_priority
 
       override_action {
         none {}
@@ -128,7 +128,7 @@ resource "aws_wafv2_web_acl" "waf" {
     for_each = var.aws_waf_rule_anonymous_ip ? [1] : []
     content {
       name     = "AWSManagedRulesAnonymousIpList"
-      priority = 50
+      priority = var.aws_waf_rule_anonymous_ip_priority
 
       override_action {
         none {}
@@ -154,7 +154,7 @@ resource "aws_wafv2_web_acl" "waf" {
     for_each = var.aws_waf_rule_bot_control ? [1] : []
     content {
       name     = "AWSManagedRulesBotControlRuleSet"
-      priority = 60
+      priority = var.aws_waf_rule_bot_control_priority
 
       override_action {
         none {}
@@ -180,7 +180,7 @@ resource "aws_wafv2_web_acl" "waf" {
     for_each = length(local.aws_waf_rule_geo_block_countries) > 0 ? [1] : []
     content {
       name     = "GeoBlockRule"
-      priority = 70
+      priority = var.aws_waf_rule_geo_block_countries_priority
 
       action {
         block {}
@@ -205,7 +205,7 @@ resource "aws_wafv2_web_acl" "waf" {
     for_each = length(local.aws_waf_rule_geo_allow_only_countries) > 0 ? [1] : []
     content {
       name     = "GeoAllowOnlyRule"
-      priority = 75
+      priority = var.aws_waf_rule_geo_allow_only_countries_priority
 
       action {
         block {}
@@ -234,7 +234,7 @@ resource "aws_wafv2_web_acl" "waf" {
     for_each = var.aws_waf_rule_user_arn != "" ? [1] : []
     content {
       name     = "UserDefinedRuleGroup"
-      priority = 80
+      priority = var.aws_waf_rule_user_arn_priority
 
       override_action {
         none {}
@@ -259,7 +259,7 @@ resource "aws_wafv2_web_acl" "waf" {
     for_each = var.aws_waf_rule_sqli ? [1] : []
     content {
       name     = "AWSManagedRulesSQLiRuleSet"
-      priority = 85
+      priority = var.aws_waf_rule_sqli_priority
 
       override_action {
         none {}
@@ -285,7 +285,7 @@ resource "aws_wafv2_web_acl" "waf" {
     for_each = var.aws_waf_rule_linux ? [1] : []
     content {
       name     = "AWSManagedRulesLinuxRuleSet"
-      priority = 90
+      priority = var.aws_waf_rule_linux_priority
 
       override_action {
         none {}
@@ -311,7 +311,7 @@ resource "aws_wafv2_web_acl" "waf" {
     for_each = var.aws_waf_rule_unix ? [1] : []
     content {
       name     = "AWSManagedRulesUnixRuleSet"
-      priority = 95
+      priority = var.aws_waf_rule_unix_priority
 
       override_action {
         none {}
@@ -337,7 +337,7 @@ resource "aws_wafv2_web_acl" "waf" {
     for_each = var.aws_waf_rule_admin_protection ? [1] : []
     content {
       name     = "AWSManagedRulesAdminProtectionRuleSet"
-      priority = 100
+      priority = var.aws_waf_rule_admin_protection_priority
 
       override_action {
         none {}

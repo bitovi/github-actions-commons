@@ -340,41 +340,80 @@ inputs:
   aws_waf_rule_rate_limit:
     description: 'Rate limit for WAF rules.'
     required: false
+  aws_waf_rule_rate_limit_priority:
+    description: 'Priority for rate limit rule.'
+    required: false
   aws_waf_rule_managed_rules:
     description: 'Enable common managed rule groups to use.'
+    required: false
+  aws_waf_rule_managed_rules_priority:
+    description: 'Priority for managed rules group.'
     required: false
   aws_waf_rule_managed_bad_inputs:
     description: 'Enable managed rule for bad inputs.'
     required: false
+  aws_waf_rule_managed_bad_inputs_priority:
+    description: 'Priority for bad inputs managed rule.'
+    required: false
   aws_waf_rule_ip_reputation:
     description: 'Enable managed rule for IP reputation.'
+    required: false
+  aws_waf_rule_ip_reputation_priority:
+    description: 'Priority for IP reputation managed rule.'
     required: false
   aws_waf_rule_anonymous_ip:
     description: 'Enable managed rule for anonymous IP.'
     required: false
+  aws_waf_rule_anonymous_ip_priority:
+    description: 'Priority for anonymous IP managed rule.'
+    required: false
   aws_waf_rule_bot_control:
     description: 'Enable managed rule for bot control (costs extra).'
+    required: false
+  aws_waf_rule_bot_control_priority:
+    description: 'Priority for bot control managed rule.'
     required: false
   aws_waf_rule_geo_block_countries:
     description: 'Comma separated list of countries to block.'
     required: false
+  aws_waf_rule_geo_block_countries_priority:
+    description: 'Priority for geo block countries managed rule.'
+    required: false
   aws_waf_rule_geo_allow_only_countries:
     description: 'Comma separated list of countries to allow.'
+    required: false
+  aws_waf_rule_geo_allow_only_countries_priority:
+    description: 'Priority for geo allow only countries managed rule.'
     required: false
   aws_waf_rule_sqli:
     description: 'Enable managed rule for SQL injection.'
     required: false
+  aws_waf_rule_sqli_priority:
+    description: 'Priority for SQL injection managed rule.'
+    required: false
   aws_waf_rule_linux:
     description: 'Enable managed rule for Linux.'
+    required: false
+  aws_waf_rule_linux_priority:
+    description: 'Priority for Linux managed rule.'
     required: false
   aws_waf_rule_unix:
     description: 'Enable managed rule for Unix.'
     required: false
+  aws_waf_rule_unix_priority:
+    description: 'Priority for Unix managed rule.'
+    required: false
   aws_waf_rule_admin_protection:
     description: 'Enable managed rule for admin protection.'
     required: false
+  aws_waf_rule_admin_protection_priority:
+    description: 'Priority for admin protection managed rule.'
+    required: false
   aws_waf_rule_user_arn:
     description: 'ARN of the user rule.'
+    required: false
+  aws_waf_rule_user_arn_priority:
+    description: 'Priority for user defined rule.'
     required: false
   aws_waf_additional_tags:
     description: 'A JSON object of additional tags that will be included on created resources. Example: `{"key1": "value1", "key2": "value2"}`'
@@ -1377,18 +1416,31 @@ runs:
         AWS_WAF_LOG_RETENTION_DAYS: ${{ inputs.aws_waf_log_retention_days }}
         AWS_WAF_ADDITIONAL_TAGS: ${{ inputs.aws_waf_additional_tags }}
         AWS_WAF_RULE_RATE_LIMIT: ${{ inputs.aws_waf_rule_rate_limit }}
+        AWS_WAF_RULE_RATE_LIMIT_PRIORITY: ${{ inputs.aws_waf_rule_rate_limit_priority }}
         AWS_WAF_RULE_MANAGED_RULES: ${{ inputs.aws_waf_rule_managed_rules }}
+        AWS_WAF_RULE_MANAGED_RULES_PRIORITY: ${{ inputs.aws_waf_rule_managed_rules_priority }}
         AWS_WAF_RULE_MANAGED_BAD_INPUTS: ${{ inputs.aws_waf_rule_managed_bad_inputs }}
+        AWS_WAF_RULE_MANAGED_BAD_INPUTS_PRIORITY: ${{ inputs.aws_waf_rule_managed_bad_inputs_priority }}
         AWS_WAF_RULE_IP_REPUTATION: ${{ inputs.aws_waf_rule_ip_reputation }}
+        AWS_WAF_RULE_IP_REPUTATION_PRIORITY: ${{ inputs.aws_waf_rule_ip_reputation_priority }}
         AWS_WAF_RULE_ANONYMOUS_IP: ${{ inputs.aws_waf_rule_anonymous_ip }}
+        AWS_WAF_RULE_ANONYMOUS_IP_PRIORITY: ${{ inputs.aws_waf_rule_anonymous_ip_priority }}
         AWS_WAF_RULE_BOT_CONTROL: ${{ inputs.aws_waf_rule_bot_control }}
+        AWS_WAF_RULE_BOT_CONTROL_PRIORITY: ${{ inputs.aws_waf_rule_bot_control_priority }}
         AWS_WAF_RULE_GEO_BLOCK_COUNTRIES: ${{ inputs.aws_waf_rule_geo_block_countries }}
+        AWS_WAF_RULE_GEO_BLOCK_COUNTRIES_PRIORITY: ${{ inputs.aws_waf_rule_geo_block_countries_priority }}
         AWS_WAF_RULE_GEO_ALLOW_ONLY_COUNTRIES: ${{ inputs.aws_waf_rule_geo_allow_only_countries }}
+        AWS_WAF_RULE_GEO_ALLOW_ONLY_COUNTRIES_PRIORITY: ${{ inputs.aws_waf_rule_geo_allow_only_countries_priority }}
         AWS_WAF_RULE_USER_ARN: ${{ inputs.aws_waf_rule_user_arn }}
+        AWS_WAF_RULE_USER_ARN_PRIORITY: ${{ inputs.aws_waf_rule_user_arn_priority }}
         AWS_WAF_RULE_SQLI: ${{ inputs.aws_waf_rule_sqli }}
+        AWS_WAF_RULE_SQLI_PRIORITY: ${{ inputs.aws_waf_rule_sqli_priority }}
         AWS_WAF_RULE_LINUX: ${{ inputs.aws_waf_rule_linux }}
+        AWS_WAF_RULE_LINUX_PRIORITY: ${{ inputs.aws_waf_rule_linux_priority }}
         AWS_WAF_RULE_UNIX: ${{ inputs.aws_waf_rule_unix }}
+        AWS_WAF_RULE_UNIX_PRIORITY: ${{ inputs.aws_waf_rule_unix_priority }}
         AWS_WAF_RULE_ADMIN_PROTECTION: ${{ inputs.aws_waf_rule_admin_protection }}
+        AWS_WAF_RULE_ADMIN_PROTECTION_PRIORITY: ${{ inputs.aws_waf_rule_admin_protection_priority }}
 
         # AWS EFS
         AWS_EFS_CREATE: ${{ inputs.aws_efs_create }}
