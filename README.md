@@ -228,10 +228,6 @@ The following inputs can be used as `step.with` keys
 | `aws_alb_healthcheck_protocol` | String | Health check protocol for ALB target group. Defaults to `"HTTP"` |
 | `aws_alb_ssl_policy` | String | SSL policy for HTTPS listeners. Defaults to `null` |
 | `aws_alb_additional_tags`| String | A list of strings that will be added to created resources. Example: `{"key1": "value1", "key2": "value2"}`. Default `"{}"` |
-
-
-| `aws_alb_additional_tags` |description: 'A JSON object of additional tags that will be included on created resources. Example: `{"key1": "value1", "key2": "value2"}`'
-    required: false
 <hr/>
 <br/>
 
