@@ -216,17 +216,16 @@ The following inputs can be used as `step.with` keys
 | Name             | Type    | Description                        |
 |------------------|---------|------------------------------------|
 | `aws_alb_create` | Boolean | Global toggle for ALB creation. Defaults to `false` |
-| `aws_alb_security_group_name` | String | Name of the security group to use for ALB. Defaults to `` |
-| `aws_alb_app_port` | String | Comma-separated list of application ports for ALB target group. Defaults to `` |
-| `aws_alb_app_protocol` | String | Comma-separated list of protocols for ALB target group (HTTP/HTTPS). Defaults to `` |
-| `aws_alb_listen_port` | String | Comma-separated list of listener ports for ALB. Defaults to `` |
-| `aws_alb_listen_protocol` | String | Comma-separated list of listener protocols for ALB (HTTP/HTTPS). Defaults to `""` |
+| `aws_alb_security_group_name` | String | Name of the security group to use for ALB. Defaults to `SG for ${aws_resource_identifier} - ALB`|
+| `aws_alb_app_port` | String | Comma-separated list of application ports for ALB target group. If none defined, will use `aws_alb_listen_port` ones. |
+| `aws_alb_app_protocol` | String | Comma-separated list of protocols for ALB target group (HTTP/HTTPS). Defaults to `HTTP`. |
+| `aws_alb_listen_port` | String | Comma-separated list of listener ports for ALB. Depending on certificate, defaults to `80` or `443`. |
+| `aws_alb_listen_protocol` | String | Comma-separated list of listener protocols for ALB (HTTP/HTTPS). Defaults to Depending on certificate, defaults to `HTTP` or `HTTPS`. |
 | `aws_alb_redirect_enable` | Boolean | Enable HTTP to HTTPS redirection on ALB. Defaults to `false` |
 | `aws_alb_www_to_apex_redirect` | Boolean | Enable www to apex domain redirection on ALB. Defaults to `false` |
-# Healthcheck
 | `aws_alb_healthcheck_path` | String | Health check path for ALB target group. Defaults to `"/"` |
 | `aws_alb_healthcheck_protocol` | String | Health check protocol for ALB target group. Defaults to `"HTTP"` |
-| `aws_alb_ssl_policy` | String | SSL policy for HTTPS listeners. Defaults to `null` |
+| `aws_alb_ssl_policy` | String | SSL policy for HTTPS listeners. More [here](https://docs.aws.amazon.com/elasticloadbalancing/latest/application/describe-ssl-policies.html) |
 | `aws_alb_additional_tags`| String | A list of strings that will be added to created resources. Example: `{"key1": "value1", "key2": "value2"}`. Default `"{}"` |
 <hr/>
 <br/>
