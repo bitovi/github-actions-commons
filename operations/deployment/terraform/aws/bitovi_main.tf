@@ -62,7 +62,7 @@ module "efs_to_ec2_sg" {
 
 module "aws_certificates" {
   source = "../modules/aws/certificates"
-  count  = (var.aws_ec2_instance_create || var.aws_ecs_enable || var.aws_r53_cert_arn != "" ) && var.aws_r53_enable_cert ? 1 : 0 # && var.aws_r53_enable && var.aws_r53_domain_name != "" ? 1 : 0
+  count  = (var.aws_ec2_instance_create || var.aws_ecs_enable || var.aws_r53_cert_arn != "") && var.aws_r53_enable_cert ? 1 : 0 # && var.aws_r53_enable && var.aws_r53_domain_name != "" ? 1 : 0
   # Cert
   aws_r53_cert_arn         = var.aws_r53_cert_arn
   aws_r53_create_root_cert = var.aws_r53_create_root_cert

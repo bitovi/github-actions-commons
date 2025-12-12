@@ -54,7 +54,7 @@ resource "aws_acm_certificate" "sub_domain" {
 }
 
 resource "aws_route53_record" "sub_domain" {
-  count            = var.aws_r53_create_sub_cert && !var.aws_r53_create_root_cert && var.aws_r53_domain_name != "" && var.aws_r53_sub_domain_name != "" ? 1 : 0
+  count           = var.aws_r53_create_sub_cert && !var.aws_r53_create_root_cert && var.aws_r53_domain_name != "" && var.aws_r53_sub_domain_name != "" ? 1 : 0
   allow_overwrite = true
   name            = tolist(aws_acm_certificate.sub_domain[0].domain_validation_options)[0].resource_record_name
   records         = [tolist(aws_acm_certificate.sub_domain[0].domain_validation_options)[0].resource_record_value]
@@ -73,10 +73,10 @@ locals {
   acm_arn = try(data.aws_acm_certificate.issued["domain"].arn, try(data.aws_acm_certificate.issued["wildcard"].arn, data.aws_acm_certificate.issued["sub"].arn, ""))
 
   selected_arn = (
-    var.aws_r53_cert_arn       != "" ? var.aws_r53_cert_arn :
+    var.aws_r53_cert_arn != "" ? var.aws_r53_cert_arn :
     var.aws_r53_create_root_cert ? aws_acm_certificate.root_domain[0].arn :
-    var.aws_r53_create_sub_cert  ? aws_acm_certificate.sub_domain[0].arn :
-    var.fqdn_provided            ? local.acm_arn :
+    var.aws_r53_create_sub_cert ? aws_acm_certificate.sub_domain[0].arn :
+    var.fqdn_provided ? local.acm_arn :
     ""
   )
 }
