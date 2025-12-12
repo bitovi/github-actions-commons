@@ -1,6 +1,5 @@
 # Lookup for main domain.
 data "aws_route53_zone" "selected" {
-  count        = var.aws_r53_domain_name != "" ? 1 : 0
   name         = "${var.aws_r53_domain_name}."
   private_zone = false
 }
@@ -32,7 +31,7 @@ resource "aws_route53_record" "root_domain" {
   name            = tolist(aws_acm_certificate.root_domain[0].domain_validation_options)[0].resource_record_name
   records         = [tolist(aws_acm_certificate.root_domain[0].domain_validation_options)[0].resource_record_value]
   type            = tolist(aws_acm_certificate.root_domain[0].domain_validation_options)[0].resource_record_type
-  zone_id         = data.aws_route53_zone.selected[0].zone_id
+  zone_id         = data.aws_route53_zone.selected.zone_id
   ttl             = 60
 }
 
@@ -59,7 +58,7 @@ resource "aws_route53_record" "sub_domain" {
   name            = tolist(aws_acm_certificate.sub_domain[0].domain_validation_options)[0].resource_record_name
   records         = [tolist(aws_acm_certificate.sub_domain[0].domain_validation_options)[0].resource_record_value]
   type            = tolist(aws_acm_certificate.sub_domain[0].domain_validation_options)[0].resource_record_type
-  zone_id         = data.aws_route53_zone.selected[0].zone_id
+  zone_id         = data.aws_route53_zone.selected.zone_id
   ttl             = 60
 }
 
