@@ -812,7 +812,7 @@ locals {
     ) :
     false
   )
-  protocol             = var.aws_r53_enable_cert ? try(module.aws_certificates[0].selected_arn, var.aws_r53_cert_arn, "") != "" ? "https://" : "http://" : "http://"
+  protocol             = var.aws_r53_enable_cert ? var.aws_r53_cert_arn != "" ? "https://" : try(module.aws_certificates[0].selected_arn, "") != "" ? "https://" : "http://" : "http://"
   create_efs           = var.aws_efs_create == true ? true : (var.aws_efs_create_ha == true ? true : false)
   ec2_public_endpoint  = var.aws_ec2_instance_create ? (module.ec2[0].instance_public_dns != null ? module.ec2[0].instance_public_dns : module.ec2[0].instance_public_ip) : null
   ec2_private_endpoint = var.aws_ec2_instance_create ? (module.ec2[0].instance_private_dns != null ? module.ec2[0].instance_private_dns : module.ec2[0].instance_private_ip) : null
@@ -820,7 +820,6 @@ locals {
   elb_url              = try(module.aws_elb[0].aws_elb_dns_name, null) != null ? "${local.protocol}${module.aws_elb[0].aws_elb_dns_name}" : null
   alb_url              = try(module.aws_lb[0].aws_alb_dns_name, null) != null ? "${local.protocol}${module.aws_lb[0].aws_alb_dns_name}" : null
 }
-
 # VPC
 output "aws_vpc_id" {
   value = module.vpc.aws_selected_vpc_id
