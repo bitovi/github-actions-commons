@@ -85,7 +85,7 @@ module "aws_route53" {
   aws_r53_domain_name        = var.aws_r53_domain_name
   aws_r53_sub_domain_name    = var.aws_r53_sub_domain_name
   aws_r53_root_domain_deploy = var.aws_r53_root_domain_deploy
-  aws_r53_enable_cert        = var.aws_r53_enable_cert
+  aws_r53_enable_cert        = var.aws_r53_enable_cert ? var.aws_r53_cert_arn != "" ? true : try(module.aws_certificates[0].selected_arn, "") != "" ? true : false : false
   # ELB
   aws_elb_dns_name = try(module.aws_lb[0].aws_alb_dns_name, module.aws_elb[0].aws_elb_dns_name, module.ec2[0].instance_public_ip, "")
   aws_elb_zone_id  = try(module.aws_lb[0].aws_alb_zone_id, module.aws_elb[0].aws_elb_zone_id, "", "")
@@ -155,7 +155,7 @@ module "aws_lb" {
   aws_alb_target_sg_id    = module.ec2[0].aws_security_group_ec2_sg_id
   aws_r53_domain_name     = var.aws_r53_domain_name
   # Certs
-  aws_certificate_enabled       = var.aws_r53_enable_cert
+  aws_certificate_enabled       = var.aws_r53_enable_cert ? var.aws_r53_cert_arn != "" ? true : try(module.aws_certificates[0].selected_arn, "") != "" ? true : false : false
   aws_certificates_selected_arn = var.aws_r53_enable_cert ? try(module.aws_certificates[0].selected_arn, var.aws_r53_cert_arn) : ""
   # Others
   aws_resource_identifier            = var.aws_resource_identifier
