@@ -155,14 +155,14 @@ module "aws_lb" {
   aws_alb_target_sg_id    = module.ec2[0].aws_security_group_ec2_sg_id
   aws_r53_domain_name     = var.aws_r53_domain_name
   # Certs
-  aws_certificate_enabled       = var.aws_ec2_instance_create && var.aws_r53_enable_cert && ( var.aws_r53_cert_arn != "" || var.aws_r53_domain_name != "" ) ? true : false #var.aws_r53_enable_cert ? var.aws_r53_cert_arn != "" ? true : try(module.aws_certificates[0].selected_arn, "") != "" ? true : false : false
+  aws_certificate_enabled       = var.aws_ec2_instance_create && var.aws_r53_enable_cert && (var.aws_r53_cert_arn != "" || var.aws_r53_domain_name != "") ? true : false #var.aws_r53_enable_cert ? var.aws_r53_cert_arn != "" ? true : try(module.aws_certificates[0].selected_arn, "") != "" ? true : false : false
   aws_certificates_selected_arn = try(module.aws_certificates[0].selected_arn, var.aws_r53_cert_arn, "")
- 
+
   # Others
   aws_resource_identifier            = var.aws_resource_identifier
   aws_resource_identifier_supershort = var.aws_resource_identifier_supershort
   # Module dependencies
-  depends_on = [module.aws_certificates]
+  #depends_on = [module.aws_certificates]
 
   providers = {
     aws = aws.lb
@@ -206,7 +206,7 @@ module "aws_waf_ec2_alb" {
   # Incoming
   aws_lb_resource_arn = module.aws_lb[0].aws_lb_resource_arn
   # Others
-  depends_on = [module.aws_lb]
+  #depends_on = [module.aws_lb]
   providers = {
     aws = aws.waf
   }
