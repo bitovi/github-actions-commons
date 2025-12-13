@@ -156,7 +156,7 @@ module "aws_lb" {
   aws_r53_domain_name     = var.aws_r53_domain_name
   # Certs
   aws_certificate_enabled       = var.aws_r53_enable_cert ? var.aws_r53_cert_arn != "" ? true : try(module.aws_certificates[0].selected_arn, "") != "" ? true : false : false
-  aws_certificates_selected_arn = var.aws_r53_enable_cert ? try(module.aws_certificates[0].selected_arn, var.aws_r53_cert_arn) : ""
+  aws_certificates_selected_arn = try(module.aws_certificates[0].selected_arn, var.aws_r53_cert_arn, "")
   # Others
   aws_resource_identifier            = var.aws_resource_identifier
   aws_resource_identifier_supershort = var.aws_resource_identifier_supershort
