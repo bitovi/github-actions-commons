@@ -876,7 +876,7 @@ output "application_public_dns" {
 }
 
 output "vm_url" {
-  value = try(module.aws_route53[0].vm_url, local.alb_url, local.elb_url)
+  value = try(module.aws_route53[0].vm_url, local.alb_url, local.elb_url, local.ec2_endpoint)
 }
 
 # EFS
