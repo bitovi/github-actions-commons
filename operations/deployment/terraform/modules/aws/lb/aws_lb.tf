@@ -188,7 +188,7 @@ resource "aws_alb_listener" "http_redirect" {
   ]
 
   lifecycle {
-    replace_triggered_by = [null_resource.http_redirect_dep.id]
+    replace_triggered_by = [aws_security_group.alb_security_group.id]
   }
 }
 
