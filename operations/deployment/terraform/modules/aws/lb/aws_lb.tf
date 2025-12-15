@@ -165,7 +165,9 @@ resource "aws_alb_listener" "http_redirect" {
   }
   depends_on = [
     aws_lb.vm_alb,
-    aws_lb_target_group.vm_alb_tg
+    aws_lb_target_group.vm_alb_tg,
+    aws_lb_listener.http_forward,
+    aws_lb_listener.http_www_redirect
   ]
 }
 
@@ -181,7 +183,9 @@ resource "aws_alb_listener" "http_forward" {
   }
   depends_on = [
     aws_lb.vm_alb,
-    aws_lb_target_group.vm_alb_tg
+    aws_lb_target_group.vm_alb_tg,
+    aws_alb_listener.http_redirect,
+    aws_alb_listener.http_www_redirect
   ]
 }
 
@@ -202,7 +206,9 @@ resource "aws_alb_listener" "http_www_redirect" {
   }
   depends_on = [
     aws_lb.vm_alb,
-    aws_lb_target_group.vm_alb_tg
+    aws_lb_target_group.vm_alb_tg,
+    aws_alb_listener.http_redirect,
+    aws_alb_listener.http_forward
   ]
 }
 
