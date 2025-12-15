@@ -168,7 +168,7 @@ resource "aws_alb_listener" "http_redirect" {
   }
 
   dynamic "default_action" {
-    for_each = var.aws_alb_www_to_apex_redirect && !var.aws_certificate_enabled ? [1] : []
+    for_each = !var.aws_certificate_enabled && var.aws_alb_www_to_apex_redirect ? [1] : []
     content {
       type = "fixed-response"
       fixed_response {
@@ -180,7 +180,7 @@ resource "aws_alb_listener" "http_redirect" {
   }
 
   dynamic "default_action" {
-    for_each = var.aws_alb_www_to_apex_redirect && var.aws_certificate_enabled ? [] : [1]
+    for_each = !var.aws_certificate_enabled && !var.aws_alb_www_to_apex_redirect ? [1] : []
     content {
       type             = "forward"
       target_group_arn = aws_lb_target_group.vm_alb_tg[0].arn
