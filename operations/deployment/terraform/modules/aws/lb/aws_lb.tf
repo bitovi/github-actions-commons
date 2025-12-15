@@ -156,7 +156,7 @@ resource "aws_alb_listener" "http_redirect" {
   protocol          = "HTTP"
 
   dynamic "default_action" {
-    for_each = var.aws_alb_www_to_apex_redirect && !var.aws_certificate_enabled ? [1] : []
+    for_each = var.aws_certificate_enabled ? [1] : []
     content {
       type = "redirect"
       redirect {
@@ -166,6 +166,7 @@ resource "aws_alb_listener" "http_redirect" {
       }
     }
   }
+
   dynamic "default_action" {
     for_each = var.aws_alb_www_to_apex_redirect && !var.aws_certificate_enabled ? [1] : []
     content {
