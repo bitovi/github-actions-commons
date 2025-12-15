@@ -146,7 +146,11 @@ resource "aws_alb_listener" "lb_listener" {
   lifecycle {
     replace_triggered_by = [null_resource.http_redirect_dep.id]
   }
-  depends_on = [aws_alb_listener.http_redirect]
+  depends_on = [
+    aws_alb_listener.http_redirect,
+    aws_alb_listener.http_forward,
+    aws_alb_listener.http_www_redirect
+  ]
 }
 
 resource "aws_alb_listener" "http_redirect" {
