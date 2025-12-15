@@ -166,51 +166,81 @@ resource "aws_alb_listener" "http_redirect" {
   depends_on = [
     aws_lb.vm_alb,
     aws_lb_target_group.vm_alb_tg,
-    aws_lb_listener.http_forward,
-    aws_lb_listener.http_www_redirect
   ]
 }
 
-resource "aws_alb_listener" "http_forward" {
-  count             = var.aws_alb_redirect_enable && !var.aws_alb_www_to_apex_redirect && !var.aws_certificate_enabled && !contains(local.alb_listen_port, 80) ? 1 : 0
+resource "aws_alb_listener" "http_redirector" {
+  count             = var.aws_alb_redirect_enable && !var.aws_certificate_enabled && !contains(local.alb_listen_port, 80) ? 1 : 0
   load_balancer_arn = aws_lb.vm_alb.arn
   port              = "80"
   protocol          = "HTTP"
 
-  default_action {
-    type             = "forward"
-    target_group_arn = aws_lb_target_group.vm_alb_tg[0].arn
-  }
-  depends_on = [
-    aws_lb.vm_alb,
-    aws_lb_target_group.vm_alb_tg,
-    aws_alb_listener.http_redirect,
-    aws_alb_listener.http_www_redirect
-  ]
-}
-
-resource "aws_alb_listener" "http_www_redirect" {
-  count             = var.aws_alb_redirect_enable && var.aws_alb_www_to_apex_redirect && !var.aws_certificate_enabled ? !contains(local.alb_listen_port, 80) ? 1 : 0 : 0
-  load_balancer_arn = aws_lb.vm_alb.arn
-  port              = "80"
-  protocol          = "HTTP"
-
-  default_action {
-    type = "fixed-response"
-
-    fixed_response {
-      content_type = "text/plain"
-      message_body = "Not Found"
-      status_code  = "404"
+  dynamic "default_action" {
+    for_each = var.aws_alb_www_to_apex_redirect ? [1] : []
+    content {
+      type = "fixed-response"
+      fixed_response {
+        content_type = "text/plain"
+        message_body = "Not Found"
+        status_code  = "404"
+      }
     }
   }
+
+  dynamic "default_action" {
+    for_each = var.aws_alb_www_to_apex_redirect ? [] : [1]
+    content {
+      type             = "forward"
+      target_group_arn = aws_lb_target_group.vm_alb_tg[0].arn
+    }
+  }
+
   depends_on = [
     aws_lb.vm_alb,
     aws_lb_target_group.vm_alb_tg,
-    aws_alb_listener.http_redirect,
-    aws_alb_listener.http_forward
   ]
 }
+
+#resource "aws_alb_listener" "http_forward" {
+#  count             = var.aws_alb_redirect_enable && !var.aws_alb_www_to_apex_redirect && !var.aws_certificate_enabled && !contains(local.alb_listen_port, 80) ? 1 : 0
+#  load_balancer_arn = aws_lb.vm_alb.arn
+#  port              = "80"
+#  protocol          = "HTTP"
+#
+#  default_action {
+#    type             = "forward"
+#    target_group_arn = aws_lb_target_group.vm_alb_tg[0].arn
+#  }
+#  depends_on = [
+#    aws_lb.vm_alb,
+#    aws_lb_target_group.vm_alb_tg,
+#    aws_alb_listener.http_redirect,
+#    aws_alb_listener.http_www_redirect
+#  ]
+#}
+#
+#resource "aws_alb_listener" "http_www_redirect" {
+#  count             = var.aws_alb_redirect_enable && var.aws_alb_www_to_apex_redirect && !var.aws_certificate_enabled ? !contains(local.alb_listen_port, 80) ? 1 : 0 : 0
+#  load_balancer_arn = aws_lb.vm_alb.arn
+#  port              = "80"
+#  protocol          = "HTTP"
+#
+#  default_action {
+#    type = "fixed-response"
+#
+#    fixed_response {
+#      content_type = "text/plain"
+#      message_body = "Not Found"
+#      status_code  = "404"
+#    }
+#  }
+#  depends_on = [
+#    aws_lb.vm_alb,
+#    aws_lb_target_group.vm_alb_tg,
+#    aws_alb_listener.http_redirect,
+#    aws_alb_listener.http_forward
+#  ]
+#}
 
 resource "aws_lb_listener_rule" "http_forward_apex" {
   count        = var.aws_alb_www_to_apex_redirect && var.aws_r53_domain_name != "" && !var.aws_certificate_enabled && length(aws_alb_listener.http_www_redirect) > 0 ? 1 : 0
@@ -255,7 +285,7 @@ resource "aws_lb_listener_rule" "redirect_www_to_apex" {
 }
 
 resource "aws_security_group_rule" "incoming_alb_http" {
-  count             = !contains(local.alb_listen_port, 80) ? length(aws_alb_listener.http_redirect) + length(aws_alb_listener.http_forward) + length(aws_alb_listener.http_www_redirect) : 0
+  count             = !contains(local.alb_listen_port, 80) ? length(aws_alb_listener.http_redirect) + length(aws_alb_listener.http_redirector) : 0 # length(aws_alb_listener.http_forward) + length(aws_alb_listener.http_www_redirect) : 0
   type              = "ingress"
   from_port         = 80
   to_port           = 80
