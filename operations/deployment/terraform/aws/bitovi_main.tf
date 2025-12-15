@@ -162,7 +162,7 @@ module "aws_lb" {
   aws_resource_identifier            = var.aws_resource_identifier
   aws_resource_identifier_supershort = var.aws_resource_identifier_supershort
   # Module dependencies
-  #depends_on = [module.aws_certificates]
+  depends_on = [module.aws_certificates]
 
   providers = {
     aws = aws.lb
