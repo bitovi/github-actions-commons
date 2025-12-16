@@ -880,6 +880,15 @@ output "vm_url" {
   value = try(module.aws_route53[0].vm_url, local.alb_url, local.elb_url, local.ec2_endpoint)
 }
 
+output "debug_vm_url" {
+  value = {
+    route53 = try(module.aws_route53[0].vm_url, null)
+    alb     = local.alb_url
+    elb     = local.elb_url
+    ec2     = local.ec2_endpoint
+  }
+}
+
 # EFS
 output "aws_efs_fs_id" {
   value = try(module.efs[0].aws_efs_fs_id, null)
