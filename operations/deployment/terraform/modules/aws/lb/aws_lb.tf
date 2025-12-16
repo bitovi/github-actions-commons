@@ -150,9 +150,9 @@ resource "aws_alb_listener" "lb_listener" {
   }
 }
 
-resource "null_resource" "always_run" {
+resource "null_resource" "recreate_if_listener_action_changes" {
   triggers = {
-    timestamp = "${timestamp()}"
+    http_listener_action = local.http_listener_action
   }
 }
 
@@ -191,7 +191,7 @@ resource "aws_alb_listener" "http_redirect" {
   ]
 
   lifecycle {
-    replace_triggered_by = [null_resource.always_run.id]
+    replace_triggered_by = [null_resource.recreate_if_listener_action_changes.id]
   }
 }
 
