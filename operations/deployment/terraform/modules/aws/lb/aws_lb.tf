@@ -150,7 +150,10 @@ resource "aws_alb_listener" "lb_listener" {
   }
 }
 
-locals {
+resource "null_resource" "always_run" {
+  triggers = {
+    timestamp = "${timestamp()}"
+  }
 }
 
 resource "aws_alb_listener" "http_redirect" {
@@ -188,7 +191,7 @@ resource "aws_alb_listener" "http_redirect" {
   ]
 
   lifecycle {
-    replace_triggered_by = [aws_security_group.alb_security_group.id]
+    replace_triggered_by = [null_resource.always_run.id]
   }
 }
 
