@@ -72,7 +72,7 @@ resource "aws_eks_node_group" "node_nodes" {
     max_unavailable = 1
   }
 
-  ami_type = "AL2_x86_64"
+  ami_type = var.aws_eks_instance_ami_type
   instance_types = [var.aws_eks_instance_type]
 
   remote_access {

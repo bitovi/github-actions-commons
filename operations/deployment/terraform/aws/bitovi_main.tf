@@ -633,6 +633,7 @@ module "eks" {
   aws_eks_cluster_version            = var.aws_eks_cluster_version
   aws_eks_instance_type              = var.aws_eks_instance_type
   aws_eks_instance_ami_id            = var.aws_eks_instance_ami_id
+  aws_eks_instance_ami_type          = var.aws_eks_instance_ami_type
   aws_eks_instance_user_data_file    = var.aws_eks_instance_user_data_file
   aws_eks_ec2_key_pair               = var.aws_eks_ec2_key_pair
   aws_eks_store_keypair_sm           = var.aws_eks_store_keypair_sm

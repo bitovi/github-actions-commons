@@ -1047,21 +1047,16 @@ inputs:
     description: "Skip deletion of cluster logs if set to true"
     required: false
   aws_eks_cluster_version:
-    type: choice
     description: 'Specify the k8s cluster version'
-    option:
-      - 1.29
-      - 1.30
-      - 1.31
-      - 1.32
-      - 1.33
     required: false
-    default: 1.33
   aws_eks_instance_type:
     description: 'enter the aws instance type'
     required: false 
   aws_eks_instance_ami_id:
     description: 'AWS AMI ID. Will default to the latest Amazon EKS Node image for the cluster version.'
+    required: false
+  aws_eks_instance_ami_type:
+    description: 'Type of AMI to use. Defaults to AL2_x86_64'
     required: false
   aws_eks_instance_user_data_file:
     description: 'Relative path in the repo for a user provided script to be executed with Terraform EKS Node creation.'
@@ -1569,7 +1564,7 @@ runs:
         AWS_ECR_REGISTRY_POLICY_INPUT: ${{ inputs.aws_ecr_registry_policy_input }}
         AWS_ECR_ADDITIONAL_TAGS: ${{ inputs.aws_ecr_additional_tags }}
 
-        # AWS EKS
+        # EKS
         AWS_EKS_CREATE: ${{ inputs.aws_eks_create }}
         AWS_EKS_SECURITY_GROUP_NAME_CLUSTER: ${{ inputs.aws_eks_security_group_name_cluster }}
         AWS_EKS_SECURITY_GROUP_NAME_NODE: ${{ inputs.aws_eks_security_group_name_node }}
@@ -1585,6 +1580,7 @@ runs:
         AWS_EKS_CLUSTER_VERSION: ${{ inputs.aws_eks_cluster_version }}
         AWS_EKS_INSTANCE_TYPE: ${{ inputs.aws_eks_instance_type }}
         AWS_EKS_INSTANCE_AMI_ID: ${{ inputs.aws_eks_instance_ami_id }}
+        AWS_EKS_INSTANCE_AMI_TYPE: ${{ inputs.aws_eks_instance_ami_type }}
         AWS_EKS_INSTANCE_USER_DATA_FILE: ${{ inputs.aws_eks_instance_user_data_file }}
         AWS_EKS_EC2_KEY_PAIR: ${{ inputs.aws_eks_ec2_key_pair }}
         AWS_EKS_STORE_KEYPAIR_SM: ${{ inputs.aws_eks_store_keypair_sm }}

@@ -1809,7 +1809,7 @@ variable "aws_eks_cluster_log_types" {
 }
 
 variable "aws_eks_cluster_log_retention_days" {
-  description = "enter the kubernetes version"
+  description = "Log retention days"
   type        = string
   default     = "7"
 }
@@ -1823,6 +1823,7 @@ variable "aws_eks_cluster_log_skip_destroy" {
 variable "aws_eks_cluster_version" {
   description = "enter the kubernetes version"
   type        = number
+  default     = 1.32
 }
 
 variable "aws_eks_instance_type" {
@@ -1835,6 +1836,12 @@ variable "aws_eks_instance_ami_id" {
   description = "AWS AMI ID"
   type        = string
   default     = ""
+}
+
+variable "aws_eks_instance_ami_type" {
+  description = "Type of AMI to use. Defaults to AL2_x86_64"
+  type        = string
+  default     = "AL2_x86_64"
 }
 
 variable "aws_eks_instance_user_data_file" {

@@ -521,9 +521,10 @@ The following inputs can be used as `step.with` keys
 | `aws_eks_cluster_log_types` | String | Comma separated list of cluster log type. See [this AWS doc](https://docs.aws.amazon.com/eks/latest/userguide/control-plane-logs.html). Defaults to `api,audit,authenticator`. |
 | `aws_eks_cluster_log_retention_days` | String | Days to store logs. Defaults to `7`. | 
 | `aws_eks_cluster_logs_skip_destroy` | Boolean | Skip deletion of cluster logs if set to true. Defaults to `false`. |
-| `aws_eks_cluster_version` | String | Specify the k8s cluster version. Defaults to `1.33` |
+| `aws_eks_cluster_version` | String | Specify the k8s cluster version. Defaults to `1.32` |
 | `aws_eks_instance_type` | String | Define the EC2 instance type. See [this list](https://aws.amazon.com/ec2/instance-types/) for reference. Defaults to `t3a.medium`. |
 | `aws_eks_instance_ami_id` | String | AWS AMI ID. Will default to the latest Amazon EKS Node image for the cluster version. |
+| `aws_eks_instance_ami_type` | String | AWS AMI ID. Will default to the latest Amazon EKS Node image for the cluster version. See [here](https://docs.aws.amazon.com/eks/latest/APIReference/API_Nodegroup.html#AmazonEKS-Type-Nodegroup-amiType) for options. Defaults to `AL2_x86_64.` (Legacy reasons)|
 | `aws_eks_instance_user_data_file` | String | Relative path in the repo for a user provided script to be executed with the EC2 Instance creation. See note. |
 | `aws_eks_ec2_key_pair` | String | Enter an existing ec2 key pair name for worker nodes. If none, will create one. |
 | `aws_eks_store_keypair_sm` | Boolean | If true, will store the newly created keys in Secret Manager. |
