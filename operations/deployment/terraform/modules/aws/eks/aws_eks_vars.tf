@@ -10,9 +10,11 @@ variable "aws_eks_cluster_log_types" {}
 variable "aws_eks_cluster_log_retention_days" {}
 variable "aws_eks_cluster_log_skip_destroy" {}
 variable "aws_eks_cluster_version" {}
+variable "aws_eks_create_bk_node_group" {}
 variable "aws_eks_instance_type" {}
-variable "aws_eks_instance_ami_id" {}
 variable "aws_eks_instance_ami_type" {}
+variable "aws_eks_instance_type_bk" {}
+variable "aws_eks_instance_ami_type_bk" {}
 variable "aws_eks_instance_user_data_file" {}
 variable "aws_eks_ec2_key_pair" {}
 variable "aws_eks_store_keypair_sm" {}

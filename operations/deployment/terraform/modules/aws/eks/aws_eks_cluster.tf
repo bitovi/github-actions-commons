@@ -94,6 +94,48 @@ resource "aws_eks_node_group" "node_nodes" {
   }
 }
 
+resource "aws_eks_node_group" "bk_node_nodes" {
+  count           = var.aws_eks_create_bk_node_group ? 1 : 0
+  cluster_name    = aws_eks_cluster.main.name
+  node_group_name = "${var.aws_resource_identifier}-bk"
+  node_role_arn   = aws_iam_role.iam_role_node.arn
+  subnet_ids      = data.aws_subnets.private.ids
+
+  scaling_config {
+    desired_size = var.aws_eks_desired_capacity
+    max_size     = var.aws_eks_max_size
+    min_size     = var.aws_eks_min_size
+  }
+
+  update_config {
+    max_unavailable = 1
+  }
+
+  ami_type = var.aws_eks_instance_ami_type_bk
+  instance_types = [var.aws_eks_instance_type_bk]
+
+  remote_access {
+    ec2_ssh_key = var.aws_eks_ec2_key_pair != "" ? var.aws_eks_ec2_key_pair : aws_key_pair.aws_key[0].id
+  }
+
+  depends_on = [
+    aws_iam_role.iam_role_node,
+    aws_iam_role.iam_role_cluster,
+    aws_eks_cluster.main,
+    aws_security_group.eks_security_group_cluster,
+    aws_security_group.eks_security_group_node
+  ]
+  tags                   = {
+    "Name" = "${aws_eks_cluster.main.name}-node-bk"
+  }
+  tags_all               = {
+    "Name" = "${aws_eks_cluster.main.name}-node-bk"
+  }
+  lifecycle {
+    ignore_changes = all
+  }
+}
+
 data "aws_caller_identity" "current" {}
 
 locals {
