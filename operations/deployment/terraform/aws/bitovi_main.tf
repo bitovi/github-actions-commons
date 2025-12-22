@@ -62,7 +62,7 @@ module "efs_to_ec2_sg" {
 
 module "aws_certificates" {
   source = "../modules/aws/certificates"
-  count  = (var.aws_ec2_instance_create || var.aws_ecs_enable) && var.aws_r53_enable && var.aws_r53_domain_name != "" ? 1 : 0
+  count  = (var.aws_ec2_instance_create || var.aws_ecs_enable) && var.aws_r53_enable_cert && var.aws_r53_cert_arn == "" && var.aws_r53_domain_name != "" ? 1 : 0
   # Cert
   aws_r53_cert_arn         = var.aws_r53_cert_arn
   aws_r53_create_root_cert = var.aws_r53_create_root_cert
@@ -85,12 +85,12 @@ module "aws_route53" {
   aws_r53_domain_name        = var.aws_r53_domain_name
   aws_r53_sub_domain_name    = var.aws_r53_sub_domain_name
   aws_r53_root_domain_deploy = var.aws_r53_root_domain_deploy
-  aws_r53_enable_cert        = var.aws_r53_enable_cert
+  aws_r53_enable_cert        = var.aws_r53_enable_cert ? var.aws_r53_cert_arn != "" ? true : try(module.aws_certificates[0].selected_arn, "") != "" ? true : false : false
   # ELB
-  aws_elb_dns_name = try(module.aws_elb[0].aws_elb_dns_name, "")
-  aws_elb_zone_id  = try(module.aws_elb[0].aws_elb_zone_id, "")
+  aws_elb_dns_name = try(module.aws_lb[0].aws_alb_dns_name, module.aws_elb[0].aws_elb_dns_name, module.ec2[0].instance_public_ip, "")
+  aws_elb_zone_id  = try(module.aws_lb[0].aws_alb_zone_id, module.aws_elb[0].aws_elb_zone_id, "", "")
   # Certs
-  aws_certificates_selected_arn = var.aws_r53_enable_cert && var.aws_r53_domain_name != "" ? module.aws_certificates[0].selected_arn : ""
+  aws_certificates_selected_arn = var.aws_r53_enable_cert ? try(module.aws_certificates[0].selected_arn, var.aws_r53_cert_arn) : ""
   # Others
   fqdn_provided = local.fqdn_provided
 
@@ -118,15 +118,94 @@ module "aws_elb" {
   aws_instance_server_id  = module.ec2[0].aws_instance_server_id
   aws_elb_target_sg_id    = module.ec2[0].aws_security_group_ec2_sg_id
   # Certs
-  aws_certificates_selected_arn = var.aws_r53_enable_cert && var.aws_r53_domain_name != "" ? module.aws_certificates[0].selected_arn : ""
+  aws_certificates_selected_arn = var.aws_r53_enable_cert ? try(module.aws_certificates[0].selected_arn, var.aws_r53_cert_arn) : ""
+  # Others
+  aws_resource_identifier            = var.aws_resource_identifier
+  aws_resource_identifier_supershort = var.aws_resource_identifier_supershort
+
+  providers = {
+    aws = aws.elb
+  }
+}
+
+module "aws_lb" {
+  source = "../modules/aws/lb"
+  count  = var.aws_ec2_instance_create && var.aws_alb_create ? 1 : 0
+  # ALB Values
+  aws_alb_security_group_name  = var.aws_alb_security_group_name
+  aws_alb_app_port             = var.aws_alb_app_port
+  aws_alb_app_protocol         = var.aws_alb_app_protocol
+  aws_alb_listen_port          = var.aws_alb_listen_port
+  aws_alb_listen_protocol      = var.aws_alb_listen_protocol
+  aws_alb_redirect_enable      = var.aws_alb_redirect_enable
+  aws_alb_www_to_apex_redirect = var.aws_alb_www_to_apex_redirect
+  aws_alb_healthcheck_path     = var.aws_alb_healthcheck_path
+  aws_alb_healthcheck_protocol = var.aws_alb_healthcheck_protocol
+  aws_alb_ssl_policy           = var.aws_alb_ssl_policy
+  # Logging
+  aws_alb_access_log_enabled     = var.aws_alb_access_log_enabled
+  aws_alb_access_log_bucket_name = var.aws_alb_access_log_bucket_name
+  aws_alb_access_log_expire      = var.aws_alb_access_log_expire
+  # EC2
+  aws_vpc_selected_id     = module.vpc.aws_selected_vpc_id
+  aws_vpc_subnet_selected = module.vpc.aws_selected_vpc_subnets #module.vpc.aws_vpc_subnet_selected
+  aws_instance_server_id  = module.ec2[0].aws_instance_server_id
+  aws_alb_target_sg_id    = module.ec2[0].aws_security_group_ec2_sg_id
+  aws_r53_domain_name     = var.aws_r53_domain_name
+  # Certs
+  aws_certificate_enabled       = var.aws_ec2_instance_create && var.aws_r53_enable_cert && (var.aws_r53_cert_arn != "" || var.aws_r53_domain_name != "") ? true : false
+  aws_certificates_selected_arn = try(module.aws_certificates[0].selected_arn, var.aws_r53_cert_arn, "")
+
   # Others
   aws_resource_identifier            = var.aws_resource_identifier
   aws_resource_identifier_supershort = var.aws_resource_identifier_supershort
   # Module dependencies
-  depends_on = [module.vpc, module.ec2]
+  depends_on = [module.aws_certificates]
 
   providers = {
-    aws = aws.elb
+    aws = aws.lb
+  }
+}
+
+module "aws_waf_ec2_alb" {
+  source                     = "../modules/aws/waf"
+  count                      = var.aws_waf_enable && var.aws_ec2_instance_create && var.aws_alb_create ? 1 : 0
+  aws_waf_enable             = var.aws_waf_enable
+  aws_waf_logging_enable     = var.aws_waf_logging_enable
+  aws_waf_log_retention_days = var.aws_waf_log_retention_days
+  aws_resource_identifier    = var.aws_resource_identifier
+  # Rules
+  aws_waf_rule_rate_limit                        = var.aws_waf_rule_rate_limit
+  aws_waf_rule_rate_limit_priority               = var.aws_waf_rule_rate_limit_priority
+  aws_waf_rule_managed_rules                     = var.aws_waf_rule_managed_rules
+  aws_waf_rule_managed_rules_priority            = var.aws_waf_rule_managed_rules_priority
+  aws_waf_rule_managed_bad_inputs                = var.aws_waf_rule_managed_bad_inputs
+  aws_waf_rule_managed_bad_inputs_priority       = var.aws_waf_rule_managed_bad_inputs_priority
+  aws_waf_rule_ip_reputation                     = var.aws_waf_rule_ip_reputation
+  aws_waf_rule_ip_reputation_priority            = var.aws_waf_rule_ip_reputation_priority
+  aws_waf_rule_anonymous_ip                      = var.aws_waf_rule_anonymous_ip
+  aws_waf_rule_anonymous_ip_priority             = var.aws_waf_rule_anonymous_ip_priority
+  aws_waf_rule_bot_control                       = var.aws_waf_rule_bot_control
+  aws_waf_rule_bot_control_priority              = var.aws_waf_rule_bot_control_priority
+  aws_waf_rule_geo_block_countries               = var.aws_waf_rule_geo_block_countries
+  aws_waf_rule_geo_block_countries_priority      = var.aws_waf_rule_geo_block_countries_priority
+  aws_waf_rule_geo_allow_only_countries          = var.aws_waf_rule_geo_allow_only_countries
+  aws_waf_rule_geo_allow_only_countries_priority = var.aws_waf_rule_geo_allow_only_countries_priority
+  aws_waf_rule_user_arn                          = var.aws_waf_rule_user_arn
+  aws_waf_rule_user_arn_priority                 = var.aws_waf_rule_user_arn_priority
+  aws_waf_rule_sqli                              = var.aws_waf_rule_sqli
+  aws_waf_rule_sqli_priority                     = var.aws_waf_rule_sqli_priority
+  aws_waf_rule_linux                             = var.aws_waf_rule_linux
+  aws_waf_rule_linux_priority                    = var.aws_waf_rule_linux_priority
+  aws_waf_rule_unix                              = var.aws_waf_rule_unix
+  aws_waf_rule_unix_priority                     = var.aws_waf_rule_unix_priority
+  aws_waf_rule_admin_protection                  = var.aws_waf_rule_admin_protection
+  aws_waf_rule_admin_protection_priority         = var.aws_waf_rule_admin_protection_priority
+  # Incoming
+  aws_lb_resource_arn = module.aws_lb[0].aws_lb_resource_arn
+
+  providers = {
+    aws = aws.waf
   }
 }
 
@@ -516,8 +595,8 @@ module "aws_ecs" {
   aws_selected_subnets              = module.vpc.aws_selected_vpc_subnets
   # Others
   aws_r53_domain_name                = var.aws_r53_enable && var.aws_r53_domain_name != "" ? var.aws_r53_domain_name : ""
-  aws_certificate_enabled            = var.aws_r53_enable_cert && length(module.aws_certificates) > 0 ? true : false
-  aws_certificates_selected_arn      = var.aws_r53_enable_cert && var.aws_r53_domain_name != "" ? module.aws_certificates[0].selected_arn : ""
+  aws_certificate_enabled            = var.aws_r53_enable_cert
+  aws_certificates_selected_arn      = var.aws_r53_enable_cert ? try(module.aws_certificates[0].selected_arn, var.aws_r53_cert_arn) : ""
   aws_resource_identifier            = var.aws_resource_identifier
   aws_resource_identifier_supershort = var.aws_resource_identifier_supershort
   app_repo_name                      = var.app_repo_name
@@ -540,7 +619,7 @@ module "aws_route53_ecs" {
   aws_elb_dns_name = module.aws_ecs[0].load_balancer_dns
   aws_elb_zone_id  = module.aws_ecs[0].load_balancer_zone_id
   # Certs
-  aws_certificates_selected_arn = var.aws_r53_enable_cert && var.aws_r53_domain_name != "" ? module.aws_certificates[0].selected_arn : ""
+  aws_certificates_selected_arn = var.aws_r53_enable_cert ? try(module.aws_certificates[0].selected_arn, var.aws_r53_cert_arn) : ""
   # Others
   fqdn_provided = local.fqdn_provided
   depends_on    = [module.aws_certificates]
@@ -557,19 +636,32 @@ module "aws_waf_ecs" {
   aws_waf_log_retention_days = var.aws_waf_log_retention_days
   aws_resource_identifier    = var.aws_resource_identifier
   # Rules
-  aws_waf_rule_rate_limit               = var.aws_waf_rule_rate_limit
-  aws_waf_rule_managed_rules            = var.aws_waf_rule_managed_rules
-  aws_waf_rule_managed_bad_inputs       = var.aws_waf_rule_managed_bad_inputs
-  aws_waf_rule_ip_reputation            = var.aws_waf_rule_ip_reputation
-  aws_waf_rule_anonymous_ip             = var.aws_waf_rule_anonymous_ip
-  aws_waf_rule_bot_control              = var.aws_waf_rule_bot_control
-  aws_waf_rule_geo_block_countries      = var.aws_waf_rule_geo_block_countries
-  aws_waf_rule_geo_allow_only_countries = var.aws_waf_rule_geo_allow_only_countries
-  aws_waf_rule_user_arn                 = var.aws_waf_rule_user_arn
-  aws_waf_rule_sqli                     = var.aws_waf_rule_sqli
-  aws_waf_rule_linux                    = var.aws_waf_rule_linux
-  aws_waf_rule_unix                     = var.aws_waf_rule_unix
-  aws_waf_rule_admin_protection         = var.aws_waf_rule_admin_protection
+  aws_waf_rule_rate_limit                        = var.aws_waf_rule_rate_limit
+  aws_waf_rule_rate_limit_priority               = var.aws_waf_rule_rate_limit_priority
+  aws_waf_rule_managed_rules                     = var.aws_waf_rule_managed_rules
+  aws_waf_rule_managed_rules_priority            = var.aws_waf_rule_managed_rules_priority
+  aws_waf_rule_managed_bad_inputs                = var.aws_waf_rule_managed_bad_inputs
+  aws_waf_rule_managed_bad_inputs_priority       = var.aws_waf_rule_managed_bad_inputs_priority
+  aws_waf_rule_ip_reputation                     = var.aws_waf_rule_ip_reputation
+  aws_waf_rule_ip_reputation_priority            = var.aws_waf_rule_ip_reputation_priority
+  aws_waf_rule_anonymous_ip                      = var.aws_waf_rule_anonymous_ip
+  aws_waf_rule_anonymous_ip_priority             = var.aws_waf_rule_anonymous_ip_priority
+  aws_waf_rule_bot_control                       = var.aws_waf_rule_bot_control
+  aws_waf_rule_bot_control_priority              = var.aws_waf_rule_bot_control_priority
+  aws_waf_rule_geo_block_countries               = var.aws_waf_rule_geo_block_countries
+  aws_waf_rule_geo_block_countries_priority      = var.aws_waf_rule_geo_block_countries_priority
+  aws_waf_rule_geo_allow_only_countries          = var.aws_waf_rule_geo_allow_only_countries
+  aws_waf_rule_geo_allow_only_countries_priority = var.aws_waf_rule_geo_allow_only_countries_priority
+  aws_waf_rule_user_arn                          = var.aws_waf_rule_user_arn
+  aws_waf_rule_user_arn_priority                 = var.aws_waf_rule_user_arn_priority
+  aws_waf_rule_sqli                              = var.aws_waf_rule_sqli
+  aws_waf_rule_sqli_priority                     = var.aws_waf_rule_sqli_priority
+  aws_waf_rule_linux                             = var.aws_waf_rule_linux
+  aws_waf_rule_linux_priority                    = var.aws_waf_rule_linux_priority
+  aws_waf_rule_unix                              = var.aws_waf_rule_unix
+  aws_waf_rule_unix_priority                     = var.aws_waf_rule_unix_priority
+  aws_waf_rule_admin_protection                  = var.aws_waf_rule_admin_protection
+  aws_waf_rule_admin_protection_priority         = var.aws_waf_rule_admin_protection_priority
   # Incoming
   aws_lb_resource_arn = module.aws_ecs[0].load_balancer_arn
   # Others
@@ -702,6 +794,7 @@ locals {
   db_proxy_tags = merge(local.default_tags, jsondecode(var.aws_db_proxy_additional_tags))
   redis_tags    = merge(local.default_tags, jsondecode(var.aws_redis_additional_tags))
   waf_tags      = merge(local.default_tags, jsondecode(var.aws_waf_additional_tags))
+  lb_tags       = merge(local.default_tags, jsondecode(var.aws_alb_additional_tags))
 
   eks_vpc_tags = {
     // This is needed for k8s to use VPC resources
@@ -717,13 +810,22 @@ locals {
     ) :
     false
   )
+  protocol             = var.aws_r53_enable_cert ? var.aws_r53_cert_arn != "" ? "https://" : try(module.aws_certificates[0].selected_arn, "") != "" ? "https://" : "http://" : "http://"
   create_efs           = var.aws_efs_create == true ? true : (var.aws_efs_create_ha == true ? true : false)
   ec2_public_endpoint  = var.aws_ec2_instance_create ? (module.ec2[0].instance_public_dns != null ? module.ec2[0].instance_public_dns : module.ec2[0].instance_public_ip) : null
   ec2_private_endpoint = var.aws_ec2_instance_create ? (module.ec2[0].instance_private_dns != null ? module.ec2[0].instance_private_dns : module.ec2[0].instance_private_ip) : null
-  ec2_endpoint         = var.aws_ec2_instance_create ? (local.ec2_public_endpoint != null ? "http://${local.ec2_public_endpoint}" : "http://${local.ec2_private_endpoint}") : null
-  elb_url              = try(module.aws_elb[0].aws_elb_dns_name, null) != null ? "http://${module.aws_elb[0].aws_elb_dns_name}" : null
-}
+  ec2_endpoint         = var.aws_ec2_instance_create ? (local.ec2_public_endpoint != null ? "${local.protocol}${local.ec2_public_endpoint}" : "${local.protocol}${local.ec2_private_endpoint}") : null
+  elb_url              = try(module.aws_elb[0].aws_elb_dns_name, null) != null ? "${local.protocol}${module.aws_elb[0].aws_elb_dns_name}" : null
+  alb_url              = try(module.aws_lb[0].aws_alb_dns_name, null) != null ? "${local.protocol}${module.aws_lb[0].aws_alb_dns_name}" : null
 
+  vm_url_candidates = [
+    try(module.aws_route53[0].vm_url, null),
+    local.alb_url,
+    local.elb_url,
+    local.ec2_endpoint
+  ]
+  vm_url_first_nonempty = [for url in local.vm_url_candidates : url if url != null && url != ""][0]
+}
 # VPC
 output "aws_vpc_id" {
   value = module.vpc.aws_selected_vpc_id
@@ -769,13 +871,18 @@ output "aws_elb_dns_name" {
   value       = try(module.aws_elb[0].aws_elb_dns_name, null)
 }
 
+output "aws_alb_dns_name" {
+  description = "Public DNS address of the ALB"
+  value       = try(module.aws_lb[0].aws_alb_dns_name, null)
+}
+
 output "application_public_dns" {
   description = "Public DNS address for the application or load balancer public DNS"
   value       = try(module.aws_route53[0].vm_url, null)
 }
 
 output "vm_url" {
-  value = try(module.aws_route53[0].vm_url, local.elb_url)
+  value = local.vm_url_first_nonempty
 }
 
 # EFS

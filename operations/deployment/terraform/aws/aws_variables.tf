@@ -327,7 +327,98 @@ variable "aws_elb_additional_tags" {
   default     = "{}"
 }
 
-# AWS LB
+# AWS ALB
+variable "aws_alb_create" {
+  type        = bool
+  description = "Global toggle for ALB creation"
+  default     = false
+}
+
+variable "aws_alb_security_group_name" {
+  type        = string
+  description = "Name of the security group to use for ALB"
+  default     = ""
+}
+
+variable "aws_alb_app_port" {
+  type        = string
+  description = "Comma-separated list of application ports for ALB target group"
+  default     = ""
+}
+
+variable "aws_alb_app_protocol" {
+  type        = string
+  description = "Comma-separated list of protocols for ALB target group (HTTP/HTTPS)"
+  default     = ""
+}
+
+variable "aws_alb_listen_port" {
+  type        = string
+  description = "Comma-separated list of listener ports for ALB"
+  default     = ""
+}
+
+variable "aws_alb_listen_protocol" {
+  type        = string
+  description = "Comma-separated list of listener protocols for ALB (HTTP/HTTPS)"
+  default     = ""
+}
+
+variable "aws_alb_redirect_enable" {
+  type        = bool
+  description = "Enable HTTP to HTTPS redirection on ALB"
+  default     = false
+}
+
+variable "aws_alb_www_to_apex_redirect" {
+  type        = bool
+  description = "Enable www to apex domain redirection on ALB"
+  default     = false
+}
+
+# Healthcheck
+variable "aws_alb_healthcheck_path" {
+  type        = string
+  description = "Health check path for ALB target group"
+  default     = "/"
+}
+
+variable "aws_alb_healthcheck_protocol" {
+  type        = string
+  description = "Health check protocol for ALB target group"
+  default     = "HTTP"
+}
+
+variable "aws_alb_ssl_policy" {
+  type        = string
+  description = "SSL policy for HTTPS listeners"
+  default     = null
+}
+
+# Logging
+variable "aws_alb_access_log_enabled" {
+  type        = bool
+  description = "Enable ALB access logs"
+  default     = false
+}
+
+variable "aws_alb_access_log_bucket_name" {
+  type        = string
+  description = "S3 bucket name to store the ALB access logs"
+  default     = ""
+}
+
+variable "aws_alb_access_log_expire" {
+  type        = string
+  description = "Delete the access logs after this amount of days"
+  default     = "90"
+}
+
+variable "aws_alb_additional_tags" {
+  type        = string
+  description = "A list of strings that will be added to created resources"
+  default     = "{}"
+}
 
 # AWS WAF
 variable "aws_waf_enable" {
@@ -360,10 +451,22 @@ variable "aws_waf_rule_rate_limit" {
   default     = "2000"
 }
 
+variable "aws_waf_rule_rate_limit_priority" {
+  type        = number
+  description = "Priority for rate limit rule"
+  default     = 10
+}
+
 variable "aws_waf_rule_managed_rules" {
   type        = bool
   description = "Enable common managed rule groups to use"
   default     = false
+}
+
+variable "aws_waf_rule_managed_rules_priority" {
+  type        = number
+  description = "Priority for managed rules"
+  default     = 20
 }
 
 variable "aws_waf_rule_managed_bad_inputs" {
@@ -372,10 +475,22 @@ variable "aws_waf_rule_managed_bad_inputs" {
   default     = false
 }
 
+variable "aws_waf_rule_managed_bad_inputs_priority" {
+  type        = number
+  description = "Priority for bad inputs rule"
+  default     = 30
+}
+
 variable "aws_waf_rule_ip_reputation" {
   type        = bool
   description = "Enable managed rule for IP reputation"
   default     = false
+}
+
+variable "aws_waf_rule_ip_reputation_priority" {
+  type        = number
+  description = "Priority for IP reputation rule"
+  default     = 40
 }
 
 variable "aws_waf_rule_anonymous_ip" {
@@ -384,10 +499,22 @@ variable "aws_waf_rule_anonymous_ip" {
   default     = false
 }
 
+variable "aws_waf_rule_anonymous_ip_priority" {
+  type        = number
+  description = "Priority for anonymous IP rule"
+  default     = 50
+}
+
 variable "aws_waf_rule_bot_control" {
   type        = bool
   description = "Enable managed rule for bot control (costs extra)"
   default     = false
+}
+
+variable "aws_waf_rule_bot_control_priority" {
+  type        = number
+  description = "Priority for bot control rule"
+  default     = 60
 }
 
 variable "aws_waf_rule_geo_block_countries" {
@@ -396,10 +523,22 @@ variable "aws_waf_rule_geo_block_countries" {
   default     = ""
 }
 
+variable "aws_waf_rule_geo_block_countries_priority" {
+  type        = number
+  description = "Priority for geo block countries rule"
+  default     = 70
+}
+
 variable "aws_waf_rule_geo_allow_only_countries" {
   type        = string
   description = "Comma separated list of countries to allow"
   default     = ""
+}
+
+variable "aws_waf_rule_geo_allow_only_countries_priority" {
+  type        = number
+  description = "Priority for geo allow only countries rule"
+  default     = 75
 }
 
 variable "aws_waf_rule_sqli" {
@@ -408,10 +547,22 @@ variable "aws_waf_rule_sqli" {
   default     = false
 }
 
+variable "aws_waf_rule_sqli_priority" {
+  type        = number
+  description = "Priority for SQL injection rule"
+  default     = 85
+}
+
 variable "aws_waf_rule_linux" {
   type        = bool
   description = "Enable managed rule for Linux"
   default     = false
+}
+
+variable "aws_waf_rule_linux_priority" {
+  type        = number
+  description = "Priority for Linux rule"
+  default     = 90
 }
 
 variable "aws_waf_rule_unix" {
@@ -420,16 +571,34 @@ variable "aws_waf_rule_unix" {
   default     = false
 }
 
+variable "aws_waf_rule_unix_priority" {
+  type        = number
+  description = "Priority for Unix rule"
+  default     = 95
+}
+
 variable "aws_waf_rule_admin_protection" {
   type        = bool
   description = "Enable managed rule for admin protection"
   default     = false
 }
 
+variable "aws_waf_rule_admin_protection_priority" {
+  type        = number
+  description = "Priority for admin protection rule"
+  default     = 100
+}
+
 variable "aws_waf_rule_user_arn" {
   type        = string
   description = "ARN of the user rule"
   default     = ""
+}
+
+variable "aws_waf_rule_user_arn_priority" {
+  type        = number
+  description = "Priority for user ARN rule"
+  default     = 80
 }
 
 # AWS EFS
