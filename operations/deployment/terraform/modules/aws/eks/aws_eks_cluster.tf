@@ -179,7 +179,7 @@ resource "kubernetes_config_map" "aws_auth" {
   }
 
   lifecycle {
-    replace_triggered_by = [terraform_data.replacement]
+    replace_triggered_by = [terraform_data.replacement,aws_eks_node_group.node_nodes]
   }
 }
 
