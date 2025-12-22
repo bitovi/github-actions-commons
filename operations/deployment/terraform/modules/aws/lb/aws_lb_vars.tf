@@ -14,7 +14,6 @@ variable "aws_alb_access_log_enabled" {}
 variable "aws_alb_access_log_bucket_name" {}
 variable "aws_alb_access_log_expire" {}
 
-#variable "aws_instance_server_az" {} #TBD
 variable "aws_vpc_selected_id" {}
 variable "aws_vpc_subnet_selected" {}
 variable "aws_instance_server_id" {}
