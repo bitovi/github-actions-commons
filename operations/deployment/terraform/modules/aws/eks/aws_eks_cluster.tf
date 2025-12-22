@@ -11,7 +11,7 @@ resource "aws_cloudwatch_log_group" "eks" {
 
 resource "aws_eks_cluster" "main" {
   name     = var.aws_eks_cluster_name # Cluster name is defined during the code-generation phase
-  version  = var.aws_eks_cluster_version
+  version  = "${var.aws_eks_cluster_version}"
   role_arn = aws_iam_role.iam_role_cluster.arn
   vpc_config {
     security_group_ids      = [aws_security_group.eks_security_group_cluster.id]
