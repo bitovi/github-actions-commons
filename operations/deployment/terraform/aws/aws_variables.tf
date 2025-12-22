@@ -1822,7 +1822,7 @@ variable "aws_eks_cluster_log_skip_destroy" {
 
 variable "aws_eks_cluster_version" {
   description = "enter the kubernetes version"
-  type        = number
+  type        = string
   default     = 1.28
 }
 
