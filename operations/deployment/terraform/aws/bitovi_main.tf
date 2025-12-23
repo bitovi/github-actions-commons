@@ -751,6 +751,7 @@ module "ansible" {
   app_install_root             = var.app_install_root
   aws_resource_identifier      = var.aws_resource_identifier
   docker_remove_orphans        = var.docker_remove_orphans
+  docker_backup_retention      = var.docker_backup_retention
   # Cloudwatch
   docker_cloudwatch_enable         = var.docker_cloudwatch_enable
   docker_cloudwatch_lg_name        = var.docker_cloudwatch_lg_name != "" ? var.docker_cloudwatch_lg_name : "${var.aws_resource_identifier}-docker-logs"

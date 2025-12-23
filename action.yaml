@@ -901,6 +901,9 @@ inputs:
   docker_repo_app_directory_cleanup:
     description: 'Will generate a timestamped compressed file and delete the app repo directory.'
     required: false
+  docker_backup_retention:
+    description: 'Number of old backups to retain. Default is unlimited.'
+    required: false
   docker_efs_mount_target:
     description: 'Directory path within docker env to mount directory to, default is `/data`'
     required: false
@@ -1609,6 +1612,7 @@ runs:
         DOCKER_FULL_CLEANUP: ${{ inputs.docker_full_cleanup }}
         DOCKER_REPO_APP_DIRECTORY: ${{ inputs.docker_repo_app_directory }}
         DOCKER_REPO_APP_DIRECTORY_CLEANUP: ${{ inputs.docker_repo_app_directory_cleanup }}
+        DOCKER_BACKUP_RETENTION: ${{ inputs.docker_backup_retention }}
         DOCKER_EFS_MOUNT_TARGET: ${{ inputs.docker_efs_mount_target }}
         DOCKER_CLOUDWATCH_ENABLE: ${{ inputs.docker_cloudwatch_enable }}
         DOCKER_CLOUDWATCH_LG_NAME: ${{ inputs.docker_cloudwatch_lg_name }}

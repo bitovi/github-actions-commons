@@ -1541,6 +1541,12 @@ variable "docker_remove_orphans" {
   default     = false
 }
 
+variable "docker_backup_retention" {
+  type        = string
+  description = "Number of backups to retain"
+  default     = "0"
+}
+
 variable "docker_cloudwatch_enable" {
   type        = bool
   description = "Toggle cloudwatch for Docker."

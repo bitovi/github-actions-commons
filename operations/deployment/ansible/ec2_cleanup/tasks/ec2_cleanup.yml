@@ -40,3 +40,21 @@
     force_archive: true
     remove: true
   when: folder_stat.stat.exists
+
+- name: Find all compressed timestamped folders
+  find:
+    paths: "{{ app_install_root }}"
+    patterns: "{{ app_repo_name }}-*.tar.gz"
+    use_regex: false
+    file_type: file
+  register: compressed_archives
+
+- name: Sort and remove old compressed folders, keep {{ docker_backup_retention }} most recent
+  file:
+    path: "{{ item.path }}"
+    state: absent
+  loop: "{{ compressed_archives.files | sort(attribute='mtime', reverse=true) | map(attribute='path') | list | slice(docker_backup_retention | int, 9999) }}"
+  when:
+      - docker_backup_retention is defined
+      - (docker_backup_retention | int) > 0
+      - compressed_archives.matched > (docker_backup_retention | int)

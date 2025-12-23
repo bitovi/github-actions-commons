@@ -5,6 +5,7 @@ variable "app_repo_name" {}
 variable "app_install_root" {}
 variable "aws_resource_identifier" {}
 variable "docker_remove_orphans" {}
+variable "docker_backup_retention" {}
 variable "docker_cloudwatch_enable" {}
 variable "docker_cloudwatch_lg_name" {}
 variable "docker_cloudwatch_skip_destroy" {}
