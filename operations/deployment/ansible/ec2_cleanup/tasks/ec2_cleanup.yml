@@ -68,7 +68,7 @@
         state: absent
       loop: "{{ archives_to_delete }}"
       when:
-      - archives_to_delete | length > (docker_backup_retention | int)
+      - archives_to_delete | length > 0
 
     when: 
       - docker_backup_retention is defined 
