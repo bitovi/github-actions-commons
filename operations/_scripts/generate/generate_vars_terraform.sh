@@ -459,6 +459,7 @@ fi
 if [[ $(alpha_only "$DOCKER_INSTALL") == true ]]; then
   docker_install=$(generate_var docker_install $DOCKER_INSTALL)
   docker_remove_orphans=$(generate_var docker_remove_orphans $DOCKER_REMOVE_ORPHANS)
+  docker_backup_retention=$(generate_var docker_backup_retention $DOCKER_BACKUP_RETENTION)
   docker_efs_mount_target=$(generate_var docker_efs_mount_target $DOCKER_EFS_MOUNT_TARGET)
   docker_cloudwatch_enable=$(generate_var docker_cloudwatch_enable $DOCKER_CLOUDWATCH_ENABLE)
   docker_cloudwatch_lg_name=$(generate_var docker_cloudwatch_lg_name $DOCKER_CLOUDWATCH_LG_NAME)
@@ -841,6 +842,7 @@ $aws_eks_additional_tags
 
 $docker_efs_mount_target
 $docker_remove_orphans
+$docker_backup_retention
 $docker_cloudwatch_enable
 $docker_cloudwatch_lg_name
 $docker_cloudwatch_skip_destroy
