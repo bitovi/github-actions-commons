@@ -51,18 +51,10 @@
 
 - name: Sort and remove old compressed folders, keep {{ docker_backup_retention }} most recent
   file:
-    path: "{{ item.path }}"
+    path: "{{ item }}"
     state: absent
-  loop: >-
-    {{
-      compressed_archives.files
-      | sort(attribute='mtime', reverse=true)
-      | map(attribute='path')
-      | list
-      | slice(docker_backup_retention | int, 9999)
-      if (docker_backup_retention | int) > 0 else []
-    }}
+  loop: "{{ compressed_archives.files | sort(attribute='mtime', reverse=true) | map(attribute='path') | list | slice(docker_backup_retention | int, 9999) }}"
   when:
-      - docker_backup_retention is defined
-      - (docker_backup_retention | int) > 0
-      - compressed_archives.matched > (docker_backup_retention | int)
+    - docker_backup_retention is defined
+    - (docker_backup_retention | int) > 0
+    - compressed_archives.matched > (docker_backup_retention | int)
