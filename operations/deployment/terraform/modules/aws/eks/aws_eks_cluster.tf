@@ -92,6 +92,9 @@ resource "aws_eks_node_group" "node_nodes" {
   tags_all               = {
     "Name" = "${aws_eks_cluster.main.name}-node"
   }
+  lifecycle {
+    create_before_destroy = true
+  }
 }
 
 resource "aws_eks_node_group" "bk_node_nodes" {
@@ -179,7 +182,7 @@ resource "kubernetes_config_map" "aws_auth" {
   }
 
   lifecycle {
-    replace_triggered_by = [terraform_data.replacement,aws_eks_node_group.node_nodes]
+    replace_triggered_by = [terraform_data.replacement]
   }
 }
 
