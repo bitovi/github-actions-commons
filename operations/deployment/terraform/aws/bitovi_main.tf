@@ -144,7 +144,7 @@ module "aws_lb" {
   aws_alb_ssl_policy           = var.aws_alb_ssl_policy
   # Logging
   aws_alb_access_log_enabled     = var.aws_alb_access_log_enabled
-  aws_alb_access_log_bucket_name = var.aws_alb_access_log_bucket_name
+  aws_alb_access_log_bucket_name = var.aws_alb_access_log_bucket_name != "" ? var.aws_alb_access_log_bucket_name : ( length(var.aws_resource_identifier) < 60 ? "${var.aws_resource_identifier}-alb" : "${var.aws_resource_identifier}-lb" )
   aws_alb_access_log_expire      = var.aws_alb_access_log_expire
   # EC2
   aws_vpc_selected_id     = module.vpc.aws_selected_vpc_id

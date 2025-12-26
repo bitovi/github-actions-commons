@@ -58,7 +58,7 @@ jobs:
 1. [AWS Route53 Domains and Certificates](#aws-route53-domains-and-certificate-inputs)
 1. [Load Balancer](#load-balancer-inputs-classic-elb)
 1. [Application Load Balancer Inputs (ALB)](#application-load-balancer-inputs-alb)
-1. [WAF](#waf)
+1. [WAF](#waf-inputs)
 1. [EFS](#efs-inputs)
 1. [RDS](#rds-inputs)
 1. [Amazon Aurora Inputs](#aurora-inputs)
@@ -220,17 +220,20 @@ The following inputs can be used as `step.with` keys
 | `aws_alb_app_port` | String | Comma-separated list of application ports for ALB target group. If none defined, will use `aws_alb_listen_port` ones. |
 | `aws_alb_app_protocol` | String | Comma-separated list of protocols for ALB target group (HTTP/HTTPS). Defaults to `HTTP`. |
 | `aws_alb_listen_port` | String | Comma-separated list of listener ports for ALB. Depending on certificate, defaults to `80` or `443`. |
-| `aws_alb_listen_protocol` | String | Comma-separated list of listener protocols for ALB (HTTP/HTTPS). Defaults to Depending on certificate, defaults to `HTTP` or `HTTPS`. |
+| `aws_alb_listen_protocol` | String | Comma-separated list of listener protocols for ALB (HTTP/HTTPS). Depending on certificate, defaults to `HTTP` or `HTTPS`. |
 | `aws_alb_redirect_enable` | Boolean | Enable HTTP to HTTPS redirection on ALB. Defaults to `false` |
 | `aws_alb_www_to_apex_redirect` | Boolean | Enable www to apex domain redirection on ALB. Defaults to `false` |
 | `aws_alb_healthcheck_path` | String | Health check path for ALB target group. Defaults to `"/"` |
 | `aws_alb_healthcheck_protocol` | String | Health check protocol for ALB target group. Defaults to `"HTTP"` |
 | `aws_alb_ssl_policy` | String | SSL policy for HTTPS listeners. More [here](https://docs.aws.amazon.com/elasticloadbalancing/latest/application/describe-ssl-policies.html) |
+| `aws_alb_access_log_enabled` | Boolean | Enable ALB access logs. |
+| `aws_alb_access_log_bucket_name` | String | S3 bucket name to store the ALB access logs. Defaults to `${aws_resource_identifier}-alb` (or `-lb `depending of length). **Bucket will be deleted if stack is destroyed.** |
+| `aws_alb_access_log_expire` | String | Delete the access logs after this amount of days. Defaults to `90`. Set to `0` in order to disable this policy. | 
 | `aws_alb_additional_tags`| String | A list of strings that will be added to created resources. Example: `{"key1": "value1", "key2": "value2"}`. Default `"{}"` |
 <hr/>
 <br/>
 
-#### **WAF**
+#### **WAF Inputs**
 | Name             | Type    | Description                        |
 |------------------|---------|------------------------------------|
 | `aws_waf_enable` | Boolean | Enable WAF for load balancer (LB only - NOT ELB). Default is `false` |
