@@ -109,7 +109,7 @@ module "aws_elb" {
   aws_elb_listen_port            = var.aws_elb_listen_port
   aws_elb_listen_protocol        = var.aws_elb_listen_protocol
   aws_elb_healthcheck            = var.aws_elb_healthcheck
-  aws_elb_access_log_bucket_name = var.aws_elb_access_log_bucket_name
+  aws_elb_access_log_bucket_name = var.aws_elb_access_log_bucket_name != "" ? var.aws_elb_access_log_bucket_name : ( length(var.aws_resource_identifier) < 59 ? "${var.aws_resource_identifier}-logs" : "${var.aws_resource_identifier}-lg" )
   aws_elb_access_log_expire      = var.aws_elb_access_log_expire
   # EC2
   aws_instance_server_az  = [module.vpc.preferred_az]
@@ -144,7 +144,7 @@ module "aws_lb" {
   aws_alb_ssl_policy           = var.aws_alb_ssl_policy
   # Logging
   aws_alb_access_log_enabled     = var.aws_alb_access_log_enabled
-  aws_alb_access_log_bucket_name = var.aws_alb_access_log_bucket_name
+  aws_alb_access_log_bucket_name = var.aws_alb_access_log_bucket_name != "" ? var.aws_alb_access_log_bucket_name : "${var.aws_resource_identifier}-lb"
   aws_alb_access_log_expire      = var.aws_alb_access_log_expire
   # EC2
   aws_vpc_selected_id     = module.vpc.aws_selected_vpc_id

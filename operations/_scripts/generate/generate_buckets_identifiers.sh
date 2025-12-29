@@ -19,7 +19,7 @@ case $1 in
 
   ;;
   lb)
-      # Generate AWS_ELB_ACCESS_LOG_BUCKET_NAME ID
+      # Generate AWS_ELB_ACCESS_LOG_BUCKET_NAME ID - # Not in use anymore
       #  Add trailing id depending on name length - See AWS S3 bucket naming rules
       if [[ ${#GITHUB_IDENTIFIER} < 59 ]]; then
         AWS_ELB_ACCESS_LOG_BUCKET_NAME="${GITHUB_IDENTIFIER}-logs"
