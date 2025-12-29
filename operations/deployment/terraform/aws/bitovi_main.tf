@@ -820,10 +820,10 @@ locals {
   alb_url              = try(module.aws_lb[0].aws_alb_dns_name, null) != null ? "${local.protocol}${module.aws_lb[0].aws_alb_dns_name}" : null
 
   vm_url_candidates = [
-    try(module.aws_route53[0].vm_url, null),
+    try(try(module.aws_route53[0].vm_url, null),
     local.alb_url,
     local.elb_url,
-    local.ec2_endpoint
+    local.ec2_endpoint,null)
   ]
   vm_url_first_nonempty = [for url in local.vm_url_candidates : url if url != null && url != ""][0]
 }
