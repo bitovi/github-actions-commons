@@ -821,9 +821,9 @@ locals {
 
   vm_url_candidates = [
     try(try(module.aws_route53[0].vm_url, null),
-    local.alb_url,
-    local.elb_url,
-    local.ec2_endpoint,null)
+      local.alb_url,
+      local.elb_url,
+    local.ec2_endpoint, null)
   ]
   vm_url_first_nonempty = [for url in local.vm_url_candidates : url if url != null && url != ""][0]
 }
@@ -883,7 +883,8 @@ output "application_public_dns" {
 }
 
 output "vm_url" {
-  value = local.vm_url_first_nonempty
+  description = "Will print the best available URL for the VM, ALB, ELB or EC2 instance"
+  value       = try(local.vm_url_first_nonempty, null)
 }
 
 # EFS
