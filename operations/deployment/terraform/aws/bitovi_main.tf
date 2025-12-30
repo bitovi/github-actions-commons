@@ -825,8 +825,13 @@ locals {
       local.elb_url,
     local.ec2_endpoint, null)
   ]
-  vm_url_first_nonempty = length(local.vm_url_candidates) > 0 ?  [for url in local.vm_url_candidates : url if url != null && url != ""][0] : null
+  vm_url_first_nonempty = (
+    length([for url in local.vm_url_candidates : url if url != null && url != ""]) > 0
+      ? [for url in local.vm_url_candidates : url if url != null && url != ""][0]
+      : null
+  )
 }
+
 # VPC
 output "aws_vpc_id" {
   value = module.vpc.aws_selected_vpc_id
