@@ -816,16 +816,12 @@ locals {
   ec2_public_endpoint  = var.aws_ec2_instance_create ? (module.ec2[0].instance_public_dns != null ? module.ec2[0].instance_public_dns : module.ec2[0].instance_public_ip) : null
   ec2_private_endpoint = var.aws_ec2_instance_create ? (module.ec2[0].instance_private_dns != null ? module.ec2[0].instance_private_dns : module.ec2[0].instance_private_ip) : null
   ec2_endpoint         = var.aws_ec2_instance_create ? (local.ec2_public_endpoint != null ? "${local.protocol}${local.ec2_public_endpoint}" : "${local.protocol}${local.ec2_private_endpoint}") : null
-  elb_url              = try(module.aws_elb[0].aws_elb_dns_name, null) != null ? "${local.protocol}${module.aws_elb[0].aws_elb_dns_name}" : null
-  alb_url              = try(module.aws_lb[0].aws_alb_dns_name, null) != null ? "${local.protocol}${module.aws_lb[0].aws_alb_dns_name}" : null
+  elb_url              = try(module.aws_elb[0].aws_elb_dns_name, null) != null &&  try(module.aws_elb[0].aws_elb_dns_name, null) != "" ? "${local.protocol}${module.aws_elb[0].aws_elb_dns_name}" : null
+  alb_url              = try(module.aws_lb[0].aws_alb_dns_name, null) != null && try(module.aws_lb[0].aws_alb_dns_name, null) != "" ? "${local.protocol}${module.aws_lb[0].aws_alb_dns_name}" : null
 
-  vm_url_candidates = [
-    try(try(module.aws_route53[0].vm_url, null),
-      local.alb_url,
-      local.elb_url,
-    local.ec2_endpoint, null)
+  vm_url = [
+    try(module.aws_route53[0].vm_url, local.alb_url, local.elb_url, local.ec2_endpoint, null)
   ]
-  vm_url_first_nonempty = length(local.vm_url_candidates) > 0 ? [for url in local.vm_url_candidates : url if url != null && url != ""][0] : null
 }
 
 # VPC
@@ -885,7 +881,7 @@ output "application_public_dns" {
 
 output "vm_url" {
   description = "Will print the best available URL for the VM, ALB, ELB or EC2 instance"
-  value       = try(local.vm_url_first_nonempty, null)
+  value       = try(local.vm_url, null)
 }
 
 # EFS
