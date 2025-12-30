@@ -820,11 +820,13 @@ locals {
   alb_url              = try(module.aws_lb[0].aws_alb_dns_name, null) != null ? "${local.protocol}${module.aws_lb[0].aws_alb_dns_name}" : null
 
   vm_url_candidates = [
-    try(module.aws_route53[0].vm_url, local.alb_url, local.elb_url, local.ec2_endpoint, null)
+    try(try(module.aws_route53[0].vm_url, null),
+      local.alb_url,
+      local.elb_url,
+    local.ec2_endpoint, null)
   ]
-  vm_url_first_nonempty = length(local.vm_url_candidates) > 0 ? [for url in local.vm_url_candidates : url if url != null && url != ""][0] : null
+  vm_url_first_nonempty = length(local.vm_url_candidates) > 0 ?  [for url in local.vm_url_candidates : url if url != null && url != ""][0] : null
 }
-
 # VPC
 output "aws_vpc_id" {
   value = module.vpc.aws_selected_vpc_id
