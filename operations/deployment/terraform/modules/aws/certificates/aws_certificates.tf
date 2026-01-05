@@ -10,7 +10,7 @@ data "aws_acm_certificate" "issued" {
     "wildcard" = "*.${var.aws_r53_domain_name}",
     "sub"      = "${var.aws_r53_sub_domain_name}.${var.aws_r53_domain_name}"
   } : {}
-  domain = each.value
+  domain = var.aws_r53_domain_name
 }
 
 # This block will create and validate the root domain and www cert
