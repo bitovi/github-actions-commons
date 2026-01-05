@@ -827,8 +827,8 @@ locals {
   ]
   vm_url_first_nonempty = (
     length([for url in local.vm_url_candidates : url if url != null && url != ""]) > 0
-      ? [for url in local.vm_url_candidates : url if url != null && url != ""][0]
-      : null
+    ? [for url in local.vm_url_candidates : url if url != null && url != ""][0]
+    : null
   )
 }
 
