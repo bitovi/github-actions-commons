@@ -12,11 +12,12 @@ bitops_servers:
    app_install_root: ${var.app_install_root}
    resource_identifier: ${var.aws_resource_identifier}
    docker_remove_orphans: ${var.docker_remove_orphans}
+   docker_backup_retention: ${var.docker_backup_retention}
 EOT
 }
 
 data "aws_efs_file_system" "mount_efs" {
-  count = var.aws_efs_enable ? 1 : 0
+  count          = var.aws_efs_enable ? 1 : 0
   file_system_id = var.aws_efs_fs_id
 }
 
@@ -34,6 +35,7 @@ bitops_servers:
    app_install_root: ${var.app_install_root}
    resource_identifier: ${var.aws_resource_identifier}
    docker_remove_orphans: ${var.docker_remove_orphans}
+   docker_backup_retention: ${var.docker_backup_retention}
    mount_efs: true
    efs_url: ${data.aws_efs_file_system.mount_efs[0].dns_name}
    aws_efs_ec2_mount_point: ${var.aws_efs_ec2_mount_point}

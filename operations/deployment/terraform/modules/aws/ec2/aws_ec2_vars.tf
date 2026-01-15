@@ -18,8 +18,8 @@ variable "aws_vpc_dns_enabled" {}
 variable "aws_subnet_selected_id" {}
 variable "preferred_az" {}
 variable "ec2_tags" {
-    type = map
-    default = {}
+  type    = map(any)
+  default = {}
 }
 # Others
 variable "aws_resource_identifier" {}

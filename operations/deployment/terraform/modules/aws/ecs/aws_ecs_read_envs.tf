@@ -6,30 +6,30 @@ locals {
 }
 
 data "local_file" "env_repo_file" {
-  count = fileexists(local.env_repo_file) ? 1 : 0
-  filename =  local.env_repo_file
+  count    = fileexists(local.env_repo_file) ? 1 : 0
+  filename = local.env_repo_file
 }
 
 data "local_file" "env_ghv_file" {
-  count = fileexists(local.env_ghv_file) ? 1 : 0
-  filename =  local.env_ghv_file
+  count    = fileexists(local.env_ghv_file) ? 1 : 0
+  filename = local.env_ghv_file
 }
 
 data "local_file" "env_ghs_file" {
-  count = fileexists(local.env_ghs_file) ? 1 : 0
-  filename =  local.env_ghs_file
+  count    = fileexists(local.env_ghs_file) ? 1 : 0
+  filename = local.env_ghs_file
 }
 
 data "local_file" "env_aws_file" {
-  count = fileexists(local.env_aws_file) ? 1 : 0
-  filename =  local.env_aws_file
+  count    = fileexists(local.env_aws_file) ? 1 : 0
+  filename = local.env_aws_file
 }
 
 locals {
   repo_content = length(data.local_file.env_repo_file) == 0 ? null : data.local_file.env_repo_file[0].content
-  ghv_content  = length(data.local_file.env_ghv_file)  == 0 ? null : data.local_file.env_ghv_file[0].content
-  ghs_content  = length(data.local_file.env_ghs_file)  == 0 ? null : data.local_file.env_ghs_file[0].content
-  aws_content  = length(data.local_file.env_aws_file)  == 0 ? null : data.local_file.env_aws_file[0].content
+  ghv_content  = length(data.local_file.env_ghv_file) == 0 ? null : data.local_file.env_ghv_file[0].content
+  ghs_content  = length(data.local_file.env_ghs_file) == 0 ? null : data.local_file.env_ghs_file[0].content
+  aws_content  = length(data.local_file.env_aws_file) == 0 ? null : data.local_file.env_aws_file[0].content
 
   merged_content = join("\n", [
     for content in [
@@ -45,5 +45,5 @@ locals {
       name  = key
       value = value
     }
-   ]
+  ]
 }

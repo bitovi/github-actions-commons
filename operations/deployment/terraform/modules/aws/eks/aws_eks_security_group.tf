@@ -11,7 +11,7 @@ resource "aws_security_group" "eks_security_group_cluster" {
     cidr_blocks = ["0.0.0.0/0"]
   }
   tags = {
-    Name = "${var.aws_resource_identifier}-eks-sg-cluster"
+    Name                                                = "${var.aws_resource_identifier}-eks-sg-cluster"
     "kubernetes.io/cluster/${var.aws_eks_cluster_name}" = "owned"
   }
 }
@@ -27,111 +27,111 @@ resource "aws_security_group" "eks_security_group_node" {
     cidr_blocks = ["0.0.0.0/0"]
   }
   tags = {
-    Name = "${var.aws_resource_identifier}-eks-sg-node"
+    Name                                                = "${var.aws_resource_identifier}-eks-sg-node"
     "kubernetes.io/cluster/${var.aws_eks_cluster_name}" = "owned"
   }
 }
 
 # Cluster rules
 resource "aws_security_group_rule" "ingress_nodes_443" {
-    description              = "Node groups to cluster API"
-    from_port                = 443
-    protocol                 = "tcp"
-    security_group_id        = aws_security_group.eks_security_group_cluster.id
-    source_security_group_id = aws_security_group.eks_security_group_node.id
-    to_port                  = 443
-    type                     = "ingress"
+  description              = "Node groups to cluster API"
+  from_port                = 443
+  protocol                 = "tcp"
+  security_group_id        = aws_security_group.eks_security_group_cluster.id
+  source_security_group_id = aws_security_group.eks_security_group_node.id
+  to_port                  = 443
+  type                     = "ingress"
 }
 
 # Node rules
 resource "aws_security_group_rule" "ingress_cluster_443" {
-    description              = "Cluster API to node groups"
-    from_port                = 443
-    protocol                 = "tcp"
-    security_group_id        = aws_security_group.eks_security_group_node.id
-    source_security_group_id = aws_security_group.eks_security_group_cluster.id
-    to_port                  = 443
-    type                     = "ingress"
+  description              = "Cluster API to node groups"
+  from_port                = 443
+  protocol                 = "tcp"
+  security_group_id        = aws_security_group.eks_security_group_node.id
+  source_security_group_id = aws_security_group.eks_security_group_cluster.id
+  to_port                  = 443
+  type                     = "ingress"
 }
 
 resource "aws_security_group_rule" "ingress_cluster_4443_webhook" {
-    description              = "Cluster API to node 4443/tcp webhook"
-    from_port                = 4443
-    protocol                 = "tcp"
-    security_group_id        = aws_security_group.eks_security_group_node.id
-    source_security_group_id = aws_security_group.eks_security_group_cluster.id
-    to_port                  = 4443
-    type                     = "ingress"
+  description              = "Cluster API to node 4443/tcp webhook"
+  from_port                = 4443
+  protocol                 = "tcp"
+  security_group_id        = aws_security_group.eks_security_group_node.id
+  source_security_group_id = aws_security_group.eks_security_group_cluster.id
+  to_port                  = 4443
+  type                     = "ingress"
 }
 
 resource "aws_security_group_rule" "ingress_cluster_6443_webhook" {
-    description              = "Cluster API to node 6443/tcp webhook"
-    from_port                = 6443
-    protocol                 = "tcp"
-    security_group_id        = aws_security_group.eks_security_group_node.id
-    source_security_group_id = aws_security_group.eks_security_group_cluster.id
-    to_port                  = 6443
-    type                     = "ingress"
+  description              = "Cluster API to node 6443/tcp webhook"
+  from_port                = 6443
+  protocol                 = "tcp"
+  security_group_id        = aws_security_group.eks_security_group_node.id
+  source_security_group_id = aws_security_group.eks_security_group_cluster.id
+  to_port                  = 6443
+  type                     = "ingress"
 }
 
 resource "aws_security_group_rule" "noingress_cluster_8443_webhookde4" {
-    description              = "Cluster API to node 8443/tcp webhook"
-    from_port                = 8443
-    protocol                 = "tcp"
-    security_group_id        = aws_security_group.eks_security_group_node.id
-    source_security_group_id = aws_security_group.eks_security_group_cluster.id
-    to_port                  = 8443
-    type                     = "ingress"
+  description              = "Cluster API to node 8443/tcp webhook"
+  from_port                = 8443
+  protocol                 = "tcp"
+  security_group_id        = aws_security_group.eks_security_group_node.id
+  source_security_group_id = aws_security_group.eks_security_group_cluster.id
+  to_port                  = 8443
+  type                     = "ingress"
 }
 
 resource "aws_security_group_rule" "ingress_cluster_9443_webhook" {
-    description              = "Cluster API to node 9443/tcp webhook"
-    from_port                = 9443
-    protocol                 = "tcp"
-    security_group_id        = aws_security_group.eks_security_group_node.id
-    source_security_group_id = aws_security_group.eks_security_group_cluster.id
-    to_port                  = 9443
-    type                     = "ingress"
+  description              = "Cluster API to node 9443/tcp webhook"
+  from_port                = 9443
+  protocol                 = "tcp"
+  security_group_id        = aws_security_group.eks_security_group_node.id
+  source_security_group_id = aws_security_group.eks_security_group_cluster.id
+  to_port                  = 9443
+  type                     = "ingress"
 }
 
 resource "aws_security_group_rule" "ingress_cluster_kubelet" {
-    description              = "Cluster API to node kubelets"
-    from_port                = 10250
-    protocol                 = "tcp"
-    security_group_id        = aws_security_group.eks_security_group_node.id
-    source_security_group_id = aws_security_group.eks_security_group_cluster.id
-    to_port                  = 10250
-    type                     = "ingress"
+  description              = "Cluster API to node kubelets"
+  from_port                = 10250
+  protocol                 = "tcp"
+  security_group_id        = aws_security_group.eks_security_group_node.id
+  source_security_group_id = aws_security_group.eks_security_group_cluster.id
+  to_port                  = 10250
+  type                     = "ingress"
 }
 
 resource "aws_security_group_rule" "ingress_nodes_ephemeral" {
-    description            = "Node to node ingress on ephemeral ports"
-    from_port              = 1025
-    protocol               = "tcp"
-    security_group_id      = aws_security_group.eks_security_group_node.id
-    self                   = true
-    to_port                = 65535
-    type                   = "ingress"
+  description       = "Node to node ingress on ephemeral ports"
+  from_port         = 1025
+  protocol          = "tcp"
+  security_group_id = aws_security_group.eks_security_group_node.id
+  self              = true
+  to_port           = 65535
+  type              = "ingress"
 }
 
 resource "aws_security_group_rule" "ingress_self_coredns_tcp" {
-    description            = "Node to node CoreDNS"
-    from_port              = 53
-    protocol               = "tcp"
-    security_group_id      = aws_security_group.eks_security_group_node.id
-    self                   = true
-    to_port                = 53
-    type                   = "ingress"
+  description       = "Node to node CoreDNS"
+  from_port         = 53
+  protocol          = "tcp"
+  security_group_id = aws_security_group.eks_security_group_node.id
+  self              = true
+  to_port           = 53
+  type              = "ingress"
 }
 
 resource "aws_security_group_rule" "ingress_self_coredns_udp" {
-    description            = "Node to node CoreDNS UDP"
-    from_port              = 53
-    protocol               = "udp"
-    security_group_id      = aws_security_group.eks_security_group_node.id
-    self                   = true
-    to_port                = 53
-    type                   = "ingress"
+  description       = "Node to node CoreDNS UDP"
+  from_port         = 53
+  protocol          = "udp"
+  security_group_id = aws_security_group.eks_security_group_node.id
+  self              = true
+  to_port           = 53
+  type              = "ingress"
 }
 
 
@@ -178,29 +178,29 @@ resource "aws_security_group_rule" "ingress_self_coredns_udp" {
 #
 
 resource "aws_security_group_rule" "rule7" {
-    count             = length(local.aws_eks_management_cidr)
-    description       = "Allow workstation or EC2 to communicate with the cluster API Server"
-    type              = "ingress"
-    from_port         = "443"
-    to_port           = "443"
-    protocol          = "tcp"
-    cidr_blocks       = element(local.aws_eks_management_cidr, count.index)
-    security_group_id = aws_security_group.eks_security_group_cluster.id
+  count             = length(local.aws_eks_management_cidr)
+  description       = "Allow workstation or EC2 to communicate with the cluster API Server"
+  type              = "ingress"
+  from_port         = "443"
+  to_port           = "443"
+  protocol          = "tcp"
+  cidr_blocks       = element(local.aws_eks_management_cidr, count.index)
+  security_group_id = aws_security_group.eks_security_group_cluster.id
 }
 
 resource "aws_security_group_rule" "ingress_rule" {
-  count             = length(local.aws_eks_allowed_ports)   
+  count             = length(local.aws_eks_allowed_ports)
   description       = "Allow incoming traffic to defined services"
   type              = "ingress"
   from_port         = element(local.aws_eks_allowed_ports, count.index)
   to_port           = element(local.aws_eks_allowed_ports, count.index)
   protocol          = "tcp"
-  cidr_blocks       = [try(element(local.aws_eks_allowed_ports_cidr, count.index),"0.0.0.0/0")]  # Allow traffic from any source IP
-  security_group_id = aws_security_group.eks_security_group_node.id  # Use the appropriate security group ID
+  cidr_blocks       = [try(element(local.aws_eks_allowed_ports_cidr, count.index), "0.0.0.0/0")] # Allow traffic from any source IP
+  security_group_id = aws_security_group.eks_security_group_node.id                              # Use the appropriate security group ID
 }
 
 locals {
-  aws_eks_management_cidr    = var.aws_eks_management_cidr    != "" ? [for n in split(",", var.aws_eks_management_cidr)    : (n)] : []
-  aws_eks_allowed_ports      = var.aws_eks_allowed_ports      != "" ? [for n in split(",", var.aws_eks_allowed_ports)      : (n)] : []
+  aws_eks_management_cidr    = var.aws_eks_management_cidr != "" ? [for n in split(",", var.aws_eks_management_cidr) : (n)] : []
+  aws_eks_allowed_ports      = var.aws_eks_allowed_ports != "" ? [for n in split(",", var.aws_eks_allowed_ports) : (n)] : []
   aws_eks_allowed_ports_cidr = var.aws_eks_allowed_ports_cidr != "" ? [for n in split(",", var.aws_eks_allowed_ports_cidr) : (n)] : []
 }

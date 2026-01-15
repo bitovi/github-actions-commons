@@ -8,34 +8,34 @@ data "aws_vpc" "default" {
 #### VPC IMPORT
 
 data "aws_vpc" "exisiting" {
-  count = var.aws_vpc_create ? 0 : var.aws_vpc_id != "" ? 1 : 0  
+  count = var.aws_vpc_create ? 0 : var.aws_vpc_id != "" ? 1 : 0
   id    = var.aws_vpc_id
 }
 
 #### VPC CREATE
 
 resource "aws_vpc" "main" {
- count = var.aws_vpc_create ? 1 : 0
- cidr_block = var.aws_vpc_cidr_block
- enable_dns_hostnames = "true"
- tags = {
-   Name = var.aws_vpc_name != "" ? var.aws_vpc_name : "VPC for ${var.aws_resource_identifier}"
- }
+  count                = var.aws_vpc_create ? 1 : 0
+  cidr_block           = var.aws_vpc_cidr_block
+  enable_dns_hostnames = "true"
+  tags = {
+    Name = var.aws_vpc_name != "" ? var.aws_vpc_name : "VPC for ${var.aws_resource_identifier}"
+  }
 }
 
 ### Private
 
- resource "aws_subnet" "private" {
-   count             = var.aws_vpc_create ? length(local.aws_vpc_private_subnets) : 0
-   vpc_id            = aws_vpc.main[0].id
-   cidr_block        = element(local.aws_vpc_private_subnets, count.index)
-   availability_zone = element(local.aws_vpc_availability_zones, count.index)
+resource "aws_subnet" "private" {
+  count             = var.aws_vpc_create ? length(local.aws_vpc_private_subnets) : 0
+  vpc_id            = aws_vpc.main[0].id
+  cidr_block        = element(local.aws_vpc_private_subnets, count.index)
+  availability_zone = element(local.aws_vpc_availability_zones, count.index)
 
-   tags = merge({
-     Name = "${var.aws_resource_identifier}-private${count.index + 1}"
-     Tier = "Private"
-   },
-   var.aws_eks_create ? local.private_subnet_tags : {})
+  tags = merge({
+    Name = "${var.aws_resource_identifier}-private${count.index + 1}"
+    Tier = "Private"
+    },
+  var.aws_eks_create ? local.private_subnet_tags : {})
 }
 
 resource "aws_route_table" "private" {
@@ -43,9 +43,9 @@ resource "aws_route_table" "private" {
   count  = var.aws_vpc_create ? 1 : 0
   vpc_id = aws_vpc.main[0].id
   tags = {
-    Name        = "${var.aws_resource_identifier}-private"
+    Name = "${var.aws_resource_identifier}-private"
   }
-  depends_on = [ aws_vpc.main ]
+  depends_on = [aws_vpc.main]
 }
 
 resource "aws_route_table_association" "private" {
@@ -66,9 +66,9 @@ resource "aws_subnet" "public" {
   tags = merge({
     Name = "${var.aws_resource_identifier}-public${count.index + 1}"
     Tier = "Public"
-  },
+    },
   var.aws_eks_create ? local.public_subnet_tags : {})
-  depends_on = [ aws_vpc.main ]
+  depends_on = [aws_vpc.main]
 }
 
 resource "aws_route_table" "public" {
@@ -76,9 +76,9 @@ resource "aws_route_table" "public" {
   vpc_id = aws_vpc.main[0].id
 
   tags = {
-    Name        = "${var.aws_resource_identifier}-public"
-  }  
-  depends_on = [ aws_vpc.main ]
+    Name = "${var.aws_resource_identifier}-public"
+  }
+  depends_on = [aws_vpc.main]
 }
 
 resource "aws_route_table_association" "public" {
@@ -88,9 +88,9 @@ resource "aws_route_table_association" "public" {
 }
 
 resource "aws_internet_gateway" "gw" {
-  count  = var.aws_vpc_create ? 1 : 0
-  vpc_id = aws_vpc.main[0].id
-  depends_on = [ aws_vpc.main ]
+  count      = var.aws_vpc_create ? 1 : 0
+  vpc_id     = aws_vpc.main[0].id
+  depends_on = [aws_vpc.main]
 }
 
 resource "aws_route" "public" {
@@ -110,7 +110,7 @@ locals {
     "kubernetes.io/role/internal-elb" = 1
   }
   public_subnet_tags = {
-    "kubernetes.io/role/elb" = 1 
+    "kubernetes.io/role/elb" = 1
   }
 }
 
@@ -179,7 +179,7 @@ locals {
 
 # Get the VPC details
 data "aws_vpc" "selected" {
-  id    = local.selected_vpc_id
+  id = local.selected_vpc_id
 }
 
 # Sort the AZ list, and ensure that the az from the existing EC2 instance is first in the list
@@ -187,10 +187,10 @@ data "aws_vpc" "selected" {
 locals {
   sorted_availability_zones = sort(data.aws_availability_zones.all.names)
   index_of_existing_az      = index(local.sorted_availability_zones, local.aws_ec2_zone_selected)
-  
+
   before_existing_az = local.index_of_existing_az == 0 ? [] : slice(local.sorted_availability_zones, 0, local.index_of_existing_az)
-  after_existing_az  = local.index_of_existing_az == length(local.sorted_availability_zones) -1 ? [] : slice(local.sorted_availability_zones, local.index_of_existing_az + 1, length(local.sorted_availability_zones))
-  
+  after_existing_az  = local.index_of_existing_az == length(local.sorted_availability_zones) - 1 ? [] : slice(local.sorted_availability_zones, local.index_of_existing_az + 1, length(local.sorted_availability_zones))
+
   reordered_availability_zones = concat(
     [element(local.sorted_availability_zones, local.index_of_existing_az)],
     local.before_existing_az,
@@ -216,15 +216,15 @@ output "aws_vpc_subnet_selected" {
 
 output "aws_region_current_name" {
   description = "Current region name"
-  value = data.aws_region.current.name
+  value       = data.aws_region.current.name
 }
 
 output "aws_vpc_cidr_block" {
   description = "CIDR block of chosen VPC"
-  value = data.aws_vpc.selected.cidr_block
+  value       = data.aws_vpc.selected.cidr_block
 }
 
 output "aws_vpc_dns_enabled" {
   description = "Boolean of DNS enabled in VPC"
-  value = data.aws_vpc.selected.enable_dns_hostnames
+  value       = data.aws_vpc.selected.enable_dns_hostnames
 }

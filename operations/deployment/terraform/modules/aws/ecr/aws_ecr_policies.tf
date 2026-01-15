@@ -2,11 +2,11 @@ data "aws_caller_identity" "current" {}
 data "aws_partition" "current" {}
 
 locals {
-    aws_ecr_repo_read_arn = var.aws_ecr_repo_read_arn != "" ? [for n in split(",", var.aws_ecr_repo_read_arn) : (n)] : []
-    aws_ecr_repo_write_arn = var.aws_ecr_repo_write_arn != "" ? [for n in split(",", var.aws_ecr_repo_write_arn) : (n)] : []
-    aws_ecr_repo_read_arn_lambda = var.aws_ecr_repo_read_arn_lambda != "" ? [for n in split(",", var.aws_ecr_repo_read_arn_lambda) : (n)] : []
-    aws_ecr_repo_read_external_aws_account = var.aws_ecr_repo_read_external_aws_account != "" ? [for n in split(",", var.aws_ecr_repo_read_external_aws_account) : "arn:${data.aws_partition.current.partition}:iam::${n}:root"] : []
-    aws_ecr_repo_write_external_aws_account = var.aws_ecr_repo_write_external_aws_account != "" ? [for n in split(",", var.aws_ecr_repo_write_external_aws_account) : "arn:${data.aws_partition.current.partition}:iam::${n}:root"] : []
+  aws_ecr_repo_read_arn                   = var.aws_ecr_repo_read_arn != "" ? [for n in split(",", var.aws_ecr_repo_read_arn) : (n)] : []
+  aws_ecr_repo_write_arn                  = var.aws_ecr_repo_write_arn != "" ? [for n in split(",", var.aws_ecr_repo_write_arn) : (n)] : []
+  aws_ecr_repo_read_arn_lambda            = var.aws_ecr_repo_read_arn_lambda != "" ? [for n in split(",", var.aws_ecr_repo_read_arn_lambda) : (n)] : []
+  aws_ecr_repo_read_external_aws_account  = var.aws_ecr_repo_read_external_aws_account != "" ? [for n in split(",", var.aws_ecr_repo_read_external_aws_account) : "arn:${data.aws_partition.current.partition}:iam::${n}:root"] : []
+  aws_ecr_repo_write_external_aws_account = var.aws_ecr_repo_write_external_aws_account != "" ? [for n in split(",", var.aws_ecr_repo_write_external_aws_account) : "arn:${data.aws_partition.current.partition}:iam::${n}:root"] : []
 }
 
 # Policy used by both private and public repositories

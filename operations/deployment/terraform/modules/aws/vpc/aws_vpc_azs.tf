@@ -6,7 +6,7 @@ data "aws_availability_zones" "all" {
   filter {
     name   = "region-name"
     values = [data.aws_region.current.name]
-  }  
+  }
   state = "available"
 }
 
@@ -15,7 +15,7 @@ data "aws_subnets" "vpc_subnets" {
     name   = "vpc-id"
     values = [local.selected_vpc_id]
   }
-  
+
   # Add availability-zone filter conditionally
   dynamic "filter" {
     for_each = local.aws_vpc_availability_zones != [] ? [1] : []
@@ -58,10 +58,10 @@ data "aws_subnet" "defaultf" {
 }
 
 locals {
-  use_default = var.aws_vpc_create ? false : var.aws_vpc_id != "" ? false : true
+  use_default                     = var.aws_vpc_create ? false : var.aws_vpc_id != "" ? false : true
   aws_ec2_instance_type_offerings = sort(data.aws_ec2_instance_type_offerings.region_azs.locations)
-  aws_ec2_zone_selected = local.aws_ec2_instance_type_offerings[random_integer.az_select[0].result]
-  preferred_az = var.aws_vpc_availability_zones != "" ? local.aws_vpc_availability_zones[0] : var.aws_vpc_id != "" ? data.aws_subnet.selected[0].availability_zone : local.aws_ec2_zone_selected
+  aws_ec2_zone_selected           = local.aws_ec2_instance_type_offerings[random_integer.az_select[0].result]
+  preferred_az                    = var.aws_vpc_availability_zones != "" ? local.aws_vpc_availability_zones[0] : var.aws_vpc_id != "" ? data.aws_subnet.selected[0].availability_zone : local.aws_ec2_zone_selected
   #preferred_az = var.aws_vpc_availability_zones != "" ? local.aws_ec2_zone_selected : var.aws_vpc_id != "" ? data.aws_subnet.selected[0].availability_zone : local.aws_ec2_zone_selected
 }
 
@@ -76,9 +76,9 @@ data "aws_ec2_instance_type_offerings" "region_azs" {
 
 resource "random_integer" "az_select" {
   count = length(data.aws_ec2_instance_type_offerings.region_azs.locations) > 0 ? 1 : 0
-  
-  min   = 0
-  max   = length(data.aws_ec2_instance_type_offerings.region_azs.locations) - 1
+
+  min = 0
+  max = length(data.aws_ec2_instance_type_offerings.region_azs.locations) - 1
 
   lifecycle {
     ignore_changes = all
@@ -147,10 +147,10 @@ locals {
       "security_groups" : [data.aws_security_group.default.id]
     }
   }) : null
-  chosen_subnet_id = try(data.aws_subnet.default_selected[0].id,data.aws_subnets.vpc_subnets.ids[0],aws_subnet.public[0].id)
+  chosen_subnet_id = try(data.aws_subnet.default_selected[0].id, data.aws_subnets.vpc_subnets.ids[0], aws_subnet.public[0].id)
   # ha_zone_mapping: Creates a zone mapping object list for all available AZs in a region
-  ha_zone_mapping = merge(local.auto_ha_availability_zonea, local.auto_ha_availability_zoneb, local.auto_ha_availability_zonec, local.auto_ha_availability_zoned, local.auto_ha_availability_zonee, local.auto_ha_availability_zonef)
-  ec2_zone_mapping =  { "${local.preferred_az}" : { "subnet_id" : "${local.chosen_subnet_id}", "security_groups" : ["${local.aws_ec2_security_group_name}"] } }
+  ha_zone_mapping  = merge(local.auto_ha_availability_zonea, local.auto_ha_availability_zoneb, local.auto_ha_availability_zonec, local.auto_ha_availability_zoned, local.auto_ha_availability_zonee, local.auto_ha_availability_zonef)
+  ec2_zone_mapping = { "${local.preferred_az}" : { "subnet_id" : "${local.chosen_subnet_id}", "security_groups" : ["${local.aws_ec2_security_group_name}"] } }
 }
 
 output "aws_security_group_default_id" {
@@ -159,7 +159,7 @@ output "aws_security_group_default_id" {
 }
 
 output "instance_type_available" {
-  value       = length(data.aws_ec2_instance_type_offerings.region_azs.locations) > 0 ? "EC2 Instance type valid for this region" : "EC2 Instance type invalid for this region."
+  value = length(data.aws_ec2_instance_type_offerings.region_azs.locations) > 0 ? "EC2 Instance type valid for this region" : "EC2 Instance type invalid for this region."
 }
 
 output "ha_zone_mapping" {

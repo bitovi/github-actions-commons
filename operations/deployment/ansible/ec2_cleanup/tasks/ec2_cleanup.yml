@@ -7,36 +7,71 @@
     path: "{{ app_install_root }}/{{ app_repo_name }}"
   register: folder_stat
 
-- name: Find the NFS volume in fstab
-  shell: "grep 'nfsvers=4.1,rsize=1048576,wsize=1048576,hard,timeo=612,retrans=2,noresvport' /etc/fstab | awk '{print $2}'"
-  register: nfs_mount_path
-  changed_when: false
-  failed_when: false
-  when: folder_stat.stat.exists
+- block:
+  - name: Find the NFS volume in fstab
+    shell: "grep 'nfsvers=4.1,rsize=1048576,wsize=1048576,hard,timeo=612,retrans=2,noresvport' /etc/fstab | awk '{print $2}'"
+    register: nfs_mount_path
+    changed_when: false
+    failed_when: false
 
-- name: Check if mounted
-  shell: "mount | grep {{ nfs_mount_path.stdout }}"
-  register: volume_mounted
-  changed_when: false
-  failed_when: false
-  when: folder_stat.stat.exists and nfs_mount_path.stdout != ""
+  - name: Check if mounted
+    shell: "mount | grep {{ nfs_mount_path.stdout }}"
+    register: volume_mounted
+    changed_when: false
+    failed_when: false
+    when: nfs_mount_path.stdout != ""
 
-- name: Unmount the NFS volume
-  shell: "timeout 5 umount {{ nfs_mount_path.stdout }} || timeout 5 umount -f {{ nfs_mount_path.stdout }} || timeout 5 umount -fl {{ nfs_mount_path.stdout }}"
-  ignore_errors: true
-  when: folder_stat.stat.exists and nfs_mount_path.stdout != "" and volume_mounted.stdout != ""
+  - name: Unmount the NFS volume
+    shell: "timeout 5 umount {{ nfs_mount_path.stdout }} || timeout 5 umount -f {{ nfs_mount_path.stdout }} || timeout 5 umount -fl {{ nfs_mount_path.stdout }}"
+    ignore_errors: true
+    when: nfs_mount_path.stdout != "" and volume_mounted.stdout != ""
 
-- name: Deletes efs mount directory
-  file:
-    path: "{{ nfs_mount_path.stdout }}"
-    state: absent
-  when: folder_stat.stat.exists
+  - name: Deletes efs mount directory
+    file:
+      path: "{{ nfs_mount_path.stdout }}"
+      state: absent
 
-- name: Compress folder without mounted EFS
-  archive:
-    path: "{{ app_install_root }}/{{ app_repo_name }}"
-    dest: "{{ app_install_root }}/{{ app_repo_name }}-{{ timestamp }}.tar.gz"
-    format: gz
-    force_archive: true
-    remove: true
+  - name: Compress folder without mounted EFS
+    archive:
+      path: "{{ app_install_root }}/{{ app_repo_name }}"
+      dest: "{{ app_install_root }}/{{ app_repo_name }}-{{ timestamp }}.tar.gz"
+      format: gz
+      force_archive: true
+      remove: true
+
+  - block:
+    - name: Find all compressed timestamped folders
+      find:
+        paths: "{{ app_install_root }}"
+        patterns: "^{{ app_repo_name }}-[0-9]{8}-[0-9]{4}\\.tar\\.gz$"
+        use_regex: true
+        file_type: file
+      register: compressed_archives
+
+    - name: Sort archives by timestamp (newest first)
+      set_fact:
+        sorted_archives: >-
+          {{
+            compressed_archives.files
+            | map(attribute='path')
+            | sort
+            | reverse
+          }}
+
+    - name: Archives eligible for removal
+      set_fact:
+        archives_to_delete: "{{ sorted_archives[docker_backup_retention:] }}"
+
+    - name: Remove old archives
+      file:
+        path: "{{ item }}"
+        state: absent
+      loop: "{{ archives_to_delete }}"
+      when:
+      - archives_to_delete | length > 0
+
+    when: 
+      - docker_backup_retention is defined 
+      - (docker_backup_retention | int) > 0
+
   when: folder_stat.stat.exists

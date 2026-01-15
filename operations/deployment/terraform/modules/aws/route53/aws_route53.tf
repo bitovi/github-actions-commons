@@ -9,11 +9,16 @@ resource "aws_route53_record" "dev" {
   name    = "${var.aws_r53_sub_domain_name}.${var.aws_r53_domain_name}"
   type    = "A"
 
-  alias {
-    name                   = var.aws_elb_dns_name
-    zone_id                = var.aws_elb_zone_id
-    evaluate_target_health = true
+  dynamic "alias" {
+    for_each = var.aws_elb_zone_id != "" ? [1] : []
+    content {
+      name                   = var.aws_elb_dns_name
+      zone_id                = var.aws_elb_zone_id
+      evaluate_target_health = true
+    }
   }
+  records = var.aws_elb_zone_id == "" ? [var.aws_elb_dns_name] : null
+  ttl     = var.aws_elb_zone_id == "" ? 300 : null
 }
 
 resource "aws_route53_record" "root-a" {
@@ -22,11 +27,16 @@ resource "aws_route53_record" "root-a" {
   name    = var.aws_r53_domain_name
   type    = "A"
 
-  alias {
-    name                   = var.aws_elb_dns_name
-    zone_id                = var.aws_elb_zone_id
-    evaluate_target_health = true
+  dynamic "alias" {
+    for_each = var.aws_elb_zone_id != "" ? [1] : []
+    content {
+      name                   = var.aws_elb_dns_name
+      zone_id                = var.aws_elb_zone_id
+      evaluate_target_health = true
+    }
   }
+  records = var.aws_elb_zone_id == "" ? [var.aws_elb_dns_name] : null
+  ttl     = var.aws_elb_zone_id == "" ? 300 : null
 }
 
 resource "aws_route53_record" "www-a" {
@@ -35,16 +45,21 @@ resource "aws_route53_record" "www-a" {
   name    = "www.${var.aws_r53_domain_name}"
   type    = "A"
 
-  alias {
-    name                   = var.aws_elb_dns_name
-    zone_id                = var.aws_elb_zone_id
-    evaluate_target_health = true
+  dynamic "alias" {
+    for_each = var.aws_elb_zone_id != "" ? [1] : []
+    content {
+      name                   = var.aws_elb_dns_name
+      zone_id                = var.aws_elb_zone_id
+      evaluate_target_health = true
+    }
   }
+  records = var.aws_elb_zone_id == "" ? [var.aws_elb_dns_name] : null
+  ttl     = var.aws_elb_zone_id == "" ? 300 : null
 }
 
 locals {
   protocol = var.aws_r53_enable_cert ? var.aws_certificates_selected_arn != "" ? "https://" : "http://" : "http://"
-  url      = (var.fqdn_provided ?
+  url = (var.fqdn_provided ?
     (var.aws_r53_root_domain_deploy ?
       "${local.protocol}${var.aws_r53_domain_name}" :
       "${local.protocol}${var.aws_r53_sub_domain_name}.${var.aws_r53_domain_name}"

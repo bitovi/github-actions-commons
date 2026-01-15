@@ -56,8 +56,9 @@ jobs:
 1. [EC2](#ec2-inputs)
 1. [VPC](#vpc-inputs)
 1. [AWS Route53 Domains and Certificates](#aws-route53-domains-and-certificate-inputs)
-1. [Load Balancer](#load-balancer-inputs)
-1. [WAF](#waf)
+1. [Load Balancer](#load-balancer-inputs-classic-elb)
+1. [Application Load Balancer Inputs (ALB)](#application-load-balancer-inputs-alb)
+1. [WAF](#waf-inputs)
 1. [EFS](#efs-inputs)
 1. [RDS](#rds-inputs)
 1. [Amazon Aurora Inputs](#aurora-inputs)
@@ -195,7 +196,7 @@ The following inputs can be used as `step.with` keys
 <hr/>
 <br/>
 
-#### **Load Balancer Inputs**
+#### **Load Balancer Inputs (Classic ELB)**
 | Name             | Type    | Description                        |
 |------------------|---------|------------------------------------|
 | `aws_elb_create` | Boolean | Toggles the creation of a load balancer and map ports to the EC2 instance. Defaults to `false`.|
@@ -211,25 +212,59 @@ The following inputs can be used as `step.with` keys
 <hr/>
 <br/>
 
-#### **WAF**
+#### **Application Load Balancer Inputs (ALB)**
+| Name             | Type    | Description                        |
+|------------------|---------|------------------------------------|
+| `aws_alb_create` | Boolean | Global toggle for ALB creation. Defaults to `false` |
+| `aws_alb_security_group_name` | String | Name of the security group to use for ALB. Defaults to `SG for ${aws_resource_identifier} - ALB`|
+| `aws_alb_app_port` | String | Comma-separated list of application ports for ALB target group. If none defined, will use `aws_alb_listen_port` ones. |
+| `aws_alb_app_protocol` | String | Comma-separated list of protocols for ALB target group (HTTP/HTTPS). Defaults to `HTTP`. |
+| `aws_alb_listen_port` | String | Comma-separated list of listener ports for ALB. Depending on certificate, defaults to `80` or `443`. |
+| `aws_alb_listen_protocol` | String | Comma-separated list of listener protocols for ALB (HTTP/HTTPS). Depending on certificate, defaults to `HTTP` or `HTTPS`. |
+| `aws_alb_redirect_enable` | Boolean | Enable HTTP to HTTPS redirection on ALB. Defaults to `false` |
+| `aws_alb_www_to_apex_redirect` | Boolean | Enable www to apex domain redirection on ALB. Defaults to `false` |
+| `aws_alb_healthcheck_path` | String | Health check path for ALB target group. Defaults to `"/"` |
+| `aws_alb_healthcheck_protocol` | String | Health check protocol for ALB target group. Defaults to `"HTTP"` |
+| `aws_alb_ssl_policy` | String | SSL policy for HTTPS listeners. More [here](https://docs.aws.amazon.com/elasticloadbalancing/latest/application/describe-ssl-policies.html) |
+| `aws_alb_access_log_enabled` | Boolean | Enable ALB access logs. |
+| `aws_alb_access_log_bucket_name` | String | S3 bucket name to store the ALB access logs. Defaults to `${aws_resource_identifier}-lb`. **Bucket will be deleted if stack is destroyed.** |
+| `aws_alb_access_log_expire` | String | Delete the access logs after this amount of days. Defaults to `90`. Set to `0` in order to disable this policy. | 
+| `aws_alb_additional_tags`| String | A list of strings that will be added to created resources. Example: `{"key1": "value1", "key2": "value2"}`. Default `"{}"` |
+<hr/>
+<br/>
+
+#### **WAF Inputs**
 | Name             | Type    | Description                        |
 |------------------|---------|------------------------------------|
 | `aws_waf_enable` | Boolean | Enable WAF for load balancer (LB only - NOT ELB). Default is `false` |
 | `aws_waf_logging_enable`| Boolean | Enable WAF logging to CloudWatch. Default `false` |
 | `aws_waf_log_retention_days`| Number | CloudWatch log retention period for WAF logs. Default `30` |
-| `aws_waf_rule_rate_limit`| String | Rate limit for WAF rules. Default is `2000` |
-| `aws_waf_rule_managed_rules`| Boolean | Enable common managed rule groups to use. Default `false` |
-| `aws_waf_rule_managed_bad_inputs`| Boolean | Enable managed rule for bad inputs. Default `false` |
-| `aws_waf_rule_ip_reputation`| Boolean | Enable managed rule for IP reputation. Default `false` |
-| `aws_waf_rule_anonymous_ip`| Boolean | Enable managed rule for anonymous IP. Default `false` |
-| `aws_waf_rule_bot_control`| Boolean | Enable managed rule for bot control (costs extra). Default `false` |
-| `aws_waf_rule_geo_block_countries`| String | Comma separated list of countries to block. |
-| `aws_waf_rule_geo_allow_only_countries`| String | Comma separated list of countries to allow. |
-| `aws_waf_rule_sqli`| Boolean | Enable managed rule for SQL injection. Default `false` |
-| `aws_waf_rule_linux`| Boolean | Enable managed rule for Linux. Default `false` |
-| `aws_waf_rule_unix`| Boolean | Enable managed rule for Unix. Default `false` |
-| `aws_waf_rule_admin_protection`| Boolean | Enable managed rule for admin protection. Default `false` |
-| `aws_waf_rule_user_arn`| String | String of the user created ARN set of rules. |
+| `aws_waf_rule_rate_limit`| String | Rate limit for WAF rules. Default is `2000`. |
+| `aws_waf_rule_rate_limit_priority` | Number | Priority for rate limit rule. Defaults to `10`. |
+| `aws_waf_rule_managed_rules` | Boolean | Enable common managed rule groups to use. Defaults to `false`. |
+| `aws_waf_rule_managed_rules_priority` | Number | Priority for managed rules. Defaults to `20`. |
+| `aws_waf_rule_managed_bad_inputs` | Boolean | Enable managed rule for bad inputs. Defaults to `false`. |
+| `aws_waf_rule_managed_bad_inputs_priority` | Number | Priority for bad inputs rule. Defaults to `30`. |
+| `aws_waf_rule_ip_reputation` | Boolean | Enable managed rule for IP reputation. Defaults to `false`. |
+| `aws_waf_rule_ip_reputation_priority`  | Number | Priority for IP reputation rule. Defaults to `40`. |
+| `aws_waf_rule_anonymous_ip`  | Boolean | Enable managed rule for anonymous IP. Defaults to `false`. |
+| `aws_waf_rule_anonymous_ip_priority` | Number | Priority for anonymous IP rule. Defaults to `50`. |
+| `aws_waf_rule_bot_control` | Boolean | Enable managed rule for bot control (costs extra). Defaults to `false`. |
+| `aws_waf_rule_bot_control_priority`  | Number | Priority for bot control rule. Defaults to `60`. |
+| `aws_waf_rule_geo_block_countries` | String | Comma separated list of countries to block. Defaults to ``. |
+| `aws_waf_rule_geo_block_countries_priority`  | Number | Priority for geo block countries rule. Defaults to `70`. |
+| `aws_waf_rule_geo_allow_only_countries`  | String | Comma separated list of countries to allow. Defaults to ``. |
+| `aws_waf_rule_geo_allow_only_countries_priority` | Number | Priority for geo allow only countries rule. Defaults to `75`. |
+| `aws_waf_rule_sqli`  | Boolean | Enable managed rule for SQL injection. Defaults to `false`. |
+| `aws_waf_rule_sqli_priority` | Number | Priority for SQL injection rule. Defaults to `85`. |
+| `aws_waf_rule_linux` | Boolean | Enable managed rule for Linux. Defaults to `false`. |
+| `aws_waf_rule_linux_priority`  | Number | Priority for Linux rule. Defaults to `90`. |
+| `aws_waf_rule_unix`  | Boolean | Enable managed rule for Unix. Defaults to `false`. |
+| `aws_waf_rule_unix_priority` | Number | Priority for Unix rule. Defaults to `95`. |
+| `aws_waf_rule_admin_protection`  | Boolean | Enable managed rule for admin protection. Defaults to `false`. |
+| `aws_waf_rule_admin_protection_priority` | Number | Priority for admin protection rule. Defaults to `100`. |
+| `aws_waf_rule_user_arn` | String | ARN of the user rule. Defaults to ``. |
+| `aws_waf_rule_user_arn_priority` | Number | Priority for user ARN rule. Defaults to `80`. |
 | `aws_waf_additional_tags`| String | A list of strings that will be added to created resources. Default `"{}"` |
 <hr/>
 <br/>
@@ -390,6 +425,7 @@ The following inputs can be used as `step.with` keys
 | `docker_full_cleanup` | Boolean | Set to `true` to run `docker-compose down` and `docker system prune --all --force --volumes` after. Runs before `docker_install`. WARNING: docker volumes will be destroyed. |
 | `docker_repo_app_directory` | String | Relative path for the directory of the app. (i.e. where the `docker-compose.yaml` file is located). This is the directory that is copied into the EC2 instance. Default is `/`, the root of the repository. Add a `.gha-ignore` file with a list of files to be exluded. (Using glob patterns). |
 | `docker_repo_app_directory_cleanup` | Boolean | Will generate a timestamped compressed file (in the home directory of the instance) and delete the app repo directory. Runs before `docker_install` and after `docker_full_cleanup`. |
+| `docker_backup_retention` | String | Number of backups to keep. Defaults to `0`, unlimited. |
 | `docker_efs_mount_target` | String | Directory path within docker env to mount directory to. Default is `/data`|
 | `docker_cloudwatch_enable` | Boolean | Toggle cloudwatch creation for Docker. Create a file named `docker-daemon.json` in your repo root dir if you need to customize it. Defaults to `false`. Check [docker docs](https://docs.docker.com/config/containers/logging/awslogs/).|
 | `docker_cloudwatch_lg_name` | String| Log group name. Will default to `${aws_resource_identifier}-docker-logs` if none. |
