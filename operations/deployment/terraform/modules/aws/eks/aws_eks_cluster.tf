@@ -13,6 +13,14 @@ resource "aws_eks_cluster" "main" {
   name     = var.aws_eks_cluster_name # Cluster name is defined during the code-generation phase
   version  = var.aws_eks_cluster_version
   role_arn = aws_iam_role.iam_role_cluster.arn
+
+  access_config {
+  #authentication_mode                         = var.aws_eks_cluster_authentication_mode
+  #bootstrap_cluster_creator_admin_permissions = var.aws_eks_bootstrap_cluster_creator_admin_permissions
+    authentication_mode                         = "API_AND_CONFIG_MAP"
+    bootstrap_cluster_creator_admin_permissions = true
+  }
+
   vpc_config {
     security_group_ids      = [aws_security_group.eks_security_group_cluster.id]
     subnet_ids              = data.aws_subnets.public.ids
