@@ -189,9 +189,9 @@ resource "kubernetes_config_map" "aws_auth" {
     mapAccounts = "${data.aws_caller_identity.current.account_id}"
   }
 
-  #lifecycle {
-  #  replace_triggered_by = [terraform_data.replacement]
-  #}
+  lifecycle {
+    replace_triggered_by = [terraform_data.replacement]
+  }
 }
 
 output "eks_kubernetes_provider_config" {
