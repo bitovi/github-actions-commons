@@ -191,7 +191,7 @@ resource "kubernetes_config_map" "aws_auth" {
 
   lifecycle {
     #replace_triggered_by = [terraform_data.replacement]
-    ignore_changes       = [*]
+    ignore_changes       = [all]
   }
 }
 
