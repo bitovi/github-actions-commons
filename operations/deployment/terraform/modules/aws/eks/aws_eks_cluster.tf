@@ -15,8 +15,8 @@ resource "aws_eks_cluster" "main" {
   role_arn = aws_iam_role.iam_role_cluster.arn
 
   access_config {
-  #authentication_mode                         = var.aws_eks_cluster_authentication_mode
-  #bootstrap_cluster_creator_admin_permissions = var.aws_eks_bootstrap_cluster_creator_admin_permissions
+    #authentication_mode                         = var.aws_eks_cluster_authentication_mode
+    #bootstrap_cluster_creator_admin_permissions = var.aws_eks_bootstrap_cluster_creator_admin_permissions
     authentication_mode                         = "API_AND_CONFIG_MAP"
     bootstrap_cluster_creator_admin_permissions = true
   }
@@ -191,6 +191,7 @@ resource "kubernetes_config_map" "aws_auth" {
 
   lifecycle {
     replace_triggered_by = [terraform_data.replacement]
+    ignore_changes       = [all]
   }
 }
 
