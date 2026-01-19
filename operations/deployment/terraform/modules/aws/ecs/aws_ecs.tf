@@ -256,8 +256,30 @@ resource "aws_iam_policy_attachment" "ecsTaskExecutionRolePolicy" {
 }
 
 resource "aws_iam_policy_attachment" "ecsTaskExecutionRoleEfsPolicy" {
-  count      = var.aws_ecs_task_execution_role != "" && var.aws_ecs_efs_fs_id != null ? 0 : 1
+  count      = var.aws_ecs_task_execution_role != "" && aws_ecs_efs_fs_id != null ? 0 : 1
   name       = "AmazonEFSClientFullAccessAttachment"
   roles      = [aws_iam_role.ecsTaskExecutionRole[0].name]
-  policy_arn = "arn:aws:iam::aws:policy/AmazonEFSClientFullAccess"
+  policy_arn = aws_iam_role_policy.efs[0].arn
+}
+
+resource "aws_iam_role_policy" "efs" {
+  count = var.aws_ecs_task_execution_role != "" && aws_ecs_efs_fs_id != null ? 0 : 1
+  role  = [aws_iam_role.ecsTaskExecutionRole[0].name]
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [{
+      Effect = "Allow"
+      Action = [
+        "elasticfilesystem:ClientMount",
+        "elasticfilesystem:ClientWrite"
+      ]
+      Resource = aws_efs_access_point.app.arn
+    }]
+  })
+}
+
+data "aws_efs_file_system" "efs" {
+  count          = var.aws_ecs_efs_fs_id != null ? 1 : 0
+  file_system_id = var.aws_ecs_efs_fs_id
 }
