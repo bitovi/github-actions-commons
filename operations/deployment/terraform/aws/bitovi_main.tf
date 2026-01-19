@@ -60,6 +60,20 @@ module "efs_to_ec2_sg" {
   depends_on               = [module.ec2, module.efs]
 }
 
+#module "efs_to_ecs_sg" {
+#  source = "../modules/aws/sg/add_rule"
+#  count  = var.aws_ec2_instance_create && var.aws_efs_enable && (var.aws_efs_fs_id == null) ? 1 : 0
+#  # Inputs 
+#  sg_type                  = "ingress"
+#  sg_rule_description      = "${var.aws_resource_identifier} - ECS Incoming"
+#  sg_rule_from_port        = 2049
+#  sg_rule_to_port          = 2049
+#  sg_rule_protocol         = "tcp"
+#  source_security_group_id = try(module.efs[0].aws_efs_sg_id)
+#  target_security_group_id = module.ecs[0].ecs_sg_id
+#  depends_on               = [module.ecs, module.efs]
+#}
+
 module "aws_certificates" {
   source = "../modules/aws/certificates"
   count  = (var.aws_ec2_instance_create || var.aws_ecs_enable) && var.aws_r53_enable_cert && var.aws_r53_cert_arn == "" && var.aws_r53_domain_name != "" ? 1 : 0
@@ -558,41 +572,47 @@ module "aws_ecs" {
   source = "../modules/aws/ecs"
   count  = var.aws_ecs_enable ? 1 : 0
   # ECS
-  aws_ecs_service_name              = var.aws_ecs_service_name
-  aws_ecs_cluster_name              = var.aws_ecs_cluster_name
-  aws_ecs_service_launch_type       = var.aws_ecs_service_launch_type
-  aws_ecs_task_type                 = var.aws_ecs_task_type
-  aws_ecs_task_name                 = var.aws_ecs_task_name
-  aws_ecs_task_ignore_definition    = var.aws_ecs_task_ignore_definition
-  aws_ecs_task_execution_role       = var.aws_ecs_task_execution_role
-  aws_ecs_task_json_definition_file = var.aws_ecs_task_json_definition_file
-  aws_ecs_task_network_mode         = var.aws_ecs_task_network_mode
-  aws_ecs_task_cpu                  = var.aws_ecs_task_cpu
-  aws_ecs_task_mem                  = var.aws_ecs_task_mem
-  aws_ecs_container_cpu             = var.aws_ecs_container_cpu
-  aws_ecs_container_mem             = var.aws_ecs_container_mem
-  aws_ecs_node_count                = var.aws_ecs_node_count
-  aws_ecs_app_image                 = var.aws_ecs_app_image
-  aws_ecs_security_group_name       = var.aws_ecs_security_group_name
-  aws_ecs_assign_public_ip          = var.aws_ecs_assign_public_ip
-  aws_ecs_container_port            = var.aws_ecs_container_port
-  aws_ecs_lb_port                   = var.aws_ecs_lb_port
-  aws_ecs_lb_redirect_enable        = var.aws_ecs_lb_redirect_enable
-  aws_ecs_lb_container_path         = var.aws_ecs_lb_container_path
-  aws_ecs_lb_ssl_policy             = var.aws_ecs_lb_ssl_policy
-  aws_ecs_lb_www_to_apex_redirect   = var.aws_r53_root_domain_deploy ? var.aws_ecs_lb_www_to_apex_redirect : false
-  aws_ecs_autoscaling_enable        = var.aws_ecs_autoscaling_enable
-  aws_ecs_autoscaling_max_nodes     = var.aws_ecs_autoscaling_max_nodes
-  aws_ecs_autoscaling_min_nodes     = var.aws_ecs_autoscaling_min_nodes
-  aws_ecs_autoscaling_max_mem       = var.aws_ecs_autoscaling_max_mem
-  aws_ecs_autoscaling_max_cpu       = var.aws_ecs_autoscaling_max_cpu
-  aws_ecs_cloudwatch_enable         = var.aws_ecs_cloudwatch_enable
-  aws_ecs_cloudwatch_lg_name        = var.aws_ecs_cloudwatch_enable ? (var.aws_ecs_cloudwatch_lg_name != null ? var.aws_ecs_cloudwatch_lg_name : "${var.aws_resource_identifier}-ecs-logs") : null
-  aws_ecs_cloudwatch_skip_destroy   = var.aws_ecs_cloudwatch_skip_destroy
-  aws_ecs_cloudwatch_retention_days = var.aws_ecs_cloudwatch_retention_days
-  aws_region_current_name           = module.vpc.aws_region_current_name
-  aws_selected_vpc_id               = module.vpc.aws_selected_vpc_id
-  aws_selected_subnets              = module.vpc.aws_selected_vpc_subnets
+  aws_ecs_service_name                = var.aws_ecs_service_name
+  aws_ecs_cluster_name                = var.aws_ecs_cluster_name
+  aws_ecs_service_launch_type         = var.aws_ecs_service_launch_type
+  aws_ecs_task_type                   = var.aws_ecs_task_type
+  aws_ecs_task_name                   = var.aws_ecs_task_name
+  aws_ecs_task_ignore_definition      = var.aws_ecs_task_ignore_definition
+  aws_ecs_task_execution_role         = var.aws_ecs_task_execution_role
+  aws_ecs_task_json_definition_file   = var.aws_ecs_task_json_definition_file
+  aws_ecs_task_network_mode           = var.aws_ecs_task_network_mode
+  aws_ecs_task_cpu                    = var.aws_ecs_task_cpu
+  aws_ecs_task_mem                    = var.aws_ecs_task_mem
+  aws_ecs_container_cpu               = var.aws_ecs_container_cpu
+  aws_ecs_container_mem               = var.aws_ecs_container_mem
+  aws_ecs_node_count                  = var.aws_ecs_node_count
+  aws_ecs_app_image                   = var.aws_ecs_app_image
+  aws_ecs_security_group_name         = var.aws_ecs_security_group_name
+  aws_ecs_assign_public_ip            = var.aws_ecs_assign_public_ip
+  aws_ecs_container_port              = var.aws_ecs_container_port
+  aws_ecs_lb_port                     = var.aws_ecs_lb_port
+  aws_ecs_lb_redirect_enable          = var.aws_ecs_lb_redirect_enable
+  aws_ecs_lb_container_path           = var.aws_ecs_lb_container_path
+  aws_ecs_lb_ssl_policy               = var.aws_ecs_lb_ssl_policy
+  aws_ecs_lb_www_to_apex_redirect     = var.aws_r53_root_domain_deploy ? var.aws_ecs_lb_www_to_apex_redirect : false
+  aws_ecs_autoscaling_enable          = var.aws_ecs_autoscaling_enable
+  aws_ecs_autoscaling_max_nodes       = var.aws_ecs_autoscaling_max_nodes
+  aws_ecs_autoscaling_min_nodes       = var.aws_ecs_autoscaling_min_nodes
+  aws_ecs_autoscaling_max_mem         = var.aws_ecs_autoscaling_max_mem
+  aws_ecs_autoscaling_max_cpu         = var.aws_ecs_autoscaling_max_cpu
+  aws_ecs_cloudwatch_enable           = var.aws_ecs_cloudwatch_enable
+  aws_ecs_cloudwatch_lg_name          = var.aws_ecs_cloudwatch_enable ? (var.aws_ecs_cloudwatch_lg_name != null ? var.aws_ecs_cloudwatch_lg_name : "${var.aws_resource_identifier}-ecs-logs") : null
+  aws_ecs_cloudwatch_skip_destroy     = var.aws_ecs_cloudwatch_skip_destroy
+  aws_ecs_cloudwatch_retention_days   = var.aws_ecs_cloudwatch_retention_days
+  aws_ecs_efs_fs_id                   = var.aws_ecs_efs_fs_id
+  aws_ecs_efs_root_directory          = var.aws_ecs_efs_root_directory
+  aws_ecs_efs_transit_encryption      = var.aws_ecs_efs_transit_encryption
+  aws_ecs_efs_transit_encryption_port = var.aws_ecs_efs_transit_encryption_port
+  aws_ecs_efs_access_point_id         = var.aws_ecs_efs_access_point_id
+  aws_ecs_efs_iam                     = var.aws_ecs_efs_iam
+  aws_region_current_name             = module.vpc.aws_region_current_name
+  aws_selected_vpc_id                 = module.vpc.aws_selected_vpc_id
+  aws_selected_subnets                = module.vpc.aws_selected_vpc_subnets
   # Others
   aws_r53_domain_name                = var.aws_r53_enable && var.aws_r53_domain_name != "" ? var.aws_r53_domain_name : ""
   aws_certificate_enabled            = var.aws_r53_enable_cert

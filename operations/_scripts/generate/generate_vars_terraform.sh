@@ -391,6 +391,12 @@ if [[ $(alpha_only "$AWS_ECS_ENABLE") == true ]]; then
   aws_ecs_cloudwatch_lg_name=$(generate_var aws_ecs_cloudwatch_lg_name $AWS_ECS_CLOUDWATCH_LG_NAME)
   aws_ecs_cloudwatch_skip_destroy=$(generate_var aws_ecs_cloudwatch_skip_destroy $AWS_ECS_CLOUDWATCH_SKIP_DESTROY)
   aws_ecs_cloudwatch_retention_days=$(generate_var aws_ecs_cloudwatch_retention_days $AWS_ECS_CLOUDWATCH_RETENTION_DAYS)
+  aws_ecs_efs_fs_id=$(generate_var aws_ecs_efs_fs_id $AWS_ECS_EFS_FS_ID)
+  aws_ecs_efs_root_directory=$(generate_var aws_ecs_efs_root_directory $AWS_ECS_EFS_ROOT_DIRECTORY)
+  aws_ecs_efs_transit_encryption=$(generate_var aws_ecs_efs_transit_encryption $AWS_ECS_EFS_TRANSIT_ENCRYPTION)
+  aws_ecs_efs_transit_encryption_port=$(generate_var aws_ecs_efs_transit_encryption_port $AWS_ECS_EFS_TRANSIT_ENCRYPTION_PORT)
+  aws_ecs_efs_access_point_id=$(generate_var aws_ecs_efs_access_point_id $AWS_ECS_EFS_ACCESS_POINT_ID)
+  aws_ecs_efs_iam=$(generate_var aws_ecs_efs_iam $AWS_ECS_EFS_IAM)
   aws_ecs_additional_tags=$(generate_var aws_ecs_additional_tags $AWS_ECS_ADDITIONAL_TAGS)
 fi
 
@@ -788,6 +794,12 @@ $aws_ecs_cloudwatch_enable
 $aws_ecs_cloudwatch_lg_name
 $aws_ecs_cloudwatch_skip_destroy
 $aws_ecs_cloudwatch_retention_days
+$aws_ecs_efs_fs_id
+$aws_ecs_efs_root_directory
+$aws_ecs_efs_transit_encryption
+$aws_ecs_efs_transit_encryption_port
+$aws_ecs_efs_access_point_id
+$aws_ecs_efs_iam
 $aws_ecs_additional_tags
 
 #-- ECR --#

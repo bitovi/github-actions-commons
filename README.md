@@ -508,6 +508,12 @@ The following inputs can be used as `step.with` keys
 | `aws_ecs_cloudwatch_lg_name`| String | Log group name. Will default to `aws_identifier` if none. |
 | `aws_ecs_cloudwatch_skip_destroy`| Boolean | Toggle deletion or not when destroying the stack. |
 | `aws_ecs_cloudwatch_retention_days`| String | Number of days to retain logs. 0 to never expire. Defaults to `14`. |
+| `aws_ecs_efs_fs_id` | String | ID of the EFS File System. |
+| `aws_ecs_efs_root_directory` | String | Directory within the FS to mount as the root directory. Defaults to /, ignored if `access_point_id` defined. |
+| `aws_ecs_efs_transit_encryption` | Boolean | EFS Volume Transit Encryption. Defaults to `false`. (DISABLED) |
+| `aws_ecs_efs_transit_encryption_port` | String | EFS Volume Transit Encryption Port. |
+| `aws_ecs_efs_access_point_id` | String | EFS Volume Access Point ID to use. |
+| `aws_ecs_efs_iam` | Boolean | Whether or not to use the ECS task IAM role defined in a task definition when mounting the FS. Defaults to `false`. (DISABLED) |
 | `aws_ecs_additional_tags`| JSON | Add additional tags to the terraform [default tags](https://www.hashicorp.com/blog/default-tags-in-the-terraform-aws-provider), any tags put here will be added to ECS provisioned resources.|
 <hr/>
 <br/>

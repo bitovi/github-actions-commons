@@ -30,6 +30,12 @@ variable "aws_ecs_cloudwatch_enable" {}
 variable "aws_ecs_cloudwatch_lg_name" {}
 variable "aws_ecs_cloudwatch_skip_destroy" {}
 variable "aws_ecs_cloudwatch_retention_days" {}
+variable "aws_ecs_efs_fs_id" {}
+variable "aws_ecs_efs_root_directory" {}
+variable "aws_ecs_efs_transit_encryption" {}
+variable "aws_ecs_efs_transit_encryption_port" {}
+variable "aws_ecs_efs_access_point_id" {}
+variable "aws_ecs_efs_iam" {}
 variable "aws_r53_domain_name" {}
 variable "aws_certificate_enabled" {}
 variable "aws_certificates_selected_arn" {}
