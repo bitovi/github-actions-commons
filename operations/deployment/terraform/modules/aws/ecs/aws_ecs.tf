@@ -39,6 +39,7 @@ resource "aws_ecs_task_definition" "ecs_task" {
   cpu                      = local.aws_ecs_task_cpu[count.index]
   memory                   = local.aws_ecs_task_mem[count.index]
   execution_role_arn       = local.ecsTaskExecutionRole
+  task_role_arn            = local.ecsTaskExecutionRole # <-- Add this line
   dynamic "volume" {
     for_each = var.aws_ecs_efs_fs_id != null ? [1] : []
     content {
@@ -98,6 +99,7 @@ resource "aws_ecs_task_definition" "ecs_task_from_json" {
   cpu                      = local.aws_ecs_task_cpu[count.index + length(local.aws_ecs_app_image)]
   memory                   = local.aws_ecs_task_mem[count.index + length(local.aws_ecs_app_image)]
   execution_role_arn       = local.ecsTaskExecutionRole
+  task_role_arn            = local.ecsTaskExecutionRole # <-- Add this line
   dynamic "volume" {
     for_each = var.aws_ecs_efs_fs_id != null ? [1] : []
     content {
@@ -125,6 +127,7 @@ resource "aws_ecs_task_definition" "aws_ecs_task_ignore_definition" {
   cpu                      = local.aws_ecs_task_cpu[count.index]
   memory                   = local.aws_ecs_task_mem[count.index]
   execution_role_arn       = local.ecsTaskExecutionRole
+  task_role_arn            = local.ecsTaskExecutionRole
   dynamic "volume" {
     for_each = var.aws_ecs_efs_fs_id != null ? [1] : []
     content {
@@ -255,24 +258,24 @@ resource "aws_iam_policy_attachment" "ecsTaskExecutionRolePolicy" {
   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
 }
 
-resource "aws_iam_role_policy" "efs" {
-  count = var.aws_ecs_task_execution_role != "" && var.aws_ecs_efs_fs_id != null ? 0 : 1
-  role  = aws_iam_role.ecsTaskExecutionRole[0].name
-
-  policy = jsonencode({
-    Version = "2012-10-17"
-    Statement = [{
-      Effect = "Allow"
-      Action = [
-        "elasticfilesystem:ClientMount",
-        "elasticfilesystem:ClientWrite"
-      ]
-      Resource = data.aws_efs_file_system.efs[0].arn
-    }]
-  })
-}
-
-data "aws_efs_file_system" "efs" {
-  count          = var.aws_ecs_efs_fs_id != null ? 1 : 0
-  file_system_id = var.aws_ecs_efs_fs_id
-}
+#resource "aws_iam_role_policy" "efs" {
+#  count = var.aws_ecs_task_execution_role != "" && var.aws_ecs_efs_fs_id != null ? 0 : 1
+#  role  = aws_iam_role.ecsTaskExecutionRole[0].name
+#
+#  policy = jsonencode({
+#    Version = "2012-10-17"
+#    Statement = [{
+#      Effect = "Allow"
+#      Action = [
+#        "elasticfilesystem:ClientMount",
+#        "elasticfilesystem:ClientWrite"
+#      ]
+#      Resource = data.aws_efs_file_system.efs[0].arn
+#    }]
+#  })
+#}
+#
+#data "aws_efs_file_system" "efs" {
+#  count          = var.aws_ecs_efs_fs_id != null ? 1 : 0
+#  file_system_id = var.aws_ecs_efs_fs_id
+#}
