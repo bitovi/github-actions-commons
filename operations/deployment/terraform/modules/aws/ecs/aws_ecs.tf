@@ -40,7 +40,7 @@ resource "aws_ecs_task_definition" "ecs_task" {
   memory                   = local.aws_ecs_task_mem[count.index]
   execution_role_arn       = local.ecsTaskExecutionRole
   dynamic "volume" {
-    for_each = var.aws_ecs_efs_fs_id != "" ? [1] : []
+    for_each = var.aws_ecs_efs_fs_id != null ? [1] : []
     content {
       name = "efs-${var.aws_ecs_efs_fs_id}"
       efs_volume_configuration {
@@ -99,7 +99,7 @@ resource "aws_ecs_task_definition" "ecs_task_from_json" {
   memory                   = local.aws_ecs_task_mem[count.index + length(local.aws_ecs_app_image)]
   execution_role_arn       = local.ecsTaskExecutionRole
   dynamic "volume" {
-    for_each = var.aws_ecs_efs_fs_id != "" ? [1] : []
+    for_each = var.aws_ecs_efs_fs_id != null ? [1] : []
     content {
       name = "efs-${var.aws_ecs_efs_fs_id}"
       efs_volume_configuration {
@@ -126,7 +126,7 @@ resource "aws_ecs_task_definition" "aws_ecs_task_ignore_definition" {
   memory                   = local.aws_ecs_task_mem[count.index]
   execution_role_arn       = local.ecsTaskExecutionRole
   dynamic "volume" {
-    for_each = var.aws_ecs_efs_fs_id != "" ? [1] : []
+    for_each = var.aws_ecs_efs_fs_id != null ? [1] : []
     content {
       name = "efs-${var.aws_ecs_efs_fs_id}"
       efs_volume_configuration {

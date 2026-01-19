@@ -1771,39 +1771,39 @@ variable "aws_ecs_cloudwatch_retention_days" {
 }
 
 variable "aws_ecs_efs_fs_id" {
-  type = string
+  type        = string
   description = "ID of the EFS File System"
-  default = null
+  default     = null
 }
 
 variable "aws_ecs_efs_root_directory" {
-  type = string
+  type        = string
   description = "Directory within the FS to mount as the root directory. Defaults to /, ignored if access_point_id defined"
-  default = null
+  default     = null
 }
 
 variable "aws_ecs_efs_transit_encryption" {
-  type = bool
+  type        = bool
   description = "EFS Volume Transit Encryption. Defaults to false (DISABLED)"
-  default = false
+  default     = false
 }
 
 variable "aws_ecs_efs_transit_encryption_port" {
-  type = string
+  type        = string
   description = "EFS Volume Transit Encryption Port"
-  default = null
+  default     = null
 }
 
 variable "aws_ecs_efs_access_point_id" {
-  type = string
+  type        = string
   description = "EFS Volume Access Point ID to use"
-  default = null
+  default     = null
 }
 
 variable "aws_ecs_efs_iam" {
-  type = bool
+  type        = bool
   description = "Whether or not to use the ECS task IAM role defined in a task definition when mounting the FS. Defaults to false. (DISABLED) "
-  default = true
+  default     = true
 }
 
 variable "aws_ecs_additional_tags" {
