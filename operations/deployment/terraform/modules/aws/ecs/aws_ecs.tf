@@ -255,13 +255,6 @@ resource "aws_iam_policy_attachment" "ecsTaskExecutionRolePolicy" {
   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
 }
 
-resource "aws_iam_policy_attachment" "ecsTaskExecutionRoleEfsPolicy" {
-  count      = var.aws_ecs_task_execution_role != "" && var.aws_ecs_efs_fs_id != null ? 0 : 1
-  name       = "AmazonEFSClientFullAccessAttachment"
-  roles      = [aws_iam_role.ecsTaskExecutionRole[0].name]
-  policy_arn = data.aws_iam_role_policy.efs[0].arn
-}
-
 resource "aws_iam_role_policy" "efs" {
   count = var.aws_ecs_task_execution_role != "" && var.aws_ecs_efs_fs_id != null ? 0 : 1
   role  = aws_iam_role.ecsTaskExecutionRole[0].name
