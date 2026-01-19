@@ -1027,7 +1027,7 @@ inputs:
     description: "Directory within the FS to mount as the root directory. Defaults to /, ignored if access_point_id defined"
     required: false
   aws_ecs_efs_transit_encryption:
-    description: "EFS Volume Transit Encryption. Defaults to false (DISABLED)"
+    description: "EFS Volume Transit Encryption. Defaults to true (ENABLED)"
     required: false
   aws_ecs_efs_transit_encryption_port:
     description: "EFS Volume Transit Encryption Port"

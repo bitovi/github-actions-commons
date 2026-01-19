@@ -1784,14 +1784,14 @@ variable "aws_ecs_efs_root_directory" {
 
 variable "aws_ecs_efs_transit_encryption" {
   type        = bool
-  description = "EFS Volume Transit Encryption. Defaults to false (DISABLED)"
-  default     = false
+  description = "EFS Volume Transit Encryption. Defaults to true (ENABLED)"
+  default     = true
 }
 
 variable "aws_ecs_efs_transit_encryption_port" {
   type        = string
   description = "EFS Volume Transit Encryption Port"
-  default     = null
+  default     = ""
 }
 
 variable "aws_ecs_efs_access_point_id" {
