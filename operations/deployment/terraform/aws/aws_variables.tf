@@ -1791,7 +1791,7 @@ variable "aws_ecs_efs_transit_encryption" {
 variable "aws_ecs_efs_transit_encryption_port" {
   type        = string
   description = "EFS Volume Transit Encryption Port"
-  default     = ""
+  default     = null
 }
 
 variable "aws_ecs_efs_access_point_id" {
