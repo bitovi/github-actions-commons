@@ -282,46 +282,46 @@ inputs:
   
   # AWS ALB
   aws_alb_create:
-    description: "Global toggle for ALB creation"
+    description: 'Global toggle for ALB creation'
     required: false
   aws_alb_security_group_name:
-    description: "Name of the security group to use for ALB"
+    description: 'Name of the security group to use for ALB'
     required: false
   aws_alb_app_port:
-    description: "Comma-separated list of application ports for ALB target group"
+    description: 'Comma-separated list of application ports for ALB target group'
     required: false
   aws_alb_app_protocol:
-    description: "Comma-separated list of protocols for ALB target group (HTTP/HTTPS)"
+    description: 'Comma-separated list of protocols for ALB target group (HTTP/HTTPS)'
     required: false
   aws_alb_listen_port:
-    description: "Comma-separated list of listener ports for ALB"
+    description: 'Comma-separated list of listener ports for ALB'
     required: false
   aws_alb_listen_protocol:
-    description: "Comma-separated list of listener protocols for ALB (HTTP/HTTPS)"
+    description: 'Comma-separated list of listener protocols for ALB (HTTP/HTTPS)'
     required: false
   aws_alb_redirect_enable:
-    description: "Enable HTTP to HTTPS redirection on ALB"
+    description: 'Enable HTTP to HTTPS redirection on ALB'
     required: false
   aws_alb_www_to_apex_redirect:
     description: 'Enable www to apex domain redirection on ALB'
     required: false
   aws_alb_healthcheck_path:
-    description: "Health check path for ALB target group"
+    description: 'Health check path for ALB target group'
     required: false
   aws_alb_healthcheck_protocol:
-    description: "Health check protocol for ALB target group"
+    description: 'Health check protocol for ALB target group'
     required: false
   aws_alb_ssl_policy:
-    description: "SSL policy for HTTPS listeners"
+    description: 'SSL policy for HTTPS listeners'
     required: false
   aws_alb_access_log_enabled:
-    description: "Enable ALB access logs"
+    description: 'Enable ALB access logs'
     required: false
   aws_alb_access_log_bucket_name:
-    description: "S3 bucket name to store the ALB access logs"
+    description: 'S3 bucket name to store the ALB access logs'
     required: false
   aws_alb_access_log_expire:
-    description: "Delete the access logs after this amount of days"
+    description: 'Delete the access logs after this amount of days'
     required: false
   aws_alb_additional_tags:
     description: 'A JSON object of additional tags that will be included on created resources. Example: `{"key1": "value1", "key2": "value2"}`'
@@ -876,7 +876,7 @@ inputs:
     description: 'Log type. Older Redis engines need slow-log. Newer support engine-log (default)'
     required: false
   aws_redis_cloudwatch_retention_days:
-    description: "Number of days to retain logs. 0 to never expire. Default '14'"
+    description: 'Number of days to retain logs. 0 to never expire. Default 14'
     required: false
   aws_redis_single_line_url_secret:
     description: 'Creates an AWS secret containing the connection string containing protocol://user@pass:endpoint:port'
@@ -1009,34 +1009,40 @@ inputs:
     description: 'Some'
     required: false
   aws_ecs_cloudwatch_enable:
-    description: "Toggle cloudwatch for ECS. Default 'false'"
+    description: 'Toggle cloudwatch for ECS. Defaults to false'
     required: false
   aws_ecs_cloudwatch_lg_name:
-    description: "Log group name. Will default to aws_identifier if none."
+    description: 'Log group name. Will default to aws_identifier if none.'
     required: false
   aws_ecs_cloudwatch_skip_destroy:
-    description: "Toggle deletion or not when destroying the stack."
+    description: 'Toggle deletion or not when destroying the stack.'
     required: false
   aws_ecs_cloudwatch_retention_days:
-    description: "Number of days to retain logs. 0 to never expire. Default '14'"
+    description: 'Number of days to retain logs. 0 to never expire. Default 14'
     required: false
   aws_ecs_efs_fs_id:
-    description: "ID of the EFS File System"
+    description: 'ID of the EFS File System'
     required: false
   aws_ecs_efs_root_directory:
-    description: "Directory within the FS to mount as the root directory. Defaults to /, ignored if access_point_id defined"
+    description: 'Directory within the FS to mount as the root directory. Defaults to /, ignored if access_point_id defined'
     required: false
   aws_ecs_efs_transit_encryption:
-    description: "EFS Volume Transit Encryption. Defaults to true (ENABLED)"
+    description: 'EFS Volume Transit Encryption. Defaults to true (ENABLED)'
     required: false
   aws_ecs_efs_transit_encryption_port:
-    description: "EFS Volume Transit Encryption Port"
+    description: 'EFS Volume Transit Encryption Port'
     required: false
   aws_ecs_efs_access_point_id:
-    description: "EFS Volume Access Point ID to use"
+    description: 'EFS Volume Access Point ID to use'
+    required: false
+  aws_ecs_efs_container_path:
+    description: 'Directory path within container to mount the EFS volume to'
+    required: false
+  aws_ecs_efs_readonly:
+    description: 'Whether the EFS volume is mounted as read-only'
     required: false
   aws_ecs_efs_iam:
-    description: "Whether or not to use the ECS task IAM role defined in a task definition when mounting the FS. Defaults to false. (DISABLED) "
+    description: 'Whether or not to use the ECS task IAM role defined in a task definition when mounting the FS. Defaults to false. (DISABLED) '
     required: false
   aws_ecs_additional_tags:
     description: 'A list of strings that will be added to created resources'
@@ -1121,10 +1127,10 @@ inputs:
     description: 'Define if an EKS cluster should be created'
     required: false
   aws_eks_security_group_name_cluster:
-    description:  "SG for ${var.aws_resource_identifier} - ${var.aws_eks_environment} - EKS Master"
+    description:  'SG for ${var.aws_resource_identifier} - ${var.aws_eks_environment} - EKS Master'
     required: false
   aws_eks_security_group_name_node:
-    description:  "SG for ${var.aws_resource_identifier} - ${var.aws_eks_environment} - EKS Worker"
+    description:  'SG for ${var.aws_resource_identifier} - ${var.aws_eks_environment} - EKS Worker'
     required: false
   aws_eks_environment:
     description: 'Specify the eks environment name. Defaults to env'
@@ -1139,19 +1145,19 @@ inputs:
     description: 'Allow incoming traffic from this CIDR block. Accepts comma separated values, matching 1 to 1 with aws_eks_allowed_ports. If none defined, will allow all incoming traffic.'
     required: false
   aws_eks_cluster_name:
-    description: "EKS Cluster name. Defaults to eks-cluster"
+    description: 'EKS Cluster name. Defaults to eks-cluster'
     required: false
   aws_eks_cluster_admin_role_arn:
-    description: "Role ARN to grant cluster-admin permissions"
+    description: 'Role ARN to grant cluster-admin permissions'
     required: false
   aws_eks_cluster_log_types:
-    description: "EKS Log types, comma separated list. Defaults to api,audit,authenticator"
+    description: 'EKS Log types, comma separated list. Defaults to api,audit,authenticator'
     required: false
   aws_eks_cluster_log_retention_days:
-    description: "Days to store logs. Defaults to 7."
+    description: 'Days to store logs. Defaults to 7.'
     required: false
   aws_eks_cluster_log_skip_destroy:
-    description: "Skip deletion of cluster logs if set to true"
+    description: 'Skip deletion of cluster logs if set to true'
     required: false
   aws_eks_cluster_version:
     description: 'Specify the k8s cluster version'
@@ -1187,115 +1193,115 @@ inputs:
 outputs:
   # VPC
   aws_vpc_id:
-    description: "The selected VPC ID used."
+    description: 'The selected VPC ID used.'
     value: ${{ steps.deploy.outputs.aws_vpc_id }}
   # EC2
   vm_url:
-    description: "The URL of the generated app"
+    description: 'The URL of the generated app'
     value: ${{ steps.deploy.outputs.vm_url }}
   instance_endpoint:
-    description: "The URL of the generated ec2 instance"
+    description: 'The URL of the generated ec2 instance'
     value: ${{ steps.deploy.outputs.instance_endpoint }}
   ec2_sg_id:
-    description: "SG ID for the EC2 instance"
+    description: 'SG ID for the EC2 instance'
     value: ${{ steps.deploy.outputs.ec2_sg_id }}
   # EFS
   aws_efs_fs_id:
-    description: "EFS FS ID"
+    description: 'EFS FS ID'
     value: ${{ steps.deploy.outputs.aws_efs_fs_id }}
   aws_efs_replica_fs_id:
-    description: "EFS FS Replica ID"
+    description: 'EFS FS Replica ID'
     value: ${{ steps.deploy.outputs.aws_efs_replica_fs_id }}
   aws_efs_sg_id:
-    description: "EFS FS SG ID"
+    description: 'EFS FS SG ID'
     value: ${{ steps.deploy.outputs.aws_efs_sg_id }}
   # RDS
   db_endpoint:
-    description: "RDS Endpoint"
+    description: 'RDS Endpoint'
     value: ${{ steps.deploy.outputs.db_endpoint }}
   db_secret_details_name:
-    description: "AWS Secret name containing db credentials"
+    description: 'AWS Secret name containing db credentials'
     value: ${{ steps.deploy.outputs.db_secret_details_name }}
   db_sg_id:
-    description: "SG ID for the RDS instance"
+    description: 'SG ID for the RDS instance'
     value: ${{ steps.deploy.outputs.db_sg_id }}
   db_proxy_rds_endpoint:
-    description: "Database proxy endpoint"
+    description: 'Database proxy endpoint'
     value: ${{ steps.deploy.outputs.db_proxy_rds_endpoint }}
   db_proxy_secret_name_rds:
-    description: "AWS Secret name containing proxy credentials"
+    description: 'AWS Secret name containing proxy credentials'
     value: ${{ steps.deploy.outputs.db_proxy_secret_name_rds }}
   db_proxy_sg_id_rds:
-    description: "SG ID for the RDS Proxy instance"
+    description: 'SG ID for the RDS Proxy instance'
     value: ${{ steps.deploy.outputs.db_proxy_sg_id_rds }}
   # Aurora
   aurora_db_endpoint:
-    description: "Aurora Endpoint"
+    description: 'Aurora Endpoint'
     value: ${{ steps.deploy.outputs.aurora_db_endpoint }}
   aurora_db_secret_details_name:
-    description: "AWS Secret name containing db credentials"
+    description: 'AWS Secret name containing db credentials'
     value: ${{ steps.deploy.outputs.aurora_db_secret_details_name }}
   aurora_db_sg_id:
-    description: "SG ID for the Aurora instance"
+    description: 'SG ID for the Aurora instance'
     value: ${{ steps.deploy.outputs.aurora_db_sg_id }}
   aurora_proxy_endpoint:
-    description: "Database proxy endpoint"
+    description: 'Database proxy endpoint'
     value: ${{ steps.deploy.outputs.aurora_proxy_endpoint }}
   aurora_proxy_secret_name:
-    description: "AWS Secret name containing proxy credentials"
+    description: 'AWS Secret name containing proxy credentials'
     value: ${{ steps.deploy.outputs.aurora_proxy_secret_name }}
   aurora_proxy_sg_id:
-    description: "SG ID for the RDS Proxy instance"
+    description: 'SG ID for the RDS Proxy instance'
     value: ${{ steps.deploy.outputs.aurora_proxy_sg_id }}
   # DB Proxy
   db_proxy_endpoint:
-    description: "Database proxy endpoint"
+    description: 'Database proxy endpoint'
     value: ${{ steps.deploy.outputs.db_proxy_endpoint }}
   db_proxy_secret_name:
-    description: "Database proxy secret_name"
+    description: 'Database proxy secret_name'
     value: ${{ steps.deploy.outputs.db_proxy_secret_name }}
   db_proxy_sg_id:
-    description: "SG ID for the RDS Proxy instance"
+    description: 'SG ID for the RDS Proxy instance'
     value: ${{ steps.deploy.outputs.db_proxy_sg_id }}
   # ECS
   ecs_load_balancer_dns:
-    description: "ECS ALB DNS Record"
+    description: 'ECS ALB DNS Record'
     value: ${{ steps.deploy.outputs.ecs_load_balancer_dns }}
   ecs_dns_record:
-    description: "ECS DNS URL"
+    description: 'ECS DNS URL'
     value: ${{ steps.deploy.outputs.ecs_dns_record }}
   ecs_sg_id:
-    description: "ECS SG ID"
+    description: 'ECS SG ID'
     value: ${{ steps.deploy.outputs.ecs_sg_id }}
   ecs_lb_sg_id:
-    description: "ECS LB SG ID"
+    description: 'ECS LB SG ID'
     value: ${{ steps.deploy.outputs.ecs_lb_sg_id }}
   # ECR
   ecr_repository_arn:
-    description: "ECR Repo ARN"
+    description: 'ECR Repo ARN'
     value: ${{ steps.deploy.outputs.ecr_repository_arn }}
   ecr_repository_url:
-    description: "ECR Repo URL"
+    description: 'ECR Repo URL'
     value: ${{ steps.deploy.outputs.ecr_repository_url }}
   # REDIS
   redis_endpoint:
-    description: "Redis Endpoint"
+    description: 'Redis Endpoint'
     value: ${{ steps.deploy.outputs.redis_endpoint }}
   redis_secret_name:
-    description: "Redis Secret name"
+    description: 'Redis Secret name'
     value: ${{ steps.deploy.outputs.redis_secret_name }}
   redis_connection_string_secret:
-    description: "Redis secret containing complete URL to connect directly. (e.g. rediss://user:pass@host:port)"
+    description: 'Redis secret containing complete URL to connect directly. (e.g. rediss://user:pass@host:port)'
     value: ${{ steps.deploy.outputs.redis_connection_string_secret }}
   redis_sg_id:
-    description: "Redis SG ID"
+    description: 'Redis SG ID'
     value: ${{ steps.deploy.outputs.redis_sg_id }}
   # EKS
   eks_cluster_name:
-    description: "EKS Cluster name"  
+    description: 'EKS Cluster name'  
     value: ${{ steps.deploy.outputs.eks_cluster_name }}
   eks_cluster_role_arn:
-    description: "EKS Role ARN"
+    description: 'EKS Role ARN'
     value: ${{ steps.deploy.outputs.eks_cluster_role_arn }}
 
 runs:
@@ -1676,6 +1682,8 @@ runs:
         AWS_ECS_EFS_TRANSIT_ENCRYPTION: ${{ inputs.aws_ecs_efs_transit_encryption }}
         AWS_ECS_EFS_TRANSIT_ENCRYPTION_PORT: ${{ inputs.aws_ecs_efs_transit_encryption_port }}
         AWS_ECS_EFS_ACCESS_POINT_ID: ${{ inputs.aws_ecs_efs_access_point_id }}
+        AWS_ECS_EFS_CONTAINER_PATH: ${{ inputs.aws_ecs_efs_container_path }}
+        AWS_ECS_EFS_READONLY: ${{ inputs.aws_ecs_efs_readonly }}
         AWS_ECS_EFS_IAM: ${{ inputs.aws_ecs_efs_iam }}
         AWS_ECS_ADDITIONAL_TAGS: ${{ inputs.aws_ecs_additional_tags }}
        

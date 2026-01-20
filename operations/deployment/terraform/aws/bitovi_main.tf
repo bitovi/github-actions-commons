@@ -609,6 +609,8 @@ module "aws_ecs" {
   aws_ecs_efs_transit_encryption      = var.aws_ecs_efs_transit_encryption
   aws_ecs_efs_transit_encryption_port = var.aws_ecs_efs_transit_encryption_port
   aws_ecs_efs_access_point_id         = var.aws_ecs_efs_access_point_id
+  aws_ecs_efs_container_path          = var.aws_ecs_efs_container_path
+  aws_ecs_efs_readonly                = var.aws_ecs_efs_readonly
   aws_ecs_efs_iam                     = var.aws_ecs_efs_iam
   aws_region_current_name             = module.vpc.aws_region_current_name
   aws_selected_vpc_id                 = module.vpc.aws_selected_vpc_id

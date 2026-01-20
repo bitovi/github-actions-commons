@@ -1800,6 +1800,18 @@ variable "aws_ecs_efs_access_point_id" {
   default     = null
 }
 
+variable "aws_ecs_efs_container_path" {
+  type        = string
+  description = "Container path where to mount the EFS volume"
+  default     = "/mnt/efs"
+}
+
+variable "aws_ecs_efs_readonly" {
+  type        = bool
+  description = "Whether the EFS volume is mounted as read-only"
+  default     = false
+}
+
 variable "aws_ecs_efs_iam" {
   type        = bool
   description = "Whether or not to use the ECS task IAM role defined in a task definition when mounting the FS. Defaults to false. (DISABLED) "

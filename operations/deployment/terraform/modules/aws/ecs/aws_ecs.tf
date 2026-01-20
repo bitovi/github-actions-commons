@@ -75,6 +75,13 @@ resource "aws_ecs_task_definition" "ecs_task" {
               "appProtocol" : "http"
             }
           ] : []
+          "mountPoints" : var.aws_ecs_efs_fs_id != null ? [
+            {
+              "sourceVolume" : "efs-${var.aws_ecs_efs_fs_id}",
+              "containerPath" : var.aws_ecs_efs_container_path,
+              "readOnly" : var.aws_ecs_efs_readonly
+            }
+          ] : [],
           "environment" : local.env_repo_vars,
           "logConfiguration" : var.aws_ecs_cloudwatch_enable ? {
             "logDriver" : "awslogs",

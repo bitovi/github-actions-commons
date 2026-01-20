@@ -35,6 +35,8 @@ variable "aws_ecs_efs_root_directory" {}
 variable "aws_ecs_efs_transit_encryption" {}
 variable "aws_ecs_efs_transit_encryption_port" {}
 variable "aws_ecs_efs_access_point_id" {}
+variable "aws_ecs_efs_container_path" {}
+variable "aws_ecs_efs_readonly" {}
 variable "aws_ecs_efs_iam" {}
 variable "aws_r53_domain_name" {}
 variable "aws_certificate_enabled" {}

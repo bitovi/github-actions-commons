@@ -396,6 +396,8 @@ if [[ $(alpha_only "$AWS_ECS_ENABLE") == true ]]; then
   aws_ecs_efs_transit_encryption=$(generate_var aws_ecs_efs_transit_encryption $AWS_ECS_EFS_TRANSIT_ENCRYPTION)
   aws_ecs_efs_transit_encryption_port=$(generate_var aws_ecs_efs_transit_encryption_port $AWS_ECS_EFS_TRANSIT_ENCRYPTION_PORT)
   aws_ecs_efs_access_point_id=$(generate_var aws_ecs_efs_access_point_id $AWS_ECS_EFS_ACCESS_POINT_ID)
+  aws_ecs_efs_container_path=$(generate_var aws_ecs_efs_container_path $AWS_ECS_EFS_CONTAINER_PATH)
+  aws_ecs_efs_readonly=$(generate_var aws_ecs_efs_readonly $AWS_ECS_EFS_READONLY)
   aws_ecs_efs_iam=$(generate_var aws_ecs_efs_iam $AWS_ECS_EFS_IAM)
   aws_ecs_additional_tags=$(generate_var aws_ecs_additional_tags $AWS_ECS_ADDITIONAL_TAGS)
 fi
@@ -799,6 +801,8 @@ $aws_ecs_efs_root_directory
 $aws_ecs_efs_transit_encryption
 $aws_ecs_efs_transit_encryption_port
 $aws_ecs_efs_access_point_id
+$aws_ecs_efs_container_path
+$aws_ecs_efs_readonly
 $aws_ecs_efs_iam
 $aws_ecs_additional_tags
 
