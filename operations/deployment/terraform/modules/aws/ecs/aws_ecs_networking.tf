@@ -62,7 +62,6 @@ resource "aws_alb_target_group" "lb_targets" {
 
   lifecycle {
     replace_triggered_by = [aws_security_group.ecs_sg.id]
-    create_before_destroy = true
   }
 }
 
