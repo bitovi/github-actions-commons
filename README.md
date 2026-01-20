@@ -489,6 +489,7 @@ The following inputs can be used as `step.with` keys
 | `aws_ecs_task_mem`| String | Task Mem Amount. |
 | `aws_ecs_container_cpu`| String | Container CPU Amount. |
 | `aws_ecs_container_mem`| String | Container Mem Amount. |
+| `aws_ecs_container_user`| String | User to run container as. Accepts `user`, `user:group`, `uid`, `uid:gid`, `user:gid` or `uid:group`. |
 | `aws_ecs_node_count`| String | Node count for ECS Cluster. |
 | `aws_ecs_app_image`| String | Name of the container image to be used. |
 | `aws_ecs_security_group_name`| String | ECS Secruity group name. |

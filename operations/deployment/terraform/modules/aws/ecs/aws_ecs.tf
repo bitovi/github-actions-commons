@@ -65,7 +65,7 @@ resource "aws_ecs_task_definition" "ecs_task" {
           "cpu" : local.aws_ecs_container_cpu[count.index],
           "memory" : local.aws_ecs_container_mem[count.index],
           "essential" : true,
-          "user" : "0",
+          "user" : var.aws_ecs_container_user != "" ? var.aws_ecs_container_user : null,
           "networkMode" : "awsvpc",
           "portMappings" : length(local.aws_ecs_container_port) > 0 ? [
             {

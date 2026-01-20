@@ -11,6 +11,7 @@ variable "aws_ecs_task_cpu" {}
 variable "aws_ecs_task_mem" {}
 variable "aws_ecs_container_cpu" {}
 variable "aws_ecs_container_mem" {}
+variable "aws_ecs_container_user" {}
 variable "aws_ecs_node_count" {}
 variable "aws_ecs_app_image" {}
 variable "aws_ecs_security_group_name" {}

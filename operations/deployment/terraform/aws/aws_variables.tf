@@ -1656,6 +1656,12 @@ variable "aws_ecs_container_mem" {
   default     = ""
 }
 
+variable "aws_ecs_container_user" {
+  type        = string
+  description = "Container User"
+  default     = ""
+}
+
 variable "aws_ecs_node_count" {
   type        = string
   description = "Node count for ECS Cluster"

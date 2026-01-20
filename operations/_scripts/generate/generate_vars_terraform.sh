@@ -370,7 +370,8 @@ if [[ $(alpha_only "$AWS_ECS_ENABLE") == true ]]; then
   aws_ecs_task_cpu=$(generate_var aws_ecs_task_cpu $AWS_ECS_TASK_CPU)
   aws_ecs_task_mem=$(generate_var aws_ecs_task_mem $AWS_ECS_TASK_MEM)
   aws_ecs_container_cpu=$(generate_var aws_ecs_container_cpu $AWS_ECS_CONTAINER_CPU)
-  aws_ecs_container_cpu=$(generate_var aws_ecs_container_mem $AWS_ECS_CONTAINER_MEM)
+  aws_ecs_container_mem=$(generate_var aws_ecs_container_mem $AWS_ECS_CONTAINER_MEM)
+  aws_ecs_container_user=$(generate_var aws_ecs_container_user $AWS_ECS_CONTAINER_USER)
   aws_ecs_node_count=$(generate_var aws_ecs_node_count $AWS_ECS_NODE_COUNT)
   aws_ecs_app_image=$(generate_var aws_ecs_app_image $AWS_ECS_APP_IMAGE)
   aws_ecs_env_vars=$(generate_var aws_ecs_env_vars $AWS_ECS_ENV_VARS )
@@ -776,6 +777,7 @@ $aws_ecs_task_cpu
 $aws_ecs_task_mem
 $aws_ecs_container_cpu
 $aws_ecs_container_mem
+$aws_ecs_container_user
 $aws_ecs_node_count
 $aws_ecs_app_image
 $aws_ecs_env_vars
