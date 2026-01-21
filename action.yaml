@@ -1006,10 +1006,10 @@ inputs:
     description: 'Min ammount of nodes to scale down to.'
     required: false
   aws_ecs_autoscaling_max_mem:
-    description: 'Some'
+    description: 'Max ammount of mem to scale up to.'
     required: false
   aws_ecs_autoscaling_max_cpu:
-    description: 'Some'
+    description: 'Max ammount of cou to scale up to.'
     required: false
   aws_ecs_cloudwatch_enable:
     description: 'Toggle cloudwatch for ECS. Defaults to false'

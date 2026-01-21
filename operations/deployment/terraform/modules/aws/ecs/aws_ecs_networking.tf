@@ -87,9 +87,9 @@ resource "aws_alb_listener" "lb_listener_ssl" {
     type             = "forward"
   }
   lifecycle {
-    replace_triggered_by = [null_resource.http_redirect_dep.id]
+    replace_triggered_by = [null_resource.http_redirect_dep.id,aws_alb_target_group.lb_targets]
   }
-  depends_on = [aws_alb_listener.http_redirect]
+  depends_on = [aws_alb_listener.http_redirect, aws_alb_target_group.lb_targets]
 }
 
 resource "aws_alb_listener" "lb_listener" {
@@ -102,7 +102,7 @@ resource "aws_alb_listener" "lb_listener" {
     type             = "forward"
   }
   lifecycle {
-    replace_triggered_by = [null_resource.http_redirect_dep.id]
+    replace_triggered_by = [null_resource.http_redirect_dep.id,aws_alb_target_group.lb_targets]
   }
   depends_on = [aws_alb_listener.http_redirect]
 }
@@ -138,10 +138,7 @@ resource "aws_alb_listener" "http_redirect" {
       status_code = "HTTP_301"
     }
   }
-  depends_on = [
-    aws_alb.ecs_lb,
-    aws_alb_target_group.lb_targets
-  ]
+  depends_on = [aws_alb.ecs_lb,aws_alb_target_group.lb_targets]
 }
 
 resource "aws_alb_listener" "http_forward" {
@@ -154,10 +151,7 @@ resource "aws_alb_listener" "http_forward" {
     type             = "forward"
     target_group_arn = aws_alb_target_group.lb_targets[0].id
   }
-  depends_on = [
-    aws_alb.ecs_lb,
-    aws_alb_target_group.lb_targets
-  ]
+  depends_on = [aws_alb.ecs_lb, aws_alb_target_group.lb_targets]
 }
 
 resource "aws_security_group_rule" "incoming_alb_http" {
@@ -184,6 +178,7 @@ resource "aws_alb_listener" "https_redirect" {
     target_group_arn = aws_alb_target_group.lb_targets[0].id
     type             = "forward"
   }
+  depends_on = [aws_alb_target_group.lb_targets]
 }
 
 resource "aws_alb_listener_rule" "redirect_based_on_path_for_http" {
@@ -221,10 +216,7 @@ resource "aws_alb_listener" "http_www_redirect" {
       status_code  = "404"
     }
   }
-  depends_on = [
-    aws_alb.ecs_lb,
-    aws_alb_target_group.lb_targets
-  ]
+  depends_on = [aws_alb.ecs_lb,aws_alb_target_group.lb_targets]
 }
 
 resource "aws_lb_listener_rule" "http_forward_apex" {
