@@ -60,20 +60,6 @@ module "efs_to_ec2_sg" {
   depends_on               = [module.ec2, module.efs]
 }
 
-#module "efs_to_ecs_sg" {
-#  source = "../modules/aws/sg/add_rule"
-#  count  = var.aws_ec2_instance_create && var.aws_efs_enable && (var.aws_efs_fs_id == null) ? 1 : 0
-#  # Inputs 
-#  sg_type                  = "ingress"
-#  sg_rule_description      = "${var.aws_resource_identifier} - ECS Incoming"
-#  sg_rule_from_port        = 2049
-#  sg_rule_to_port          = 2049
-#  sg_rule_protocol         = "tcp"
-#  source_security_group_id = try(module.efs[0].aws_efs_sg_id)
-#  target_security_group_id = module.ecs[0].ecs_sg_id
-#  depends_on               = [module.ecs, module.efs]
-#}
-
 module "aws_certificates" {
   source = "../modules/aws/certificates"
   count  = (var.aws_ec2_instance_create || var.aws_ecs_enable) && var.aws_r53_enable_cert && var.aws_r53_cert_arn == "" && var.aws_r53_domain_name != "" ? 1 : 0
