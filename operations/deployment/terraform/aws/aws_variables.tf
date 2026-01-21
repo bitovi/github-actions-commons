@@ -1833,7 +1833,7 @@ variable "aws_ecs_efs_readonly" {
 variable "aws_ecs_efs_iam" {
   type        = bool
   description = "Whether or not to use the IAM role defined in a task definition when mounting the FS. Defaults to false. (DISABLED) "
-  default     = true
+  default     = false
 }
 
 variable "aws_ecs_additional_tags" {

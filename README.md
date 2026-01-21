@@ -483,7 +483,7 @@ The following inputs can be used as `step.with` keys
 | `aws_ecs_task_name`| String | Elastic Container Service task name. If task is defined with a JSON file, should be the same as the container name. |
 | `aws_ecs_task_ignore_definition`| Boolean | Toggle to ignore task definition changes after first deployment. Useful when using external tools to manage the task definition. Default: `false`. |
 | `aws_ecs_task_execution_role`| String | Task execution role name that the Amazon ECS container agent and the Docker daemon can assume. Defaults to `ecsTaskExecutionRole`. |
-| `aws_ecs_task_role` | String | Name of the IAM role that allows your Amazon ECS container task to make calls to other AWS services. If `aws_ecs_efs_transit_encryption` is enabled and none defined, will use the `aws_ecs_task_execution_role`. |
+| `aws_ecs_task_role` | String | IAM role name that allows your Amazon ECS container task to make calls to other AWS services. When mounting an EFS volume and `aws_ecs_efs_iam` is enabled, will use the `aws_ecs_task_execution_role` if none defined. |
 | `aws_ecs_task_reuse_role` | Boolean | Toggle reusing the task execution role as the task role. |
 | `aws_ecs_task_json_definition_file`| String | Name of the json file containing task definition. Overrides every other input. |
 | `aws_ecs_task_network_mode`| String | Network type to use in task definition. One of `none`, `bridge`, `awsvpc`, and `host`. |
@@ -518,7 +518,7 @@ The following inputs can be used as `step.with` keys
 | `aws_ecs_efs_access_point_id` | String | EFS Volume Access Point ID to use. |
 | `aws_ecs_efs_container_path` | String | Directory path within container to mount the EFS volume to. Defaults to`/mnt/efs` |
 | `aws_ecs_efs_readonly` | Boolean | Whether the EFS volume is mounted as read-only. Defaults to `false`. |
-| `aws_ecs_efs_iam` | Boolean | Whether or not to use the ECS task IAM role defined in a task definition when mounting the FS. Defaults to `false`. (DISABLED) |
+| `aws_ecs_efs_iam` | Boolean | Whether or not to use the ECS task IAM role defined in a task definition when mounting the FS. Defaults to `false`. (DISABLED) - Needs `aws_ecs_efs_transit_encryption` |
 | `aws_ecs_additional_tags`| JSON | Add additional tags to the terraform [default tags](https://www.hashicorp.com/blog/default-tags-in-the-terraform-aws-provider), any tags put here will be added to ECS provisioned resources.|
 <hr/>
 <br/>
