@@ -87,7 +87,7 @@ resource "aws_alb_listener" "lb_listener_ssl" {
     type             = "forward"
   }
   lifecycle {
-    replace_triggered_by = [null_resource.http_redirect_dep.id,aws_alb_target_group.lb_targets]
+    replace_triggered_by = [null_resource.http_redirect_dep.id, aws_alb_target_group.lb_targets]
   }
   depends_on = [aws_alb_listener.http_redirect, aws_alb_target_group.lb_targets]
 }
@@ -102,7 +102,7 @@ resource "aws_alb_listener" "lb_listener" {
     type             = "forward"
   }
   lifecycle {
-    replace_triggered_by = [null_resource.http_redirect_dep.id,aws_alb_target_group.lb_targets]
+    replace_triggered_by = [null_resource.http_redirect_dep.id, aws_alb_target_group.lb_targets]
   }
   depends_on = [aws_alb_listener.http_redirect]
 }
@@ -138,7 +138,7 @@ resource "aws_alb_listener" "http_redirect" {
       status_code = "HTTP_301"
     }
   }
-  depends_on = [aws_alb.ecs_lb,aws_alb_target_group.lb_targets]
+  depends_on = [aws_alb.ecs_lb, aws_alb_target_group.lb_targets]
 }
 
 resource "aws_alb_listener" "http_forward" {
@@ -216,7 +216,7 @@ resource "aws_alb_listener" "http_www_redirect" {
       status_code  = "404"
     }
   }
-  depends_on = [aws_alb.ecs_lb,aws_alb_target_group.lb_targets]
+  depends_on = [aws_alb.ecs_lb, aws_alb_target_group.lb_targets]
 }
 
 resource "aws_lb_listener_rule" "http_forward_apex" {

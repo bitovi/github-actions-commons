@@ -482,7 +482,9 @@ The following inputs can be used as `step.with` keys
 | `aws_ecs_task_type`| String | Configuration type. Could be `EC2`, `FARGATE` or empty. Will default to `aws_ecs_service_launch_type` if none defined. (Blank if `EXTERNAL`). |
 | `aws_ecs_task_name`| String | Elastic Container Service task name. If task is defined with a JSON file, should be the same as the container name. |
 | `aws_ecs_task_ignore_definition`| Boolean | Toggle to ignore task definition changes after first deployment. Useful when using external tools to manage the task definition. Default: `false`. |
-| `aws_ecs_task_execution_role`| String | Elastic Container Service task execution role name from IAM. Defaults to `ecsTaskExecutionRole`. |
+| `aws_ecs_task_execution_role`| String | Task execution role name that the Amazon ECS container agent and the Docker daemon can assume. Defaults to `ecsTaskExecutionRole`. |
+| `aws_ecs_task_role` | String | Name of the IAM role that allows your Amazon ECS container task to make calls to other AWS services. If `aws_ecs_efs_transit_encryption` is enabled and none defined, will use the `aws_ecs_task_execution_role`. |
+| `aws_ecs_task_reuse_role` | Boolean | Toggle reusing the task execution role as the task role. |
 | `aws_ecs_task_json_definition_file`| String | Name of the json file containing task definition. Overrides every other input. |
 | `aws_ecs_task_network_mode`| String | Network type to use in task definition. One of `none`, `bridge`, `awsvpc`, and `host`. |
 | `aws_ecs_task_cpu`| String | Task CPU Amount. |

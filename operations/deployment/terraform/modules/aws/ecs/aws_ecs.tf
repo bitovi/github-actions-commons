@@ -25,6 +25,7 @@ locals {
   aws_ecs_task_json_definition_file = var.aws_ecs_task_json_definition_file != "" ? [for n in split(",", var.aws_ecs_task_json_definition_file) : n] : []
 
   ecsTaskExecutionRole = var.aws_ecs_task_execution_role != "" ? data.aws_iam_role.ecsTaskExecutionRole[0].arn : aws_iam_role.ecsTaskExecutionRole[0].arn
+  ecsTaskRole          = var.aws_ecs_task_role != "" ? data.aws_iam_role.ecsTaskRole[0].arn : var.aws_ecs_efs_iam ? local.ecsTaskExecutionRole : ""
 
   # Calculate tasks_count early to avoid circular dependency
   tasks_count = var.aws_ecs_task_ignore_definition ? 1 : length(local.aws_ecs_app_image) + length(local.aws_ecs_task_json_definition_file)
@@ -39,7 +40,7 @@ resource "aws_ecs_task_definition" "ecs_task" {
   cpu                      = local.aws_ecs_task_cpu[count.index]
   memory                   = local.aws_ecs_task_mem[count.index]
   execution_role_arn       = local.ecsTaskExecutionRole
-  task_role_arn            = local.ecsTaskExecutionRole # <-- Add this line
+  task_role_arn            = var.aws_ecs_task_reuse_role ? local.ecsTaskExecutionRole : local.ecsTaskRole
   dynamic "volume" {
     for_each = var.aws_ecs_efs_fs_id != null ? [1] : []
     content {
@@ -107,7 +108,7 @@ resource "aws_ecs_task_definition" "ecs_task_from_json" {
   cpu                      = local.aws_ecs_task_cpu[count.index + length(local.aws_ecs_app_image)]
   memory                   = local.aws_ecs_task_mem[count.index + length(local.aws_ecs_app_image)]
   execution_role_arn       = local.ecsTaskExecutionRole
-  task_role_arn            = local.ecsTaskExecutionRole # <-- Add this line
+  task_role_arn            = var.aws_ecs_task_reuse_role ? local.ecsTaskExecutionRole : local.ecsTaskRole
   dynamic "volume" {
     for_each = var.aws_ecs_efs_fs_id != null ? [1] : []
     content {
@@ -135,7 +136,7 @@ resource "aws_ecs_task_definition" "aws_ecs_task_ignore_definition" {
   cpu                      = local.aws_ecs_task_cpu[count.index]
   memory                   = local.aws_ecs_task_mem[count.index]
   execution_role_arn       = local.ecsTaskExecutionRole
-  task_role_arn            = local.ecsTaskExecutionRole
+  task_role_arn            = var.aws_ecs_task_reuse_role ? local.ecsTaskExecutionRole : local.ecsTaskRole
   dynamic "volume" {
     for_each = var.aws_ecs_efs_fs_id != null ? [1] : []
     content {
@@ -240,6 +241,11 @@ resource "aws_cloudwatch_log_group" "ecs_cw_log_group" {
 data "aws_iam_role" "ecsTaskExecutionRole" {
   count = var.aws_ecs_task_execution_role != "" ? 1 : 0
   name  = var.aws_ecs_task_execution_role
+}
+
+data "aws_iam_role" "ecsTaskRole" {
+  count = var.aws_ecs_task_role != "" ? 1 : 0
+  name  = var.aws_ecs_task_role
 }
 
 resource "aws_iam_role" "ecsTaskExecutionRole" {

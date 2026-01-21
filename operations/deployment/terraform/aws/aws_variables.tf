@@ -1620,6 +1620,18 @@ variable "aws_ecs_task_execution_role" {
   default     = ""
 }
 
+variable "aws_ecs_task_role" {
+  type        = string
+  description = "Elastic Container Service task role name."
+  default     = ""
+}
+
+variable "aws_ecs_task_reuse_role" {
+  type        = bool
+  description = "Toggle reusing the task execution role as the task role"
+  default     = false
+}
+
 variable "aws_ecs_task_json_definition_file" {
   type        = string
   description = "Filename for json file containing ECS conteiner definitions"
@@ -1820,7 +1832,7 @@ variable "aws_ecs_efs_readonly" {
 
 variable "aws_ecs_efs_iam" {
   type        = bool
-  description = "Whether or not to use the ECS task IAM role defined in a task definition when mounting the FS. Defaults to false. (DISABLED) "
+  description = "Whether or not to use the IAM role defined in a task definition when mounting the FS. Defaults to false. (DISABLED) "
   default     = true
 }
 
