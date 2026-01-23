@@ -620,7 +620,7 @@ module "aws_ecs" {
 
 module "efs_to_ecs_sg" {
   source = "../modules/aws/sg/add_rule"
-  count  = var.aws_ecs_enable && var.aws_efs_enable && module.efs[0].aws_efs_sg_id != null ? 1 : 0
+  count  = var.aws_ecs_enable && var.aws_efs_enable && (var.aws_efs_fs_id == null) ? 1 : 0
   # Inputs 
   sg_type                  = "ingress"
   sg_rule_description      = "${var.aws_resource_identifier} - ECS Incoming"
