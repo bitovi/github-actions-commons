@@ -620,14 +620,14 @@ module "aws_ecs" {
 
 module "efs_to_ecs_sg" {
   source = "../modules/aws/sg/add_rule"
-  count  = var.aws_ecs_enable && var.aws_efs_enable && (var.aws_efs_fs_id == null) ? 1 : 0
+  count  = var.aws_ecs_enable && var.aws_efs_enable && module.efs[0].aws_efs_sg_id != null ? 1 : 0
   # Inputs 
   sg_type                  = "ingress"
   sg_rule_description      = "${var.aws_resource_identifier} - ECS Incoming"
   sg_rule_from_port        = 2049
   sg_rule_to_port          = 2049
   sg_rule_protocol         = "tcp"
-  source_security_group_id = try(module.efs[0].aws_efs_sg_id)
+  source_security_group_id = module.efs[0].aws_efs_sg_id
   target_security_group_id = module.aws_ecs[0].ecs_sg_id
   depends_on               = [module.aws_ecs, module.efs]
 }
