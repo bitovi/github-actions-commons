@@ -25,7 +25,7 @@ locals {
   aws_ecs_task_json_definition_file = var.aws_ecs_task_json_definition_file != "" ? [for n in split(",", var.aws_ecs_task_json_definition_file) : n] : []
 
   ecsTaskExecutionRole = var.aws_ecs_task_execution_role != "" ? data.aws_iam_role.ecsTaskExecutionRole[0].arn : aws_iam_role.ecsTaskExecutionRole[0].arn
-  ecsTaskRole          = var.aws_ecs_task_role != "" ? data.aws_iam_role.ecsTaskRole[0].arn : var.aws_ecs_efs_iam ? local.ecsTaskExecutionRole : ""
+  ecsTaskRole          = var.aws_ecs_task_role != "" ? data.aws_iam_role.ecsTaskRole[0].arn : (var.aws_ecs_efs_iam ? aws_iam_role.ecsTaskRole[0].arn : "")
 
   # Calculate tasks_count early to avoid circular dependency
   tasks_count = var.aws_ecs_task_ignore_definition ? 1 : length(local.aws_ecs_app_image) + length(local.aws_ecs_task_json_definition_file)
@@ -271,3 +271,59 @@ resource "aws_iam_policy_attachment" "ecsTaskExecutionRolePolicy" {
   roles      = [aws_iam_role.ecsTaskExecutionRole[0].name]
   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
 }
+
+# Task Role for EFS access
+resource "aws_iam_role" "ecsTaskRole" {
+  count = var.aws_ecs_task_role != "" || !var.aws_ecs_efs_iam ? 0 : 1
+  name  = "${var.aws_resource_identifier}-ecs-task"
+  assume_role_policy = jsonencode({
+    "Version" : "2012-10-17",
+    "Statement" : [
+      {
+        "Effect" : "Allow",
+        "Principal" : {
+          "Service" : "ecs-tasks.amazonaws.com"
+        },
+        "Action" : "sts:AssumeRole"
+      }
+    ]
+  })
+}
+
+# EFS Access Policy for Task Role
+resource "aws_iam_policy" "ecsTaskRoleEFSPolicy" {
+  count       = var.aws_ecs_efs_fs_id != null && var.aws_ecs_efs_iam ? 1 : 0
+  name        = "${var.aws_resource_identifier}-ecs-task-efs-policy"
+  description = "Policy to allow ECS task to access EFS file system ${var.aws_ecs_efs_fs_id}"
+  
+  policy = jsonencode({
+    "Version" : "2012-10-17",
+    "Statement" : [
+      {
+        "Effect" : "Allow",
+        "Action" : [
+          "elasticfilesystem:ClientMount",
+          "elasticfilesystem:ClientWrite",
+          "elasticfilesystem:ClientRootAccess"
+        ],
+        "Resource" : "arn:aws:elasticfilesystem:${var.aws_region_current_name}:${data.aws_caller_identity.current.account_id}:file-system/${var.aws_ecs_efs_fs_id}",
+        "Condition" : {
+          "StringEquals" : {
+            "elasticfilesystem:AccessPointArn" : var.aws_ecs_efs_access_point_id != null ? "arn:aws:elasticfilesystem:${var.aws_region_current_name}:${data.aws_caller_identity.current.account_id}:access-point/${var.aws_ecs_efs_access_point_id}" : ""
+          }
+        }
+      }
+    ]
+  })
+}
+
+resource "aws_iam_policy_attachment" "ecsTaskRoleEFSPolicyAttachment" {
+  count      = var.aws_ecs_efs_fs_id != null && var.aws_ecs_efs_iam && var.aws_ecs_task_role == "" ? 1 : 0
+  name       = "ECSTaskRoleEFSPolicyAttachment"
+  roles      = [aws_iam_role.ecsTaskRole[0].name]
+  policy_arn = aws_iam_policy.ecsTaskRoleEFSPolicy[0].arn
+}
+
+# Data source to get current AWS account ID
+data "aws_caller_identity" "current" {}
+
