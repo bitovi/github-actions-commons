@@ -295,7 +295,7 @@ resource "aws_iam_policy" "ecsTaskRoleEFSPolicy" {
   count       = var.aws_ecs_efs_fs_id != null && var.aws_ecs_efs_iam ? 1 : 0
   name        = "${var.aws_resource_identifier}-ecs-task-efs-policy"
   description = "Policy to allow ECS task to access EFS file system ${var.aws_ecs_efs_fs_id}"
-  
+
   policy = jsonencode({
     "Version" : "2012-10-17",
     "Statement" : [

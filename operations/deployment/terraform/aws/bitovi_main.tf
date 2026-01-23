@@ -593,7 +593,7 @@ module "aws_ecs" {
   aws_ecs_cloudwatch_lg_name          = var.aws_ecs_cloudwatch_enable ? (var.aws_ecs_cloudwatch_lg_name != null ? var.aws_ecs_cloudwatch_lg_name : "${var.aws_resource_identifier}-ecs-logs") : null
   aws_ecs_cloudwatch_skip_destroy     = var.aws_ecs_cloudwatch_skip_destroy
   aws_ecs_cloudwatch_retention_days   = var.aws_ecs_cloudwatch_retention_days
-  aws_ecs_efs_fs_id                   = var.aws_ecs_efs_fs_id
+  aws_ecs_efs_fs_id                   = var.aws_efs_enable ? try(module.efs[0].efs_fs_id, "") : var.aws_ecs_efs_fs_id
   aws_ecs_efs_root_directory          = var.aws_ecs_efs_root_directory
   aws_ecs_efs_transit_encryption      = var.aws_ecs_efs_transit_encryption
   aws_ecs_efs_transit_encryption_port = var.aws_ecs_efs_transit_encryption_port
@@ -617,6 +617,20 @@ module "aws_ecs" {
     aws = aws.ecs
   }
 }
+
+#module "efs_to_ecs_sg" {
+#  source = "../modules/aws/sg/add_rule"
+#  count  = var.aws_ecs_enable && var.aws_efs_enable && (var.aws_efs_fs_id == null) ? 1 : 0
+#  # Inputs 
+#  sg_type                  = "ingress"
+#  sg_rule_description      = "${var.aws_resource_identifier} - ECS Incoming"
+#  sg_rule_from_port        = 2049
+#  sg_rule_to_port          = 2049
+#  sg_rule_protocol         = "tcp"
+#  source_security_group_id = try(module.efs[0].aws_efs_sg_id)
+#  target_security_group_id = module.aws_ecs[0].aws_ecs_security_group_id
+#  depends_on               = [module.aws_ecs, module.efs]
+#}
 
 module "aws_route53_ecs" {
   source = "../modules/aws/route53"
