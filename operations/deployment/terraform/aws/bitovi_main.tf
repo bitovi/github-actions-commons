@@ -618,7 +618,7 @@ module "aws_ecs" {
   }
 }
 
-module "efs_to_ecs_sg" {
+module "ecs_to_efs_sg" {
   source = "../modules/aws/sg/add_rule"
   count  = var.aws_ecs_enable && var.aws_efs_enable && (var.aws_efs_fs_id == null) ? 1 : 0
   # Inputs 
@@ -993,11 +993,11 @@ output "ecs_load_balancer_dns" {
 }
 
 output "ecs_sg_id" {
-  value = try(module.aws_ecs[0].ecs_sg.id, null)
+  value = try(module.aws_ecs[0].ecs_sg_id, null)
 }
 
 output "ecs_lb_sg_id" {
-  value = try(module.aws_ecs[0].ecs_lb_sg.id, null)
+  value = try(module.aws_ecs[0].ecs_lb_sg_id, null)
 }
 
 # Redis

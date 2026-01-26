@@ -61,7 +61,7 @@ resource "aws_efs_replication_configuration" "efs_rep_config" {
 
 resource "aws_security_group" "efs_security_group" {
   count       = var.aws_efs_create_mount_target ? 1 : 0
-  name        = var.aws_efs_security_group_name != null ? var.aws_efs_security_group_name : "SG for ${var.aws_resource_identifier} - EFS"
+  name        = var.aws_efs_security_group_name != "" ? var.aws_efs_security_group_name : "SG for ${var.aws_resource_identifier} - EFS"
   description = "SG for ${var.aws_resource_identifier} - EFS"
   vpc_id      = var.aws_selected_vpc_id
   egress {
