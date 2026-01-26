@@ -73,6 +73,9 @@ resource "aws_security_group" "efs_security_group" {
   tags = {
     Name = "${var.aws_resource_identifier}-efs"
   }
+  lifecycle {
+    ignore_changes = [ "name" ]
+  }
 }
 
 resource "aws_security_group_rule" "ingress_efs" {
