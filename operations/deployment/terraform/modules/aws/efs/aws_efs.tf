@@ -82,7 +82,7 @@ resource "aws_security_group" "efs_security_group" {
     Name = "${var.aws_resource_identifier}-efs"
   }
   lifecycle {
-    ignore_changes = [ name ]
+    ignore_changes = [name]
   }
 }
 
