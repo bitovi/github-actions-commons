@@ -628,8 +628,8 @@ module "ecs_to_efs_sg" {
   sg_rule_from_port        = 2049
   sg_rule_to_port          = 2049
   sg_rule_protocol         = "tcp"
-  source_security_group_id = module.aws_ecs[0].ecs_sg_id #module.efs[0].aws_efs_sg_id
-  target_security_group_id = module.efs[0].aws_efs_sg_id #module.aws_ecs[0].ecs_sg_id
+  source_security_group_id = module.aws_ecs[0].ecs_sg_id
+  target_security_group_id = module.efs[0].aws_efs_sg_id
   depends_on               = [module.aws_ecs, module.efs]
 }
 
