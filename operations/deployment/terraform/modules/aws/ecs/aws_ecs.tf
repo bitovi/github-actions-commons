@@ -292,7 +292,7 @@ resource "aws_iam_role" "ecsTaskRole" {
 
 # EFS Access Policy for Task Role
 resource "aws_iam_policy" "ecsTaskRoleEFSPolicy" {
-  count       = var.aws_ecs_efs_fs_id != null && var.aws_ecs_efs_iam ? 1 : 0
+  count       = var.aws_ecs_efs_enable && var.aws_ecs_efs_iam ? 1 : 0
   name        = "${var.aws_resource_identifier}-ecs-task-efs-policy"
   description = "Policy to allow ECS task to access EFS file system ${var.aws_ecs_efs_fs_id}"
 
@@ -318,7 +318,7 @@ resource "aws_iam_policy" "ecsTaskRoleEFSPolicy" {
 }
 
 resource "aws_iam_policy_attachment" "ecsTaskRoleEFSPolicyAttachment" {
-  count      = var.aws_ecs_efs_fs_id != null && var.aws_ecs_efs_iam && var.aws_ecs_task_role == "" ? 1 : 0
+  count      = var.aws_ecs_efs_enable && var.aws_ecs_efs_iam && var.aws_ecs_task_role == "" ? 1 : 0
   name       = "ECSTaskRoleEFSPolicyAttachment"
   roles      = [aws_iam_role.ecsTaskRole[0].name]
   policy_arn = aws_iam_policy.ecsTaskRoleEFSPolicy[0].arn

@@ -33,6 +33,7 @@ variable "aws_ecs_cloudwatch_enable" {}
 variable "aws_ecs_cloudwatch_lg_name" {}
 variable "aws_ecs_cloudwatch_skip_destroy" {}
 variable "aws_ecs_cloudwatch_retention_days" {}
+variable "aws_ecs_efs_enable" {}
 variable "aws_ecs_efs_fs_id" {}
 variable "aws_ecs_efs_root_directory" {}
 variable "aws_ecs_efs_transit_encryption" {}
