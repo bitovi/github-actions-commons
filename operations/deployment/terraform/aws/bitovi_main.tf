@@ -593,7 +593,7 @@ module "aws_ecs" {
   aws_ecs_cloudwatch_lg_name          = var.aws_ecs_cloudwatch_enable ? (var.aws_ecs_cloudwatch_lg_name != null ? var.aws_ecs_cloudwatch_lg_name : "${var.aws_resource_identifier}-ecs-logs") : null
   aws_ecs_cloudwatch_skip_destroy     = var.aws_ecs_cloudwatch_skip_destroy
   aws_ecs_cloudwatch_retention_days   = var.aws_ecs_cloudwatch_retention_days
-  aws_ecs_efs_fs_id                   = var.aws_efs_enable ? module.efs[0].aws_efs_fs_id : null
+  aws_ecs_efs_fs_id                   = var.aws_efs_enable ? try(module.efs[0].aws_efs_fs_id, null) : null
   aws_ecs_efs_root_directory          = var.aws_ecs_efs_root_directory
   aws_ecs_efs_transit_encryption      = var.aws_ecs_efs_transit_encryption
   aws_ecs_efs_transit_encryption_port = var.aws_ecs_efs_transit_encryption_port
