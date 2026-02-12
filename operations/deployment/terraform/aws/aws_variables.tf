@@ -2050,7 +2050,7 @@ variable "aws_eks_cluster_log_types" {
 }
 
 variable "aws_eks_cluster_log_retention_days" {
-  description = "enter the kubernetes version"
+  description = "Log retention days"
   type        = string
   default     = "7"
 }
@@ -2063,8 +2063,14 @@ variable "aws_eks_cluster_log_skip_destroy" {
 
 variable "aws_eks_cluster_version" {
   description = "enter the kubernetes version"
-  type        = number
-  default     = "1.28"
+  type        = string
+  default     = 1.28
+}
+
+variable "aws_eks_create_bk_node_group" {
+  description = "create a backup node group"
+  type        = bool
+  default     = false
 }
 
 variable "aws_eks_instance_type" {
@@ -2073,8 +2079,20 @@ variable "aws_eks_instance_type" {
   default     = "t3a.medium"
 }
 
-variable "aws_eks_instance_ami_id" {
-  description = "AWS AMI ID"
+variable "aws_eks_instance_type_bk" {
+  description = "enter the aws instance type"
+  type        = string
+  default     = ""
+}
+
+variable "aws_eks_instance_ami_type" {
+  description = "Type of AMI to use. Defaults to AL2_x86_64"
+  type        = string
+  default     = "AL2_x86_64"
+}
+
+variable "aws_eks_instance_ami_type_bk" {
+  description = "Type of AMI to use. Defaults to AL2_x86_64"
   type        = string
   default     = ""
 }
